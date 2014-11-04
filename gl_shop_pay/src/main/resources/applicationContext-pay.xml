@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop.xsd 
+    http://www.springframework.org/schema/tx  
+    http://www.springframework.org/schema/tx/spring-tx.xsd ">
+     
+    <!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+	<context:component-scan base-package="com.appabc.pay"/>
+	<!-- pay service use the remote service -->
+	<!-- <bean id="IPassPayRemoteService" class="com.appabc.pay.service.remote.PassPayRemoteServiceImpl" /> -->
+	
+	<!-- pay service use the local service -->
+	<bean id="IPassPayLocalService" class="com.appabc.pay.service.local.PassPayLocalServiceImpl">
+		<property name="PKGenerator" ref="PurseKeyGenerator"/>
+		<property name="iPayInfoService" ref="IPayInfoService"/>
+		<property name="iPayDetailService" ref="IPayDetailService"/>
+		<property name="iOfflinePayService" ref="IOfflinePayService"/>
+		<property name="iAcceptBankService" ref="IAcceptBankService"/>
+		<property name="iPassbookPayService" ref="IPassbookPayService"/>
+		<property name="iPassbookInfoService" ref="IPassbookInfoService"/>
+		<property name="iPassbookDrawService" ref="IPassbookDrawService"/>
+		<property name="iPassbookThirdCheckService" ref="IPassbookThirdCheckService"/>
+	</bean>
+	
+	<bean id="IPayInfoService" class="com.appabc.pay.service.local.impl.PayInfoServiceImpl">
+		<property name="iPayInfoDAO" ref="IPayInfoDAO" />
+	</bean>
+	<bean id="IPayDetailService" class="com.appabc.pay.service.local.impl.PayDetailServiceImpl">
+		<property name="iPayDetailDAO" ref="IPayDetailDAO" />
+	</bean>
+	<bean id="IAcceptBankService" class="com.appabc.pay.service.local.impl.AcceptBankServiceImpl">
+		<property name="iAcceptBankDAO" ref="IAcceptBankDAO" />
+	</bean>
+	<bean id="IOfflinePayService" class="com.appabc.pay.service.local.impl.OfflinePayServiceImpl">
+		<property name="iOfflinePayDAO" ref="IOfflinePayDAO" />
+	</bean>
+	<bean id="IPassbookPayService" class="com.appabc.pay.service.local.impl.PassbookPayServiceImpl">
+		<property name="iPassbookPayDAO" ref="IPassbookPayDAO" />
+	</bean>
+	<bean id="IPassbookInfoService" class="com.appabc.pay.service.local.impl.PassbookInfoServiceImpl">
+		<property name="iPassbookInfoDAO" ref="IPassbookInfoDAO" />
+	</bean>
+	<bean id="IPassbookDrawService" class="com.appabc.pay.service.local.impl.PassbookDrawServiceImpl">
+		<property name="iPassbookDrawDAO" ref="IPassbookDrawDAO" />
+	</bean>
+	<bean id="IPassbookThirdCheckService" class="com.appabc.pay.service.local.impl.PassbookThirdCheckServiceImpl">
+		<property name="iPassbookThirdCheckDAO" ref="IPassbookThirdCheckDAO" />
+	</bean>
+	
+	<bean class="com.appabc.pay.dao.impl.PayInfoDAOImpl" id="IPayInfoDAO"/>
+	<bean class="com.appabc.pay.dao.impl.PayDetailDAOImpl" id="IPayDetailDAO" />
+	<bean class="com.appabc.pay.dao.impl.AcceptBankDAOImpl" id="IAcceptBankDAO" />
+	<bean class="com.appabc.pay.dao.impl.OfflinePayDAOImpl" id="IOfflinePayDAO" />
+	<bean class="com.appabc.pay.dao.impl.PassbookPayDAOImpl" id="IPassbookPayDAO" />
+	<bean class="com.appabc.pay.dao.impl.PassbookInfoDAOImpl" id="IPassbookInfoDAO" />
+	<bean class="com.appabc.pay.dao.impl.PassbookDrawDAOImpl" id="IPassbookDrawDAO" />
+	<bean class="com.appabc.pay.dao.impl.PassbookThirdCheckDAOImpl" id="IPassbookThirdCheckDAO" />
+	
+</beans>

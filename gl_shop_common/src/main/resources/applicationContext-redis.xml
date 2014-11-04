@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop.xsd 
+    http://www.springframework.org/schema/tx  
+    http://www.springframework.org/schema/tx/spring-tx.xsd ">
+     
+     
+	<!-- Redis配置 begin -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="2048" />
+        <property name="maxIdle" value="200" />
+        <property name="numTestsPerEvictionRun" value="1024"/>
+        <property name="timeBetweenEvictionRunsMillis" value="30000" />
+        <property name="minEvictableIdleTimeMillis" value="-1" />
+        <property name="softMinEvictableIdleTimeMillis" value="10000" />
+        <property name="maxWaitMillis" value="1500"/>
+        <property name="testOnBorrow" value="true" />
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnReturn" value="false"/>
+        <property name="jmxEnabled" value="true"/>
+        <property name="jmxNamePrefix" value="guoli"/>
+        <property name="blockWhenExhausted" value="false"/>
+    </bean>
+    
+    <bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1">
+        	<!-- 不支持主从分离 -->
+            <list>
+             	<!-- SLAVER Redis从机 ，
+				<bean id="slaver" name="slaver" class="redis.clients.jedis.JedisShardInfo">
+                    <constructor-arg index="0" value="${redis.slaver.host}"/>
+                    <constructor-arg index="1" value="${redis.slaver.port}" type="int"/>
+                </bean>
+             	-->
+                <!-- master Redis主机 -->
+				<bean id="master" name="master" class="redis.clients.jedis.JedisShardInfo">
+                    <constructor-arg index="0" value="${redis.host}"/>
+                    <constructor-arg index="1" value="${redis.port}" type="int"/>
+                </bean>
+            </list>
+        </constructor-arg>
+        
+    </bean>
+    <bean id="redisHelper" class="com.appabc.common.utils.RedisHelper">
+    	<property name="shardedJedisPool" ref="shardedJedisPool"></property>
+    </bean>
+	<!-- Redis配置 end -->
+	<bean id="beanLocatorInitializer" class="com.appabc.common.spring.SpringServiceInitializer" />
+	
+</beans>

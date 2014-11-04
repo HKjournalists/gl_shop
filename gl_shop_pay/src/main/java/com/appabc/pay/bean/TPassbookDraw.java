@@ -1,0 +1,128 @@
+package com.appabc.pay.bean;
+
+import com.appabc.common.base.bean.BaseBean;
+import java.util.Date;
+
+public class TPassbookDraw extends BaseBean {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7836431510426205954L;
+
+    /**
+     * 收款方编号
+     */
+    private String aid;
+
+    /**
+     * 提取金额
+     */
+    private Float amount;
+
+    /**
+     * 创建时间
+     */
+    private Date createtime;
+
+    /**
+     * 处理时间
+     */
+    private Date dealtime;
+
+    /**
+     * 处理人
+     */
+    private String dealer;
+
+    /**
+     * 处理结果
+     */
+    private String dealstatus;
+
+    /**
+     * 支付流水号
+     */
+    private String pid;
+
+    /**
+     * 状态
+     */
+    private Integer status;
+
+    /**
+     * 备注
+     */
+    private String mark;
+
+    public String getAid() {
+        return aid;
+    }
+
+    public void setAid(String aid) {
+        this.aid = aid == null ? null : aid.trim();
+    }
+
+    public Float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Float amount) {
+        this.amount = amount;
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
+
+    public Date getDealtime() {
+        return dealtime;
+    }
+
+    public void setDealtime(Date dealtime) {
+        this.dealtime = dealtime;
+    }
+
+    public String getDealer() {
+        return dealer;
+    }
+
+    public void setDealer(String dealer) {
+        this.dealer = dealer == null ? null : dealer.trim();
+    }
+
+    public String getDealstatus() {
+        return dealstatus;
+    }
+
+    public void setDealstatus(String dealstatus) {
+        this.dealstatus = dealstatus == null ? null : dealstatus.trim();
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid == null ? null : pid.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getMark() {
+        return mark;
+    }
+
+    public void setMark(String mark) {
+        this.mark = mark == null ? null : mark.trim();
+    }
+}

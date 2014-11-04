@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/security
+	                    http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http pattern="/static/**" security="none" />
+
+	<http auto-config="true" use-expressions="true" authentication-manager-ref="authenticationManager">
+	    <intercept-url pattern="/system/signin/" access="permitAll"/>
+	    <intercept-url pattern="/system/signin/error/" access="permitAll"/>
+	    <intercept-url pattern="/system/logout/" access="permitAll"/>
+	    <intercept-url pattern="/manage/accounts/**" access="hasRole('ROLE_ACCOUNT_MANAGER')" />
+	    <intercept-url pattern="/task/" access="hasAnyRole('ROLE_PROMPT_VERIFY', 'ROLE_PROMPT_DEPOSIT', 'ROLE_PROMPT_PAYMENT', 'ROLE_PROMPT_REAL_PAY', 'ROLE_PUBLISH_INFO')"/>
+	    <intercept-url pattern="/**" access="denyAll"/>
+	    
+		<form-login login-page='/system/signin/'
+		            default-target-url="/manage/accounts/1/"
+		            always-use-default-target="true"
+		            login-processing-url="/system/doSignin/"
+		            authentication-failure-url="/system/signin/error/"
+		            username-parameter="userName"
+                    password-parameter="password" />
+		<logout logout-success-url="/system/signin/" logout-url="/system/logout/" />
+		<session-management>
+		  <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+		</session-management>
+		<csrf />
+	</http>
+
+	<beans:bean name="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+        <beans:constructor-arg index="0" value="8" />	   
+	</beans:bean>
+	<beans:bean name="securityUserService" class="com.appabc.system.web.security.UserDetailsManager" />
+	
+	<authentication-manager alias="authenticationManager">
+	   <authentication-provider user-service-ref="securityUserService">
+	       <password-encoder ref="passwordEncoder" />
+	   </authentication-provider>
+	</authentication-manager>
+
+</beans:beans>

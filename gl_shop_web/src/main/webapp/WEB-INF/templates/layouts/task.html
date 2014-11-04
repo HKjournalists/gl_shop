@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/default">
+<body>
+		<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+		<div layout:fragment="sidebar">
+			<ul class="nav navbar-nav side-nav">
+				<li class="active">
+				    <a href="javascript:;" data-toggle="collapse" data-target="#sales"><i class="fa fa-fw fa-paperclip"></i> 站内销售 <i class="fa fa-fw fa-caret-down"></i></a>
+					<ul id="sales" class="collapse in">
+						<li><a th:href="@{/sales/verify/}">催促认证</a></li>
+						<li><a th:href="@{/sales/deposit/}">催缴保证金</a></li>
+						<li><a th:href="@{/sales/pubinfo/}">代发信息请求</a></li>
+						<li><a th:href="@{/sales/payment/}">催缴货款</a></li>
+						<li><a th:href="@{/sales/realpay/}">催促实际支付</a></li>
+					</ul>
+				</li>
+				<li class="active">
+				    <a href="javascript:;" data-toggle="collapse" data-target="#contract"><i class="fa fa-fw fa-align-left"></i> 合同管理 <i class="fa fa-fw fa-caret-down"></i></a>
+					<ul id="contract" class="collapse">
+						<li><a th:href="@{/contract/match/}">撮合交流</a></li>
+						<li><a th:href="@{/contract/genconfirm/}">生成/确认合同</a></li>
+					</ul>
+				</li>
+				<li class="active">
+				    <a href="javascript:;" data-toggle="collapse" data-target="#service"><i class="fa fa-fw fa-phone"></i> 客服 <i class="fa fa-fw fa-caret-down"></i></a>
+					<ul id="service" class="collapse">
+						<li><a th:href="@{/customer/dialin/}">呼入电话</a></li>
+						<li><a th:href="@{/customer/dialout/}">呼出电话</a></li>
+					</ul>
+				</li>
+				<li class="active">
+				    <a href="javascript:;" data-toggle="collapse" data-target="#market"><i class="fa fa-fw fa-edit"></i> 编辑 <i class="fa fa-fw fa-caret-down"></i></a>
+					<ul id="market" class="collapse">
+						<li><a th:href="@{/editor/marketinfo/}">市场行情编辑</a></li>
+						<li><a th:href="@{/editor/verifyaudit/}">认证信息审核</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+</body>
+</html>

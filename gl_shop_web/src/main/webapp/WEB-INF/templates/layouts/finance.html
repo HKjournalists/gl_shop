@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/default">
+<body>
+		<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+		<div layout:fragment="sidebar">
+			<ul class="nav navbar-nav side-nav">
+				<li class="active">
+				    <a href="javascript:;" data-toggle="collapse" data-target="#process"><i class="fa fa-fw fa-paperclip"></i> 财务处理 <i class="fa fa-fw fa-caret-down"></i></a>
+					<ul id="process" class="collapse in">
+						<li><a href="#">账户审核</a></li>
+						<li><a href="#">汇入款项处理</a></li>
+						<li><a href="#">支出款项处理</a></li>
+					</ul>
+				</li>
+				<li class="active">
+				    <a href="javascript:;" data-toggle="collapse" data-target="#audit"><i class="fa fa-fw fa-align-left"></i> 财务审核 <i class="fa fa-fw fa-caret-down"></i></a>
+					<ul id="audit" class="collapse in">
+						<li><a href="#">汇入款项审核</a></li>
+						<li><a href="#">支出款项审核</a></li>
+						<li><a href="#">特殊款项审核</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+</body>
+</html>

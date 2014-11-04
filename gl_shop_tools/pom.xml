@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.appabc</groupId>
+		<artifactId>gl_shop</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../../gl_shop</relativePath>
+	</parent>
+
+	<groupId>com.appabc.tools</groupId>
+	<artifactId>gl_shop_tools</artifactId>
+	<packaging>jar</packaging>
+
+	<name>gl_shop_tools</name>
+	<url>http://www.appabc.com/</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.appabc.common</groupId>
+			<artifactId>gl_shop_common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.appabc.bean</groupId>
+			<artifactId>gl_shop_bean</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>gexin</groupId>
+			<artifactId>gexin-rp-sdk-base</artifactId>
+			<version>2.0.0.18</version>
+		</dependency>
+
+		<dependency>
+			<groupId>gexin</groupId>
+			<artifactId>gexin-rp-sdk-http</artifactId>
+			<version>3.0.0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>gexin</groupId>
+			<artifactId>gexin-rp-sdk-template</artifactId>
+			<version>2.0.0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-all</artifactId>
+			<version>1.8.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javapns</groupId>
+			<artifactId>javapns-jdk16</artifactId>
+			<version>163</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk16</artifactId>
+			<version>1.46</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId> 
+			</dependency> -->
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		
+		<dependency>
+		  	<groupId>org.apache.tomcat</groupId>
+		  	<artifactId>tomcat-servlet-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.8.6</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/schedule/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${project.build.directory}/schedule/bin</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources/</directory>
+									<includes>
+										<exclude>startup.bat</exclude>
+										<exclude>startup.sh</exclude>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-resources1</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${project.build.directory}/schedule/conf</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources/</directory>
+									<includes>
+										<exclude>applicationContext-schedule.xml</exclude>
+										<exclude>jdbc-datasource.properties</exclude>
+										<exclude>log4j.xml</exclude>
+										<exclude>quartz.properties</exclude>
+										<exclude>TaskProp.properties</exclude>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<excludes>
+								<exclude>applicationContext-schedule.xml</exclude>
+								<exclude>jdbc-datasource.properties</exclude>
+								<exclude>startup.bat</exclude>
+								<exclude>startup.sh</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<classifier>lib</classifier>
+							<finalName>schedule</finalName>
+							<outputDirectory>${project.build.directory}/schedule</outputDirectory>
+							<excludes>
+								<exclude>applicationContext-tools.xml</exclude>
+								<exclude>applicationContext-schedule.xml</exclude>
+								<exclude>jdbc-datasource.properties</exclude>
+								<exclude>log4j.xml</exclude>
+								<exclude>quartz.properties</exclude>
+								<!-- <exclude>TaskProp.properties</exclude> -->
+								<exclude>startup.bat</exclude>
+								<exclude>startup.sh</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<mainClass>com.appabc.tools.schedule.starter.ScheduleServerStarter</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

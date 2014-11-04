@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/default">
+<body>
+		<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+		<div layout:fragment="sidebar">
+			<ul class="nav navbar-nav side-nav">
+				<li sec:authorize="hasRole('ROLE_ACCOUNT_MANAGER')" class="active">
+				    <a th:href="@{/manage/accounts/1/}"><i class="fa fa-fw fa-paperclip"></i> 人员管理 <i class="fa fa-fw fa-caret-down"></i></a>
+				</li>
+				<li sec:authorize="hasRole('ROLE_SPECIAL_CONDITION_PROCESS')" class="active">
+				    <a th:href="@{/manage/unsolved/}"><i class="fa fa-fw fa-align-left"></i> 特殊情况处理 <i class="fa fa-fw fa-caret-down"></i></a>
+				</li>
+			</ul>
+		</div>
+</body>
+</html>
