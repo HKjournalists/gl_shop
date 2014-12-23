@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 显示出售信息中实物照片Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_product_photo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_item_single"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/buy_item_padding"
+        android:paddingRight="@dimen/buy_item_padding" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/business_sell_real_product_message" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/iv_item_product_pic_1"
+                android:layout_width="@dimen/image_thumbnail_width"
+                android:layout_height="@dimen/image_thumbnail_heigh"
+                android:background="@drawable/ic_default_pic"
+                android:contentDescription="@null"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/iv_item_product_pic_2"
+                android:layout_width="@dimen/image_thumbnail_width"
+                android:layout_height="@dimen/image_thumbnail_heigh"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/ic_default_pic"
+                android:contentDescription="@null"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/iv_item_product_pic_3"
+                android:layout_width="@dimen/image_thumbnail_width"
+                android:layout_height="@dimen/image_thumbnail_heigh"
+                android:background="@drawable/ic_default_pic"
+                android:contentDescription="@null"
+                android:scaleType="fitXY" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

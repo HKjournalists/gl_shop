@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="12dp" >
+
+            <include layout="@layout/layout_contract_countdown_time" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/common_bg"
+                android:orientation="vertical"
+                android:padding="@dimen/buy_item_padding" >
+
+                <!-- 申请修改结算单价 -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/buy_item_padding"
+                    android:paddingTop="@dimen/buy_item_padding"
+                    android:text="申请修改结算单价" />
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_trade_unit_price"
+                    style="@style/BuyTextItem.Top"
+                    glshop:itemContent="50"
+                    glshop:itemSecondTitle="@string/product_unit_price"
+                    glshop:itemTitle="原合同单价" />
+
+                <View style="@style/item_devider_line" />
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_simple_check_unit_price"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="50"
+                    glshop:itemSecondTitle="@string/product_unit_price"
+                    glshop:itemTitle="抽样检后单价" />
+
+                <View style="@style/item_devider_line" />
+
+                <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                    android:id="@+id/ll_item_final_unit_price"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemInputType="numberDecimal"
+                    glshop:itemSecondTitle="@string/product_unit_price"
+                    glshop:itemTitle="修改结算单价为" />
+
+                <View style="@style/item_devider_line" />
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_modify_price_reason"
+                    style="@style/BuyTextItem.Action.Bottom"
+                    glshop:itemTitle="申请理由"
+                    glshop:showItemClickIcon="true"
+                    glshop:showItemIcon="false" />
+
+                <Button
+                    android:id="@+id/btn_submit_modify_price_reason"
+                    style="@style/button_orange"
+                    android:layout_marginBottom="@dimen/buy_item_padding"
+                    android:layout_marginTop="@dimen/buy_item_padding"
+                    android:text="提交我的修改申请" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

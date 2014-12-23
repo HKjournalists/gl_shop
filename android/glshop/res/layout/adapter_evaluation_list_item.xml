@@ -1,0 +1,188 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_list_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="60dp"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buy_item_height"
+        android:background="@drawable/bg_item_top"
+        android:gravity="center_vertical"
+        android:padding="@dimen/buy_item_padding" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_evaluation_user" />
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:singleLine="true"
+                android:text="XXX公司"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="评价时间:"
+                android:textColor="@color/gray" />
+
+            <TextView
+                android:id="@+id/tv_datetime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:singleLine="true"
+                android:text="2014-12-1"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+    <!-- 交易满意度 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/buy_item_height"
+            android:background="@drawable/bg_item_middle"
+            android:gravity="center_vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_satisfaction_per"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/buy_item_padding"
+                android:layout_weight="1"
+                android:text="交易满意度"
+                android:textColor="@color/gray" />
+
+            <RatingBar
+                android:id="@+id/rb_satisfaction"
+                style="@style/Contract_RatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:rating="2.5" />
+        </LinearLayout>
+
+        <View style="@style/item_devider_line" />
+        <!-- 交易诚信度 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/buy_item_height"
+            android:background="@drawable/bg_item_middle"
+            android:gravity="center_vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_sincerity_per"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/buy_item_padding"
+                android:layout_weight="1"
+                android:text="交易诚信度"
+                android:textColor="@color/gray" />
+
+            <RatingBar
+                android:id="@+id/rb_credit"
+                style="@style/Contract_RatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:rating="4" />
+        </LinearLayout>
+
+        <View style="@style/item_devider_line" />
+        <!-- 详细描述 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_item_bottom"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/buy_item_padding" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_edit"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/buy_item_padding"
+                    android:layout_weight="1"
+                    android:text="详细描述"
+                    android:textColor="@color/gray" />
+
+                <Button
+                    android:id="@+id/btn_evaluation_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_port_list_bg"
+                    android:drawableLeft="@drawable/ic_shrink"
+                    android:drawablePadding="3dp"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="@string/expand"
+                    android:textColor="@color/green_light" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_evaluation_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/buy_item_padding"
+                android:layout_marginRight="@dimen/buy_item_padding"
+                android:singleLine="true"
+                android:text="详细描述详细描述详细描述详细描述详细描述详细描述详细描述详细描述详细描述详细描述"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

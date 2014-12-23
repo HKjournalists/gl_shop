@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 买卖信息类型 -->
+    <string-array name="buy_type">
+        <item>求购信息</item>
+        <item>出售信息</item>
+    </string-array>
+
+    <!-- 买卖货物类型 -->
+    <string-array name="product_type">
+        <item>黄砂</item>
+        <item>石子</item>
+    </string-array>
+
+    <!-- 沙子种类 -->
+    <string-array name="sand_type">
+        <item>河砂</item>
+        <item>湖砂</item>
+        <item>江砂</item>
+        <item>山砂</item>
+        <item>淡化海砂</item>
+        <item>机制砂</item>
+    </string-array>
+
+    <!-- 沙子规格 -->
+    <string-array name="sand_specifications">
+        <item>粗砂(3.1&#8211;3.7)</item>
+        <item>中砂(2.3&#8211;3.0)</item>
+        <item>细砂(1.6&#8211;2.2)</item>
+        <item>特细砂(0.7&#8211;1.5)</item>
+    </string-array>
+
+    <!-- 石头规格 -->
+    <string-array name="stone_specifications">
+        <item>石粉(0&#8211;5)</item>
+        <item>瓜子片(5&#8211;16)</item>
+        <item>碎石1&#8211;2(5&#8211;25)</item>
+        <item>碎石1&#8211;3(5&#8211;31.5)</item>
+        <item>碎石2&#8211;4(31.5&#8211;42)</item>
+        <item>道渣(35.5&#8211;46)</item>
+        <item>片石(>=46)</item>
+        <item>卵石</item>
+    </string-array>
+
+    <!-- 交货地址指定方式 -->
+    <string-array name="discharge_address_type">
+        <item>@string/discharge_addr_type_me_decide</item>
+        <item>@string/discharge_addr_type_another_decide</item>
+    </string-array>
+
+    <!-- 上传图片方式 -->
+    <string-array name="upload_pic_type">
+        <item>从相册中上传</item>
+        <item>拍照</item>
+    </string-array>
+
+    <!-- 找买找卖过滤类型 -->
+    <string-array name="find_buy_filter_type">
+        <item>有效期排序</item>
+        <item>价格从高到低</item>
+        <item>价格从低到高</item>
+        <item>诚信度从高到低</item>
+    </string-array>
+
+    <!-- 我的供求过滤类型 -->
+    <string-array name="my_buy_filter_type">
+        <item>全部</item>
+        <item>我的求</item>
+        <item>我的供</item>
+    </string-array>
+
+    <!-- 多地发布选择类型 -->
+    <string-array name="pub_more_area_type">
+        <item>是</item>
+        <item>否</item>
+    </string-array>
+
+    <!-- 钱包流水类型 -->
+    <string-array name="purse_filter_type">
+        <item>全部</item>
+        <item>收入</item>
+        <item>支出</item>
+    </string-array>
+
+    <!-- 认证身份类型 -->
+    <string-array name="auth_type">
+        <item>@string/auth_type_people</item>
+        <item>@string/auth_type_company</item>
+        <item>@string/auth_type_ship</item>
+    </string-array>
+
+    <!-- 账户身份类型 -->
+    <string-array name="profile_type">
+        <item>@string/profile_type_company</item>
+        <item>@string/profile_type_ship</item>
+        <item>@string/profile_type_people</item>
+    </string-array>
+
+    <!-- 港口类型 -->
+    <string-array name="port_type">
+        <item>靖江港</item>
+        <item>江阴港</item>
+    </string-array>
+
+    <!-- 港口编号 -->
+    <string-array name="port_type_code">
+        <item>p001</item>
+        <item>p002</item>
+    </string-array>
+
+    <!-- 月 -->
+    <string-array name="month_list">
+        <item>1月</item>
+        <item>2月</item>
+        <item>3月</item>
+        <item>4月</item>
+        <item>5月</item>
+        <item>6月</item>
+        <item>7月</item>
+        <item>8月</item>
+        <item>9月</item>
+        <item>10月</item>
+        <item>11月</item>
+        <item>12月</item>
+    </string-array>
+
+    <!-- 日 -->
+    <string-array name="day_list">
+        <item>1日</item>
+        <item>2日</item>
+        <item>3日</item>
+        <item>4日</item>
+        <item>5日</item>
+        <item>6日</item>
+        <item>7日</item>
+        <item>8日</item>
+        <item>9日</item>
+        <item>10日</item>
+        <item>11日</item>
+        <item>12日</item>
+        <item>13日</item>
+        <item>14日</item>
+        <item>15日</item>
+        <item>16日</item>
+        <item>17日</item>
+        <item>18日</item>
+        <item>19日</item>
+        <item>20日</item>
+        <item>21日</item>
+        <item>22日</item>
+        <item>23日</item>
+        <item>24日</item>
+        <item>25日</item>
+        <item>26日</item>
+        <item>27日</item>
+        <item>28日</item>
+        <item>29日</item>
+        <item>30日</item>
+        <item>31日</item>
+    </string-array>
+
+</resources>

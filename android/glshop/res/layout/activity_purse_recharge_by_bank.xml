@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/buy_item_padding" >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_item_left"
+                    android:orientation="vertical" >
+
+                    <!-- 开户行 -->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center|left"
+                        android:paddingLeft="10dp"
+                        android:text="开户行"
+                        android:textColor="@color/gray"
+                        android:textSize="@dimen/sp14" />
+
+                    <View style="@style/item_devider_line" />
+
+                    <!-- 开户人姓名 -->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center|left"
+                        android:paddingLeft="10dp"
+                        android:text="开户人姓名"
+                        android:textColor="@color/gray"
+                        android:textSize="@dimen/sp14" />
+
+                    <View style="@style/item_devider_line" />
+
+                    <!-- 银行账号 -->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center|left"
+                        android:paddingLeft="10dp"
+                        android:text="银行账号"
+                        android:textColor="@color/gray"
+                        android:textSize="@dimen/sp14" />
+
+                    <View style="@style/item_devider_line" />
+
+                    <!-- 客服电话 -->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center|left"
+                        android:paddingLeft="10dp"
+                        android:text="客服电话"
+                        android:textColor="@color/gray"
+                        android:textSize="@dimen/sp14" />
+                </LinearLayout>
+
+                <View style="@style/item_devider_line_v" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.5"
+                    android:background="@drawable/bg_item_right"
+                    android:orientation="vertical" >
+
+                    <!-- 开户行 -->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="上海浦东发展银行靖江工业园区支行"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/sp14" />
+
+                    <View style="@style/item_devider_line" />
+
+                    <!-- 开户人姓名 -->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="江苏国立网络技术有限公司"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/sp14" />
+
+                    <View style="@style/item_devider_line" />
+
+                    <!-- 银行账号 -->
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="6701 0154 7400 08882"
+                        android:textColor="@color/blue"
+                        android:textSize="@dimen/sp14" />
+
+                    <View style="@style/item_devider_line" />
+
+                    <!-- 客服电话 -->
+
+                    <TextView
+                        android:id="@+id/tv_custom_service_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="8dp"
+                        android:text="4008 123 456"
+                        android:textColor="@color/green_light"
+                        android:textSize="@dimen/sp14" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_pay_money_tips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/buy_item_padding"
+                android:text="@string/recharge_bank_info" />
+
+            <!-- 已付款 -->
+
+            <Button
+                android:id="@+id/btn_done_recharge"
+                style="@style/button_blue"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/buy_item_padding"
+                android:text="我已付款 "
+                android:visibility="gone" />
+
+            <!-- 温馨提示 -->
+
+            <LinearLayout
+                android:id="@+id/ll_security_tips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/bg_security_tips"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:visibility="gone" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="6dp"
+                    android:text="温馨提示"
+                    android:textColor="#5EA265" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/purse_security_tips" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

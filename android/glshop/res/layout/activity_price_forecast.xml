@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" >
+
+        <RadioGroup
+            android:id="@+id/rdoGroup_product_type"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/common_radio_btn_height"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingRight="8dp" >
+
+            <RadioButton
+                android:id="@+id/rdoBtn_product_sand"
+                style="@style/radio_button_left"
+                android:checked="true"
+                android:text="@string/product_type_sand" />
+
+            <RadioButton
+                android:id="@+id/rdoBtn_product_stone"
+                style="@style/radio_button_right"
+                android:text="@string/product_type_stone" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/ll_port_list"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/selector_port_list_bg"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:id="@+id/tv_port_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/menu_title_select_port"
+                android:textColor="@color/gray" />
+
+            <ImageView
+                android:id="@+id/iv_port_dropdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/ic_port_dropdown" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_horizontal" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="10dp" >
+
+            <TextView
+                style="@style/forecast_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forecast_title_product_name" />
+
+            <TextView
+                style="@style/forecast_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(单位:mm)"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/sp12" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/forecast_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forecast_title_today_price" />
+
+            <TextView
+                style="@style/forecast_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(单位:元/吨)"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/sp12" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/forecast_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forecast_title_oneweek" />
+
+            <TextView
+                style="@style/forecast_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(单位:元/吨)"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/sp12" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/forecast_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forecast_title_twoweek" />
+
+            <TextView
+                style="@style/forecast_list_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="(单位:元/吨)"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/sp12" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

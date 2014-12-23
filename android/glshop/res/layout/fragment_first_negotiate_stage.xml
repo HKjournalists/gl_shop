@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <!-- 合同倒计时说明 -->
+
+            <View style="@style/item_devider_view" />
+
+            <include layout="@layout/layout_contract_countdown_time" />
+            <!-- 第一次议价列表 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/buy_item_padding" >
+
+                <com.glshop.net.ui.basic.view.NegotiateListView
+                    android:id="@+id/ll_first_negotiate_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- 合同详情链接 -->
+
+            <include layout="@layout/layout_contract_model_link" />
+
+            <!-- 合同状态 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/buy_item_padding" >
+
+                <com.glshop.net.ui.basic.view.ContractStatusView
+                    android:id="@+id/ll_contract_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 议价列表常驻可操作按钮 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/buy_item_padding" >
+
+        <Button
+            android:id="@+id/btn_contract_action_agree"
+            style="@style/button_green"
+            android:text="同意对方意见" />
+
+        <Button
+            android:id="@+id/btn_contract_action_disagree"
+            style="@style/button_orange"
+            android:layout_marginBottom="@dimen/buy_item_padding"
+            android:layout_marginTop="@dimen/buy_item_padding"
+            android:text="不同意对方意见，继续商议" />
+
+        <Button
+            android:id="@+id/btn_contract_action_cancel"
+            style="@style/button_blue"
+            android:text="取消合同" />
+    </LinearLayout>
+
+</LinearLayout>

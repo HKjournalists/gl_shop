@@ -1,0 +1,95 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/common_edit_height_big"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_edit_normal"
+                android:gravity="center_vertical" >
+
+                <ImageButton
+                    android:layout_width="24dp"
+                    android:layout_height="32dp"
+                    android:background="@null"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_phone_num" />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:text="手机号"
+                    android:textSize="@dimen/sp16"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/devider_line_v" />
+
+                <EditText
+                    android:id="@+id/et_user_account"
+                    style="@style/account_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:background="@null"
+                    android:hint="@string/input_account_hint"
+                    android:textColorHint="@color/gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_agree_protocol"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center_vertical" >
+
+                <CheckedTextView
+                    android:id="@+id/chkTv_agree_protocol"
+                    style="@style/ckb_textview"
+                    android:checked="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="同意"
+                    android:textSize="@dimen/sp16" />
+
+                <TextView
+                    android:id="@+id/tv_protocol_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="6dp"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="长江电商用户协议"
+                    android:textColor="@color/selector_protocol_text"
+                    android:textSize="@dimen/sp16" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_next_step"
+                style="@style/button_blue"
+                android:text="@string/next_step" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

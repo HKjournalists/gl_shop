@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="buy_item_padding">10dp</dimen>
+    <dimen name="buy_item_height">48dp</dimen>
+    <dimen name="buy_edit_item_width">136dp</dimen>
+
+    <!-- Title Bar -->
+    <dimen name="titlebar_height">48dp</dimen>
+    <dimen name="titlebar_back_width">48dp</dimen>
+    <dimen name="titlebar_menu_width">65dp</dimen>
+    <dimen name="titlebar_title_text_size">22dp</dimen>
+    <dimen name="titlebar_menu_text_size">20dp</dimen>
+
+    <!-- Common Button -->
+    <dimen name="common_btn_height">52dp</dimen>
+    <dimen name="common_edit_height">36dp</dimen>
+    <dimen name="common_edit_height_big">48dp</dimen>
+    <dimen name="common_radio_btn_height">42dp</dimen>
+    <dimen name="common_small_button_padding_h">12dp</dimen>
+    <dimen name="common_small_button_padding_v">6dp</dimen>
+
+    <!-- Buy -->
+    <dimen name="ic_buy_width">57dp</dimen>
+    <dimen name="ic_buy_height">32dp</dimen>
+    <dimen name="btn_buy_amount_width">58dp</dimen>
+
+    <!-- Contract -->
+    <dimen name="negotiate_item_width">240dp</dimen>
+    <dimen name="contract_tab_text_size">@dimen/sp18</dimen>
+    <dimen name="evaluate_rate_bar_out_height">36dp</dimen>
+    <dimen name="evaluate_rate_bar_iner_height">32dp</dimen>
+
+    <!-- Shop Page -->
+    <dimen name="shop_tab_findbuy_padding_h">63dp</dimen>
+    <dimen name="shop_tab_findbuy_padding_v">-25dp</dimen>
+    <dimen name="shop_tab_mybuy_padding_h">4dp</dimen>
+    <dimen name="shop_tab_mybuy_padding_v">-22dp</dimen>
+    <dimen name="shop_tab_contract_padding_v">40dp</dimen>
+    <dimen name="shop_price_height">54dp</dimen>
+
+    <!-- User -->
+    <dimen name="user_login_edit_height">60dp</dimen>
+    <dimen name="user_login_forget_pwd_height">60dp</dimen>
+    <dimen name="image_thumbnail_width">100dp</dimen>
+    <dimen name="image_thumbnail_heigh">100dp</dimen>
+
+    <!-- Setting -->
+    <dimen name="platform_qa_title_size">20sp</dimen>
+
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_menu_item"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="42dp" >
+
+    <!-- 菜单选项内容 -->
+
+    <TextView
+        android:id="@+id/tv_menu_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:singleLine="true"
+        android:text="menu"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp16" />
+
+    <!-- 菜单选项状态 -->
+
+    <ImageView
+        android:id="@+id/iv_menu_select_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/ic_menu_selected_orange"
+        android:contentDescription="@null" />
+
+</RelativeLayout>

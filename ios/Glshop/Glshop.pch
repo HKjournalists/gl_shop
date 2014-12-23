@@ -1,0 +1,45 @@
+//
+//  Glshop.pch
+//  Glshop
+//
+//  Created by River on 14-11-5.
+//  Copyright (c) 2014年 appabc. All rights reserved.
+//
+
+#ifndef Glshop_Glshop_pch
+#define Glshop_Glshop_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#ifndef __IPHONE_5_0
+#warning "This project uses features only available in iOS SDK 5.0 and later."
+#endif
+
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "MKNetworkKit.h"
+#import "AppDelegate.h"
+#import "ViewUtils.h"
+#import "Const.h"
+#import "Business.h"
+#import "Utilits.h"
+#import "Macro.h"
+#import "Product.h"
+#import "HUDHelper.h"
+#import "UIButton+Common.h"
+#import "UILabel+Common.h"
+#import "UITextField+Common.h"
+#import "UserInstance.h"
+#import "UIFactory.h"
+#define MAS_SHORTHAND
+#import "Masonry.h"
+#import "UIView+ShowLoading.h"
+#import "ASIHTTPRequest.h"
+#import "NSMutableDictionary+Safe.h"
+#import "SynacInstance.h"
+#endif
+
+
+#endif

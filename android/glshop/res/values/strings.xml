@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">长江电商</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- Commmon -->
+    <string name="save">保存</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="next">下一步</string>
+    <string name="filter">筛选</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="default_option">[默认]</string>
+    <string name="expand">展开</string>
+    <string name="shrink">收起</string>
+    <string name="buy">购买</string>
+    <string name="sell">出售</string>
+    <string name="modify">修改</string>
+    <string name="manager">管理</string>
+    <string name="do_request_ing">请求中…</string>
+    <string name="do_get_sms_code_ing">正在获取短信验证码…</string>
+    <string name="loading_ing">加载中…</string>
+    <string name="loading_data">正在加载，请稍后…</string>
+    <string name="load_data_error">加载失败，点击重新加载</string>
+    <string name="load_data_empty">暂无内容，点击刷新</string>
+    <string name="exit_app_tips">再按一次退出程序</string>
+    <string name="user_not_login">当前用户未登录，请先登录！</string>
+    <string name="user_login_invalid">当前用户登录失效，如果继续使用，请重新登录！</string>
+    <string name="user_offline">用户已在其它设备登陆，如果继续使用，请重新登录！</string>
+    <string name="user_token_expire">当前用户登录失效，如果继续使用，请重新登录！</string>
+    <string name="user_deposit_not_enough">当前用户保证金不足，无法发布信息，请先缴纳保证金！</string>
+    <string name="view_image_demo">点此查看范例</string>
+    <string name="save_success">保存成功</string>
+    <string name="save_failed">保存失败</string>
+    <string name="unit_price">元</string>
+    <string name="unit_price_ton">元/吨</string>
+    <string name="data_no_input">未填写</string>
+    <string name="data_empty">无</string>
+    <string name="price_data_empty">N/A</string>
+    <string name="status_valid">有效</string>
+    <string name="status_invalid">无效</string>
+    <string name="default_company_name">长江电商VIP</string>
+
+    <!-- User -->
+    <string name="input_message_hint">填写</string>
+    <string name="input_account_hint">请输入手机号</string>
+    <string name="input_password_hint">请输入密码</string>
+    <string name="input_verifycode_hint">请输入验证码</string>
+    <string name="input_old_pwd_hint">请输入旧密码</string>
+    <string name="input_new_pwd_hint">请输入新密码</string>
+    <string name="input_confirm_password_hint">请再次输入密码</string>
+    <string name="user_login">登录</string>
+    <string name="user_register">注册</string>
+    <string name="user_forget_password">忘记密码？</string>
+    <string name="user_find_password">找回密码</string>
+    <string name="user_remember_password">记住密码</string>
+    <string name="user_modify_password">修改密码</string>
+    <string name="user_login_info_error">手机号或密码为空</string>
+    <string name="phone_empty">手机号不能为空</string>
+    <string name="sms_verify_code_empty">验证码不能为空</string>
+    <string name="sms_verify_code_format_error">验证码格式不正确</string>
+    <string name="password_empty">密码不能为空</string>
+    <string name="password_not_equal">两次密码不相同</string>
+    <string name="phonenumber_format_error">手机号码格式不正确</string>
+    <string name="agree_glshop_protocol">长江电商平台协议</string>
+    <string name="reg_account_title">您的长江电商登录账号为</string>
+    <string name="user_logining">登录中…</string>
+    <string name="next_step">下一步</string>
+    <string name="submit">完成</string>
+    <string name="send_sms_verifycode">我们将发送验证码至:</string>
+    <string name="get_sms_verifycode_init">获取验证码</string>
+    <string name="get_sms_verifycode">重新获取验证码</string>
+    <string name="geting_verifycode_hint">正在获取验证码&#8230;</string>
+    <string name="geting_img_verifycode_hint">获取验证码&#8230;</string>
+    <string name="get_verifycode_error">获取失败</string>
+    <string name="wait_get_verifycode_hint">秒后重发验证码</string>
+    <string name="goto_auth">立即去认证</string>
+    <string name="skip_auth">知道了以后认证，跳过</string>
+    <string name="default_title">长江电商</string>
+    <string name="submiting_request">正在提交&#8230;</string>
+    <string name="register_success">注册成功</string>
+    <string name="reset_pwd_success">找回密码成功</string>
+    <string name="modify_pwd_success">修改密码成功</string>
+    <string name="set_user_password">设置密码</string>
+    <string name="input_user_phonenumber">输入手机号码</string>
+    <string name="input_sms_verifycode">输入验证码</string>
+    <string name="find_pwd_security_tips">若无法通过该方式找回密码，请致电%s联系我司客服未您解决。</string>
+    <string name="user_auth_success">认证成功</string>
+
+    <!-- Main page -->
+    <string name="main_page_title">长江电商</string>
+    <string name="menu_find_buys">找买找卖</string>
+    <string name="menu_my_buys">我的供求</string>
+    <string name="menu_my_contract">我的合同</string>
+    <string name="menu_my_purse">我的钱包</string>
+    <string name="menu_my_profile">我的资料</string>
+    <string name="menu_setting">帮助</string>
+    <string name="menu_price_forecast">价格预测</string>
+    <string name="product_type_sand">黄砂</string>
+    <string name="product_type_stone">石子</string>
+    <string name="menu_title_select_port">选择地段</string>
+
+    <!-- Network status -->
+    <string name="network_disconnected">无网络连接</string>
+    <string name="getting_data">正在加载…</string>
+
+    <!-- Error Code -->
+    <string name="error_unknown">未知错误</string>
+    <string name="error_no_connneted_net">无网络连接，请稍后重试!</string>
+    <string name="error_weak_net">网络不给力，请稍后再试!</string>
+    <string name="error_req_refresh">刷新数据失败!</string>
+    <string name="error_req_load_more">加载更多数据失败!</string>
+    <string name="error_req_error">请求失败，请稍后再试!</string>
+    <string name="error_code_101">用户已被注册!</string>
+    <string name="error_code_10003">验证码错误!</string>
+    <string name="error_code_10004">短信验证码发送失败!</string>
+    <string name="error_code_10005">用户名或密码错误!</string>
+    <string name="error_code_100005009">该合同已确认，无法重复确认!</string>
+    <string name="error_code_100005024">您已经评价过,不能重复评价!</string>
+    <string name="error_code_100003003">不能重复申请交易询盘!</string>
+
+    <!-- 今日报价及预测 -->
+    <string name="forecast_title">今日参考价格</string>
+    <string name="forecast_title_product_name">商品名称</string>
+    <string name="forecast_title_spec">规格</string>
+    <string name="forecast_title_today_price">今日参考价格</string>
+    <string name="forecast_title_oneweek">一周价格预测</string>
+    <string name="forecast_title_twoweek">两周价格预测</string>
+
+    <!-- 找买找卖 -->
+    <string name="find_buy">找买找卖</string>
+    <string name="menu_title_buy_filter">选择筛选类型</string>
+    <string name="pub_by_custom_service">致电平台代为发布信息</string>
+    <string name="pub_by_myself">自己发布信息</string>
+    <string name="publish_buy_message">发布信息</string>
+    <string name="publish_buy_message_prev">发布信息预览</string>
+    <string name="menu_title_select_buy_type">选择发布信息类型</string>
+    <string name="menu_title_select_product_type">选择货物信息类型</string>
+    <string name="menu_title_select_product_spec">选择货物规格类型</string>
+    <string name="publish_type_buy">求购信息</string>
+    <string name="publish_type_sell">出售信息</string>
+    <string name="publish_buy_type">发布信息类型</string>
+    <string name="business_product_message">货物信息：</string>
+    <string name="business_product_purchases">购买量</string>
+    <string name="business_product_portprice">到港单价</string>
+    <string name="buy_trade_area">交易地域</string>
+    <string name="buy_trade_date">交易时间</string>
+    <string name="buy_product_type">货物种类</string>
+    <string name="business_discharge_date">交货日期范围：</string>
+    <string name="business_discharge_address_type">交货地址指定方式</string>
+    <string name="discharge_addr_type_me_decide">己方指定</string>
+    <string name="discharge_addr_type_another_decide">对方指定</string>
+    <string name="upload_pic_type">选择上传方式</string>
+    <string name="business_discharge_address_detail">详细交货地点信息</string>
+    <string name="business_discharge_address_hint">请输入详细地址</string>
+    <string name="product_unit_ton_hint">吨</string>
+    <string name="product_unit_cube_hint">立方</string>
+    <string name="business_water_depth">水深度</string>
+    <string name="business_discharge_port_water_depth">卸货地港口水深度</string>
+    <string name="business_discharge_port_shipping_water_depth">实际船舶吃水深度</string>
+    <string name="business_buy_remarks">购买备注</string>
+    <string name="business_buy_remarks_hint"> <!-- 此处是购买备注信息 -->
+填写</string>
+    <string name="business_buyer_tips">        温馨提示：\n 
+		1、*号为必填项；\n
+		2、现在起平台推出优惠政策，只要您交易成功后即可获得平台送出的补贴奖励。</string>
+
+    <!-- For seller -->
+    <string name="business_product_sales_volume">销售量</string>
+    <string name="business_sell_more_area">多地发布</string>
+    <string name="business_sell_more_area_tips">将同批货物销售信息发布到其它地域</string>
+    <string name="business_sell_area_title">地域%d</string>
+    <string name="business_sell_real_product_message">实物信息</string>
+    <string name="business_sell_real_product_message_tips">请在此上传实物照片</string>
+    <string name="business_sell_remarks">销售备注</string>
+    <string name="business_sell_remarks_hint"> <!-- 此处是销售备注信息 -->
+填写</string>
+    <string name="business_seller_tips">        温馨提示：\n 
+		1、*号为必填项；\n
+		2、本平台提供真实高效的交易，成交后平台将收取您的交易手续费。</string>
+
+    <!-- 货物规格 -->
+    <string name="product_type_name">种类:</string>
+    <string name="product_specifications">规格:</string>
+    <string name="product_color">颜色</string>
+    <string name="product_area">产地</string>
+    <string name="product_sediment_percentage">含泥量</string>
+    <string name="product_sediment_block_percentage">泥块含量</string>
+    <string name="product_water_percentage">含水率</string>
+    <string name="product_appearance_density">表观密度</string>
+    <string name="product_stacking_percentage">堆积密度</string>
+    <string name="product_sturdiness_percentage">坚固性指标</string>
+    <string name="product_crunch_percentage">压碎值指标</string>
+    <string name="product_needle_plate_percentage">针片状颗粒含量</string>
+    <string name="product_specifications_remarks">货物信息备注</string>
+    <string name="product_unit_percent">(%)</string>
+    <string name="product_unit_density">(kg/m3)</string>
+    <string name="product_unit_price">(元)</string>
+    <string name="product_unit_ton">(吨)</string>
+    <string name="product_unit_cube">(立方)</string>
+    <string name="product_unit_m">(米)</string>
+    <string name="submit_pub_info">立即发布</string>
+    <string name="want_to_deal">交易询盘</string>
+    <string name="undo_pub_buy_info">取消发布</string>
+    <string name="repub_buy_info">重新发布</string>
+    <string name="modify_buy_info">修改信息</string>
+    <string name="error_empty_product_color">请输入颜色信息</string>
+    <string name="error_empty_product_area">请输入产地信息</string>
+    <string name="error_empty_detail_addr">请输入详细的卸货地址</string>
+    <string name="buy_no_remarks">暂无备注信息</string>
+    <string name="buy_more_area_max_size">当前最多只能发布%s个地域!</string>
+
+    <!-- 我的供求 -->
+    <string name="my_buy">我的供求</string>
+    <string name="pub_type_tips">您正在发布信息，您可以选择致电平台客服免费帮您发布信息或自己手动输入发布信息。</string>
+    <string name="add_discharge_addr">新增地址</string>
+    <string name="cancel_pub_warning_tips">取消该信息发布后将无法获得更多生意成交机会，请确认是否取消。</string>
+    <string name="pub_buy_success">发布成功</string>
+
+    <!-- 我的合同 -->
+    <string name="my_contract">我的合同</string>
+    <string name="my_unconfirmed_contract">待确认合同</string>
+    <string name="my_ongoing_contract">进行中的合同</string>
+    <string name="my_ended_contract">已结束合同</string>
+    <string name="my_to_pay_contract">待付款合同列表</string>
+    <string name="contract_status_end">已结束</string>
+    <string name="contract_model">电子合同详情</string>
+    <string name="contract_opr_history">合同执行进度</string>
+    <string name="contract_action_pay">向平台支付货款</string>
+    <string name="contract_action_cancel">取消合同</string>
+    <string name="contract_action_begin_first_check">开始验收</string>
+    <string name="contract_action_begin_first_check_pass">验收通过</string>
+    <string name="contract_action_begin_first_check_failed">验收不通过，有异议</string>
+    <string name="contract_action_begin_second_check_pass">全量验收通过</string>
+    <string name="contract_action_begin_second_check_failed">验收不通过，有异议</string>
+    <string name="contract_action_confirm_delivery">确认卸货</string>
+    <string name="contract_action_confirm_discharge">确认收货</string>
+    <string name="contract_action_confirm_cancel">同意取消</string>
+    <string name="contract_action_to_evaluation">立即评价</string>
+    <string name="contract_action_view_evaluation">合同评价</string>
+    <string name="contract_evaluation">交易评价</string>
+    <string name="contract_evaluation_time_tips">您的评价将会是其他人的重要参考如果您不评价，3天后系统会默认好评。</string>
+    <string name="contract_evaluation_important_tips">您的评价会对其他交易者提供非常重要的参考请务必认真、公正填写。</string>
+    <string name="contract_modify_price_reason">卸货完后，发现货物的平均质量与抽样检时不一致。</string>
+    <string name="contract_title_contact_custom_service">联系平台客服</string>
+    <string name="confirmed_contract_warning_tip">您正在确认一笔交易电子合同，请仔细查阅，确认后将遵循其义务与权责。</string>
+    <string name="contract_to_pay_warning_tip">请您在72小时内将货款支付到平台，逾期将被视为违约，您的交易保证金将被作为违约金赔偿给卖方。</string>
+    <string name="contract_to_wait_buyer_pay_tip">买方将在48小时内向平台支付货款，平台会冻结货款并在交易完成时支付实际给您。如买方不按期向平台支付货款，平台视为买方违约，将违约金赔付给您。您可以按计划发货了。  </string>
+    <string name="contract_to_wait_buyer_first_check_tip">您将等待买方验收货物，确认实际货物与合同中描述一致。  </string>
+    <string name="contract_to_first_check_warning_tip">在您收货之前，请您详细检验货物，确认实际货物与合同中货物描述一致。</string>
+    <string name="contract_to_first_negotiate_warning_tip">货物与合同记载有出入，和卖方协商最终的货物总价。</string>
+    <string name="contract_to_second_negotiate_warning_tip">请确定实际总卸货量以及结算单价。</string>
+    <string name="cancel_contract_warning_tips">合同正在执行中，现在取消平台扣除您的相将费用，请确认是否取消！</string>
+    <string name="contract_status_double_check">双方\n确认</string>
+    <string name="contract_status_finished">该合同已于%s正常结束</string>
+    <string name="contract_status_user_canceled">该合同已于%s被取消</string>
+    <string name="contract_status_system_canceled">该合同已于%s被取消</string>
+    <string name="contract_wait_time">还有%s结束!</string>
+
+    <!-- 我的钱包 -->
+    <string name="my_purse">我的钱包</string>
+    <string name="purse_trade_deposits">交易保证金账户</string>
+    <string name="purse_product">货款账户</string>
+    <string name="purse_balance">余额</string>
+    <string name="purse_recharge">充值</string>
+    <string name="purse_account_recharge">钱包充值</string>
+    <string name="purse_payment">支付交易货款</string>
+    <string name="purse_to_pay_payment">待付货款</string>
+    <string name="purse_to_recharge">充值金额</string>
+    <string name="purse_roll_out">转出</string>
+    <string name="purse_selelct_payee">选择收款人</string>
+    <string name="purse_payee_mgr">收款人管理</string>
+    <string name="add_payee">新增收款人</string>
+    <string name="add_payee_tips">暂时还没有有效的转出收款人信息，赶紧来添加吧！</string>
+    <string name="modify_payee">修改收款人</string>
+    <string name="payee_detail">收款人详情</string>
+    <string name="purse_rool_out_to_deposit">转出至保证金</string>
+    <string name="purse_details">明细</string>
+    <string name="purse_security_tips">交易保证金与货款将保存在上海浦东发展银行，用途由上海浦东发展银行监管。查证银行证明信息请点此查看。用户可以随时安心自由操作自己的账户。</string>
+    <string name="deposit_recharge_security_tips">保证金是交易的前提，被用于保障您的合同与交易的顺利进行，受银行托管并监管，不做其它任何用途，您可以随时取回。</string>
+    <string name="payment_recharge_security_tips">货款将保存在上海浦东发展银行，用途由上海浦东发展银行监管。查证银行证明信息请点此查看。用户可以随时安心自由操作自己的账户。</string>
+    <string name="rollout_to_deposit_security_tips">货款账户余额可转款至交易保证金账户，交易保证金账户不可转款至交易保证金账户。</string>
+    <string name="recharge_input_ship_weight_security_tips">请确认船的载重量，填写不正确会导致交易时不能顺畅进行。</string>
+    <string name="recharge_security_tips">交易保证金账号由上海浦东发展银行托管，直接汇入上海浦东发展银行指定账号，账号受上海浦东发展银行进行资金监控</string>
+    <string name="recharge_bank_info">请您向以上平台账号转账%s元充值您的保证金/货款账户，在转账备注信息中填写您的手机号码/公司名称/汇款人姓名其中一项即可），转账后1—2个工作日平台在确认后自动更新您的的保证金/货款账户，敬请留意。</string>
+    <string name="recharge_offline_info">请联系我们的工作人员进行上门收取或前往我们的柜台进行现场充值交易保证金</string>
+    <string name="deposit_deal_list_title">收支明细</string>
+    <string name="payment_deal_list_title">收支明细</string>
+    <string name="deposit_deal_info_title">收支详情</string>
+    <string name="payment_deal_info_title">收支详情</string>
+    <string name="payment_type_online">货款账户支付</string>
+    <string name="recharge_type_online">在线充值</string>
+    <string name="recharge_type_bank">银行转账</string>
+    <string name="recharge_type_offline">线下支付</string>
+    <string name="add_payee">新增收款人</string>
+    <string name="supplement_payee">补充收款人信息</string>
+    <string name="menu_title_select_bank">选择开户行</string>
+    <string name="pay_success_title">支付成功</string>
+    <string name="roll_out_title">提现成功</string>
+    <string name="roll_out_to_deposit_title">转款成功</string>
+    <string name="pay_deposits">缴纳保证金</string>
+    <string name="pay_deposits_tips_empty">您还没有交易保证金，赶快去缴纳交易保证金吧，否则将不能在平台进行交易！</string>
+    <string name="pay_deposits_tips_not_enough">您的保证金不足，可能在下一次交易中由于交易保证金不够造成不能交易，建议补足交易保证金！</string>
+    <string name="pay_payment_tips_empty">您的货款账户余额为0，赶紧去充值吧，否则将无法进行交易哦！</string>
+    <string name="confirmed_delete_payee_warning_tip">请确认是否要删除该收款人？</string>
+
+    <!-- 我的资料 -->
+    <string name="my_profile">我的资料</string>
+    <string name="my_discharge_address">卸货地址</string>
+    <string name="my_discharge_address_select">选择卸货地址</string>
+    <string name="my_discharge_address_mgr">卸货地址管理</string>
+    <string name="discharge_address_mgr">管理</string>
+    <string name="my_discharge_address_add">新增卸货地址</string>
+    <string name="my_discharge_address_update">修改卸货地址</string>
+    <string name="contact_mgr">企业联系人管理</string>
+    <string name="company_info_mgr">企业信息管理</string>
+    <string name="first_contact_info">第一联系人资料</string>
+    <string name="second_contact_info">第二联系人资料</string>
+    <string name="do_auth">认证申请</string>
+    <string name="auth_detail_info">认证信息</string>
+    <string name="auth_type">认证类型</string>
+    <string name="auth_type_people">个人认证</string>
+    <string name="auth_type_company">企业认证</string>
+    <string name="auth_type_ship">船舶认证</string>
+    <string name="submit_auth">提交认证申请</string>
+    <string name="menu_title_select_auth_type">选择认证身份类型</string>
+    <string name="auth_tips">本平台的所有企业用户都经过认证，以保障平台的信息真实与交易真实。</string>
+    <string name="profile_type_people">个人</string>
+    <string name="profile_type_company">企业</string>
+    <string name="profile_type_ship">船舶</string>
+    <string name="user_exit_warning_tips">请确认是否要退出登陆？</string>
+    <string name="user_auth_security_tips">1、未经过平台认证的用户，不可以在平台上发布信息或者进行交易。\n2、标*号为必填项。</string>
+    <string name="confirmed_delete_addr_warning_tip">请确认是否要删除该地址？</string>
+
+    <!-- 消息中心 -->
+    <string name="message_type_system">系统消息</string>
+    <string name="message_type_active">活动消息</string>
+    <string name="message_action_repeat_auth">重新认证</string>
+    <string name="message_action_findbuy">去看看</string>
+    <string name="message_action_contract_info">去看看</string>
+
+    <!-- 升级 -->
+    <string name="upgrade_loading">加载中…</string>
+    <string name="upgrade_get_file_info">获取文件信息…</string>
+    <string name="upgrade_downloading">正在下载文件…</string>
+    <string name="upgrade_pkg_behind_downloading">后台下载升级包，下载完成后安装</string>
+    <string name="upgrade_pkg_error_sdcard">升级未完成，请插入SD卡</string>
+    <string name="upgrade_pkg_error_sdcard_space">升级失败，SD卡空间不足</string>
+    <string name="upgrade_pkg_error_http">下载升级包失败，请稍后重试</string>
+    <string name="upgrade_pkg_error_net">网络不给力，请稍后重试</string>
+    <string name="upgrade_pkg_error_canceled">已取消升级</string>
+    <string name="upgrade_pkg_error_file_md5_dismatch">下载升级包失败，请稍后重试</string>
+    <string name="upgrade_pkg_error_file_size_dismatch">下载升级包失败，请稍后重试</string>
+    <string name="upgrade_pkg_error_file_deleted">下载升级包失败，请稍后重试</string>
+    <string name="upgrade_pkg_error_file_size_invalid">下载升级包失败，请稍后重试</string>
+    <string name="upgrade_pkg_error_other">下载升级包失败，请稍后重试</string>
+    <string name="upgrade_pkg_error_default">下载升级包失败，请稍后重试</string>
+    <string name="upgrade_pkg_notify_title">长江电商版本升级</string>
+    <string name="upgrade_pkg_notify_start">开始下载</string>
+    <string name="upgrade_pkg_notify_progress">正在下载</string>
+    <string name="upgrade_pkg_notify_complete">下载完毕，点击安装</string>
+    <string name="upgrade_pkg_notify_fail">下载失败</string>
+    <string name="upgrade_pkg_notify_pause">网络重连中</string>
+
+    <!-- 设置 -->
+    <string name="message_center">消息盒子</string>
+    <string name="platform_intro">平台介绍</string>
+    <string name="platform_qa">常见问题与解答</string>
+    <string name="platform_custom_service_phone">客服电话</string>
+    <string name="app_upgrade">版本更新</string>
+    <string name="platform_qa_1_summary">如何下载长江电商手机客户端</string>
+    <string name="platform_qa_1_title">如何下载长江电商手机客户端？</string>
+    <string name="platform_qa_1_content">请在手机应用市场搜索：长江电商，进行下载安装即可；</string>
+    <string name="platform_qa_2_summary">如何注册长江电商账号</string>
+    <string name="platform_qa_2_title">如何注册长江电商账号？</string>
+    <string name="platform_qa_2_content">第1步：打开长江电商，点击“免费注册”；\n第2步：进入注册页面后，填写基本注册信息；\n第3步：点击提交确认即可注册成功。</string>
+    <string name="platform_qa_3_summary">如何发布供求信息</string>
+    <string name="platform_qa_3_title">如何发布供求信息？</string>
+    <string name="platform_qa_3_content">您可以自己发布供求信息或者选择联系我司客服免费帮您发布信息：\n第1步：登录“我的信息”选择“发布新信息”；\n第2步：填写完整商品信息进行发布即可；</string>
+    <string name="platform_qa_4_summary">如何认证进行平台</string>
+    <string name="platform_qa_4_title">如何认证进行平台？</string>
+    <string name="platform_qa_4_content">第1步：登陆长江电商平台选择“我的资料”；\n第2步：点击“认证”按钮；\n第3步：按照页面提示进行填写认证相关资料即可。</string>
+    <string name="platform_qa_5_summary">如何缴纳保证金</string>
+    <string name="platform_qa_5_title">如何缴纳保证金？</string>
+    <string name="platform_qa_5_content">第1步：登陆长江电商平台点击“我的钱包”进入“保证金账户”；\n第2步：点击“充值”按钮，然后选择对应的充值方式即可；</string>
+    <string name="platform_qa_6_summary">如何支付货款</string>
+    <string name="platform_qa_6_title">如何支付货款？</string>
+    <string name="platform_qa_6_content">首先请在长江电商平台上选择好自己合同的信息,经平后撮合交易并达成一致，在合同成立后可以通过以下四种方式来支付合同货款：\n1、如果您的长江电商的钱包账户中还有余额，您可以选择通过余额进行支付；\n2、如果您有网银，您可以选择通过网上银行来进行支付；\n3、如果您没有网银，只有银行卡或者信用卡，您可以使用银联进行支付；\n4、如果以上都没有，您还可以选择其他线下支付方式。</string>
+    <string name="platform_qa_7_summary">如何确认收货</string>
+    <string name="platform_qa_7_title">如何确认收货？</string>
+    <string name="platform_qa_7_content">当卖家发货后，合同状态会变成"等待买家确认收货"，您如果收到货物，抽检和全量检测都无问题后，买家可以在“我的合同”中找到“当前合同”，点该笔合同下"确认"按钮，即可确认收货。\n当您确认收货后，平台会将货款就会打给卖家，交易成功。您和卖家可相互进行交易评价。</string>
+    <string name="platform_qa_8_summary">如何找买找卖</string>
+    <string name="platform_qa_8_title">如何找买找卖？</string>
+    <string name="platform_qa_8_content">第1步：请登陆长江电商平台点击“找买找卖”；\n第2步：进行信息浏览即可查看感兴趣的买卖商品信息；</string>
+    <string name="platform_intro_1_title">我们的使命</string>
+    <string name="platform_intro_1_content">使长江沿岸的供方企业与需方企业之间无难做的生意。</string>
+    <string name="platform_intro_2_title">我们的远景</string>
+    <string name="platform_intro_2_content">为长江沿岸的供方企业与需方企业搭建最好的商务保障综合电子服务平台。</string>
+    <string name="platform_intro_3_title">长江电商平台理念</string>
+    <string name="platform_intro_3_content">1）针对沿江商务的特性电子商务交易平台\n2）针对沿江商务唯一的交易保障平台\n3）以手机智能终端为主要载体的移动交易平台\n4）以交易数据为基础的企业商务融资平台</string>
+    <string name="platform_intro_4_title">长江电商平台价值</string>
+    <string name="platform_intro_4_1_sub_title">保障价值</string>
+    <string name="platform_intro_4_1_sub_content">通过用户真实身份认证，电子交易合同签订，电子合同保证金机制，货款冻结机制，货物抽检，货物全检后实际支付的机制，保障正常，安全的交易。</string>
+    <string name="platform_intro_4_2_sub_title">信息价值</string>
+    <string name="platform_intro_4_2_sub_content">通过沿江货物的及时报价信息采集，以及根据沿江实时的生产，货运的预测市场价格变化，为沿江商户提供最准确的市场信息。供需之间通过信息发布与收集，建立交易桥梁，寻找最适宜的交易对象。</string>
+    <string name="platform_intro_4_3_sub_title">效率价值</string>
+    <string name="platform_intro_4_3_sub_content">全面而安全的信息，稳定而可靠的交易对象，提前约定的详细货物信息，提前掌握稳定的交货时间，快捷的交易手续，安全的支付体系，提升交易效率。</string>
+    <string name="platform_intro_4_4_sub_title">企业融资价值</string>
+    <string name="platform_intro_4_4_sub_content">购货专款专用，随着成功的交易信息的累积，诚信交易历史的累积，为企业扩大经营所期待的无担保融资打下基础。</string>
+
+    <!-- 全局操作结果提示语 -->
+    <string name="operator_tips_feedback_success_title_1">反馈成功！</string>
+    <string name="operator_tips_feedback_success_title_2">已收到您的反馈！</string>
+    <string name="operator_tips_pay_success_title">支付成功！</string>
+    <string name="operator_tips_apply_success_title">申请成功！</string>
+    <string name="operator_tips_confirm_success_title">确认成功！</string>
+    <string name="operator_tips_submit_success_title">提交成功！</string>
+    <string name="operator_tips_opr_success_title">操作成功！</string>
+    <string name="operator_tips_reg_success_title">恭喜您，已注册成功！</string>
+    <string name="operator_tips_reg_success_content">接下来请您提交企业认证信息，否则将无法在长江电商平台进行交易。</string>
+    <string name="operator_tips_reg_success_action_text1">立即去认证</string>
+    <string name="operator_tips_reg_success_action_text2">知道了以后认证，跳过</string>
+    <string name="operator_tips_find_pwd_success_title">恭喜您密码重置成功！</string>
+    <string name="operator_tips_mod_pwd_success_title">恭喜您密码修改成功！</string>
+    <string name="operator_tips_mod_pwd_success_content">请使用新密码登录长江电商系统开启您的商道传奇您的手机号码+密码登录即可。</string>
+    <string name="operator_tips_mod_pwd_success_action_text">登陆长江电商</string>
+    <string name="operator_tips_pub_success_title">恭喜您，您的信息已发布成功！</string>
+    <string name="operator_tips_pub_success_content">请保持手机通讯畅通，以便客户及时联系您！</string>
+    <string name="operator_tips_pub_cancel_title">取消发布成功！</string>
+    <string name="operator_tips_pub_cancel_content"> <!-- 该消息已于XX年XX月XX日XX小时XX分取消发布成功。 -->
+该消息已取消发布成功。</string>
+    <string name="operator_tips_pub_cancel_action_text">查看我的供求</string>
+    <string name="operator_tips_pub_want_to_deal">稍后平台客服将帮您联系对方发起三方通话洽谈生意，请保持您的手机通讯正常。</string>
+    <string name="operator_tips_pub_want_to_deal_action_text">看看其它的供求信息</string>
+    <string name="operator_tips_confirm_contract_success_1">等待对方确后该合同将即刻生效。</string>
+    <string name="operator_tips_confirm_contract_success_2">对方已于%s确认，该合同已生效。请查看我的订单进行履行合同义务及权责。</string>
+    <string name="operator_tips_pay_offline">已收到您的反馈，平台客服将在48小时致电与您到得联系，敬请耐心等待！</string>
+    <string name="operator_tips_pay_bank">已收到您的反馈，平台客服将在48小时内核对您的转账货款并对合同状态进行更新，敬请耐心等待！</string>
+    <string name="operator_tips_contract_pay_success">您已成功支付%s元货款至平台，对方将尽快为您安排发货，敬请留意。</string>
+    <string name="operator_tips_contact_custom_service_success">已收到您的反馈，平台客服将在48小时致电与您到得联系，敬请耐心等待！</string>
+    <string name="operator_tips_contract_cancel_success">已收到您的取消合同申请，平台客服将在48小时致电与您到得联系，敬请耐心等待！</string>
+    <string name="operator_tips_contract_agree_cancel_success">该合同已                     <!-- 与XXXX日 -->
+双方协商一致取消成功！</string>
+    <string name="operator_tips_submit_negotiate_success">您的修改意见已成功提交给对方，请耐心等待对方确认。</string>
+    <string name="operator_tips_agree_first_negotiate_success">您已同意对方意见，系统将会自动更新合同最新价格，在您确认收货后，48个小时内系统将会将货款支付给买方，并将剩余差价返还至您的货款账户，敬请留意。</string>
+    <string name="operator_tips_agree_second_negotiate_success">您已同意对方的意见，等待对方确认后，系统将会自动更新最新合同，敬请留意。</string>
+    <string name="operator_tips_contract_delivery_success">您已确认收货成功,48小时内平台会将货款支付给对方,赶快给这笔生意做一个评价吧!</string>
+    <string name="operator_tips_contract_discharge_success">确认卸货成功，在对方确认收货后平台将在72小时内将货款发放至您的货款账户，敬请留意。现在去给这笔生意提交您的评价吧。</string>
+    <string name="operator_tips_contract_evaluation_success">您已评价成功！您的本次交易已结束，感谢你使用长江电商交易平台。</string>
+    <string name="operator_tips_add_payee_success">待客服审核通过后即可进行提现，敬请留意。</string>
+    <string name="operator_tips_roll_out_success">转出金额将在48小时内到帐，敬请留意。</string>
+    <string name="operator_tips_roll_out_to_deposit_success">已成功转款%s元至我的交易保证金账户。</string>
+    <string name="operator_tips_auth_success_title">恭喜您，已提交认证申请成功！</string>
+    <string name="operator_tips_auth_success_content">平台客服将在24小时内处理您的认证申请！还差1步，现在就去缴纳交易保证金，就可以开启您的生意经啦！</string>
+    <string name="operator_tips_auth_success_warning">交易保证金是买方卖方之间在平台交易的必要条件。交易保证金将保存在上海浦东发展银行，用途由上海浦东发展银行监管。查证银行证明信息请点此查看。用户可以随时将交易保证金取回，为缴纳交易保证金的用户不可以在平台上进行交易。</string>
+    <string name="operator_tips_auth_success_action1_text">立即去缴纳保证金</string>
+    <string name="operator_tips_auth_success_action2_text">知道了以后缴纳，跳过</string>
+    <string name="operator_tips_action_text_view_mycontract">查看我的合同</string>
+    <string name="operator_tips_action_text_view_mypurse">查看我的钱包</string>
+    <string name="operator_tips_has_recharge_success">将在24小时内到帐，敬请留意。</string>
+    <string name="operator_tips_confirm_receipt">卖方已经确认卸货，如果您在72小时内不确认收货，平台将视您已经收货，并将在X个工作日内向卖方支付实际货款。</string>
+
+    <!-- 推送提示语 -->
+    <string name="notify_profile_content_auth_success">您的长江电商平台认证已通过，现在赶紧开启您的商道传奇吧，无限商机正在等着您。</string>
+    <string name="notify_profile_content_auth_failed">您的长江电商平台认证审核未能通过，请提交真实规范的认证资料进行再次尝试。</string>
+    <string name="notify_contract_content_receive_unf_contract">您有一个待确认的合同，请您及时确认。</string>
+
+    <!-- 自定义控件 -->
+    <string name="refresh_head_prompt">下拉刷新</string>
+    <string name="refresh_head_last_update">上次更新</string>
+    <string name="activity_display_basic_refresh_slip">松手立即刷新</string>
+    <string name="activity_display_basic_refresh_down">下拉刷新</string>
+    <string name="activity_display_basic_refreshing">正在刷新…</string>
+    <string name="activity_display_basic_refreshok">刷新成功</string>
+    <string name="activity_display_basic_refresh_last">最后更新时间:</string>
+    <string name="activity_display_basic_time_format">MM月dd日  HH:mm</string>
+    <string name="progress_waiting">等待中&#8230;</string>
+    <string name="dialog_title_info">操作提示</string>
+    <string name="dialog_context_info">确认删除？</string>
+    <string name="dialog_context_ok">确 认</string>
+    <string name="dialog_context_confirm">确 定</string>
+    <string name="dialog_context_no">取 消</string>
+    <string name="dialog_context_upgrade">立即下载</string>
+    <string name="common_loadmore_fail">加载下一页失败</string>
+    <string name="common_loadmore_ing">加载中，请稍候</string>
+    <string name="timeline_welcome">欢迎</string>
+
+</resources>

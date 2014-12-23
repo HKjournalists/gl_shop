@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <!-- 合同状态说明 -->
+
+            <include layout="@layout/layout_contract_status_tips" />
+
+            <!-- 合同详情链接 -->
+
+            <include layout="@layout/layout_contract_model_link" />
+
+            <!-- 合同状态 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/buy_item_padding" >
+
+                <com.glshop.net.ui.basic.view.ContractStatusView
+                    android:id="@+id/ll_contract_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_evaluation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_btn_height"
+        android:layout_margin="@dimen/buy_item_padding"
+        android:background="@drawable/selector_btn_orange"
+        android:text="合同评价"
+        android:textColor="@color/white" />
+
+</LinearLayout>

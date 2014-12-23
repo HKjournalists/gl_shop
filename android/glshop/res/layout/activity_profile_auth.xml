@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <View style="@style/item_devider_view" />
+
+                <!-- 提示信息 -->
+
+                <include layout="@layout/layout_contract_countdown_time" />
+
+                <!-- 基本必填信息的输入(身份类型、认证照片、企业联系人信息) -->
+
+                <include layout="@layout/layout_auth_base_info_input" />
+
+                <View style="@style/item_devider_view" />
+                <!-- 输入卸货地址信息 -->
+
+                <include layout="@layout/layout_auth_addr_info_input" />
+
+                <View style="@style/item_devider_view" />
+                <!-- 输入企业信息 -->
+
+                <include layout="@layout/layout_auth_company_info_input" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/buy_item_padding"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:padding="@dimen/buy_item_padding" >
+
+                    <LinearLayout
+                        android:id="@+id/ll_agree_protocol"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical" >
+
+                        <CheckedTextView
+                            android:id="@+id/chkTv_agree_protocol"
+                            style="@style/ckb_textview"
+                            android:checked="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:text="同意"
+                            android:textSize="@dimen/sp16" />
+
+                        <TextView
+                            android:id="@+id/tv_protocol_detail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="6dp"
+                            android:gravity="center_vertical"
+                            android:singleLine="true"
+                            android:text="长江电商用户认证协议"
+                            android:textColor="@color/selector_protocol_text"
+                            android:textSize="@dimen/sp16" />
+                    </LinearLayout>
+
+                    <!-- 温馨提示 -->
+
+                    <LinearLayout
+                        android:id="@+id/ll_security_tips"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_security_tips"
+                        android:gravity="center"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="6dp"
+                            android:layout_marginTop="6dp"
+                            android:text="温馨提示"
+                            android:textColor="#5EA265" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/user_auth_security_tips" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_submit_auth"
+        style="@style/button_orange"
+        android:layout_margin="@dimen/buy_item_padding"
+        android:text="@string/submit_auth" />
+
+</LinearLayout>

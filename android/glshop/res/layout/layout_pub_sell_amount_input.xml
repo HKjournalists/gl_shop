@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 输入出售货物数量及单价Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <!-- 交易数量 -->
+
+    <LinearLayout
+        android:id="@+id/ll_trade_amount_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buy_item_height"
+        android:background="@drawable/selector_item_top"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/buy_item_padding"
+        android:paddingRight="@dimen/buy_item_padding" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:background="@drawable/ic_star_mark"
+            android:contentDescription="@null"
+            android:duplicateParentState="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:text="@string/business_product_sales_volume" />
+
+        <!-- 单位显示 -->
+
+        <TextView
+            android:id="@+id/tv_item_amount_unit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:duplicateParentState="true"
+            android:text="@string/product_unit_ton"
+            android:textColor="@color/gray" />
+
+        <!-- 数量 -->
+
+        <EditText
+            android:id="@+id/et_item_amount"
+            style="@style/edittext"
+            android:layout_width="120dp"
+            android:layout_height="@dimen/common_edit_height"
+            android:background="@drawable/bg_edit_normal"
+            android:hint="@string/input_message_hint"
+            android:inputType="numberDecimal" />
+
+        <!-- 单位切换 -->
+
+        <Button
+            android:id="@+id/btn_amount_unit_switch"
+            style="@style/button_small_blue"
+            android:layout_width="@dimen/btn_buy_amount_width"
+            android:layout_height="@dimen/common_edit_height"
+            android:layout_marginLeft="3dp"
+            android:text="@string/product_unit_cube_hint" />
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 是否多地发布 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_pub_more_area"
+        style="@style/BuyTextItem.Action.Middle"
+        glshop:itemContent="@string/no"
+        glshop:itemTitle="@string/business_sell_more_area"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 到港单价 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+        android:id="@+id/ll_item_unit_price"
+        style="@style/BuyTextItem.Action.Bottom"
+        glshop:itemContent="@string/product_unit_price"
+        glshop:itemInputType="numberDecimal"
+        glshop:itemSecondTitle="@string/product_unit_price"
+        glshop:itemTitle="@string/business_product_portprice"
+        glshop:showItemIcon="true" />
+
+    <!-- 多地域列表 -->
+
+    <LinearLayout
+        android:id="@+id/ll_area_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <com.glshop.net.ui.basic.view.AreaEditListView
+            android:id="@+id/ll_area_edit_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <View style="@style/item_devider_line" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/selector_item_bottom"
+            android:gravity="center_vertical" >
+
+            <LinearLayout
+                android:id="@+id/btn_add_area"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/selector_item_bg"
+                android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_area_add"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:contentDescription="@null"
+                    android:text="新增地域项"
+                    android:textColor="@color/orange" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line_v" />
+
+            <LinearLayout
+                android:id="@+id/btn_edit_area"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/selector_item_bg"
+                android:gravity="center" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_area_delete"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:contentDescription="@null"
+                    android:text="删除地域项"
+                    android:textColor="@color/orange" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

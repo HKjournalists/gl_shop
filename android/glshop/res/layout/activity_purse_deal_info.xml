@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <include layout="@layout/layout_load_data_status" />
+
+    <LinearLayout
+        android:id="@+id/ll_deal_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/buy_item_padding" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/bg_item_left"
+                android:orientation="vertical" >
+
+                <!-- 流水号 -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center|left"
+                    android:paddingLeft="10dp"
+                    android:text="流水号"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 流水类型 -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center|left"
+                    android:paddingLeft="10dp"
+                    android:text="类型"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 交易金额 -->
+
+                <TextView
+                    android:id="@+id/tv_deal_direction"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center|left"
+                    android:paddingLeft="10dp"
+                    android:text="收入"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 支付方式 -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center|left"
+                    android:paddingLeft="10dp"
+                    android:text="支付方式"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 交易时间 -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center|left"
+                    android:paddingLeft="10dp"
+                    android:text="时间"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 余额 -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center|left"
+                    android:paddingLeft="10dp"
+                    android:text="余额"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/sp16" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line_v" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.5"
+                android:background="@drawable/bg_item_right"
+                android:orientation="vertical" >
+
+                <!-- 流水号 -->
+
+                <TextView
+                    android:id="@+id/tv_deal_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="8dp"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 流水类型 -->
+
+                <TextView
+                    android:id="@+id/tv_deal_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="8dp"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 交易金额 -->
+
+                <TextView
+                    android:id="@+id/tv_deal_money"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="8dp"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 支付方式 -->
+
+                <TextView
+                    android:id="@+id/tv_pay_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="8dp"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 交易时间 -->
+
+                <TextView
+                    android:id="@+id/tv_deal_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="8dp"
+                    android:textSize="@dimen/sp16" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 余额 -->
+
+                <TextView
+                    android:id="@+id/tv_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="8dp"
+                    android:textSize="@dimen/sp16" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/view_contracts"
+            style="@style/button_orange"
+            android:layout_margin="@dimen/buy_item_padding"
+            android:text="查看相关合同"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>

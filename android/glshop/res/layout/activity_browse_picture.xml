@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.glshop.net.ui.basic.view.image.BrowserViewPager
+            android:id="@+id/browser_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!-- 进度条 -->
+
+        <LinearLayout
+            android:id="@+id/load_progress_bar"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <ProgressBar
+                android:id="@+id/pb_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateDrawable="@drawable/progress_refreshing" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dip"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="加载中..."
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <include layout="@layout/activity_common_title" />
+    </FrameLayout>
+
+</LinearLayout>

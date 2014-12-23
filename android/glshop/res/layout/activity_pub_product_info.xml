@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp" >
+
+            <!-- 货物规格 -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="货物规格 " />
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_color"
+                style="@style/BuyTextItem.Top"
+                glshop:itemTitle="@string/product_color"
+                glshop:showItemIcon="true" />
+
+            <View style="@style/item_devider_line" />
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_area"
+                style="@style/BuyTextItem.Bottom"
+                glshop:itemTitle="@string/product_area"
+                glshop:showItemIcon="true" />
+
+            <!-- 货物详细规格 -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="10dp"
+                android:text="货物详细规格 " />
+
+            <!-- 含泥量 -->
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_sediment_perc"
+                style="@style/BuyTextItem.Top"
+                glshop:itemInputType="numberDecimal"
+                glshop:itemSecondTitle="@string/product_unit_percent"
+                glshop:itemTitle="@string/product_sediment_percentage" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 泥块含量 -->
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_sediment_block_perc"
+                style="@style/BuyTextItem.Middle"
+                glshop:itemInputType="numberDecimal"
+                glshop:itemSecondTitle="@string/product_unit_percent"
+                glshop:itemTitle="@string/product_sediment_block_percentage" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 含水率 -->
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_water_perc"
+                style="@style/BuyTextItem.Middle"
+                glshop:itemInputType="numberDecimal"
+                glshop:itemSecondTitle="@string/product_unit_percent"
+                glshop:itemTitle="@string/product_water_percentage" />
+
+            <View
+                android:id="@+id/item_devider_water"
+                style="@style/item_devider_line" />
+
+            <!-- 压碎值指标 -->
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_crunch_perc"
+                style="@style/BuyTextItem.Middle"
+                glshop:itemInputType="numberDecimal"
+                glshop:itemSecondTitle="@string/product_unit_percent"
+                glshop:itemTitle="@string/product_crunch_percentage" />
+
+            <View
+                android:id="@+id/item_devider_crunch"
+                style="@style/item_devider_line" />
+
+            <!-- 针片状颗粒含量 -->
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_needle_plate_perc"
+                style="@style/BuyTextItem.Middle"
+                glshop:itemInputType="numberDecimal"
+                glshop:itemSecondTitle="@string/product_unit_percent"
+                glshop:itemTitle="@string/product_needle_plate_percentage" />
+
+            <View
+                android:id="@+id/item_devider_needle_plate"
+                style="@style/item_devider_line" />
+
+            <!-- 表观密度 -->
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_appearance_density"
+                style="@style/BuyTextItem.Middle"
+                glshop:itemInputType="numberDecimal"
+                glshop:itemSecondTitle="@string/product_unit_density"
+                glshop:itemTitle="@string/product_appearance_density" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 堆积密度 -->
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_stacking_perc"
+                style="@style/BuyTextItem.Middle"
+                glshop:itemInputType="numberDecimal"
+                glshop:itemSecondTitle="@string/product_unit_density"
+                glshop:itemTitle="@string/product_stacking_percentage" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 坚固性指标 -->
+
+            <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                android:id="@+id/ll_item_product_sturdiness_perc"
+                style="@style/BuyTextItem.Middle"
+                glshop:itemInputType="numberDecimal"
+                glshop:itemSecondTitle="@string/product_unit_percent"
+                glshop:itemTitle="@string/product_sturdiness_percentage" />
+
+            <View style="@style/item_devider_line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_item_bottom"
+                android:orientation="vertical"
+                android:padding="@dimen/buy_item_padding" >
+
+                <!-- 备注说明 -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/product_specifications_remarks" />
+
+                <EditText
+                    android:id="@+id/et_item_product_remark"
+                    style="@style/edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_edit_normal"
+                    android:gravity="top"
+                    android:hint="@string/input_message_hint"
+                    android:maxLines="3" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

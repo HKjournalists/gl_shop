@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 个人资料中认证信息Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_countdown"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingLeft="3dp"
+    android:paddingRight="3dp"
+    android:paddingTop="8dp" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical" >
+
+        <ImageButton
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@null"
+            android:src="@drawable/ic_auth" />
+
+        <TextView
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="平台认证:"
+            android:textColor="@color/gray" />
+
+        <TextView
+            android:id="@+id/tv_auth_status"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="未认证" />
+
+        <Button
+            android:id="@+id/btn_to_auth"
+            style="@style/button_small_orange"
+            android:layout_width="60dp"
+            android:background="@drawable/selector_btn_auth"
+            android:singleLine="true"
+            android:text="认证"
+            android:textColor="@color/orange" />
+
+        <Button
+            android:id="@+id/btn_repeat_auth"
+            style="@style/button_small_orange"
+            android:layout_width="80dp"
+            android:background="@drawable/selector_btn_auth"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:singleLine="true"
+            android:text="重新认证"
+            android:textColor="@color/orange"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_view_auth_detail"
+            style="@style/button_small_orange"
+            android:layout_width="60dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/selector_btn_auth"
+            android:singleLine="true"
+            android:text="查看"
+            android:textColor="@color/orange"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="center_vertical" >
+
+        <ImageButton
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@null"
+            android:src="@drawable/ic_deposit" />
+
+        <TextView
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="交易保证金:"
+            android:textColor="@color/gray" />
+
+        <TextView
+            android:id="@+id/tv_deposit_status"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="未缴纳" />
+
+        <Button
+            android:id="@+id/btn_to_recharge"
+            style="@style/button_small_blue"
+            android:layout_width="60dp"
+            android:background="@drawable/selector_btn_recharge"
+            android:text="缴纳"
+            android:textColor="@color/blue" />
+    </LinearLayout>
+
+</LinearLayout>

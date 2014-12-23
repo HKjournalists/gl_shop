@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_evaluation_ratingbar"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/buy_item_height"
+    android:clickable="true"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/buy_item_height" >
+
+    <RelativeLayout
+        android:id="@+id/ll_rate_1"
+        android:layout_width="@dimen/evaluate_rate_bar_out_height"
+        android:layout_height="@dimen/evaluate_rate_bar_out_height" >
+
+        <Button
+            android:id="@+id/btn_rate_bg"
+            android:layout_width="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_height="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_centerInParent="true"
+            android:background="@drawable/btn_normal_bg"
+            android:clickable="false"
+            android:text="1"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/iv_rate_selected_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_contract_status_seller_finished" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_rate_2"
+        android:layout_width="@dimen/evaluate_rate_bar_out_height"
+        android:layout_height="@dimen/evaluate_rate_bar_out_height" >
+
+        <Button
+            android:id="@+id/btn_rate_bg"
+            android:layout_width="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_height="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_centerInParent="true"
+            android:background="@drawable/btn_normal_bg"
+            android:clickable="false"
+            android:text="2"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/iv_rate_selected_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_contract_status_seller_finished" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_rate_3"
+        android:layout_width="@dimen/evaluate_rate_bar_out_height"
+        android:layout_height="@dimen/evaluate_rate_bar_out_height" >
+
+        <Button
+            android:id="@+id/btn_rate_bg"
+            android:layout_width="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_height="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_centerInParent="true"
+            android:background="@drawable/btn_normal_bg"
+            android:clickable="false"
+            android:text="3"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/iv_rate_selected_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_contract_status_seller_finished" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_rate_4"
+        android:layout_width="@dimen/evaluate_rate_bar_out_height"
+        android:layout_height="@dimen/evaluate_rate_bar_out_height" >
+
+        <Button
+            android:id="@+id/btn_rate_bg"
+            android:layout_width="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_height="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_centerInParent="true"
+            android:background="@drawable/btn_normal_bg"
+            android:clickable="false"
+            android:text="4"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/iv_rate_selected_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_contract_status_seller_finished" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_rate_5"
+        android:layout_width="@dimen/evaluate_rate_bar_out_height"
+        android:layout_height="@dimen/evaluate_rate_bar_out_height" >
+
+        <Button
+            android:id="@+id/btn_rate_bg"
+            android:layout_width="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_height="@dimen/evaluate_rate_bar_iner_height"
+            android:layout_centerInParent="true"
+            android:background="@drawable/btn_normal_bg"
+            android:clickable="false"
+            android:text="5"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/iv_rate_selected_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_contract_status_seller_finished" />
+    </RelativeLayout>
+
+</LinearLayout>

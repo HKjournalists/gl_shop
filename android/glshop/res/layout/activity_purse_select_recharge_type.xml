@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/buy_item_padding" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:background="@drawable/selector_item_single"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:id="@+id/tv_to_pay_money_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="待付金额" />
+
+                    <TextView
+                        android:id="@+id/tv_to_pay_money"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="20,000,00"
+                        android:textColor="@color/red" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="元"
+                        android:textColor="@color/gray" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/buy_item_padding"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_select_recharge_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/buy_item_padding"
+                        android:text="@string/purse_to_pay_payment"
+                        android:textColor="@color/gray" />
+
+                    <com.glshop.net.ui.basic.view.ListItemView
+                        android:id="@+id/ll_recharge_online"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        glshop:itemBgType="top"
+                        glshop:itemIcon="@drawable/ic_recharge_online"
+                        glshop:itemTitle="@string/recharge_type_online" />
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/devider_line_h" />
+
+                    <com.glshop.net.ui.basic.view.ListItemView
+                        android:id="@+id/ll_recharge_bank"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        glshop:itemBgType="middle"
+                        glshop:itemIcon="@drawable/ic_recharge_bank"
+                        glshop:itemTitle="@string/recharge_type_bank" />
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/devider_line_h" />
+
+                    <com.glshop.net.ui.basic.view.ListItemView
+                        android:id="@+id/ll_recharge_offline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        glshop:itemBgType="bottom"
+                        glshop:itemIcon="@drawable/ic_recharge_offline"
+                        glshop:itemTitle="@string/recharge_type_offline" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 温馨提示 -->
+
+            <LinearLayout
+                android:id="@+id/ll_security_tips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/bg_security_tips"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="6dp"
+                    android:text="温馨提示"
+                    android:textColor="#5EA265" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recharge_security_tips" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

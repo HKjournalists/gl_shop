@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/buy_item_padding" >
+
+        <TextView
+            android:id="@+id/tv_balance_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp" />
+
+        <Button
+            android:id="@+id/btn_pay_deposits"
+            style="@style/button_blue"
+            android:layout_marginTop="@dimen/buy_item_padding"
+            android:text="@string/pay_deposits" />
+    </LinearLayout>
+
+</LinearLayout>

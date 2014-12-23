@@ -1,0 +1,37 @@
+{
+    "bank": {
+        "data": [
+            {
+                "code": "BANK",
+                "id": "1",
+                "name": "中国银行",
+                "val": "BANK001"
+            },
+            {
+                "code": "BANK",
+                "id": "2",
+                "name": "招商银行",
+                "val": "BANK002"
+            },
+            {
+                "code": "BANK",
+                "id": "3",
+                "name": "工商银行",
+                "val": "BANK003"
+            },
+            {
+                "code": "BANK",
+                "id": "4",
+                "name": "建设银行",
+                "val": "BANK004"
+            },
+            {
+                "code": "BANK",
+                "id": "5",
+                "name": "交通银行",
+                "val": "BANK005"
+            }
+        ],
+        "timeStamp": "2014-04-07 01:02:03"
+    }
+}

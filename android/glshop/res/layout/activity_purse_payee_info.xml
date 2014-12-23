@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/buy_item_padding" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_item_left"
+            android:orientation="vertical" >
+
+            <!-- 提款人姓名 -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center"
+                android:paddingLeft="3dp"
+                android:text="姓名"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/sp16" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 开户银行 -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center"
+                android:paddingLeft="3dp"
+                android:text="开户银行"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/sp16" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 支行名称 -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center"
+                android:paddingLeft="3dp"
+                android:text="支行名称"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/sp16" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 银行卡号 -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center"
+                android:paddingLeft="3dp"
+                android:text="银行卡号"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/sp16" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 证明材料 -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center"
+                android:paddingLeft="3dp"
+                android:text="证明材料"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/sp16" />
+        </LinearLayout>
+
+        <View style="@style/item_devider_line_v" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:background="@drawable/bg_item_right"
+            android:orientation="vertical" >
+
+            <!-- 提款人姓名 -->
+
+            <TextView
+                android:id="@+id/tv_payee_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:textSize="@dimen/sp16" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 开户银行 -->
+
+            <TextView
+                android:id="@+id/tv_payee_bank"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:textSize="@dimen/sp16" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 支行名称 -->
+
+            <TextView
+                android:id="@+id/tv_sub_bank"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:textSize="@dimen/sp16" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 银行卡号 -->
+
+            <TextView
+                android:id="@+id/tv_bank_card"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:textSize="@dimen/sp16" />
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 证明材料 -->
+
+            <TextView
+                android:id="@+id/tv_view_certificate_document"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:text="查看"
+                android:textColor="@color/selector_protocol_text"
+                android:textSize="@dimen/sp16" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_set_default_payee"
+        style="@style/button_blue"
+        android:layout_margin="@dimen/buy_item_padding"
+        android:text="设置为默认收款人" />
+
+    <Button
+        android:id="@+id/btn_delete_payee"
+        style="@style/button_orange"
+        android:layout_marginLeft="@dimen/buy_item_padding"
+        android:layout_marginRight="@dimen/buy_item_padding"
+        android:text="删除收款人信息" />
+
+</LinearLayout>

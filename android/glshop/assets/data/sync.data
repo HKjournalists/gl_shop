@@ -1,0 +1,4046 @@
+{
+    "DATA": {
+        "area": {
+            "data": [
+                {
+                    "code": "AREA",
+                    "id": "100",
+                    "name": "地域A",
+                    "orderno": 1,
+                    "pcode": "0",
+                    "val": "AREA001"
+                },
+                {
+                    "code": "AREA",
+                    "id": "101",
+                    "name": "地域a1",
+                    "orderno": 1,
+                    "pcode": "AREA001",
+                    "val": "AREA0011"
+                },
+                {
+                    "code": "AREA",
+                    "id": "102",
+                    "name": "地域a2",
+                    "orderno": 2,
+                    "pcode": "AREA001",
+                    "val": "AREA0012"
+                },
+                {
+                    "code": "AREA",
+                    "id": "103",
+                    "name": "地域B",
+                    "orderno": 2,
+                    "pcode": "0",
+                    "val": "AREA002"
+                },
+                {
+                    "code": "AREA",
+                    "id": "104",
+                    "name": "地域b1",
+                    "orderno": 1,
+                    "pcode": "AREA002",
+                    "val": "AREA0021"
+                },
+                {
+                    "code": "AREA",
+                    "id": "105",
+                    "name": "地域b2",
+                    "orderno": 2,
+                    "pcode": "AREA002",
+                    "val": "AREA0022"
+                }
+            ],
+            "timeStamp": "2014-04-07 01:02:03"
+        },
+        "banks": {
+            "timeStamp": "2014-04-08 01:02:03"
+        },
+        "goodChild": {
+            "data": [
+                {
+                    "id": "201411200000001",
+                    "orderno": 3,
+                    "paddress": "凤凰山",
+                    "pcode": "G001",
+                    "pcolor": "红色",
+                    "pname": "碎石1-2",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "1.2",
+                            "id": "35",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000001",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.3",
+                            "id": "36",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000001",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "2.4",
+                            "id": "37",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000001",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "2.5",
+                            "id": "38",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000001",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CRUSHING_VALUE_INDEX",
+                            "content": "1.6",
+                            "id": "39",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "压碎值指标",
+                            "orderno": 0,
+                            "pid": "201411200000001",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "ELONGATED_PARTICLES",
+                            "content": "0.7",
+                            "id": "40",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "针片状颗粒含量",
+                            "orderno": 0,
+                            "pid": "201411200000001",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "8.8",
+                            "id": "41",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000001",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "19.6",
+                        "id": "182",
+                        "maxv": 25.0,
+                        "minv": 5.0,
+                        "name": "碎石1-2",
+                        "orderno": 0,
+                        "pid": "201411200000001",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "remark": "石子——碎石1-2",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000002",
+                    "orderno": 2,
+                    "paddress": "猫牙山",
+                    "pcode": "G001",
+                    "pcolor": "橙色",
+                    "pname": "瓜子片",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "1.1",
+                            "id": "28",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000002",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "29",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000002",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "2.3",
+                            "id": "30",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000002",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "2.4",
+                            "id": "31",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000002",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CRUSHING_VALUE_INDEX",
+                            "content": "1.5",
+                            "id": "32",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "压碎值指标",
+                            "orderno": 0,
+                            "pid": "201411200000002",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "ELONGATED_PARTICLES",
+                            "content": "0.6",
+                            "id": "33",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "针片状颗粒含量",
+                            "orderno": 0,
+                            "pid": "201411200000002",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "7",
+                            "id": "34",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000002",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "10.1",
+                        "id": "181",
+                        "maxv": 16.0,
+                        "minv": 5.0,
+                        "name": "瓜子片",
+                        "orderno": 0,
+                        "pid": "201411200000002",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "remark": "石子——瓜子片",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000003",
+                    "orderno": 5,
+                    "paddress": "崂山",
+                    "pcode": "G001",
+                    "pcolor": "蓝色",
+                    "pname": "碎石2-4",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "1.4",
+                            "id": "49",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000003",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.5",
+                            "id": "50",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000003",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "2.6",
+                            "id": "51",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000003",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "2.7",
+                            "id": "52",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000003",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CRUSHING_VALUE_INDEX",
+                            "content": "1.8",
+                            "id": "53",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "压碎值指标",
+                            "orderno": 0,
+                            "pid": "201411200000003",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "ELONGATED_PARTICLES",
+                            "content": "0.9",
+                            "id": "54",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "针片状颗粒含量",
+                            "orderno": 0,
+                            "pid": "201411200000003",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "8.0",
+                            "id": "55",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000003",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "36.3",
+                        "id": "180",
+                        "maxv": 42.0,
+                        "minv": 31.5,
+                        "name": "碎石2-4",
+                        "orderno": 0,
+                        "pid": "201411200000003",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "remark": "石子——碎石2-4",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000004",
+                    "orderno": 6,
+                    "paddress": "狮子岩",
+                    "pcode": "G001",
+                    "pcolor": "白色",
+                    "pname": "道渣",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "1.5",
+                            "id": "56",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000004",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.6",
+                            "id": "57",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000004",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "2.7",
+                            "id": "58",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000004",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "2.8",
+                            "id": "59",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000004",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CRUSHING_VALUE_INDEX",
+                            "content": "1.9",
+                            "id": "60",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "压碎值指标",
+                            "orderno": 0,
+                            "pid": "201411200000004",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "ELONGATED_PARTICLES",
+                            "content": "1.1",
+                            "id": "61",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "针片状颗粒含量",
+                            "orderno": 0,
+                            "pid": "201411200000004",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "8.1",
+                            "id": "62",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000004",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "40.1",
+                        "id": "179",
+                        "maxv": 46.0,
+                        "minv": 35.5,
+                        "name": "道渣",
+                        "orderno": 0,
+                        "pid": "201411200000004",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "remark": "石子——道渣",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000005",
+                    "orderno": 4,
+                    "paddress": "凤凰山",
+                    "pcode": "G001",
+                    "pcolor": "黄色",
+                    "pname": "碎石1-3",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "1.3",
+                            "id": "42",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000005",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.4",
+                            "id": "43",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000005",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "2.5",
+                            "id": "44",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000005",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "2.6",
+                            "id": "45",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000005",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CRUSHING_VALUE_INDEX",
+                            "content": "1.7",
+                            "id": "46",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "压碎值指标",
+                            "orderno": 0,
+                            "pid": "201411200000005",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "ELONGATED_PARTICLES",
+                            "content": "0.8",
+                            "id": "47",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "针片状颗粒含量",
+                            "orderno": 0,
+                            "pid": "201411200000005",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "8.9",
+                            "id": "48",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000005",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "17",
+                        "id": "178",
+                        "maxv": 31.5,
+                        "minv": 5.0,
+                        "name": "碎石1-3",
+                        "orderno": 0,
+                        "pid": "201411200000005",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "remark": "石子——碎石1-3",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000006",
+                    "orderno": 1,
+                    "paddress": "冬瓜岭",
+                    "pcode": "G001",
+                    "pcolor": "灰色",
+                    "pname": "石粉",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "1.3",
+                            "id": "21",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000006",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.8",
+                            "id": "22",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000006",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "2.2",
+                            "id": "23",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000006",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "2.2",
+                            "id": "24",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000006",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CRUSHING_VALUE_INDEX",
+                            "content": "1.1",
+                            "id": "25",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "压碎值指标",
+                            "orderno": 0,
+                            "pid": "201411200000006",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "ELONGATED_PARTICLES",
+                            "content": "0.3",
+                            "id": "26",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "针片状颗粒含量",
+                            "orderno": 0,
+                            "pid": "201411200000006",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "9",
+                            "id": "27",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000006",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "3",
+                        "id": "177",
+                        "maxv": 5.0,
+                        "minv": 0.0,
+                        "name": "石粉",
+                        "orderno": 0,
+                        "pid": "201411200000006",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "remark": "石子——石粉",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000007",
+                    "orderno": 8,
+                    "paddress": "大峰",
+                    "pcode": "G001",
+                    "pcolor": "绿色",
+                    "pname": "卵石",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "1.7",
+                            "id": "70",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000007",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.8",
+                            "id": "71",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000007",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "2.9",
+                            "id": "72",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000007",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "73",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000007",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CRUSHING_VALUE_INDEX",
+                            "content": "2.1",
+                            "id": "74",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "压碎值指标",
+                            "orderno": 0,
+                            "pid": "201411200000007",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "ELONGATED_PARTICLES",
+                            "content": "1.3",
+                            "id": "75",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "针片状颗粒含量",
+                            "orderno": 0,
+                            "pid": "201411200000007",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "8.5",
+                            "id": "76",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000007",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "120",
+                        "id": "176",
+                        "maxv": 0.0,
+                        "minv": 0.0,
+                        "name": "卵石",
+                        "orderno": 0,
+                        "pid": "201411200000007",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "remark": "石子——卵石",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000008",
+                    "orderno": 7,
+                    "paddress": "莲花山",
+                    "pcode": "G001",
+                    "pcolor": "透明色",
+                    "pname": "片石",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "1.6",
+                            "id": "63",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000008",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.7",
+                            "id": "64",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000008",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "2.8",
+                            "id": "65",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000008",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "2.9",
+                            "id": "66",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000008",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CRUSHING_VALUE_INDEX",
+                            "content": "2.0",
+                            "id": "67",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "压碎值指标",
+                            "orderno": 0,
+                            "pid": "201411200000008",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "ELONGATED_PARTICLES",
+                            "content": "1.2",
+                            "id": "68",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "针片状颗粒含量",
+                            "orderno": 0,
+                            "pid": "201411200000008",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "8.2",
+                            "id": "69",
+                            "maxv": 9.7,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000008",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "66",
+                        "id": "175",
+                        "maxv": 0.0,
+                        "minv": 46.0,
+                        "name": "片石",
+                        "orderno": 0,
+                        "pid": "201411200000008",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "remark": "石子——片石",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000009",
+                    "orderno": 1,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "粗砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "183",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000009",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "184",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000009",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "185",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000009",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "186",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000009",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "187",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000009",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "188",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000009",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "3.4",
+                        "id": "189",
+                        "maxv": 3.7,
+                        "minv": 3.1,
+                        "name": "粗砂",
+                        "orderno": 0,
+                        "pid": "201411200000009",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002001",
+                    "remark": "黄砂——粗砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000010",
+                    "orderno": 2,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "粗砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "190",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000010",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "191",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000010",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "192",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000010",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "193",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000010",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "194",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000010",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "195",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000010",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "3.4",
+                        "id": "196",
+                        "maxv": 3.7,
+                        "minv": 3.1,
+                        "name": "粗砂",
+                        "orderno": 0,
+                        "pid": "201411200000010",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002002",
+                    "remark": "黄砂——粗砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000011",
+                    "orderno": 3,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "粗砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "197",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000011",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "198",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000011",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "199",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000011",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "200",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000011",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "201",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000011",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "202",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000011",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "3.4",
+                        "id": "203",
+                        "maxv": 3.7,
+                        "minv": 3.1,
+                        "name": "粗砂",
+                        "orderno": 0,
+                        "pid": "201411200000011",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002003",
+                    "remark": "黄砂——粗砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000012",
+                    "orderno": 4,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "粗砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "204",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000012",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "205",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000012",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "206",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000012",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "207",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000012",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "208",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000012",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "209",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000012",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "3.4",
+                        "id": "210",
+                        "maxv": 3.7,
+                        "minv": 3.1,
+                        "name": "粗砂",
+                        "orderno": 0,
+                        "pid": "201411200000012",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002004",
+                    "remark": "黄砂——粗砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000013",
+                    "orderno": 5,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "粗砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "211",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000013",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "212",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000013",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "213",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000013",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "214",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000013",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "215",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000013",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "216",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000013",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "3.4",
+                        "id": "217",
+                        "maxv": 3.7,
+                        "minv": 3.1,
+                        "name": "粗砂",
+                        "orderno": 0,
+                        "pid": "201411200000013",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002005",
+                    "remark": "黄砂——粗砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000014",
+                    "orderno": 6,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "粗砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "218",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000014",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "219",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000014",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "220",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000014",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "221",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000014",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "222",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000014",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "223",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000014",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "3.4",
+                        "id": "224",
+                        "maxv": 3.7,
+                        "minv": 3.1,
+                        "name": "粗砂",
+                        "orderno": 0,
+                        "pid": "201411200000014",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002006",
+                    "remark": "黄砂——粗砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000015",
+                    "orderno": 1,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "中砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "225",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000015",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "226",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000015",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "227",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000015",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "228",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000015",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "229",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000015",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "230",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000015",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "2.65",
+                        "id": "231",
+                        "maxv": 3.0,
+                        "minv": 2.3,
+                        "name": "中砂",
+                        "orderno": 0,
+                        "pid": "201411200000015",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002001",
+                    "remark": "黄砂——中砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000016",
+                    "orderno": 2,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "中砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "232",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000016",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "233",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000016",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "234",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000016",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "235",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000016",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "236",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000016",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "237",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000016",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "2.65",
+                        "id": "238",
+                        "maxv": 3.0,
+                        "minv": 2.3,
+                        "name": "中砂",
+                        "orderno": 0,
+                        "pid": "201411200000016",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002002",
+                    "remark": "黄砂——中砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000017",
+                    "orderno": 3,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "中砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "239",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000017",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "240",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000017",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "241",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000017",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "242",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000017",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "243",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000017",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "244",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000017",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "2.65",
+                        "id": "245",
+                        "maxv": 3.0,
+                        "minv": 2.3,
+                        "name": "中砂",
+                        "orderno": 0,
+                        "pid": "201411200000017",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002003",
+                    "remark": "黄砂——中砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000018",
+                    "orderno": 4,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "中砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "246",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000018",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "247",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000018",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "248",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000018",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "249",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000018",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "250",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000018",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "251",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000018",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "2.65",
+                        "id": "252",
+                        "maxv": 3.0,
+                        "minv": 2.3,
+                        "name": "中砂",
+                        "orderno": 0,
+                        "pid": "201411200000018",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002004",
+                    "remark": "黄砂——中砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000019",
+                    "orderno": 5,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "中砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "253",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000019",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "254",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000019",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "255",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000019",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "256",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000019",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "257",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000019",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "258",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000019",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "2.65",
+                        "id": "259",
+                        "maxv": 3.0,
+                        "minv": 2.3,
+                        "name": "中砂",
+                        "orderno": 0,
+                        "pid": "201411200000019",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002005",
+                    "remark": "黄砂——中砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000020",
+                    "orderno": 6,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "中砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "260",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000020",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "261",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000020",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "262",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000020",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "263",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000020",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "264",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000020",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "265",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000020",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "2.65",
+                        "id": "266",
+                        "maxv": 3.0,
+                        "minv": 2.3,
+                        "name": "中砂",
+                        "orderno": 0,
+                        "pid": "201411200000020",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002006",
+                    "remark": "黄砂——中砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000021",
+                    "orderno": 1,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "267",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000021",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "268",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000021",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "269",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000021",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "270",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000021",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "271",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000021",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "272",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000021",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.9",
+                        "id": "273",
+                        "maxv": 2.2,
+                        "minv": 1.6,
+                        "name": "细砂",
+                        "orderno": 0,
+                        "pid": "201411200000021",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002001",
+                    "remark": "黄砂——细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000022",
+                    "orderno": 2,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "274",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000022",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "275",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000022",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "276",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000022",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "277",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000022",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "278",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000022",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "279",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000022",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.9",
+                        "id": "280",
+                        "maxv": 2.2,
+                        "minv": 1.6,
+                        "name": "细砂",
+                        "orderno": 0,
+                        "pid": "201411200000022",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002002",
+                    "remark": "黄砂——细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000023",
+                    "orderno": 3,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "281",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000023",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "282",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000023",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "283",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000023",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "284",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000023",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "285",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000023",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "286",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000023",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.9",
+                        "id": "287",
+                        "maxv": 2.2,
+                        "minv": 1.6,
+                        "name": "细砂",
+                        "orderno": 0,
+                        "pid": "201411200000023",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002003",
+                    "remark": "黄砂——细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000024",
+                    "orderno": 4,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "288",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000024",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "289",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000024",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "290",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000024",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "291",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000024",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "292",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000024",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "293",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000024",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.9",
+                        "id": "294",
+                        "maxv": 2.2,
+                        "minv": 1.6,
+                        "name": "细砂",
+                        "orderno": 0,
+                        "pid": "201411200000024",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002004",
+                    "remark": "黄砂——细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000025",
+                    "orderno": 5,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "295",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000025",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "296",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000025",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "297",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000025",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "298",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000025",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "299",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000025",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "300",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000025",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.9",
+                        "id": "301",
+                        "maxv": 2.2,
+                        "minv": 1.6,
+                        "name": "细砂",
+                        "orderno": 0,
+                        "pid": "201411200000025",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002005",
+                    "remark": "黄砂——细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000026",
+                    "orderno": 6,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "302",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000026",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "303",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000026",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "304",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000026",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "305",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000026",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "306",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000026",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "307",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000026",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.9",
+                        "id": "308",
+                        "maxv": 2.2,
+                        "minv": 1.6,
+                        "name": "细砂",
+                        "orderno": 0,
+                        "pid": "201411200000026",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002006",
+                    "remark": "黄砂——细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000027",
+                    "orderno": 1,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "特细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "309",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000027",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "310",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000027",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "311",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000027",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "312",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000027",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "313",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000027",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "314",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000027",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.1",
+                        "id": "315",
+                        "maxv": 1.5,
+                        "minv": 0.7,
+                        "name": "特细砂",
+                        "orderno": 0,
+                        "pid": "201411200000027",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002001",
+                    "remark": "黄砂——特细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000028",
+                    "orderno": 2,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "特细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "316",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000028",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "317",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000028",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "318",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000028",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "319",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000028",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "320",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000028",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "321",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000028",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.1",
+                        "id": "322",
+                        "maxv": 1.5,
+                        "minv": 0.7,
+                        "name": "特细砂",
+                        "orderno": 0,
+                        "pid": "201411200000028",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002002",
+                    "remark": "黄砂——特细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000029",
+                    "orderno": 3,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "特细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "323",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000029",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "324",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000029",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "325",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000029",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "326",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000029",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "327",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000029",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "328",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000029",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.1",
+                        "id": "329",
+                        "maxv": 1.5,
+                        "minv": 0.7,
+                        "name": "特细砂",
+                        "orderno": 0,
+                        "pid": "201411200000029",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002003",
+                    "remark": "黄砂——特细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000030",
+                    "orderno": 4,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "特细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "330",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000030",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "331",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000030",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "332",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000030",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "333",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000030",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "334",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000030",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "335",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000030",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.1",
+                        "id": "336",
+                        "maxv": 1.5,
+                        "minv": 0.7,
+                        "name": "特细砂",
+                        "orderno": 0,
+                        "pid": "201411200000030",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002004",
+                    "remark": "黄砂——特细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000031",
+                    "orderno": 5,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "特细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "337",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000031",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "338",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000031",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "339",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000031",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "340",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000031",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "341",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000031",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "342",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000031",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.1",
+                        "id": "343",
+                        "maxv": 1.5,
+                        "minv": 0.7,
+                        "name": "特细砂",
+                        "orderno": 0,
+                        "pid": "201411200000031",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002005",
+                    "remark": "黄砂——特细砂",
+                    "unit": "U001"
+                },
+                {
+                    "id": "201411200000032",
+                    "orderno": 6,
+                    "paddress": "小梅沙",
+                    "pcode": "G002",
+                    "pcolor": "黄色",
+                    "pname": "特细砂",
+                    "propertyList": [
+                        {
+                            "code": "MUD_CONTENT",
+                            "content": "0.1",
+                            "id": "344",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含泥量",
+                            "orderno": 0,
+                            "pid": "201411200000032",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CLAY_CONTENT",
+                            "content": "0.2",
+                            "id": "345",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "泥块含量",
+                            "orderno": 0,
+                            "pid": "201411200000032",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "APPARENT_DENSITY",
+                            "content": "0.3",
+                            "id": "346",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "表观密度",
+                            "orderno": 0,
+                            "pid": "201411200000032",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "BULK_DENSITY",
+                            "content": "3.0",
+                            "id": "347",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "堆积密度",
+                            "orderno": 0,
+                            "pid": "201411200000032",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "CONSISTENCY_INDEX",
+                            "content": "0.5",
+                            "id": "348",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "坚固性指标",
+                            "orderno": 0,
+                            "pid": "201411200000032",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        },
+                        {
+                            "code": "MOISTURE_CONTENT",
+                            "content": "0.2",
+                            "id": "349",
+                            "maxv": 0.5,
+                            "minv": 0.1,
+                            "name": "含水率",
+                            "orderno": 0,
+                            "pid": "201411200000032",
+                            "status": {
+                                "text": "其它属性",
+                                "val": "0"
+                            },
+                            "types": "float"
+                        }
+                    ],
+                    "psize": {
+                        "content": "1.1",
+                        "id": "350",
+                        "maxv": 1.5,
+                        "minv": 0.7,
+                        "name": "特细砂",
+                        "orderno": 0,
+                        "pid": "201411200000032",
+                        "status": {
+                            "text": "直接属性",
+                            "val": "1"
+                        },
+                        "types": "float"
+                    },
+                    "ptype": "G002006",
+                    "remark": "黄砂——特细砂",
+                    "unit": "U001"
+                }
+            ],
+            "timeStamp": "2014-04-06 01:02:03"
+        },
+        "goods": {
+            "data": [
+                {
+                    "code": "GOODS",
+                    "id": "20",
+                    "name": "石子",
+                    "orderno": 2,
+                    "pcode": "0",
+                    "val": "G001"
+                },
+                {
+                    "code": "GOODS",
+                    "id": "21",
+                    "name": "黄砂",
+                    "orderno": 1,
+                    "pcode": "0",
+                    "val": "G002"
+                },
+                {
+                    "code": "GOODS",
+                    "id": "22",
+                    "name": "河砂",
+                    "orderno": 1,
+                    "pcode": "G002",
+                    "val": "G002001"
+                },
+                {
+                    "code": "GOODS",
+                    "id": "23",
+                    "name": "湖砂",
+                    "orderno": 2,
+                    "pcode": "G002",
+                    "val": "G002002"
+                },
+                {
+                    "code": "GOODS",
+                    "id": "24",
+                    "name": "江砂",
+                    "orderno": 3,
+                    "pcode": "G002",
+                    "val": "G002003"
+                },
+                {
+                    "code": "GOODS",
+                    "id": "25",
+                    "name": "山砂",
+                    "orderno": 4,
+                    "pcode": "G002",
+                    "val": "G002004"
+                },
+                {
+                    "code": "GOODS",
+                    "id": "26",
+                    "name": "淡化海砂",
+                    "orderno": 5,
+                    "pcode": "G002",
+                    "val": "G002005"
+                },
+                {
+                    "code": "GOODS",
+                    "id": "27",
+                    "name": "机制砂",
+                    "orderno": 6,
+                    "pcode": "G002",
+                    "val": "G002006"
+                }
+            ],
+            "timeStamp": "2014-04-05 01:02:03"
+        },
+        "riverSection": {
+            "data": [
+                {
+                    "code": "RIVER_SECTION",
+                    "id": "1",
+                    "name": "靖江段",
+                    "orderno": 1,
+                    "pcode": "0",
+                    "val": "RS001"
+                },
+                {
+                    "code": "RIVER_SECTION",
+                    "id": "2",
+                    "name": "江阴段",
+                    "orderno": 2,
+                    "pcode": "0",
+                    "val": "RS002"
+                }
+            ],
+            "timeStamp": "2014-04-04 01:02:03"
+        },
+        "sysParam": {
+            "data": [
+                {
+                    "pname": "BOND_ENTERPRISE",
+                    "pvalue": "50000"
+                },
+                {
+                    "pname": "BOND_PERSONAL",
+                    "pvalue": "50000"
+                },
+                {
+                    "pname": "BOND_SHIP_0_1000",
+                    "pvalue": "5000"
+                },
+                {
+                    "pname": "BOND_SHIP_1001_5000",
+                    "pvalue": "20000"
+                },
+                {
+                    "pname": "BOND_SHIP_5001_10000",
+                    "pvalue": "40000"
+                },
+                {
+                    "pname": "BOND_SHIP_10001_15000",
+                    "pvalue": "50000"
+                },
+                {
+                    "pname": "GUARANTY_PERCENT",
+                    "pvalue": "0.05"
+                }
+            ],
+            "timeStamp": "2014-04-09 01:02:03"
+        }
+    },
+    "MESSAGE": "operator success",
+    "RESULT": true
+}

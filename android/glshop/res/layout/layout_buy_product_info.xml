@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 货物详情Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <!-- 颜色 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_color"
+        style="@style/BuyTextItem.Top"
+        glshop:itemTitle="@string/product_color"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 产地 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_area"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemTitle="@string/product_area"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 含泥量 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_sediment_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemSecondTitle="@string/product_unit_percent"
+        glshop:itemTitle="@string/product_sediment_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 泥块含量 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_sediment_block_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemSecondTitle="@string/product_unit_percent"
+        glshop:itemTitle="@string/product_sediment_block_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 含水率 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_water_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemSecondTitle="@string/product_unit_percent"
+        glshop:itemTitle="@string/product_water_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 表观密度 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_appearance_density"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemSecondTitle="@string/product_unit_density"
+        glshop:itemTitle="@string/product_appearance_density"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 堆积密度 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_stacking_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemSecondTitle="@string/product_unit_density"
+        glshop:itemTitle="@string/product_stacking_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 坚固性指标 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_sturdiness_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemSecondTitle="@string/product_unit_percent"
+        glshop:itemTitle="@string/product_sturdiness_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_item_bottom"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <!-- 备注说明 -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_specifications_remarks" />
+
+        <TextView
+            android:id="@+id/tv_item_product_remark"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:gravity="top"
+            android:lines="2"
+            android:text="@string/business_buy_remarks_hint" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <include layout="@layout/layout_load_data_status" />
+
+    <LinearLayout
+        android:id="@+id/ll_my_purse_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <!-- 个人资料 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_my_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_item_middle"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp" >
+
+                    <ImageView
+                        android:id="@+id/iv_porifle_ic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/ic_defualit_profile"
+                        android:contentDescription="@null" />
+
+                    <LinearLayout
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical" >
+
+                        <TextView
+                            android:id="@+id/profile_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="某某集团" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="登录账号:" />
+
+                            <TextView
+                                android:id="@+id/profile_account"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="18666668888"
+                                android:textColor="@color/gray" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="6dp"
+                        android:background="@drawable/selector_btn_more"
+                        android:contentDescription="@null" />
+                </LinearLayout>
+
+                <View style="@style/item_devider_line" />
+                <!-- Tab Content -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <RadioGroup
+                        android:id="@+id/rdoGroup_purse_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/common_radio_btn_height"
+                        android:layout_marginBottom="6dp"
+                        android:orientation="horizontal" >
+
+                        <RadioButton
+                            android:id="@+id/rdoBtn_deposit"
+                            style="@style/radio_button_left"
+                            android:checked="true"
+                            android:text="@string/purse_trade_deposits" />
+
+                        <RadioButton
+                            android:id="@+id/rdoBtn_payment"
+                            style="@style/radio_button_right"
+                            android:text="@string/purse_product" />
+                    </RadioGroup>
+
+                    <!-- Tab Deposit -->
+
+                    <LinearLayout
+                        android:id="@+id/ll_tab_deposit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <com.glshop.net.ui.basic.view.ListItemView
+                            android:id="@+id/ll_deposit_balance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            glshop:itemBgType="top"
+                            glshop:itemContent="50,000,00"
+                            glshop:itemContentColor="@color/red"
+                            glshop:itemIcon="@drawable/ic_deposit_balance"
+                            glshop:itemTitle="@string/purse_balance" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/devider_line_h" />
+
+                        <com.glshop.net.ui.basic.view.ListItemView
+                            android:id="@+id/ll_deposit_rollout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            glshop:itemBgType="middle"
+                            glshop:itemIcon="@drawable/ic_deposit_rollout"
+                            glshop:itemTitle="@string/purse_roll_out" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/devider_line_h" />
+
+                        <com.glshop.net.ui.basic.view.ListItemView
+                            android:id="@+id/ll_deposit_recharge"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            glshop:itemBgType="middle"
+                            glshop:itemIcon="@drawable/ic_deposit_recharge"
+                            glshop:itemTitle="@string/purse_recharge" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/devider_line_h" />
+
+                        <com.glshop.net.ui.basic.view.ListItemView
+                            android:id="@+id/ll_deposit_details"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            glshop:itemBgType="bottom"
+                            glshop:itemIcon="@drawable/ic_payment_details"
+                            glshop:itemTitle="@string/purse_details" />
+                    </LinearLayout>
+
+                    <!-- Tab Product -->
+
+                    <LinearLayout
+                        android:id="@+id/ll_tab_payment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <com.glshop.net.ui.basic.view.ListItemView
+                            android:id="@+id/ll_payment_balance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            glshop:itemBgType="top"
+                            glshop:itemContent="666,777,888,00"
+                            glshop:itemContentColor="@color/red"
+                            glshop:itemIcon="@drawable/ic_deposit_balance"
+                            glshop:itemTitle="@string/purse_balance" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/devider_line_h" />
+
+                        <com.glshop.net.ui.basic.view.ListItemView
+                            android:id="@+id/ll_payment_rollout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            glshop:itemBgType="middle"
+                            glshop:itemIcon="@drawable/ic_deposit_rollout"
+                            glshop:itemTitle="@string/purse_roll_out" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/devider_line_h" />
+
+                        <com.glshop.net.ui.basic.view.ListItemView
+                            android:id="@+id/ll_payment_recharge"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            glshop:itemBgType="middle"
+                            glshop:itemIcon="@drawable/ic_deposit_recharge"
+                            glshop:itemTitle="@string/purse_recharge" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/devider_line_h" />
+
+                        <com.glshop.net.ui.basic.view.ListItemView
+                            android:id="@+id/ll_roll_out_to_deposits"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            glshop:itemBgType="middle"
+                            glshop:itemIcon="@drawable/ic_roll_out_to_deposits"
+                            glshop:itemTitle="@string/purse_rool_out_to_deposit" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/devider_line_h" />
+
+                        <com.glshop.net.ui.basic.view.ListItemView
+                            android:id="@+id/ll_payment_details"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            glshop:itemBgType="bottom"
+                            glshop:itemIcon="@drawable/ic_payment_details"
+                            glshop:itemTitle="@string/purse_details" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 待付货款 -->
+
+                <FrameLayout
+                    android:id="@+id/fl_unpay_contract"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp" >
+
+                    <Button
+                        android:id="@+id/btn_unpay_contract"
+                        style="@style/button_orange"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/buy_item_padding"
+                        android:text="待付货款" />
+
+                    <Button
+                        android:id="@+id/iv_unpay_contract_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="18dp"
+                        android:layout_marginLeft="70dp"
+                        android:background="@drawable/bg_msg_tips"
+                        android:contentDescription="@null"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="4dp"
+                        android:text="0"
+                        android:textColor="#4D3333" />
+                </FrameLayout>
+
+                <!-- 温馨提示 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_security_tips"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_security_tips"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="6dp"
+                        android:text="温馨提示"
+                        android:textColor="#5EA265" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/purse_security_tips" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>

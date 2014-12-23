@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <com.glshop.net.ui.basic.view.TabIndicator
+        android:id="@+id/tab_pager_indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:background="#ffffff"
+        glshop:footerColor="@color/tab_indicator_text_selected"
+        glshop:footerLineHeight="0dp"
+        glshop:footerTriangleHeight="@dimen/contract_tab_triangle_height"
+        glshop:textColor="@color/tab_indicator_text"
+        glshop:textSizeNormal="@dimen/contract_tab_text_size"
+        glshop:textSizeSelected="@dimen/contract_tab_text_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/contract_tab_line_height"
+        android:background="#D9D9D9" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/contract_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

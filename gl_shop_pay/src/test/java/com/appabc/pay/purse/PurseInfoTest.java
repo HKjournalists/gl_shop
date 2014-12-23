@@ -130,7 +130,7 @@ public class PurseInfoTest extends AbstractPayTest {
 	
 	public void testDepositAccountOffline(){
 		log.info("===============================DepositAccountOffline start===============================");
-		String cid = "201411270000014";
+		String cid = "241120140000017";
 		String payNo = "PAYNO000000524092014";
 		boolean flag = iPassPayService.depositAccountOffline(cid, PurseType.GUARANTY, 1000000f, payNo);
 		boolean flag1 = iPassPayService.depositAccountOffline(cid, PurseType.DEPOSIT, 1000000f, payNo);

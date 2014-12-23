@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 显示发布买卖信息备注Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_item_single"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <!-- 备注说明 -->
+
+    <TextView
+        android:id="@+id/tv_buy_remarks_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/business_buy_remarks" />
+
+    <TextView
+        android:id="@+id/tv_buy_remarks_content"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="6dp"
+        android:gravity="top"
+        android:text="@string/business_buy_remarks_hint"
+        android:textColor="@color/blue" />
+
+    <!-- 温馨提示 -->
+
+    <LinearLayout
+        android:id="@+id/ll_security_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_security_tips"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:text="温馨提示"
+            android:textColor="#5EA265" />
+
+        <TextView
+            android:id="@+id/tv_buy_security_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/business_buyer_tips" />
+    </LinearLayout>
+
+</LinearLayout>

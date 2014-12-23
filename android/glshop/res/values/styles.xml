@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- App Theme -->
+    <style name="AppTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <!-- <item name="android:windowBackground">@drawable/bg_kill</item> -->
+    </style>
+
+    <!-- 通用Button -->
+    <style name="button" parent="@android:style/Widget.Button">
+        <item name="android:background">@android:drawable/btn_default</item>
+        <item name="android:textSize">@dimen/sp23</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <!-- 通用EditText -->
+    <style name="edittext" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/bg_edit_normal</item>
+        <item name="android:textSize">@dimen/sp14</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <!-- 通用CheckTextView -->
+    <style name="ckb_textview">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">0sp</item>
+        <item name="android:checkMark">@drawable/selector_checkbox</item>
+    </style>
+
+    <!-- 通用对话框主题 -->
+    <style name="dialog" mce_bogus="1" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <!-- 通用对话框标题栏 -->
+    <style name="dialog_title_bar">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">42dp</item>
+        <item name="android:background">@drawable/bg_item_top</item>
+    </style>
+
+    <!-- 通用对话框标题 -->
+    <style name="dialog_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp16</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 通用对话框内容 -->
+    <style name="dialog_content">
+        <item name="android:textSize">@dimen/sp16</item>
+        <item name="android:textColor">@color/main_color</item>
+    </style>
+
+    <!-- 通用对话框按钮 -->
+    <style name="dialog_button">
+        <item name="android:textSize">@dimen/sp16</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <!-- 用户账户输入 -->
+    <style name="account_edittext" parent="edittext">
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">11</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 短信验证码输入 -->
+    <style name="sms_verifycode_edittext" parent="edittext">
+        <item name="android:inputType">number</item>
+        <item name="android:maxLength">6</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 图形验证码输入 -->
+    <style name="img_verifycode_edittext" parent="edittext">
+        <item name="android:maxLength">4</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 价格预测列表标题 -->
+    <style name="forecast_list_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/sp12</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 今日价格列表项价格 -->
+    <style name="today_forecast_item_price">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:textSize">@dimen/sp18</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 今日价格列表项大类型 -->
+    <style name="today_forecast_item_top_category">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/sp14</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 今日价格列表项小类型 -->
+    <style name="today_forecast_item_sub_category">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textSize">@dimen/sp10</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 下拉刷新进度条 -->
+    <style name="refresh_progress" parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">@drawable/progress_refreshing</item>
+    </style>
+
+    <style name="item_devider_line">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@drawable/devider_line_h</item>
+    </style>
+
+    <style name="item_devider_line_v">
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@drawable/devider_line_v</item>
+    </style>
+
+    <style name="item_devider_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">8dp</item>
+    </style>
+
+    <style name="BaseItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="showItemIcon">false</item>
+        <item name="showItemClickIcon">false</item>
+        <item name="itemIcon">@drawable/ic_star_mark</item>
+    </style>
+
+    <style name="BuyTextItem.Single" parent="BaseItem">
+        <item name="itemBg">@drawable/selector_item_single</item>
+        <item name="itemContentColor">@color/blue</item>
+        <item name="showItemClickIcon">false</item>
+        <item name="showItemIcon">false</item>
+    </style>
+
+    <style name="BuyTextItem.Top" parent="BaseItem">
+        <item name="itemBg">@drawable/selector_item_top</item>
+        <item name="itemContentColor">@color/blue</item>
+        <item name="showItemClickIcon">false</item>
+        <item name="showItemIcon">false</item>
+    </style>
+
+    <style name="BuyTextItem.Middle" parent="BaseItem">
+        <item name="itemBg">@drawable/selector_item_middle</item>
+        <item name="itemContentColor">@color/blue</item>
+        <item name="showItemClickIcon">false</item>
+        <item name="showItemIcon">false</item>
+    </style>
+
+    <style name="BuyTextItem.Bottom" parent="BaseItem">
+        <item name="itemBg">@drawable/selector_item_bottom</item>
+        <item name="itemContentColor">@color/blue</item>
+        <item name="showItemClickIcon">false</item>
+        <item name="showItemIcon">false</item>
+    </style>
+
+    <style name="BuyTextItem.Action.Single" parent="BaseItem">
+        <item name="itemBg">@drawable/selector_item_single</item>
+        <item name="showItemClickIcon">true</item>
+        <item name="showItemIcon">true</item>
+    </style>
+
+    <style name="BuyTextItem.Action.Top" parent="BaseItem">
+        <item name="itemBg">@drawable/selector_item_top</item>
+        <item name="showItemClickIcon">true</item>
+        <item name="showItemIcon">true</item>
+    </style>
+
+    <style name="BuyTextItem.Action.Middle" parent="BaseItem">
+        <item name="itemBg">@drawable/selector_item_middle</item>
+        <item name="showItemClickIcon">true</item>
+        <item name="showItemIcon">true</item>
+    </style>
+
+    <style name="BuyTextItem.Action.Bottom" parent="BaseItem">
+        <item name="itemBg">@drawable/selector_item_bottom</item>
+        <item name="showItemClickIcon">true</item>
+        <item name="showItemIcon">true</item>
+    </style>
+
+    <style name="TabItem.Text" parent="@android:style/Theme">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/tab_indicator_text</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <style name="ContractStatus_Devider_Line">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/contract_status_devider_line</item>
+    </style>
+
+    <style name="ContractStatus_Devider_Small_Circle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/contract_status_devider_small_circle</item>
+    </style>
+
+    <style name="ContractStatus_Devider_Big_Circle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/contract_status_devider_big_circle_unfinished</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:text">@string/contract_status_double_check</item>
+    </style>
+
+    <style name="ContractStatus_Status_Buyer_Icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/ic_contract_status_buyer_finished</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="ContractStatus_Status_Seller_Icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/ic_contract_status_seller_finished</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="ContractStatus_Status_Buyer_Bg">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:background">@drawable/bg_contract_status_buyer_finished</item>
+    </style>
+
+    <style name="ContractStatus_Status_Seller_Bg">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginLeft">2dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:background">@drawable/bg_contract_status_seller_finished</item>
+    </style>
+
+    <!-- 通用RatingBar样式 -->
+    <style name="Contract_RatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/bg_ratingbar</item>
+        <item name="android:minHeight">21dip</item>
+        <item name="android:maxHeight">21dip</item>
+    </style>
+
+    <!-- 通用购买Icon -->
+    <style name="Ic_Buy_Bg">
+        <item name="android:layout_width">@dimen/ic_buy_width</item>
+        <item name="android:layout_height">@dimen/ic_buy_height</item>
+        <item name="android:background">@drawable/btn_green_bg_normal</item>
+        <item name="android:drawableLeft">@drawable/ic_contract_buy</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+    </style>
+
+    <!-- 通用出售Icon -->
+    <style name="Ic_Sell_Bg">
+        <item name="android:layout_width">@dimen/ic_buy_width</item>
+        <item name="android:layout_height">@dimen/ic_buy_height</item>
+        <item name="android:background">@drawable/btn_orange_bg_normal</item>
+        <item name="android:drawableLeft">@drawable/ic_contract_sell</item>
+        <item name="android:drawablePadding">2dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+    </style>
+
+    <!-- 通用Button -->
+    <style name="base_button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/common_btn_height</item>
+        <item name="android:textSize">@dimen/sp18</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- 通用Orange Button背景 -->
+    <style name="button_orange" parent="base_button">
+        <item name="android:background">@drawable/selector_btn_orange</item>
+    </style>
+
+    <!-- 通用Green Button背景 -->
+    <style name="button_green" parent="base_button">
+        <item name="android:background">@drawable/selector_btn_green</item>
+    </style>
+
+    <!-- 通用Blue Button背景 -->
+    <style name="button_blue" parent="base_button">
+        <item name="android:background">@drawable/selector_btn_blue</item>
+    </style>
+
+    <!-- 通用Small Button -->
+    <style name="base_small_button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/sp16</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:paddingLeft">@dimen/common_small_button_padding_h</item>
+        <item name="android:paddingRight">@dimen/common_small_button_padding_h</item>
+        <item name="android:paddingTop">@dimen/common_small_button_padding_v</item>
+        <item name="android:paddingBottom">@dimen/common_small_button_padding_v</item>
+    </style>
+
+    <!-- 通用Small Orange Button背景 -->
+    <style name="button_small_orange" parent="base_small_button">
+        <item name="android:background">@drawable/selector_btn_orange</item>
+    </style>
+
+    <!-- 通用Small Green Button背景 -->
+    <style name="button_small_green" parent="base_small_button">
+        <item name="android:background">@drawable/selector_btn_green</item>
+    </style>
+
+    <!-- 通用Small Blue Button背景 -->
+    <style name="button_small_blue" parent="base_small_button">
+        <item name="android:background">@drawable/selector_btn_blue</item>
+    </style>
+
+    <!-- 通用获取短信验证码Button背景 -->
+    <style name="button_send_smscode" parent="button_small_blue">
+        <item name="android:padding">0dp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- 通用Base Radio Button背景 -->
+    <style name="radio_button_base">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/selector_radiobutton_text</item>
+    </style>
+
+    <!-- 通用Left Radio Button背景 -->
+    <style name="radio_button_left" parent="radio_button_base">
+        <item name="android:background">@drawable/selector_tab_left</item>
+    </style>
+
+    <!-- 通用Right Radio Button背景 -->
+    <style name="radio_button_right" parent="radio_button_base">
+        <item name="android:background">@drawable/selector_tab_right</item>
+    </style>
+
+    <!-- Dialog 弹出及退出动画 -->
+    <style name="dialogWindowAnim" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/menu_dialog_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/menu_dialog_exit_anim</item>
+    </style>
+
+    <!-- 通用ListView样式 -->
+    <style name="listview_common">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:cacheColorHint">@null</item>
+        <item name="android:divider">@drawable/devider_line_h</item>
+        <item name="android:listSelector">@drawable/selector_list_item</item>
+    </style>
+
+    <!-- 通用ListView样式 -->
+    <style name="listview_common_v2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:cacheColorHint">@null</item>
+        <item name="android:divider">@color/transparent</item>
+        <item name="android:listSelector">@color/transparent</item>
+    </style>
+
+</resources>

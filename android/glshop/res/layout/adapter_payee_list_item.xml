@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="60dp"
+    android:paddingLeft="@dimen/buy_item_padding"
+    android:paddingRight="@dimen/buy_item_padding" >
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" >
+
+            <!-- 默认 -->
+
+            <TextView
+                android:id="@+id/tv_default_payee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="@string/default_option"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/sp12" />
+
+            <!-- 姓名 -->
+
+            <TextView
+                android:id="@+id/tv_payee_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="张三"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" >
+
+            <!-- 银行名称 -->
+
+            <TextView
+                android:id="@+id/tv_payee_bank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="招商银行"
+                android:textColor="@color/gray"
+                android:textSize="16sp" />
+            <!-- 卡号 -->
+
+            <TextView
+                android:id="@+id/tv_payee_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="6666 8888 6666 8888"
+                android:textColor="@color/gray"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_selected_payee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_menu_selected_orange" />
+
+    <TextView
+        android:id="@+id/tv_payee_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="审核中"
+        android:visibility="gone" />
+
+</LinearLayout>

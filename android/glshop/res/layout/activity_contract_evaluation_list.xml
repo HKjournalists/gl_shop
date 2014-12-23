@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <include layout="@layout/layout_load_data_status" />
+
+    <LinearLayout
+        android:id="@+id/ll_contract_evaluation_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <!-- 合同详情链接 -->
+
+                <include layout="@layout/layout_contract_model_link" />
+
+                <!-- 对方给我的评价 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/buy_item_padding" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:background="@drawable/bg_item_top_press"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="@dimen/buy_item_padding" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="对方给我的评价" />
+                    </LinearLayout>
+
+                    <View style="@style/item_devider_line" />
+                    <!-- 交易满意度 -->
+
+                    <LinearLayout
+                        android:id="@+id/ll_another_evaluation_empty"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:background="@drawable/selector_item_bottom"
+                        android:gravity="center"
+                        android:visibility="gone" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="对方尚未评价您！"
+                            android:textColor="@color/gray" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_another_evaluation_not_empty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/buy_item_height"
+                            android:background="@drawable/selector_item_middle"
+                            android:gravity="center_vertical"
+                            android:padding="@dimen/buy_item_padding" >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_satisfaction_per"
+                                android:contentDescription="@null" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/buy_item_padding"
+                                android:layout_weight="1"
+                                android:text="交易满意度"
+                                android:textColor="@color/gray" />
+
+                            <RatingBar
+                                android:id="@+id/other_rb_satisfaction"
+                                style="@style/Contract_RatingBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:isIndicator="true"
+                                android:numStars="5"
+                                android:rating="2.5" />
+                        </LinearLayout>
+
+                        <View style="@style/item_devider_line" />
+                        <!-- 交易诚信度 -->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/buy_item_height"
+                            android:background="@drawable/selector_item_middle"
+                            android:gravity="center_vertical"
+                            android:padding="@dimen/buy_item_padding" >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_sincerity_per"
+                                android:contentDescription="@null" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/buy_item_padding"
+                                android:layout_weight="1"
+                                android:text="交易诚信度"
+                                android:textColor="@color/gray" />
+
+                            <RatingBar
+                                android:id="@+id/other_rb_sincerity"
+                                style="@style/Contract_RatingBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:isIndicator="true"
+                                android:numStars="5"
+                                android:rating="4" />
+                        </LinearLayout>
+
+                        <View style="@style/item_devider_line" />
+                        <!-- 详细描述 -->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/selector_item_bottom"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical" >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:padding="@dimen/buy_item_padding" >
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/ic_edit"
+                                    android:contentDescription="@null" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/buy_item_padding"
+                                    android:layout_weight="1"
+                                    android:text="详细描述"
+                                    android:textColor="@color/gray" />
+
+                                <Button
+                                    android:id="@+id/btn_another_evaluation_detail"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/selector_port_list_bg"
+                                    android:drawableLeft="@drawable/ic_shrink"
+                                    android:drawablePadding="3dp"
+                                    android:gravity="center"
+                                    android:padding="6dp"
+                                    android:text="@string/expand"
+                                    android:textColor="@color/green_light" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tv_another_evaluation_detail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/buy_item_padding"
+                                android:layout_marginRight="@dimen/buy_item_padding"
+                                android:singleLine="true"
+                                android:text="详细描述详细描述详细描述详细描述详细描述详细描述详细描述详细描述详细描述详细描述"
+                                android:textColor="@color/gray" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- 我给对方的评价 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/buy_item_padding"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:background="@drawable/bg_item_top_press"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="@dimen/buy_item_padding" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我给对方的评价" />
+                    </LinearLayout>
+
+                    <View style="@style/item_devider_line" />
+                    <!-- 评价为空页面 -->
+
+                    <LinearLayout
+                        android:id="@+id/ll_my_evaluation_empty"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:background="@drawable/selector_item_bottom"
+                        android:gravity="center" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="暂无评价"
+                            android:textColor="@color/gray" />
+                    </LinearLayout>
+
+                    <!-- 评价不未空页面 -->
+
+                    <LinearLayout
+                        android:id="@+id/ll_my_evaluation_not_empty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone" >
+
+                        <!-- 交易满意度 -->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/buy_item_height"
+                            android:background="@drawable/selector_item_middle"
+                            android:gravity="center_vertical"
+                            android:padding="@dimen/buy_item_padding" >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_satisfaction_per"
+                                android:contentDescription="@null" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/buy_item_padding"
+                                android:layout_weight="1"
+                                android:text="交易满意度"
+                                android:textColor="@color/gray" />
+
+                            <RatingBar
+                                android:id="@+id/my_rb_satisfaction"
+                                style="@style/Contract_RatingBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:isIndicator="true"
+                                android:numStars="5"
+                                android:rating="2.5" />
+                        </LinearLayout>
+
+                        <View style="@style/item_devider_line" />
+                        <!-- 交易诚信度 -->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/buy_item_height"
+                            android:background="@drawable/selector_item_middle"
+                            android:gravity="center_vertical"
+                            android:padding="@dimen/buy_item_padding" >
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_sincerity_per"
+                                android:contentDescription="@null" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/buy_item_padding"
+                                android:layout_weight="1"
+                                android:text="交易诚信度"
+                                android:textColor="@color/gray" />
+
+                            <RatingBar
+                                android:id="@+id/my_rb_sincerity"
+                                style="@style/Contract_RatingBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:isIndicator="true"
+                                android:numStars="5"
+                                android:rating="4" />
+                        </LinearLayout>
+
+                        <View style="@style/item_devider_line" />
+                        <!-- 详细描述 -->
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/selector_item_bottom"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical" >
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:padding="@dimen/buy_item_padding" >
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/ic_edit"
+                                    android:contentDescription="@null" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="@dimen/buy_item_padding"
+                                    android:layout_weight="1"
+                                    android:text="详细描述"
+                                    android:textColor="@color/gray" />
+
+                                <Button
+                                    android:id="@+id/btn_my_evaluation_detail"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/selector_port_list_bg"
+                                    android:drawableLeft="@drawable/ic_shrink"
+                                    android:drawablePadding="3dp"
+                                    android:gravity="center"
+                                    android:padding="6dp"
+                                    android:text="@string/expand"
+                                    android:textColor="@color/green_light" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tv_my_evaluation_detail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/buy_item_padding"
+                                android:layout_marginRight="@dimen/buy_item_padding"
+                                android:singleLine="true"
+                                android:text="详细描述详细描述详细描述详细描述详细描述详细描述详细描述详细描述详细描述详细描述"
+                                android:textColor="@color/gray" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btn_to_evaluate"
+            style="@style/button_orange"
+            android:layout_margin="@dimen/buy_item_padding"
+            android:text="立即给对方评价" />
+    </LinearLayout>
+
+</LinearLayout>

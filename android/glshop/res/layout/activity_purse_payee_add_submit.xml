@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <!-- 银行信息 -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="center_vertical"
+                android:text="添加银行卡号"
+                android:textColor="@color/gray" />
+            <!-- 选择开户行 -->
+
+            <LinearLayout
+                android:id="@+id/ll_select_bank"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_top"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="选择开户行"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_bank"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="招商银行" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_more"
+                    android:contentDescription="@null" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 支行名称 -->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_middle"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="支行名称"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/et_sub_bank_name"
+                    style="@style/edittext"
+                    android:layout_width="180dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:hint="请输入银行支行名称" />
+            </RelativeLayout>
+
+            <View style="@style/item_devider_line" />
+            <!-- 银行卡号 -->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_bottom"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="银行卡号"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/et_bank_card"
+                    style="@style/edittext"
+                    android:layout_width="180dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:hint="请输入银行卡号"
+                    android:inputType="numberDecimal" />
+            </RelativeLayout>
+
+            <!-- 发送验证码 -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="center_vertical"
+                android:text="短信验证"
+                android:textColor="@color/gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_top"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="发送验证码至:"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_user_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:text="18666668888"
+                    android:textColor="@color/blue" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line" />
+            <!-- 输入验证码 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_bottom"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <EditText
+                    android:id="@+id/et_sms_code"
+                    style="@style/edittext"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_weight="1"
+                    android:hint="请输入验证码"
+                    android:inputType="numberDecimal" />
+
+                <Button
+                    android:id="@+id/btn_send_sms_verfycode"
+                    style="@style/button_send_smscode"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_marginLeft="@dimen/buy_item_padding"
+                    android:layout_weight="1.2"
+                    android:text="@string/get_sms_verifycode_init" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 提交 -->
+
+    <Button
+        android:id="@+id/btn_submit"
+        style="@style/button_orange"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/buy_item_padding"
+        android:text="提交 " />
+
+</LinearLayout>

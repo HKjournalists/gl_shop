@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 当前合同倒计时信息Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_contract_countdown_time"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@drawable/bg_countdown"
+    android:gravity="center_vertical" >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/buy_item_padding"
+        android:src="@drawable/ic_buy_info_status" />
+
+    <TextView
+        android:id="@+id/tv_contract_countdown_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="@dimen/buy_item_padding"
+        android:text="还有8天8小时59分结束"
+        android:textColor="#FF0000" />
+
+</LinearLayout>

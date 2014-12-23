@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <View style="@style/item_devider_view" />
+            <!-- 合同倒计时说明 -->
+
+            <include layout="@layout/layout_contract_countdown_time" />
+
+            <!-- 合同状态说明 -->
+
+            <include layout="@layout/layout_contract_status_tips" />
+
+            <!-- 货物数量与单价 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/common_bg"
+                android:orientation="vertical"
+                android:padding="@dimen/buy_item_padding" >
+
+                <!-- 货物数量 -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/buy_item_padding"
+                    android:text="货物数量" />
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/tv_trade_amount"
+                    style="@style/BuyTextItem.Top"
+                    glshop:itemContent="2500"
+                    glshop:itemSecondTitle="@string/product_unit_ton"
+                    glshop:itemTitle="合同货物总量" />
+
+                <View style="@style/item_devider_line" />
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/item_neg_trade_amount"
+                    style="@style/BuyTextItem.Bottom"
+                    glshop:itemContent="2500"
+                    glshop:itemSecondTitle="@string/product_unit_ton"
+                    glshop:itemTitle="实际总卸货量" />
+
+                <!-- 货物单价 -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/buy_item_padding"
+                    android:paddingTop="@dimen/buy_item_padding"
+                    android:text="货物单价" />
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/tv_unit_price"
+                    style="@style/BuyTextItem.Top"
+                    glshop:itemContent="50"
+                    glshop:itemSecondTitle="@string/product_unit_price"
+                    glshop:itemTitle="原合同单价" />
+
+                <View style="@style/item_devider_line" />
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/tv_simple_check_unit_price"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="50"
+                    glshop:itemSecondTitle="@string/product_unit_price"
+                    glshop:itemTitle="抽样检后单价" />
+
+                <View style="@style/item_devider_line" />
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/item_neg_unit_price"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="50"
+                    glshop:itemSecondTitle="@string/product_unit_price"
+                    glshop:itemTitle="结算单价" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 原因 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_item_bottom"
+                    android:orientation="vertical"
+                    android:padding="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="原因" />
+
+                    <TextView
+                        android:id="@+id/tv_neg_reason"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/buy_item_padding"
+                        android:text="商品质量与合同不符"
+                        android:textColor="@color/blue" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 结算账单合计 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@color/pink"
+                    android:gravity="center" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="结算账单" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/buy_item_padding" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="结算单价" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/product_unit_price"
+                            android:textColor="@color/gray" />
+
+                        <TextView
+                            android:id="@+id/tv_neg_unit_price"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="50"
+                            android:textColor="@color/blue" />
+                    </LinearLayout>
+                    <!-- 结算单价及实际总卸货量 -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/buy_item_padding"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="实际总卸货量" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/product_unit_ton"
+                            android:textColor="@color/gray" />
+
+                        <TextView
+                            android:id="@+id/tv_neg_amount"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="2500"
+                            android:textColor="@color/blue" />
+                    </LinearLayout>
+
+                    <View style="@style/item_devider_line" />
+
+                    <!-- 合同总价 -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center_vertical" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="合同总价" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/product_unit_ton"
+                            android:textColor="@color/gray" />
+
+                        <TextView
+                            android:id="@+id/tv_total_price"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="12500"
+                            android:textColor="@color/blue" />
+                    </LinearLayout>
+
+                    <View style="@style/item_devider_line" />
+
+                    <!-- 最终价格 -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/buy_item_height"
+                        android:gravity="center_vertical" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="最终价格" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/product_unit_price"
+                            android:textColor="@color/gray" />
+
+                        <TextView
+                            android:id="@+id/tv_neg_total_price"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="12300"
+                            android:textColor="@color/red" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

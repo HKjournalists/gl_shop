@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ListView的底部,显示加载更多及加载进度等 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!--
+         <ImageView
+        android:id="@+id/pull_refresh_horizontal_line"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/horizatal_line"
+        android:contentDescription="@null" />
+    -->
+
+
+    <!-- 加载更多进度条 -->
+
+    <LinearLayout
+        android:id="@+id/ll_footer_loading"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="5dp" >
+
+        <ProgressBar
+            android:id="@+id/pb_footer_view"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginRight="5dip"
+            android:indeterminateDrawable="@drawable/progress_medium_small_purple" />
+
+        <TextView
+            android:id="@+id/tv_footer_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/common_loadmore_ing"
+            android:textColor="@color/black_light"
+            android:textSize="@dimen/sp12" />
+    </LinearLayout>
+
+    <!-- 虚线 -->
+
+
+    <!--
+         <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/divider_horizontal_timeline"
+        android:contentDescription="@null"
+        android:visibility="invisible" />
+    -->
+
+</LinearLayout>

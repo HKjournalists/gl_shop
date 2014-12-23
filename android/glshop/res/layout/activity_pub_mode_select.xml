@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="30dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="42dp"
+        android:text="@string/pub_type_tips"
+        android:textColor="@color/green_light" />
+
+    <Button
+        android:id="@+id/btn_pub_by_custom_service"
+        style="@style/button_orange"
+        android:layout_margin="@dimen/buy_item_padding"
+        android:text="@string/pub_by_custom_service" />
+
+    <Button
+        android:id="@+id/btn_pub_by_myself"
+        style="@style/button_blue"
+        android:layout_margin="@dimen/buy_item_padding"
+        android:text="@string/pub_by_myself" />
+
+</LinearLayout>

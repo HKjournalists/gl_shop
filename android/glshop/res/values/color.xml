@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 全局默认背景色 -->
+    <color name="common_bg">#F5F5F5</color>
+
+    <!-- 常用颜色 -->
+    <color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
+    <color name="red">#ffff0000</color>
+    <color name="bt_list_item_highlight">#FFFFF2E9</color>
+    <!-- 透明 -->
+    <color name="transparent">@android:color/transparent</color>
+    <!-- 半透明 -->
+    <color name="translucence_bg_color">#55000000</color>
+    <color name="background_dark">#ff000000</color>
+    <color name="gray">#999999</color>
+    <color name="orange">#F18308</color>
+    <color name="green_deal">#449900</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#2871D5</color>
+    <color name="pink">#FBEEE8</color>
+    
+    <!-- 帮助 -->
+    <color name="app_intro_title">#333333</color>
+    <color name="app_intro_content">#646464</color>
+
+    <!-- 紫色 -->
+    <color name="purple">#800080</color>
+
+    <!-- 弹出框的title颜色 -->
+    <color name="dialog_title">#ffffffff</color>
+
+    <!-- 主色调 -->
+    <color name="main_color">#484848</color>
+    <color name="main_2_color">#484848</color>
+    <color name="explain_color">#434343</color>
+    <color name="time_number_color">#005fb7</color>
+    <color name="system_color">#3c0c87</color>
+
+    <!-- 上传tab未被选中的文字颜色 -->
+    <color name="tab_text_color">#646464</color>
+
+    <!-- 进度条百分比文字颜色 -->
+    <color name="pb_percent">#69A5D7</color>
+    <color name="compress_dialog_quality_unpress">#363636</color>
+    <color name="compress_dialog_quality_press">#055568</color>
+    <color name="compress_dialog_hint">#696969</color>
+    <color name="clear_temp_file">#646464</color>
+    <color name="gray_tv_hint">#696969</color>
+
+    <!-- 切换帐号菜单选中色 -->
+    <color name="menu_press_bg">#2d2a2b</color>
+
+    <!-- 传输管理tab文字颜色 -->
+    <color name="tab_text_select">#646464</color>
+    <color name="tab_text_default">#646464</color>
+
+    <!-- 设置页面的颜色 -->
+    <color name="setting_catalog_title">#646464</color>
+
+    <!-- 按钮没有点击效果 -->
+    <color name="btn_unclickable">#646464</color>
+
+    <!-- 按钮可点击 -->
+    <color name="btn_clickable">#cccccc</color>
+
+    <!-- 按钮可点击 -->
+    <color name="btn_backup_newbg">#2878b1</color>
+
+    <!-- 设置 -->
+    <color name="checked_item_text">#3c0c87</color>
+    <color name="unpass_text_tips">#5416b3</color>
+    <color name="purple_text_tips">#3c0c87</color>
+
+    <!-- 下拉刷新背景 -->
+    <color name="pull_listview_bg">#2f3037</color>
+
+    <!-- 717定义 -->
+    <color name="white_normal">#ffffff</color>
+    <color name="purple_normal">#3c0c87</color>
+    <color name="purple_light">#7e64a9</color>
+    <color name="black_deep">#323232</color>
+    <color name="black_light">#646464</color>
+    <color name="gray_deep">#aaaaaa</color>
+    <color name="gray_light">#ebebeb</color>
+    <color name="gray_light_light">#f5f5f5</color>
+    <color name="green_light">#5a9100</color>
+    <color name="red_deep">#92001c</color>
+    <color name="gray_check_text">#b3b3b3</color>
+
+    <!-- 公共背景色 -->
+    <drawable name="bg_default">@color/white_normal</drawable>
+
+    <color name="bg_default">@color/white_normal</color>
+    <color name="bg_gray_light">@color/gray_light</color>
+    <color name="bg_gray_light_light">@color/gray_light_light</color>
+
+    <!-- 对话框 -->
+    <color name="dialog_bg_default">@color/gray_light_light</color>
+    <color name="dialog_listitem_highlight">#d4d4d4</color>
+
+    <!-- TAB的标题 -->
+    <color name="tab_title">#62615C</color>
+
+    <drawable name="transparent">#00000000</drawable>
+
+    <color name="tab_indicator_text_selected">@color/orange</color>
+    <color name="tab_indicator_text_unselected">@color/black</color>
+    <color name="page_viewer_margin_color">#007800</color>
+
+</resources>

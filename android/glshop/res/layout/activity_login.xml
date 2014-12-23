@@ -1,0 +1,167 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/white"
+                android:orientation="vertical" >
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 手机号 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/user_login_edit_height"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp" >
+
+                    <ImageButton
+                        android:layout_width="24dp"
+                        android:layout_height="32dp"
+                        android:background="@null"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_phone_num" />
+
+                    <TextView
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:text="手机号"
+                        android:textSize="@dimen/sp16"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="1px"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/devider_line_v" />
+
+                    <EditText
+                        android:id="@+id/et_user_account"
+                        style="@style/account_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/common_edit_height"
+                        android:background="@null"
+                        android:hint="@string/input_account_hint"
+                        android:textColorHint="@color/gray" />
+                </LinearLayout>
+
+                <View style="@style/item_devider_line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/user_login_edit_height"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp" >
+
+                    <ImageButton
+                        android:layout_width="24dp"
+                        android:layout_height="32dp"
+                        android:background="@null"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_password" />
+
+                    <TextView
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:text="密码"
+                        android:textSize="@dimen/sp16"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="1px"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/devider_line_v" />
+
+                    <EditText
+                        android:id="@+id/et_user_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/common_edit_height"
+                        android:background="@null"
+                        android:hint="@string/input_password_hint"
+                        android:inputType="textPassword"
+                        android:textColorHint="@color/gray"
+                        android:textSize="@dimen/sp16" />
+                </LinearLayout>
+
+                <View style="@style/item_devider_line" />
+            </LinearLayout>
+
+            <!-- 登录 -->
+
+            <Button
+                android:id="@+id/btn_user_login"
+                style="@style/button_blue"
+                android:layout_margin="@dimen/buy_item_padding"
+                android:text="@string/user_login" />
+
+            <!-- 忘记密码 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/user_login_forget_pwd_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <CheckedTextView
+                    android:id="@+id/chkTv_remember_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkMark="@drawable/selector_pwd_checkbox"
+                    android:checked="true" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="6dp"
+                    android:text="@string/user_remember_password"
+                    android:textSize="@dimen/sp16" />
+
+                <Button
+                    android:id="@+id/btn_user_find_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:padding="6dp"
+                    android:text="@string/user_forget_password"
+                    android:textColor="@color/selector_shop_index_text"
+                    android:textSize="@dimen/sp16" />
+            </LinearLayout>
+
+            <!-- 立即注册 -->
+
+            <Button
+                android:id="@+id/btn_user_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/buy_item_padding"
+                android:background="@drawable/selector_btn_login" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

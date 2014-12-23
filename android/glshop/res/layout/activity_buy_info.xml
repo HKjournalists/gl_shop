@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <include layout="@layout/layout_load_data_status" />
+
+    <LinearLayout
+        android:id="@+id/ll_buy_info_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <!-- 当前信息状态 -->
+
+                    <LinearLayout
+                        android:id="@+id/ll_buy_info_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@color/pink"
+                        android:gravity="center_vertical" >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/buy_item_padding"
+                            android:src="@drawable/ic_buy_info_status" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="6dp"
+                            android:singleLine="true"
+                            android:text="信息发布时间:"
+                            android:textColor="#FF0000" />
+
+                        <TextView
+                            android:id="@+id/tv_pub_datetime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="6dp"
+                            android:singleLine="true"
+                            android:text="2014年12月12日12时12分"
+                            android:textColor="#FF0000" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="6dp"
+                        android:paddingTop="8dp" >
+
+                        <!-- 发布信息标题 -->
+
+                        <TextView
+                            android:id="@+id/tv_buy_info_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="8dp"
+                            android:singleLine="true"
+                            android:text="出售黄砂1000吨"
+                            android:visibility="gone" />
+
+                        <include layout="@layout/layout_buy_advert_info" />
+
+                        <!-- 货物信息 -->
+
+                        <View style="@style/item_devider_view" />
+
+                        <include layout="@layout/layout_pub_product_info" />
+
+                        <!-- 交易数量及单价信息 -->
+
+                        <View style="@style/item_devider_view" />
+
+                        <!-- 单地域 -->
+
+                        <include
+                            android:id="@+id/ll_single_area_list"
+                            layout="@layout/layout_pub_buy_amount_info" />
+
+                        <!-- 多地域 -->
+
+                        <include
+                            android:id="@+id/ll_more_area_list"
+                            layout="@layout/layout_pub_buy_more_area_amount_info"
+                            android:visibility="gone" />
+
+                        <!-- 交易信息 -->
+
+                        <View style="@style/item_devider_view" />
+
+                        <include layout="@layout/layout_pub_trade_area_info" />
+
+                        <!-- 卸货地址信息 -->
+
+                        <View style="@style/item_devider_view" />
+
+                        <include layout="@layout/layout_pub_discharge_addr_info" />
+
+                        <!-- 买货实物信息 -->
+
+                        <View style="@style/item_devider_view" />
+
+                        <include layout="@layout/layout_pub_product_photo_info" />
+
+                        <!-- 交易备注信息 -->
+
+                        <View style="@style/item_devider_view" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:background="@drawable/selector_item_single"
+                            android:orientation="vertical"
+                            android:paddingLeft="@dimen/buy_item_padding"
+                            android:paddingRight="@dimen/buy_item_padding" >
+
+                            <TextView
+                                android:id="@+id/tv_buy_remarks_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="购买备注" />
+
+                            <TextView
+                                android:id="@+id/tv_buy_remarks_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="购买备注详情...."
+                                android:textColor="@color/blue" />
+                        </LinearLayout>
+
+                        <!-- 买卖企业资料信息 -->
+
+                        <View style="@style/item_devider_view" />
+
+                        <include layout="@layout/layout_buy_company_profile" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <!-- 操作按钮类型 -->
+
+        <LinearLayout
+            android:id="@+id/ll_action_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" >
+
+            <Button
+                android:id="@+id/btn_want_to_deal"
+                style="@style/button_orange"
+                android:layout_width="0dp"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:text="@string/want_to_deal"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_modify_pub"
+                style="@style/button_orange"
+                android:layout_width="0dp"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:text="@string/modify_buy_info"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_undo_pub"
+                style="@style/button_blue"
+                android:layout_width="0dp"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:text="@string/undo_pub_buy_info"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btn_repub"
+                style="@style/button_orange"
+                android:layout_width="0dp"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:text="@string/repub_buy_info"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

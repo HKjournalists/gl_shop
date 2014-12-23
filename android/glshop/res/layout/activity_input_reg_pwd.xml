@@ -1,0 +1,167 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/buy_item_padding"
+                android:layout_marginTop="@dimen/buy_item_padding"
+                android:gravity="center_vertical"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reg_account_title"
+                    android:textColor="@color/gray" />
+
+                <Button
+                    android:id="@+id/btn_user_reg_account"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="3dp"
+                    android:background="@null"
+                    android:drawableLeft="@drawable/ic_reg_contact"
+                    android:text="18666668888"
+                    android:textColor="@color/blue" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 短信验证码 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/common_edit_height_big"
+                android:layout_marginBottom="@dimen/buy_item_padding"
+                android:layout_marginTop="@dimen/buy_item_padding"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/et_sms_verify_code"
+                    style="@style/sms_verifycode_edittext"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edit_normal"
+                    android:hint="@string/input_verifycode_hint" />
+
+                <Button
+                    android:id="@+id/btn_get_sms_verfiycode"
+                    style="@style/button_send_smscode"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/buy_item_padding"
+                    android:layout_weight="1.2"
+                    android:text="@string/get_sms_verifycode_init" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="center_vertical"
+                android:text="请设置登录密码" />
+
+            <!-- 新密码 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/common_edit_height_big"
+                android:background="@drawable/bg_edit_normal"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/et_user_password"
+                    style="@style/edittext"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/input_password_hint"
+                    android:inputType="textPassword" />
+
+                <ImageButton
+                    android:id="@+id/btn_delete_new_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:background="@drawable/selector_btn_edit_delete"
+                    android:contentDescription="@null" />
+            </LinearLayout>
+
+            <!-- 密码确认 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/common_edit_height_big"
+                android:layout_marginTop="@dimen/buy_item_padding"
+                android:background="@drawable/bg_edit_normal"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/et_user_password_confirm"
+                    style="@style/edittext"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/input_confirm_password_hint"
+                    android:inputType="textPassword" />
+
+                <ImageButton
+                    android:id="@+id/btn_delete_confirm_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:background="@drawable/selector_btn_edit_delete"
+                    android:contentDescription="@null" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginBottom="@dimen/buy_item_padding"
+                android:layout_marginTop="@dimen/buy_item_padding"
+                android:gravity="center_vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="密码为"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="6-12位字符或数字"
+                    android:textColor="@color/green_light" />
+            </LinearLayout>
+
+            <!-- 提交注册 -->
+
+            <Button
+                android:id="@+id/btn_submit_register"
+                style="@style/button_blue"
+                android:layout_marginTop="@dimen/buy_item_padding"
+                android:text="@string/submit" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

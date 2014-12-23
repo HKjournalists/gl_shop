@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="itemIcon" format="reference|color" />
+    <attr name="itemTitle" format="reference|string" />
+    <attr name="itemSecondTitle" format="reference|string" />
+    <attr name="itemContent" format="reference|string" />
+    <attr name="itemContentColor" format="reference|color" />
+    <attr name="itemClickIcon" format="reference" />
+    <attr name="itemEditWidth" format="dimension" />
+    <attr name="itemEditHintText" format="reference|string" />
+    <attr name="itemBg" format="reference|color" />
+    <attr name="showItemIcon" format="boolean" />
+    <attr name="showItemClickIcon" format="boolean" />
+    <attr name="itemInputType">
+        <enum name="none" value="0" />
+        <enum name="text" value="1" />
+        <enum name="textCapCharacters" value="2" />
+        <enum name="textCapWords" value="3" />
+        <enum name="textCapSentences" value="4" />
+        <enum name="textAutoCorrect" value="5" />
+        <enum name="textAutoComplete" value="6" />
+        <enum name="textMultiLine" value="7" />
+        <enum name="textImeMultiLine" value="8" />
+        <enum name="textNoSuggestions" value="9" />
+        <enum name="textUri" value="10" />
+        <enum name="textEmailAddress" value="11" />
+        <enum name="textEmailSubject" value="12" />
+        <enum name="textShortMessage" value="13" />
+        <enum name="textLongMessage" value="14" />
+        <enum name="textPersonName" value="15" />
+        <enum name="textPostalAddress" value="16" />
+        <enum name="textPassword" value="17" />
+        <enum name="textVisiblePassword" value="18" />
+        <enum name="textWebEditText" value="19" />
+        <enum name="textFilter" value="20" />
+        <enum name="textPhonetic" value="21" />
+        <enum name="textWebEmailAddress" value="22" />
+        <enum name="textWebPassword" value="23" />
+        <enum name="number" value="24" />
+        <enum name="numberSigned" value="25" />
+        <enum name="numberDecimal" value="26" />
+        <enum name="numberPassword" value="27" />
+        <enum name="phone" value="28" />
+        <enum name="datetime" value="29" />
+        <enum name="date" value="30" />
+        <enum name="time" value="31" />
+    </attr>
+
+    <!-- 自定义ItemView属性 -->
+    <declare-styleable name="ListItemView">
+        <attr name="itemBgType">
+            <enum name="single" value="0" />
+            <enum name="top" value="1" />
+            <enum name="middle" value="2" />
+            <enum name="bottom" value="3" />
+        </attr>
+        <attr name="itemIcon" />
+        <attr name="itemTitle" />
+        <attr name="itemContent" />
+        <attr name="itemContentColor" />
+    </declare-styleable>
+
+    <!-- 自定义买卖信息查看控件属性 -->
+    <declare-styleable name="BuyTextItemView">
+        <attr name="itemIcon" />
+        <attr name="itemTitle" />
+        <attr name="itemSecondTitle" />
+        <attr name="itemContent" />
+        <attr name="itemContentColor" />
+        <attr name="itemClickIcon" />
+        <attr name="itemBg" />
+        <attr name="showItemIcon" />
+        <attr name="showItemClickIcon" />
+    </declare-styleable>
+
+    <!-- 自定义买卖信息输入控件属性 -->
+    <declare-styleable name="BuyEditItemView">
+        <attr name="itemIcon" />
+        <attr name="itemTitle" />
+        <attr name="itemSecondTitle" />
+        <attr name="itemEditWidth" />
+        <attr name="itemEditHintText" />
+        <attr name="itemInputType" />
+        <attr name="itemBg" />
+        <attr name="showItemIcon" />
+    </declare-styleable>
+
+    <!-- 自定义Tab指示器属性 -->
+
+    <declare-styleable name="TabIndicator">
+        <attr name="titlePadding" format="dimension" />
+        <!-- Left/right padding of not active view titles. -->
+        <attr name="clipPadding" format="dimension" />
+        <attr name="textColor" format="color|reference" />
+        <attr name="textDefaultColor" format="color|reference" />
+        <attr name="textSizeNormal" format="dimension" />
+        <attr name="textSizeSelected" format="dimension" />
+        <attr name="footerLineHeight" format="dimension" />
+        <attr name="footerColor" format="color" />
+        <attr name="footerTriangleHeight" format="dimension" />
+    </declare-styleable>
+
+    <!-- 自定义Page指示器属性 -->
+
+    <declare-styleable name="PageIndicator">
+        <attr name="pagePadding" format="dimension" />
+        <attr name="selected_page_bg" format="reference" />
+        <attr name="unselected_page_bg" format="reference" />
+    </declare-styleable>
+
+</resources>

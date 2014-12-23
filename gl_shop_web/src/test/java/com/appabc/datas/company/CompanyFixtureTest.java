@@ -1,4 +1,4 @@
-/*package com.appabc.datas.company;
+package com.appabc.datas.company;
 
 import com.appabc.bean.enums.AuthRecordInfo;
 import com.appabc.bean.enums.UserInfo;
@@ -22,9 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
-*//**
+/**
  * Created by zouxifeng on 11/27/14.
- *//*
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:applicationContext-redis.xml",
         "classpath*:applicationContext-tools.xml",
@@ -48,10 +48,6 @@ public class CompanyFixtureTest {
     TaskService taskService;
 
     @Test
-    public void compFixture(){
-    	
-    }
-    
     public void companyFixture() {
         int size = 149;
         long ts = System.currentTimeMillis();
@@ -90,4 +86,3 @@ public class CompanyFixtureTest {
 
 
 }
-*/

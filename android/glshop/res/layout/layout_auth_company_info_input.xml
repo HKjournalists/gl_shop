@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 认证界面输入企业信息Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/buy_item_padding"
+    android:paddingRight="@dimen/buy_item_padding" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="企业相关介绍" />
+
+    <EditText
+        android:id="@+id/et_company_intro"
+        style="@style/edittext"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="6dp"
+        android:gravity="top"
+        android:hint="请输入相关企业介绍" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:layout_marginTop="6dp"
+        android:gravity="center_vertical"
+        android:text="上传企业照片" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_item_single"
+        android:gravity="center"
+        android:padding="8dp" >
+
+        <ImageView
+            android:id="@+id/iv_item_company_pic_1"
+            android:layout_width="@dimen/image_thumbnail_width"
+            android:layout_height="@dimen/image_thumbnail_heigh"
+            android:background="@drawable/ic_upload_pic"
+            android:contentDescription="@null" />
+
+        <ImageView
+            android:id="@+id/iv_item_company_pic_2"
+            android:layout_width="@dimen/image_thumbnail_width"
+            android:layout_height="@dimen/image_thumbnail_heigh"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:background="@drawable/ic_upload_pic"
+            android:contentDescription="@null" />
+
+        <ImageView
+            android:id="@+id/iv_item_company_pic_3"
+            android:layout_width="@dimen/image_thumbnail_width"
+            android:layout_height="@dimen/image_thumbnail_heigh"
+            android:background="@drawable/ic_upload_pic"
+            android:contentDescription="@null" />
+    </LinearLayout>
+
+</LinearLayout>
