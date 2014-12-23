@@ -1,19 +1,20 @@
 package com.appabc.datas.dao.user.impl;
 
+import com.appabc.bean.enums.UserInfo.ClientTypeEnum;
+import com.appabc.bean.enums.UserInfo.UserStatus;
+import com.appabc.bean.pvo.TUser;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.user.IUserDao;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TUser;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.user.IUserDao;
 
 /**
  * @Description :
@@ -46,10 +47,10 @@ public class UserDaoImpl extends BaseJdbcDao<TUser> implements IUserDao {
 		user.setCreatedate(rs.getTimestamp("CREATEDATE"));
 		user.setLogo(rs.getString("LOGO"));
 		user.setPassword(rs.getString("PASSWORD"));
-		user.setStatus(rs.getString("STATUS"));
+		user.setStatus(UserStatus.enumOf(rs.getString("STATUS")));
 		user.setUpdatedate(rs.getTimestamp("UPDATEDATE"));
 		user.setClientid(rs.getString("CLIENTID"));
-		user.setClienttype(rs.getString("CLIENTTYPE"));
+		user.setClienttype(ClientTypeEnum.enumOf(rs.getString("CLIENTTYPE")));
 		return user;
 	}
 
@@ -92,7 +93,7 @@ public class UserDaoImpl extends BaseJdbcDao<TUser> implements IUserDao {
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TUser query(TUser entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity, new StringBuffer(SELECTSQL)).toString(), entity);
+		return super.query(dynamicJoinSqlWithEntity(entity, new StringBuilder(SELECTSQL)).toString(), entity);
 	}
 
 	/* (non-Javadoc)  
@@ -106,7 +107,7 @@ public class UserDaoImpl extends BaseJdbcDao<TUser> implements IUserDao {
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TUser> queryForList(TUser entity) {
-		return super.queryForList(dynamicJoinSqlWithEntity(entity, new StringBuffer(SELECTSQL)).toString(), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity, new StringBuilder(SELECTSQL)).toString(), entity);
 	}
 
 	/* (non-Javadoc)  
@@ -140,7 +141,7 @@ public class UserDaoImpl extends BaseJdbcDao<TUser> implements IUserDao {
 		return null;
 	}
 	
-	private String dynamicJoinSqlWithEntity(TUser bean,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TUser bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}

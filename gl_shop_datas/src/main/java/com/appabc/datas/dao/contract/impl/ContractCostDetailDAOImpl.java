@@ -1,18 +1,17 @@
 package com.appabc.datas.dao.contract.impl;
 
+import com.appabc.bean.pvo.TOrderCostdetail;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.contract.IContractCostDetailDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TOrderCostdetail;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.contract.IContractCostDetailDAO;
 
 /**
  * @Description :  
@@ -32,7 +31,7 @@ public class ContractCostDetailDAOImpl extends BaseJdbcDao<TOrderCostdetail> imp
 	private static final String DELETE_SQL = " DELETE FROM T_ORDER_COSTDETAIL WHERE ID = :id ";
 	private static final String SELECT_SQL = " SELECT ID,OID,PID,FID,NAME,AMOUNT,CREATEDATE,UPDATEDATE,CREATOR,REMARK FROM T_ORDER_COSTDETAIL ";
 	
-	private String dynamicJoinSqlWithEntity(TOrderCostdetail entity,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TOrderCostdetail entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
 			return null;
 		}
@@ -89,7 +88,7 @@ public class ContractCostDetailDAOImpl extends BaseJdbcDao<TOrderCostdetail> imp
 	 * @see com.appabc.common.base.dao.IBaseDao#read(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TOrderCostdetail query(TOrderCostdetail entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -108,7 +107,7 @@ public class ContractCostDetailDAOImpl extends BaseJdbcDao<TOrderCostdetail> imp
 	 * @see com.appabc.common.base.dao.IBaseDao#readForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TOrderCostdetail> queryForList(TOrderCostdetail entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}

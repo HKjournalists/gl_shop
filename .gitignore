@@ -3,3 +3,6 @@
 **/.classpath
 **/.project
 **/local-config.properties
+**/target/
+**/*.iml
+.idea

@@ -8,10 +8,12 @@ package com.appabc.http.controller.purse;
 
 
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -21,20 +23,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.appabc.bean.pvo.TOrderInfo;
+import com.appabc.bean.bo.ContractInfoBean;
+import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
+import com.appabc.bean.enums.ContractInfo.ContractStatus;
+import com.appabc.bean.enums.PurseInfo.PayDirection;
+import com.appabc.bean.enums.PurseInfo.PurseType;
+import com.appabc.bean.pvo.TUser;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.QueryResult;
+import com.appabc.common.base.bean.UserInfoBean;
 import com.appabc.common.base.controller.BaseController;
-import com.appabc.datas.enums.ContractInfo.ContractLifeCycle;
+import com.appabc.common.utils.RandomUtil;
+import com.appabc.common.utils.pagination.PageModel;
+import com.appabc.datas.service.company.ICompanyInfoService;
 import com.appabc.datas.service.contract.IContractInfoService;
+import com.appabc.datas.service.user.IUserService;
+import com.appabc.http.utils.HttpApplicationErrorCode;
 import com.appabc.pay.bean.OInfo;
 import com.appabc.pay.bean.TAcceptBank;
 import com.appabc.pay.bean.TPassbookDraw;
 import com.appabc.pay.bean.TPassbookInfo;
-import com.appabc.pay.enums.PurseInfo.PurseType;
+import com.appabc.pay.bean.TPassbookPay;
 import com.appabc.pay.exception.ServiceException;
 import com.appabc.pay.service.IPassPayService;
 import com.appabc.pay.util.CodeConstant;
+import com.appabc.tools.utils.ValidateCodeManager;
 
 /**
  * @Description : 
@@ -54,6 +67,15 @@ public class PurseController extends BaseController<TPassbookInfo> {
 	
 	@Autowired
 	private IContractInfoService iContractInfoService;
+	
+	@Autowired
+	private ICompanyInfoService iCompanyInfoService;
+	
+	@Autowired
+	private ValidateCodeManager validateCodeManager;
+	
+	@Autowired
+	private IUserService iUserService;
 	
 	/**
 	 * getPurseList(获取钱包信息列表)
@@ -89,11 +111,11 @@ public class PurseController extends BaseController<TPassbookInfo> {
 		//if(StringUtils.isEmpty(type)){
 			//return buildFailResult(CodeConstant.PARAMETERISNULL, "type paramer is not allow null.");
 		//}
-		boolean flag = iPassPayService.initializePurseAccount(cid, type);
+		boolean flag = iPassPayService.initializePurseAccount(cid, PurseType.enumOf(type));
 		if(flag){
 			return buildSuccessResult("initialize purse account success.");
 		}else{
-			return buildFailResult(CodeConstant.RETURNERRORCODE, "initialize purse account failure.");
+			return buildFailResult(CodeConstant.RETURN_ERROR_CODE, "initialize purse account failure.");
 		}
 	}
 	
@@ -112,21 +134,32 @@ public class PurseController extends BaseController<TPassbookInfo> {
 		String type = request.getParameter("type");
 		String cid = this.getCurrentUserCid(request);
 		QueryResult<TPassbookInfo> result = new QueryResult<TPassbookInfo>();
+		float shouldGuarantNum = iCompanyInfoService.getShouldDepositAmountByCid(cid);
+		float totalGuarantyUsed = iPassPayService.getGuarantyTotal(cid);
+		boolean isGuarantyEnough = shouldGuarantNum != 0 && totalGuarantyUsed != 0 && shouldGuarantNum <= totalGuarantyUsed;
 		if(StringUtils.isEmpty(type)){
-			TPassbookInfo depositAccount = iPassPayService.getPurseAccountInfo(cid, PurseType.DEPOSIT.getValue());
-			TPassbookInfo guarantyAccount = iPassPayService.getPurseAccountInfo(cid, PurseType.GUARANTY.getValue());
+			TPassbookInfo depositAccount = iPassPayService.getPurseAccountInfo(cid, PurseType.DEPOSIT);
+			TPassbookInfo guarantyAccount = iPassPayService.getPurseAccountInfo(cid, PurseType.GUARANTY);
+			guarantyAccount.setGuarantyEnough(isGuarantyEnough);
 			result.getResult().add(depositAccount);
 			result.getResult().add(guarantyAccount);
 		}else{
-			TPassbookInfo tpbi = iPassPayService.getPurseAccountInfo(cid, type);
+			PurseType purseType = PurseType.enumOf(type);
+			TPassbookInfo tpbi = iPassPayService.getPurseAccountInfo(cid, purseType);
+			if(purseType == PurseType.GUARANTY){
+				tpbi.setGuarantyEnough(isGuarantyEnough);
+			}
 			result.getResult().add(tpbi);
 		}
-		QueryContext<TOrderInfo> qContext = new QueryContext<TOrderInfo>();
+		QueryContext<ContractInfoBean> qContext = new QueryContext<ContractInfoBean>();
 		qContext.getPage().setPageIndex(-1);
-		qContext.addParameter("lifecycle", ContractLifeCycle.SINGED.getValue());
-		qContext.addParameter("buyerid", this.getCurrentUserCid(request));
-		qContext = iContractInfoService.queryListForPagination(qContext);
-		result.setTotalSize(qContext.getQueryResult().getResult().size());
+		qContext.addParameter("lifecycle", ContractLifeCycle.SINGED.getVal());
+		qContext.addParameter("cid", this.getCurrentUserCid(request));
+		qContext.addParameter("status", ContractStatus.DOING.getVal());
+		qContext.addParameter("isUnPayContractList", true);
+		qContext = iContractInfoService.queryContractInfoListForPagination(qContext);
+		List<ContractInfoBean> res = qContext.getQueryResult().getResult();
+		result.setTotalSize(CollectionUtils.isNotEmpty(res) ? res.size() : 0);
 		return result;
 	}
 	
@@ -144,10 +177,14 @@ public class PurseController extends BaseController<TPassbookInfo> {
 	public Object getPurseAccountAndCompanyInfo(HttpServletRequest request,HttpServletResponse response){
 		String type = request.getParameter("type");
 		if(StringUtils.isEmpty(type)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "type paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not allow null.");
+		}
+		PurseType pt = PurseType.enumOf(type);
+		if(pt == null){
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not match. the value is 0 or 1.");
 		}
 		String cid = this.getCurrentUserCid(request);
-		return iPassPayService.getPurseAccountInfo(cid, type);
+		return iPassPayService.getPurseAccountInfo(cid, pt);
 	}
 
 	/**
@@ -163,11 +200,27 @@ public class PurseController extends BaseController<TPassbookInfo> {
 	@RequestMapping(value = "/getPayRecordList",method={RequestMethod.POST,RequestMethod.GET})
 	public Object getPayRecordList(HttpServletRequest request,HttpServletResponse response){
 		String type = request.getParameter("type");
+		String direction = request.getParameter("direction");
 		if(StringUtils.isEmpty(type)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "type paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not allow null.");
 		}
-		String cid = getCurrentUserCid(request);
-		return iPassPayService.payRecordList(cid, type);
+		PurseType pt = PurseType.enumOf(type);
+		if(pt == null){
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not match. the value is 0 or 1.");
+		}
+		if(StringUtils.isNotEmpty(direction)){			
+			PayDirection pd = PayDirection.enumOf(RandomUtil.str2int(direction));
+			if(pd == null){
+				return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "direction paramer is not match. the value is 0 or 1.");
+			}
+		}
+		
+		QueryContext<TPassbookPay> qContext = new QueryContext<TPassbookPay>();
+		PageModel page = initilizePageParams(qContext.getPage(), request);
+		qContext.setPage(page);
+		qContext.setParameters(buildParametersToMap(request));
+		qContext.addParameter("cid", this.getCurrentUserCid(request));
+		return iPassPayService.payRecordList(qContext).getQueryResult().getResult();
 	}
 	
 	/**
@@ -184,7 +237,7 @@ public class PurseController extends BaseController<TPassbookInfo> {
 	public Object getPayRecordDetail(HttpServletRequest request,HttpServletResponse response){
 		String detailId = request.getParameter("PID");
 		if(StringUtils.isEmpty(detailId)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "PId paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "PId paramer is not allow null.");
 		}
 		return iPassPayService.payRecordDetail(detailId);
 	}
@@ -203,7 +256,7 @@ public class PurseController extends BaseController<TPassbookInfo> {
 	public Object depositToGuaranty(HttpServletRequest request,HttpServletResponse response){
 		String balance = request.getParameter("balance");
 		if(StringUtils.isEmpty(balance)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "balance paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "balance paramer is not allow null.");
 		}
 		String cid = getCurrentUserCid(request);
 		return iPassPayService.depositToGuaranty(cid, NumberUtils.toFloat(balance));
@@ -224,11 +277,11 @@ public class PurseController extends BaseController<TPassbookInfo> {
 		String cid = getCurrentUserCid(request);
 		String bankcard = request.getParameter("bankcard");
 		if(StringUtils.isEmpty(bankcard)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "bankcard paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "bankcard paramer is not allow null.");
 		}
 		String carduser = request.getParameter("carduser");
 		if(StringUtils.isEmpty(carduser)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "carduser paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "carduser paramer is not allow null.");
 		}
 		String bankaccount = request.getParameter("bankaccount");
 		if(StringUtils.isEmpty(bankaccount)){
@@ -236,11 +289,11 @@ public class PurseController extends BaseController<TPassbookInfo> {
 		}
 		String bankname = request.getParameter("bankname");
 		if(StringUtils.isEmpty(bankname)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "bankname paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "bankname paramer is not allow null.");
 		}
 		String banktype = request.getParameter("banktype");
 		if(StringUtils.isEmpty(banktype)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "blanktype paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "blanktype paramer is not allow null.");
 		}
 		String addr = request.getParameter("addr");
 		String carduserid = request.getParameter("carduserid");
@@ -261,7 +314,7 @@ public class PurseController extends BaseController<TPassbookInfo> {
 			iPassPayService.saveAcceptBank(tAcceptBank);
 			return tAcceptBank;
 		} catch (ServiceException e) {
-			return buildFailResult(CodeConstant.RETURNERRORCODE, e.getMessage());
+			return buildFailResult(CodeConstant.RETURN_ERROR_CODE, e.getMessage());
 		}
 	}
 	
@@ -299,19 +352,43 @@ public class PurseController extends BaseController<TPassbookInfo> {
 		String acceptId = request.getParameter("acceptId");
 		String balance = request.getParameter("balance");
 		String type = request.getParameter("type");
-		String cid = getCurrentUserCid(request);
+		String validateCode = request.getParameter("validateCode");
+		String password = request.getParameter("password");
+		UserInfoBean userInfoBean = this.getCurrentUser(request);
+		if (StringUtils.isEmpty(validateCode)) {
+			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,"验证码不能为空.");
+		}
+		
+		String smsCode = validateCodeManager.getSmsCode(userInfoBean.getPhone());
+		if(!StringUtils.equalsIgnoreCase(validateCode, smsCode)){
+			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,"验证码过期.");
+		}
+		if (StringUtils.isEmpty(password)) {
+			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,"用户密码为空.");
+		}
+		TUser user = iUserService.queryByNameAndPass(userInfoBean.getUserName(), password);
+		if(user==null){
+			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,"用户密码不对.");
+		}
+		
 		if(StringUtils.isEmpty(acceptId)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "acceptId paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "acceptId paramer is not allow null.");
 		}
 		if(StringUtils.isEmpty(balance)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "balance paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "balance paramer is not allow null.");
 		}
 		if(StringUtils.isEmpty(type)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "type paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not allow null.");
 		}
-		TPassbookDraw tpd = iPassPayService.extractCashRequest(cid, type, NumberUtils.toFloat(balance), acceptId);
+		PurseType pt = PurseType.enumOf(type);
+		if(pt == null){
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type is not match. and the value will is 0 or 1.");
+		}
+		TPassbookDraw tpd = iPassPayService.extractCashRequest(userInfoBean.getCid(), pt, NumberUtils.toFloat(balance), acceptId);
+		//业务操作完成,删除前面的的手机验证.
+		validateCodeManager.delSmsCode(userInfoBean.getPhone());
 		if(tpd == null){
-			return buildFailResult(CodeConstant.RETURNERRORCODE, "extract cash request failure.");
+			return buildFailResult(CodeConstant.RETURN_ERROR_CODE, "extract cash request failure.");
 		}else {
 			return tpd;
 		}
@@ -331,11 +408,11 @@ public class PurseController extends BaseController<TPassbookInfo> {
 	public Object extractCashValidation(HttpServletRequest request,HttpServletResponse response){
 		String tid = request.getParameter("TID");
 		if(StringUtils.isEmpty(tid)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "tid paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "tid paramer is not allow null.");
 		}
 		String result = request.getParameter("result");
 		if(StringUtils.isEmpty(result)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "result paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "result paramer is not allow null.");
 		}
 		String reson = request.getParameter("reson");
 		String cid = getCurrentUserCid(request);
@@ -343,7 +420,7 @@ public class PurseController extends BaseController<TPassbookInfo> {
 		if(flag){
 			return buildSuccessResult("validate the extract cash success.");
 		}else{
-			return buildFailResult(CodeConstant.RETURNERRORCODE, "validate the extract cash failure.");
+			return buildFailResult(CodeConstant.RETURN_ERROR_CODE, "validate the extract cash failure.");
 		}
 	}
 	
@@ -365,9 +442,13 @@ public class PurseController extends BaseController<TPassbookInfo> {
 		}
 		String type = request.getParameter("type");
 		if(StringUtils.isEmpty(type)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "type paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not allow null.");
 		}
-		return iPassPayService.payRecordList(cid, type);
+		PurseType pt = PurseType.enumOf(type);
+		if(pt == null){
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type is not match. and the value will is 0 or 1.");
+		}
+		return iPassPayService.payRecordList(cid, pt);
 	}
 	
 	/**
@@ -384,25 +465,29 @@ public class PurseController extends BaseController<TPassbookInfo> {
 	public Object depositAccountOnline(HttpServletRequest request,HttpServletResponse response){
 		String type = request.getParameter("type");
 		if(StringUtils.isEmpty(type)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "type paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not allow null.");
 		}
 		String balance = request.getParameter("balance");
 		if(StringUtils.isEmpty(balance)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "balance paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "balance paramer is not allow null.");
 		}
 		String payNo = request.getParameter("payNo");
 		if(StringUtils.isEmpty(payNo)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "payNo paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "payNo paramer is not allow null.");
 		}
 		String cid = request.getParameter("cid");
 		if(StringUtils.isEmpty(cid)){
 			cid = getCurrentUserCid(request);
 		}
-		boolean flag = iPassPayService.depositAccountOnline(cid, type, NumberUtils.toFloat(balance), payNo);
+		PurseType pt = PurseType.enumOf(type);
+		if(pt == null){
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type is not match. and the value will is 0 or 1.");
+		}
+		boolean flag = iPassPayService.depositAccountOnline(cid, pt, NumberUtils.toFloat(balance), payNo);
 		if(flag){
 			return buildSuccessResult("deposit account online success.");
 		}else{
-			return buildFailResult(CodeConstant.RETURNERRORCODE, "deposit account online failure.");
+			return buildFailResult(CodeConstant.RETURN_ERROR_CODE, "deposit account online failure.");
 		}
 	}
 	
@@ -420,25 +505,29 @@ public class PurseController extends BaseController<TPassbookInfo> {
 	public Object depositThirdPartInfo(HttpServletRequest request,HttpServletResponse response){
 		String type = request.getParameter("type");
 		if(StringUtils.isEmpty(type)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "type paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not allow null.");
 		}
 		String balance = request.getParameter("balance");
 		if(StringUtils.isEmpty(balance)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "balance paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "balance paramer is not allow null.");
 		}
 		String payNo = request.getParameter("payNo");
 		if(StringUtils.isEmpty(payNo)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "payNo paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "payNo paramer is not allow null.");
 		}
 		String cid = request.getParameter("cid");
 		if(StringUtils.isEmpty(cid)){
 			cid = getCurrentUserCid(request);
 		}
-		boolean flag = iPassPayService.depositThirdOrgRecord(cid, type, NumberUtils.toFloat(balance), payNo);
+		PurseType pt = PurseType.enumOf(type);
+		if(pt == null){
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type is not match. and the value will is 0 or 1.");
+		}
+		boolean flag = iPassPayService.depositThirdOrgRecord(cid, pt, NumberUtils.toFloat(balance), payNo);
 		if(flag){
 			return buildSuccessResult("deposit account third part success.");
 		}else{
-			return buildFailResult(CodeConstant.RETURNERRORCODE, "deposit account third part failure.");
+			return buildFailResult(CodeConstant.RETURN_ERROR_CODE, "deposit account third part failure.");
 		}
 	}
 	
@@ -456,14 +545,18 @@ public class PurseController extends BaseController<TPassbookInfo> {
 	public Object depositAccountOffline(HttpServletRequest request,HttpServletResponse response){
 		String type = request.getParameter("type");
 		if(StringUtils.isEmpty(type)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "type paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not allow null.");
+		}
+		PurseType pt = PurseType.enumOf(type);
+		if(pt == null){
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type is not match. and the value will is 0 or 1.");
 		}
 		String cid = this.getCurrentUserCid(request);
-		boolean flag = iPassPayService.depositAccountOffline(cid, type);
+		boolean flag = iPassPayService.depositAccountOfflineRequest(cid, pt);
 		if(flag){
 			return buildSuccessResult("deposit account offline success.");
 		}else{
-			return buildFailResult(CodeConstant.RETURNERRORCODE, "deposit account offline failure.");
+			return buildFailResult(CodeConstant.RETURN_ERROR_CODE, "deposit account offline failure.");
 		}
 	}
 	
@@ -484,20 +577,20 @@ public class PurseController extends BaseController<TPassbookInfo> {
 		 * */
 		String type = request.getParameter("type");
 		if(StringUtils.isEmpty(type)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "type paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "type paramer is not allow null.");
 		}
 		String oid = request.getParameter("OID");
 		if(StringUtils.isEmpty(oid)){
-			return buildFailResult(CodeConstant.PARAMETERISNULL, "OID paramer is not allow null.");
+			return buildFailResult(CodeConstant.PARAMETER_IS_NULL, "OID paramer is not allow null.");
 		}
 		String cid = this.getCurrentUserCid(request);
 		OInfo o = new OInfo();
 		o.setOid(oid);
-		boolean flag = iPassPayService.payAccountOffline(cid, PurseType.DEPOSIT.getValue(), o);
+		boolean flag = iPassPayService.payAccountOfflineRequest(cid, PurseType.DEPOSIT, o);
 		if(flag){
 			return buildSuccessResult("pay account offline success.");
 		}else{
-			return buildFailResult(CodeConstant.RETURNERRORCODE, "pay account offline failure.");
+			return buildFailResult(CodeConstant.RETURN_ERROR_CODE, "pay account offline failure.");
 		}
 	}
 	

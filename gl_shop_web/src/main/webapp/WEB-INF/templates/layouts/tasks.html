@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/default">
+<body>
+<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+<th:block layout:fragment="side-menu">
+
+  <th:block sec:authorize="hasAnyRole('ROLE_PROMPT_VERIFY', 'ROLE_PROMPT_DEPOSIT', 'ROLE_PUBLISH_INFO', 'ROLE_PROMPT_PAYMENT', 'ROLE_PROMPT_REAL_PAY')">
+    <li th:class="${#strings.contains(url, '/tasks/sales/')} ? 'active'">
+      <a href="#"><i class="fa fa-wrench fa-fw"></i> 站内销售 <i class="fa arrow"></i></a>
+      <ul id="sales" class="nav nav-second-level">
+        <li><a th:href="@{/tasks/sales/verify/}">催促认证</a></li>
+        <li><a th:href="@{/tasks/sales/deposit/}">催缴保证金</a></li>
+        <li><a th:href="@{/tasks/sales/pubinfo/}">代发信息请求</a></li>
+        <li><a th:href="@{/tasks/sales/payment/}">催缴货款</a></li>
+        <li><a th:href="@{/tasks/sales/realpay/}">催促实际支付</a></li>
+      </ul>
+    </li>
+  </th:block>
+
+  <th:block sec:authorize="hasAnyRole('ROLE_CONTRACT_MATCH', 'ROLE_CONTRACT_GENERATE_CONFIRM')">
+    <li th:class="${#strings.contains(url, '/tasks/contract/')} ? 'active'">
+      <a href="#"><i class="fa fa-wrench fa-fw"></i> 合同管理 <i class="fa arrow"></i></a>
+      <ul id="contract" class="nav nav-second-level">
+        <li><a th:href="@{/tasks/contract/match/}">撮合交流</a></li>
+        <li><a th:href="@{/tasks/contract/genconfirm/}">生成/确认合同</a></li>
+      </ul>
+    </li>
+    84299377
+  </th:block>
+
+  <th:block sec:authorize="hasAnyRole('ROLE_PHONE_DIAL_IN', 'ROLE_PHONE_DIAL_OUT')">
+    <li th:class="${#strings.contains(url, '/tasks/customer/')} ? 'active'">
+      <a href="#"><i class="fa fa-wrench fa-fw"></i> 客服 <i class="fa arrow"></i></a>
+      <ul id="service" class="nav nav-second-level">
+        <li><a th:href="@{/tasks/customer/dialin/}">呼入电话</a></li>
+        <li><a th:href="@{/tasks/customer/dialout/}">呼出电话</a></li>
+      </ul>
+    </li>
+  </th:block>
+
+  <th:block sec:authorize="hasAnyRole('ROLE_MARKET_INFO_EDIT', 'ROLE_VERIFY_INFO_AUDIT')">
+    <li th:class="${#strings.contains(url, '/tasks/editor/')} ? 'active'">
+      <a href="#"><i class="fa fa-wrench fa-fw"></i> 编辑 <i class="fa arrow"></i></a>
+      <ul id="market" class="nav nav-second-level">
+        <li sec:authorize="hasRole('ROLE_MARKET_INFO_EDIT')"><a th:href="@{/tasks/editor/marketinfo/}">市场行情编辑</a></li>
+        <li sec:authorize="hasRole('ROLE_VERIFY_INFO_AUDIT')"><a th:class="${#strings.contains(url, 'verify_info_audit')} ? 'active'" th:href="@{/tasks/editor/verify_info_audit/1/}">认证信息审核</a></li>
+      </ul>
+    </li>
+  </th:block>
+</th:block>
+</body>
+</html>

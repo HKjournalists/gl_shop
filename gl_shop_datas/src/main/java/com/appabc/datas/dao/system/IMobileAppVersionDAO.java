@@ -1,5 +1,6 @@
 package com.appabc.datas.dao.system;
 
+import com.appabc.bean.enums.PurseInfo.DeviceType;
 import com.appabc.bean.pvo.TMobileAppVersion;
 import com.appabc.common.base.dao.IBaseDao;
 
@@ -13,5 +14,7 @@ import com.appabc.common.base.dao.IBaseDao;
  */
 
 public interface IMobileAppVersionDAO extends IBaseDao<TMobileAppVersion> {
+
+	TMobileAppVersion queryMobileAppUpdateInfo(DeviceType devices,String lastNo);
 	
 }

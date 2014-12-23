@@ -3,11 +3,12 @@
  */
 package com.appabc.datas.service.product;
 
-import java.util.List;
-
+import com.appabc.bean.bo.ProductAllInfoBean;
 import com.appabc.bean.pvo.TProductInfo;
 import com.appabc.bean.pvo.TProductProperty;
 import com.appabc.common.base.service.IBaseService;
+
+import java.util.List;
 
 /**
  * @Description : 商品基本信息SERVICE接口
@@ -20,11 +21,12 @@ import com.appabc.common.base.service.IBaseService;
 public interface IProductInfoService extends IBaseService<TProductInfo>{
 	
 	/**
-	 * 添加商品和商品属性
+	 * 添加商品和商品属性及商品规格
 	 * @param productInfo
+	 * @param psize 商品规格参数
 	 * @param productPropertyList
 	 */
-	public void add(TProductInfo productInfo, List<TProductProperty> productPropertyList);
+	public void add(TProductInfo productInfo,TProductProperty psize, List<TProductProperty> productPropertyList);
 	
 	/**
 	 * 修改商品及属性
@@ -38,5 +40,11 @@ public interface IProductInfoService extends IBaseService<TProductInfo>{
 	 * @param pCode
 	 */
 	public List<TProductInfo> queryByPcode(String pCode);
+	
+	/**
+	 * 获取商品的全部信息
+	 * @return
+	 */
+	public List<ProductAllInfoBean> queryProductAllInfoForList();
 
 }

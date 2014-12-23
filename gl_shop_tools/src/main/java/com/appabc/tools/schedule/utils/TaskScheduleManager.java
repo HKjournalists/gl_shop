@@ -6,12 +6,9 @@
  */
 package com.appabc.tools.schedule.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Properties;
-
+import com.appabc.common.spring.BeanLocator;
+import com.appabc.tools.bean.ScheduleInfoBean;
+import com.appabc.tools.service.schedule.IScheduleService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -23,9 +20,11 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.ClassUtils;
 
-import com.appabc.common.spring.BeanLocator;
-import com.appabc.tools.bean.ScheduleInfoBean;
-import com.appabc.tools.service.schedule.IScheduleService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Properties;
 
 /**
  * @Description : 
@@ -76,7 +75,9 @@ public class TaskScheduleManager {
 			logUtil.debug(e.getMessage(), e);
 			throw e;
 		}finally {
-			is.close();
+			if(is != null){
+				is.close();
+			}
 		}
 		return prop;
 	}
@@ -125,64 +126,64 @@ public class TaskScheduleManager {
 				throw e;
 			}
 		}
-		logUtil.info(" add the ["+prop.size()+"]  schedules to "+sched.getClass().getName()+" are successfull.");
+		logUtil.info(" From Properties load to add the ["+prop.size()+"]  schedules to "+sched.getClass().getName()+" are successfull.");
 	}
 	
 	protected void loadSchedulerWithDB() throws Exception {
 		ScheduleInfoBean entity = new ScheduleInfoBean();
 		entity.setIsValid(true);
 		List<ScheduleInfoBean> result = iScheduleService.queryForList(entity);
-		if(result == null || CollectionUtils.isEmpty(result)){
-			return ;
-		}
 		int size = 0;
-		for(ScheduleInfoBean bean : result){
-			String jobClsName = bean.getJobClassName();
-			String triggerClsName = bean.getTriggerClassName();
-			if(jobClsName == null || triggerClsName == null){
-				continue;
+		if(result != null && CollectionUtils.isNotEmpty(result)){
+			for(ScheduleInfoBean bean : result){
+				String jobClsName = bean.getJobClassName();
+				String triggerClsName = bean.getTriggerClassName();
+				if(jobClsName == null || triggerClsName == null){
+					continue;
+				}
+				Object o = loadInstanceWithClass(jobClsName);
+				if(o == null){
+					continue;
+				}
+				BaseJob bj = (BaseJob)o;
+				JobDetail jobDe = null;
+				if(StringUtils.isNotEmpty(bean.getJobName()) && StringUtils.isNotEmpty(bean.getJobGroup())){
+					jobDe = new JobDetail(bean.getJobName(),bean.getJobGroup(),bj.getClass());
+				}else{
+					jobDe = new JobDetail(bj.NAME,bj.GROUP,bj.getClass());
+				}
+				
+				Object j = loadInstanceWithClass(triggerClsName);
+				if(j == null){
+					continue;
+				}
+				BaseCronTrigger bct = (BaseCronTrigger)j;
+				if(StringUtils.isNotEmpty(bean.getTriggerName()) && StringUtils.isNotEmpty(bean.getTriggerGroup())){
+					bct.setName(bean.getTriggerName());
+					bct.setGroup(bean.getTriggerGroup());
+				}
+				
+				if(StringUtils.isNotEmpty(bean.getJobName()) && StringUtils.isNotEmpty(bean.getJobGroup())){
+					bct.setJobName(bean.getJobName());
+					bct.setJobGroup(bean.getJobGroup());
+				}else{
+					bct.setJobName(bj.NAME);
+					bct.setJobGroup(bj.GROUP);
+				}
+				
+				try {
+					sched.addJob(jobDe, true);
+					sched.scheduleJob(bct);
+					logUtil.info(" add the schedule name ["+bean.getName()+"] to "+sched.getClass().getName()+" is success.");
+					size++;
+				} catch (SchedulerException e) {
+					logUtil.debug(e.getMessage(), e);
+					throw e;
+				}
 			}
-			Object o = loadInstanceWithClass(jobClsName);
-			if(o == null){
-				continue;
-			}
-			BaseJob bj = (BaseJob)o;
-			JobDetail jobDe = null;
-			if(StringUtils.isNotEmpty(bean.getJobName()) && StringUtils.isNotEmpty(bean.getJobGroup())){
-				jobDe = new JobDetail(bean.getJobName(),bean.getJobGroup(),bj.getClass());
-			}else{
-				jobDe = new JobDetail(bj.NAME,bj.GROUP,bj.getClass());
-			}
-			
-			Object j = loadInstanceWithClass(triggerClsName);
-			if(j == null){
-				continue;
-			}
-			BaseCronTrigger bct = (BaseCronTrigger)j;
-			if(StringUtils.isNotEmpty(bean.getTriggerName()) && StringUtils.isNotEmpty(bean.getTriggerGroup())){
-				bct.setName(bean.getTriggerName());
-				bct.setGroup(bean.getTriggerGroup());
-			}
-			
-			if(StringUtils.isNotEmpty(bean.getJobName()) && StringUtils.isNotEmpty(bean.getJobGroup())){
-				bct.setJobName(bean.getJobName());
-				bct.setJobGroup(bean.getJobGroup());
-			}else{
-				bct.setJobName(bj.NAME);
-				bct.setJobGroup(bj.GROUP);
-			}
-			
-			try {
-				sched.addJob(jobDe, true);
-				sched.scheduleJob(bct);
-				logUtil.info(" add the schedule name ["+bean.getName()+"] to "+sched.getClass().getName()+" is success.");
-				size++;
-			} catch (SchedulerException e) {
-				logUtil.debug(e.getMessage(), e);
-				throw e;
-			}
+			logUtil.info(" From Database Load the scheduleInfoBean Nums is : "+result.size());
 		}
-		logUtil.info(" add the ["+size+"]  schedules to "+sched.getClass().getName()+" are successfull.");
+		logUtil.info(" From Database load to add the ["+size+"]  schedules to "+sched.getClass().getName()+" are successfull.");
 	}
 	
 	protected void loadScheduler() throws Exception{
@@ -240,7 +241,7 @@ public class TaskScheduleManager {
 	public static void start(){
 		TaskScheduleManager tsm = new TaskScheduleManager();
 		tsm.run();
-		logUtil.debug("start the task schedule manager...");
+		logUtil.info("start the task schedule manager...");
 	}
 	
 	public static void stop(){

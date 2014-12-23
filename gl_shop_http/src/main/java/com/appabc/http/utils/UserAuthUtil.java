@@ -6,7 +6,7 @@ package com.appabc.http.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.appabc.datas.enums.UserInfo;
+import com.appabc.bean.enums.UserInfo.UserStatus;
 
 /**
  * @Description : 用户信息处理工具类
@@ -25,15 +25,15 @@ public class UserAuthUtil {
 	 */
 	public static Map<String,Object> checkStatus(String status){
 		
-		UserInfo.UserStatus.USER_STATUS_NORMAL.getVal();
+		UserStatus.USER_STATUS_NORMAL.getVal();
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
-		if(UserInfo.UserStatus.USER_STATUS_NORMAL.getVal().equals(status)){
+		if(UserStatus.USER_STATUS_NORMAL.getVal().equals(status)){
 			resultMap.put("code", 0); // 状态正常
-		}else if(UserInfo.UserStatus.USER_STATUS_LIMITED.getVal().equals(status)){
+		}else if(UserStatus.USER_STATUS_LIMITED.getVal().equals(status)){
 			resultMap.put("code", 1);
 			resultMap.put("errStr", "用户受限制");
-		}else if(UserInfo.UserStatus.USER_STATUS_DISABLE.getVal().equals(status)){
+		}else if(UserStatus.USER_STATUS_DISABLE.getVal().equals(status)){
 			resultMap.put("code", 1);
 			resultMap.put("errStr", "用户已被禁用");
 		}else{

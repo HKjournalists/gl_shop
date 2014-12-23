@@ -15,6 +15,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.support.KeyHolder;
 
+import com.appabc.bean.enums.PurseInfo.PurseType;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
 import com.appabc.pay.bean.TPassbookInfo;
@@ -37,7 +38,7 @@ public class PassbookInfoDAOImpl extends BaseJdbcDao<TPassbookInfo> implements
 	private static final String DELETE_SQL = " DELETE FROM T_PASSBOOK_INFO WHERE PASSID = :id ";
 	private static final String SELECT_SQL = " SELECT PASSID,CID,PASSTYPE,AMOUNT,CREATETIME,REMARK FROM T_PASSBOOK_INFO ";
 	
-	private String dynamicJoinSqlWithEntity(TPassbookInfo entity,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TPassbookInfo entity,StringBuilder sql){
 		if(entity == null || sql == null || sql.length() <= 0){
 			return StringUtils.EMPTY;
 		}
@@ -91,7 +92,7 @@ public class PassbookInfoDAOImpl extends BaseJdbcDao<TPassbookInfo> implements
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TPassbookInfo query(TPassbookInfo entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -100,7 +101,7 @@ public class PassbookInfoDAOImpl extends BaseJdbcDao<TPassbookInfo> implements
 	 * @see com.appabc.common.base.dao.IBaseDao#query(java.io.Serializable)  
 	 */
 	public TPassbookInfo query(Serializable id) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE PASSID = :id  ");
 		return super.query(sql.toString(), id);
@@ -110,7 +111,7 @@ public class PassbookInfoDAOImpl extends BaseJdbcDao<TPassbookInfo> implements
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TPassbookInfo> queryForList(TPassbookInfo entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -119,7 +120,7 @@ public class PassbookInfoDAOImpl extends BaseJdbcDao<TPassbookInfo> implements
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.util.Map)  
 	 */
 	public List<TPassbookInfo> queryForList(Map<String, ?> args) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1 = 1 ");
 		//this.addNameParamerSqlWithProperty(sql, "lid", "LID", args.get("lid"));
@@ -142,7 +143,7 @@ public class PassbookInfoDAOImpl extends BaseJdbcDao<TPassbookInfo> implements
 		
 		entity.setId(rs.getString("PASSID"));
 		entity.setCid(rs.getString("CID"));
-		entity.setPasstype(rs.getString("PASSTYPE"));
+		entity.setPasstype(PurseType.enumOf(rs.getString("PASSTYPE")));
 		entity.setAmount(rs.getFloat("AMOUNT"));
 		entity.setCreatetime(rs.getTimestamp("CREATETIME"));
 		entity.setRemark(rs.getString("REMARK"));

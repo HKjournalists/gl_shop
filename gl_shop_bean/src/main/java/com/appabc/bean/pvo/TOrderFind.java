@@ -1,7 +1,17 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.common.base.bean.BaseBean;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.appabc.bean.bo.MatchingBean;
+import com.appabc.bean.bo.MoreAreaInfos;
+import com.appabc.bean.enums.OrderFindInfo.OrderAddressTypeEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderMoreAreaEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderOverallStatusEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderStatusEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
+import com.appabc.common.base.bean.BaseBean;
 
 /**
  * @Description : 
@@ -11,7 +21,7 @@ import java.util.Date;
  * @version     : 1.0
  * Create Date  : 2014年9月19日 下午10:00:44
  */
-public class TOrderFind extends BaseBean {
+public class TOrderFind extends BaseBean implements Cloneable{
     /**
 	 * 
 	 */
@@ -30,12 +40,12 @@ public class TOrderFind extends BaseBean {
     /**
      * 类型（买和卖）
      */
-    private Integer type;
+    private OrderTypeEnum type;
 
     /**
      * 地址由谁来指定
      */
-    private Integer addresstype;
+    private OrderAddressTypeEnum addresstype;
 
     /**
      * 价格
@@ -65,7 +75,7 @@ public class TOrderFind extends BaseBean {
     /**
      * 是否发布多个地区（卖家的需求）
      */
-    private String morearea;
+    private OrderMoreAreaEnum morearea;
 
     /**
      * 区域
@@ -90,7 +100,7 @@ public class TOrderFind extends BaseBean {
     /**
      * 状态（有效、失效）
      */
-    private Integer status;
+    private OrderStatusEnum status;
 
     /**
      * 备注
@@ -115,18 +125,43 @@ public class TOrderFind extends BaseBean {
     /**
      * 状态(已发布，审核不通过，已取消，已过期，销售量为0，已产生订单)
      */
-    private Integer overallstatus;
+    private OrderOverallStatusEnum overallstatus;
+    
+    /**
+     * 撮合合同次数
+     */
+    private Integer matchingnum; 
     
     private String pname; //产品名称
-    private String ptype; //产品类型
+    private String pcode; //商品类型（大类）
+    private String ptype; //产品种类（二级分类CODE）
     private String unit; // 单位
     /**
      * 多地域发布信息，内容为JSON格式，包含地域和单价
      * 例：[{\"price\":\"12\",\"area\":\"A_003\"},{\"price\":\"14\",\"area\":\"A_006\"}]
      */
     private String moreAreaInfos; 
+    private List<MoreAreaInfos> moreAreaList = new ArrayList<MoreAreaInfos>(); // 我的供求列表页面的多地域信息
     
-    public String getPname() {
+    private MatchingBean matchingBean; // 询单自动匹配列表
+    
+    public MatchingBean getMatchingBean() {
+		return matchingBean;
+	}
+
+	public void setMatchingBean(MatchingBean matchingBean) {
+		this.matchingBean = matchingBean;
+	}
+
+	public List<MoreAreaInfos> getMoreAreaList() {
+		return moreAreaList;
+	}
+
+	public void setMoreAreaList(List<MoreAreaInfos> moreAreaList) {
+		this.moreAreaList = moreAreaList;
+	}
+
+	public String getPname() {
 		return pname;
 	}
 
@@ -166,23 +201,15 @@ public class TOrderFind extends BaseBean {
         this.title = title == null ? null : title.trim();
     }
 
-    public Integer getType() {
-        return type;
-    }
+    public OrderAddressTypeEnum getAddresstype() {
+		return addresstype;
+	}
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
+	public void setAddresstype(OrderAddressTypeEnum addresstype) {
+		this.addresstype = addresstype;
+	}
 
-    public Integer getAddresstype() {
-        return addresstype;
-    }
-
-    public void setAddresstype(Integer addresstype) {
-        this.addresstype = addresstype;
-    }
-
-    public Float getPrice() {
+	public Float getPrice() {
         return price;
     }
 
@@ -222,14 +249,6 @@ public class TOrderFind extends BaseBean {
         this.endtime = endtime;
     }
 
-    public String getMorearea() {
-        return morearea;
-    }
-
-    public void setMorearea(String morearea) {
-        this.morearea = morearea == null ? null : morearea.trim();
-    }
-
     public String getArea() {
         return area;
     }
@@ -260,14 +279,6 @@ public class TOrderFind extends BaseBean {
 
     public void setLimitime(Date limitime) {
         this.limitime = limitime;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public String getRemark() {
@@ -310,13 +321,53 @@ public class TOrderFind extends BaseBean {
 		this.moreAreaInfos = moreAreaInfos;
 	}
 
-	public Integer getOverallstatus() {
+	public OrderMoreAreaEnum getMorearea() {
+		return morearea;
+	}
+
+	public void setMorearea(OrderMoreAreaEnum morearea) {
+		this.morearea = morearea;
+	}
+
+	public OrderStatusEnum getStatus() {
+		return status;
+	}
+
+	public void setStatus(OrderStatusEnum status) {
+		this.status = status;
+	}
+
+	public OrderOverallStatusEnum getOverallstatus() {
 		return overallstatus;
 	}
 
-	public void setOverallstatus(Integer overallstatus) {
+	public void setOverallstatus(OrderOverallStatusEnum overallstatus) {
 		this.overallstatus = overallstatus;
 	}
-    
+
+	public OrderTypeEnum getType() {
+		return type;
+	}
+
+	public void setType(OrderTypeEnum type) {
+		this.type = type;
+	}
+
+	public String getPcode() {
+		return pcode;
+	}
+
+	public void setPcode(String pcode) {
+		this.pcode = pcode;
+	}
+
+	public Integer getMatchingnum() {
+		return matchingnum;
+	}
+
+	public void setMatchingnum(Integer matchingnum) {
+		this.matchingnum = matchingnum;
+	}
+
 
 }

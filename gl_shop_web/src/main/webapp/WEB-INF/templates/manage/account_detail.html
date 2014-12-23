@@ -5,10 +5,9 @@
 <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
 </head>
 <body>
-	<ol layout:fragment="contentNavTitle">
-		<li><i class="fa fa-fw fa-wrench"></i> 系统管理</li>
-		<li th:text="${type.equals('edit')} ? '编辑帐号'">新建帐号</li>
-	</ol>
+	<h4 layout:fragment="contentNavTitle">
+		<i class="fa fa-fw fa-wrench"></i> 系统管理 / <th:block th:text="${#strings.equals(type, 'edit')} ? '编辑帐号' : 新建帐号"></th:block>
+	</h4>
 
 	<div layout:fragment="pageContent">
 		<div class="well well-lg">
@@ -20,7 +19,7 @@
 				<div class="form-group">
 					<label for="userName" class="col-sm-2 control-label">用户名</label>
 					<div class="controls col-sm-4">
-						<input pattern="\w{6,20}" class="form-control" type="text" id="userName" name="userName" th:value="${user.userName}" placeholder="用户名" required="required" title="用户名不正确，请输入0-9数字和a-z大小写字母，至少为6个字符" />
+						<input pattern="\w{4,20}" class="form-control" type="text" id="userName" name="userName" th:value="${user.userName}" placeholder="用户名" required="required" title="用户名不正确，请输入0-9数字和a-z大小写字母，至少为4个字符" />
 					</div>
 					<div class="col-sm-6 help-inline">
                         <div class="error" role="alert" data-validation-message-for="userName"></div>

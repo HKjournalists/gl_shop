@@ -19,6 +19,8 @@ public abstract class BaseException extends Exception {
 	
 	private static final long serialVersionUID = 4917469711588504305L;
 
+	private int errorCode = 1000;
+	
 	public BaseException(){
 		super();
 	}
@@ -27,12 +29,45 @@ public abstract class BaseException extends Exception {
 		super(msg);
 	}
 	
+	public BaseException(int errorCode,String msg){
+		this(msg);
+		this.errorCode = errorCode;
+	}
+	
 	public BaseException(Throwable cause){
 		super(cause);
 	}
 	
+	public BaseException(int errorCode,Throwable cause){
+		this(cause);
+		this.errorCode = errorCode;
+	}
+	
 	public BaseException(String msg, Throwable cause) {
 		super(msg, cause);
+	}
+	
+	public BaseException(int errorCode,String msg, Throwable cause) {
+		this(msg, cause);
+		this.errorCode = errorCode;
+	}
+
+	/**  
+	 * errorCode  
+	 *  
+	 * @return  the errorCode  
+	 * @since   1.0.0  
+	*/  
+	
+	public int getErrorCode() {
+		return errorCode;
+	}
+
+	/**  
+	 * @param errorCode the errorCode to set  
+	 */
+	public void setErrorCode(int errorCode) {
+		this.errorCode = errorCode;
 	}
 	
 }

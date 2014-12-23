@@ -77,3 +77,12 @@ need to fixed the problem:
 
 to do task:
 1) 任务调度的工具集成
+
+
+
+
+
+数据库更改记录
+T_OFFLINE_PAY  creattime--->createtime
+T_PASSBOOK_PAY patytime--->paytime
+add BALANCE字段

@@ -3,10 +3,10 @@
  */
 package com.appabc.tools.xmpp;
 
-import java.util.List;
-
 import com.appabc.bean.pvo.TUser;
 import com.appabc.tools.bean.PushInfoBean;
+
+import java.util.List;
 
 /**
  * @Description : 消息推送接口

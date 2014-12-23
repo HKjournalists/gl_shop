@@ -7,7 +7,7 @@
 		<groupId>com.appabc</groupId>
 		<artifactId>gl_shop</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../gl_shop</relativePath>
+		<relativePath>../</relativePath>
 	</parent>
 
 	<groupId>com.appabc.tools</groupId>
@@ -35,45 +35,43 @@
 		</dependency>
 
 		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
-			<version>2.6.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>gexin</groupId>
 			<artifactId>gexin-rp-sdk-base</artifactId>
-			<version>2.0.0.18</version>
 		</dependency>
 
 		<dependency>
 			<groupId>gexin</groupId>
 			<artifactId>gexin-rp-sdk-http</artifactId>
-			<version>3.0.0.7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>gexin</groupId>
 			<artifactId>gexin-rp-sdk-template</artifactId>
-			<version>2.0.0.7</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-all</artifactId>
-			<version>1.8.5</version>
 		</dependency>
 
 		<dependency>
 			<groupId>javapns</groupId>
 			<artifactId>javapns-jdk16</artifactId>
-			<version>163</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk16</artifactId>
-			<version>1.46</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-all</artifactId>
 		</dependency>
 
 		<dependency>
@@ -112,6 +110,7 @@
 		<dependency>
 		  	<groupId>org.apache.tomcat</groupId>
 		  	<artifactId>tomcat-servlet-api</artifactId>
+               <scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -129,15 +128,7 @@
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
-			<version>1.8.6</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -203,6 +194,7 @@
 										<exclude>applicationContext-schedule.xml</exclude>
 										<exclude>jdbc-datasource.properties</exclude>
 										<exclude>log4j.xml</exclude>
+										<exclude>PushIos.p12</exclude>
 										<exclude>quartz.properties</exclude>
 										<exclude>TaskProp.properties</exclude>
 									</includes>
@@ -216,6 +208,17 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<mainClass>com.appabc.tools.schedule.starter.ScheduleServerStarter</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
 				<executions>
 					<execution>
 						<id>default-jar</id>
@@ -230,6 +233,7 @@
 								<exclude>jdbc-datasource.properties</exclude>
 								<exclude>startup.bat</exclude>
 								<exclude>startup.sh</exclude>
+								<exclude>log4j.xml</exclude>
 							</excludes>
 						</configuration>
 					</execution>
@@ -256,7 +260,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
@@ -270,7 +274,7 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
+			</plugin> -->
 		</plugins>
 	</build>
 

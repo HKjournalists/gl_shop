@@ -1,22 +1,22 @@
 package com.appabc.system.web.security;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import com.appabc.datas.system.UserPermission;
+import com.appabc.datas.system.User;
+import com.appabc.datas.system.dao.UserDao;
+import com.appabc.datas.system.dao.UserPermissionDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.appabc.system.User;
-import com.appabc.system.UserDao;
-import com.appabc.system.UserPermission;
-import com.appabc.system.UserPermissionDao;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : zouxifeng
@@ -24,17 +24,17 @@ import com.appabc.system.UserPermissionDao;
  * Create Date  : Oct 30, 2014 10:21:01 AM
  */
 public class UserDetailsManager implements UserDetailsService {
-	
-	private final static String ROLE_PREFIX = "ROLE_";
-	
-	@Autowired
-	private UserDao userDao;
-	
-	@Autowired
-	private UserPermissionDao userPermissionDao;
 
-	/* (non-Javadoc)  
-	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)  
+    private final static Logger logger = LoggerFactory.getLogger(UserDetailsManager.class);
+
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private UserPermissionDao userPermissionDao;
+
+	/* (non-Javadoc)
+	 * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String userName)
@@ -42,14 +42,16 @@ public class UserDetailsManager implements UserDetailsService {
 		User user = userDao.findByUserName(userName);
 
 		List<UserPermission> userPermissions = userPermissionDao.loadUserPermission(user.getId());
-		List<GrantedAuthority> authorities = new LinkedList<GrantedAuthority>();
-		
+		List<GrantedAuthority> authorities = new LinkedList<>();
+
 		for (UserPermission up : userPermissions) {
-			SimpleGrantedAuthority auth = new SimpleGrantedAuthority(ROLE_PREFIX + up.getPermission().getName());
-			authorities.add(auth);
+			authorities.add(new UserPermissionAuthority(up.getPermission()));
+            if (logger.isDebugEnabled()) {
+                logger.debug("{} has authority: {} {}", userName, up.getPermission().getName(), up.getPermission().getDisplayName());
+            }
 		}
 
-		return new UserDetailsImpl(userDao.findByUserName(userName), authorities);
+		return new UserDetailsImpl(user, authorities);
 	}
 
 }

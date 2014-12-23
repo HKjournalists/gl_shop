@@ -4,10 +4,12 @@
 package com.appabc.http.controller.order;
 
 import java.util.Calendar;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,20 +17,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.appabc.bean.bo.OrderAllInfor;
+import com.appabc.bean.enums.OrderFindInfo.OrderAddressTypeEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderMoreAreaEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderOverallStatusEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
+import com.appabc.bean.enums.ProductInfo.UnitEnum;
 import com.appabc.bean.pvo.TOrderAddress;
 import com.appabc.bean.pvo.TOrderFind;
 import com.appabc.bean.pvo.TOrderFindItem;
+import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderProductInfo;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
-import com.appabc.datas.enums.OrderFindInfo;
-import com.appabc.datas.enums.OrderFindInfo.OrderMoreAreaEnum;
-import com.appabc.datas.enums.OrderFindInfo.OrderOverallStatusEnum;
-import com.appabc.datas.enums.OrderFindInfo.OrderTypeEnum;
 import com.appabc.datas.service.contract.IContractInfoService;
 import com.appabc.datas.service.order.IOrderFindItemService;
 import com.appabc.datas.service.order.IOrderFindService;
+import com.appabc.http.utils.HttpApplicationErrorCode;
 
 /**
  * @Description : 供求信息接口Controller
@@ -61,55 +66,66 @@ public class OrderController extends BaseController<TOrderFind> {
 	@ResponseBody
 	@RequestMapping(value = "/publish",method=RequestMethod.POST)
 	public Object addOrderFindInfos(HttpServletRequest request,HttpServletResponse response, 
-			TOrderFind ofBean, TOrderProductInfo opiBean) {
+			TOrderFind ofBean) {
+		
+	    TOrderProductInfo opiBean = new TOrderProductInfo();
+	    opiBean.setPcolor(request.getParameter("pcolor"));
+	    opiBean.setPaddress(request.getParameter("paddress")); // 产地
+	    opiBean.setPid(request.getParameter("pid"));
+	    opiBean.setPremark(request.getParameter("premark"));
+	    opiBean.setProductImgIds(request.getParameter("productImgIds"));
+	    opiBean.setProductPropertys(request.getParameter("productPropertys"));
 		
 		String addressid =  request.getParameter("addressid"); // 指定卸货地址ID
+		String typeValue = request.getParameter("typeValue"); // 1：买，2：卖
+		String addresstypeValue = request.getParameter("addresstypeValue"); // 1：买家，2：卖家
+		String unit = request.getParameter("unit"); // 单位
 		
-		if(ofBean.getCid() == null || ofBean.getCid().trim().equals("")){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业编号不能为空");
-		}
-		if(ofBean.getType() == null || !(ofBean.getType()==OrderFindInfo.OrderTypeEnum.ORDER_TYPE_BUY.getVal() || ofBean.getType()==OrderFindInfo.OrderTypeEnum.ORDER_TYPE_SELL.getVal()) ){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "询单发布类型错误");
-		}
-		if(opiBean.getPid() == null || opiBean.getPid().trim().equals("")){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品ID不能为空");
-		}
-		if(opiBean.getPname() == null || opiBean.getPname().trim().equals("")){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品名称不能为空");
-		}
-		if(opiBean.getPcolor() == null || opiBean.getPcolor().trim().equals("")){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品颜色不能为空");
-		}
-		if(opiBean.getPaddress() == null || opiBean.getPaddress().trim().equals("")){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品产地不能为空");
-		}
-//		if(opiBean.getProductPropertys() == null || opiBean.getProductPropertys().trim().equals("")){
-//			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品属性不能为空");
-//		}
-		if(ofBean.getMorearea() != null && ofBean.getMorearea().equals(OrderMoreAreaEnum.ORDER_MORE_AREA_YES.getVal())){
-			if(ofBean.getMoreAreaInfos()==null || ofBean.getMoreAreaInfos().trim().equals("")){
-				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "多地域发布信息不全");
+		try {
+			if(StringUtils.isNotEmpty(unit)){
+				opiBean.setUnit(UnitEnum.enumOf(unit));
 			}
-		}else if(ofBean.getPrice() == null || ofBean.getPrice()<=0){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "价格未输入");
+			if(StringUtils.isNotEmpty(addresstypeValue)){
+				ofBean.setAddresstype(OrderAddressTypeEnum.enumOf(Integer.parseInt(addresstypeValue)));
+			}
+			if(StringUtils.isEmpty(typeValue)){
+				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "询单发布类型不能为空");
+			}else{
+				ofBean.setType(OrderTypeEnum.enumOf(Integer.parseInt(typeValue)));
+			}
+			if(ofBean.getCid() == null || ofBean.getCid().trim().equals("")){
+				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业编号不能为空");
+			}
+			if(ofBean.getType() == null || !(ofBean.getType().getVal()==OrderTypeEnum.ORDER_TYPE_BUY.getVal() || ofBean.getType().getVal()==OrderTypeEnum.ORDER_TYPE_SELL.getVal()) ){
+				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "询单发布类型错误");
+			}
+			if(opiBean.getPid() == null || opiBean.getPid().trim().equals("")){
+				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品ID不能为空");
+			}
+			if(opiBean.getPcolor() == null || opiBean.getPcolor().trim().equals("")){
+				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品颜色不能为空");
+			}
+			if(opiBean.getPaddress() == null || opiBean.getPaddress().trim().equals("")){
+				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品产地不能为空");
+			}
+			if(ofBean.getPrice() == null || ofBean.getPrice()<=0){
+				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "价格未输入");
+			}
+			
+			ofBean.setMorearea(OrderMoreAreaEnum.ORDER_MORE_AREA_NO);
+			ofBean.setCreater(getCurrentUserId(request));
+			ofBean.setCreatime(Calendar.getInstance().getTime());
+			this.orderFindService.orderPublish(ofBean, opiBean, addressid);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
 		}
-		
-		String title = opiBean.getPtype()+opiBean.getPname();
-		if(ofBean.getType()==OrderTypeEnum.ORDER_TYPE_BUY.getVal()){
-			title = "购买" + title;
-		}else{
-			title = "出售" + title;
-		}
-		ofBean.setTitle(title);
-		ofBean.setCreater(getCurrentUserId(request));
-		ofBean.setCreatime(Calendar.getInstance().getTime());
-		this.orderFindService.orderPublish(ofBean, opiBean, addressid);
 		
 		return buildSuccessResult("发布成功", "");
 	}
 	
 	/**
-	 * 找买找卖查询接口(按信用排序示实现)
+	 * 找买找卖查询接口
 	 * @param request
 	 * @param response
 	 * @return
@@ -117,11 +133,31 @@ public class OrderController extends BaseController<TOrderFind> {
 	@ResponseBody
 	@RequestMapping(value = "/open/getOrderList",method=RequestMethod.GET)
 	public Object getOrderList(HttpServletRequest request,HttpServletResponse response) {
-		
-		
 		QueryContext<TOrderFind> qContext = initializeQueryContext(request);
 		qContext.addParameter("overallstatus", OrderOverallStatusEnum.ORDER_OVERALL_STATUS_EFFECTIVE.getVal());// 有效询单
-		qContext.addParameter("queryMethod", " getOrderList ");// 判断条件
+		qContext.addParameter("queryMethod", "getOrderList");// 判断条件
+		
+		String year =  request.getParameter("year");
+		String month =  request.getParameter("month");
+		String day =  request.getParameter("day");
+		
+		
+		if(StringUtils.isNotEmpty(year) || StringUtils.isNotEmpty(month) || StringUtils.isNotEmpty(day)){
+			String queryDate = "";
+			if(StringUtils.isEmpty(year)){
+				year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+			}
+			if(StringUtils.isEmpty(month)){
+				month = "01";
+			}
+			if(StringUtils.isEmpty(day)){
+				day = "01";
+			}
+			
+			queryDate = year + "-" + month + "-" + day;
+			qContext.addParameter("queryDate", queryDate);
+		}
+		
 		qContext = orderFindService.queryListForPagination(qContext);
 		return qContext.getQueryResult();
 	}
@@ -142,7 +178,8 @@ public class OrderController extends BaseController<TOrderFind> {
 		}
 		
 		QueryContext<TOrderFind> qContext = initializeQueryContext(request);
-		qContext = orderFindService.queryListForPagination(qContext);
+		qContext.addParameter("queryMethod", "getMyList");// 判断条件
+		qContext = orderFindService.queryMyListForPagination(qContext);
 		return qContext.getQueryResult();
 	}
 	
@@ -153,7 +190,7 @@ public class OrderController extends BaseController<TOrderFind> {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/getInfo",method=RequestMethod.GET)
+	@RequestMapping(value = "/open/getInfo",method=RequestMethod.GET)
 	public Object getOrderInfo(HttpServletRequest request,HttpServletResponse response) {
 		
 		String fid = request.getParameter("fid");
@@ -161,18 +198,13 @@ public class OrderController extends BaseController<TOrderFind> {
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "询单ID不能为空");
 		}
 		
-		OrderAllInfor oai = orderFindService.queryInfoById(fid);
-		
 		String requestCid=null;
 		try {
 			requestCid = this.getCurrentUserCid(request);
 		} catch (Exception e) {
+			requestCid="otherid";
 		}
-		if(!oai.getCid().equals(requestCid)){ // 其它用户查看
-			if(!contractInfoService.isOldCustomer(requestCid, oai.getCid())){ // 2个企业未发生过交易，进行企业加密处理
-				
-			}
-		}
+		OrderAllInfor oai = orderFindService.queryInfoById(fid, requestCid);
 		
 		return oai;
 	}
@@ -193,7 +225,12 @@ public class OrderController extends BaseController<TOrderFind> {
 		}
 		
 		ofi.setUpdater(getCurrentUserCid(request));
-		this.orderFindItemService.add(ofi);
+		try {
+			this.orderFindItemService.tradeApplication(ofi);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		
 		return buildSuccessResult("申请已发送", "");
 	}
@@ -213,11 +250,23 @@ public class OrderController extends BaseController<TOrderFind> {
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "询单ID不能为空");
 		}
 		
+		TOrderInfo queryEntity = new TOrderInfo();
+		queryEntity.setFid(fid);
+		List<TOrderInfo> oiList = this.contractInfoService.queryForList(queryEntity);
+		if(oiList != null && oiList.size() > 0){
+			return buildFailResult(HttpApplicationErrorCode.OPERATING_RESTRICTIONS, "操作受限制，已产生过合同的询单不能取消");
+		}
+		
 		String userid = getCurrentUserId(request);
+		String message;
+		try {
+			message = this.orderFindService.cancel(fid, userid);
+			return buildSuccessResult(message, "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		
-		String message = this.orderFindService.cancel(fid, userid);
-		
-		return buildSuccessResult(message, "");
 	}
 	
 	/**
@@ -233,14 +282,16 @@ public class OrderController extends BaseController<TOrderFind> {
 		if(ofBean.getId()==null || ofBean.getId().trim().equals("")){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "询单ID不能为空");
 		}
-		if(ofBean.getId()==null || ofBean.getId().trim().equals("")){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "询单ID不能为空");
+		
+		TOrderInfo queryEntity = new TOrderInfo();
+		queryEntity.setFid(ofBean.getId());
+		List<TOrderInfo> oiList = this.contractInfoService.queryForList(queryEntity);
+		if(oiList != null && oiList.size() > 0){
+			return buildFailResult(HttpApplicationErrorCode.OPERATING_RESTRICTIONS, "操作受限制，已产生过合同的询单不能修改");
 		}
+		
 		if(opiBean.getPid() == null || opiBean.getPid().trim().equals("")){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品ID不能为空");
-		}
-		if(opiBean.getPname() == null || opiBean.getPname().trim().equals("")){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品名称不能为空");
 		}
 		if(opiBean.getPcolor() == null || opiBean.getPcolor().trim().equals("")){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品颜色不能为空");
@@ -248,19 +299,28 @@ public class OrderController extends BaseController<TOrderFind> {
 		if(opiBean.getPaddress() == null || opiBean.getPaddress().trim().equals("")){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品产地不能为空");
 		}
-//		if(opiBean.getProductPropertys() == null || opiBean.getProductPropertys().trim().equals("")){
-//			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "商品属性不能为空");
-//		}
-		if(ofBean.getMorearea() != null && ofBean.getMorearea().equals(OrderMoreAreaEnum.ORDER_MORE_AREA_YES.getVal())){
-			if(ofBean.getMoreAreaInfos()==null || ofBean.getMoreAreaInfos().trim().equals("")){
-				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "多地域发布信息不全");
+		
+		String moreareaValue = request.getParameter("moreareaValue"); // 1：单地发布，2：多地发布
+		if(moreareaValue != null){
+			if(moreareaValue.equals(OrderMoreAreaEnum.ORDER_MORE_AREA_YES.getVal())){
+				if(ofBean.getMoreAreaInfos()==null || ofBean.getMoreAreaInfos().trim().equals("")){
+					return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "多地域发布信息不全");
+				}
+				ofBean.setMorearea(OrderMoreAreaEnum.ORDER_MORE_AREA_YES);
+			}else{
+				ofBean.setMorearea(OrderMoreAreaEnum.ORDER_MORE_AREA_NO);
 			}
 		}else if(ofBean.getPrice() == null || ofBean.getPrice()<=0){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "价格未输入");
 		}
-		
 		ofBean.setUpdater(this.getCurrentUserId(request));
-		this.orderFindService.updateOrderAllInfo(ofBean, oaBean, opiBean);
+		String addressid =  request.getParameter("addressid"); // 指定卸货地址ID
+		try {
+			this.orderFindService.updateOrderAllInfo(ofBean, opiBean, addressid);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		
 		return buildSuccessResult("更新成功", "");
 		

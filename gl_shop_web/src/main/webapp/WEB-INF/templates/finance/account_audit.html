@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/finance">
+<head>
+  <title>财务处理 - 账户审核</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 财务处理 - 账户审核
+</h4>
+
+<div layout:fragment="pageContent">
+
+  <div th:replace="finance/fragments :: account_audit_tabs"></div>
+
+  <form id="accountForm" role="form" method="post" data-enable-shim="true">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    <div class="nav-tab-content">
+      <div class="well">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th width="15%">用户ID</th>
+              <td width="35%" th:text="${account.company.id}">18666662520</td>
+              <th width="15%">开户行</th>
+              <td width="35%" th:text="${account.bankname}">18666662520</td>
+            </tr>
+            <tr>
+              <th>支行名称</th>
+              <td th:text="${account.bankname}">深圳科技园支行</td>
+              <th>银行卡号</th>
+              <td th:text="${account.bankcard}">6225 8878 2017 7521</td>
+            </tr>
+          </table>
+        </div>
+        <div th:each="img : ${account.vImgList}" class="row">
+          <div class="col-sm-5">
+            <img th:src="@{${img.url}}" />
+          </div>
+        </div>
+        <div id="auditButtonBar" class="row">
+            <button id="btnAuditPass" type="button" class="btn btn-primary">审核通过</button>
+            <button id="btnAuditFail" type="button" class="btn btn-default">审核不通过</button>
+        </div>
+        <div id="auditFailRemark" style="display: none">
+          <div class="row">
+            <textarea id="remark" name="remark" type="text" class="form-control" rows="3"></textarea>
+          </div>
+          <div class="row">
+            <button id="btnAuditFailSubmit" type="button" class="btn btn-primary">提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Modal -->
+  <div class="modal fade" id="auditConfirmDialog" tabindex="-1" role="dialog" aria-labelledby="accountAudit" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="accountAudit">帐号审核</h4>
+        </div>
+        <div class="modal-body">
+          新提款帐号 <span th:text="${account.carduser}"></span> <span th:text="${account.bankcard}"></span>
+          <p id="dialogContent">确认审核通过？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button id="btnDialogOk" type="button" class="btn btn-primary">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script layout:fragment="inlineJavascript">
+var url = /*[[@{/finance/account_audit/pending/{accountId}/audit/(accountId=${account.id})}]]*/ '/finance/account_audit/pending/aaaa/audit/';
+
+$('#btnAuditPass').click(function() {
+    $('#dialogContent').html('确认审核通过？');
+    $('#auditConfirmDialog').modal('show');
+    $('#btnDialogOk').click(function(evt) {
+        $('#auditConfirmDialog').modal('hide');
+        $('#accountForm').attr('action', url + 'pass/');
+        $('#accountForm').submit();
+    });
+});
+$('#btnAuditFail').click(function() {
+    $('#dialogContent').html('确认审核不通过？');
+    $('#auditConfirmDialog').modal('show');
+    $('#btnDialogOk').click(function(evt) {
+        console.log('Audit failed.');
+        $('#auditConfirmDialog').modal('hide');
+        $('#auditButtonBar').hide();
+        $('#auditFailRemark').show();
+    });
+});
+
+$('#btnAuditFailSubmit').click(function() {
+    if ($('textarea[name=remark]').val() === '') {
+        alert('请输入审核不通过原因');
+        return;
+    }
+    $('#accountForm').attr('action', url + 'fail/');
+    $('#accountForm').submit();
+});
+</script>
+</body>
+
+</html>

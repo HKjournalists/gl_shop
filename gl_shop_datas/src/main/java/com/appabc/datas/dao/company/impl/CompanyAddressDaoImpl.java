@@ -3,19 +3,19 @@
  */
 package com.appabc.datas.dao.company.impl;
 
+import com.appabc.bean.enums.CompanyInfo.AddressStatus;
+import com.appabc.bean.pvo.TCompanyAddress;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.company.ICompanyAddressDao;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TCompanyAddress;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.company.ICompanyAddressDao;
 
 /**
  * @Description : 公司卸货地址Dao实现
@@ -27,20 +27,20 @@ import com.appabc.datas.dao.company.ICompanyAddressDao;
  */
 @Repository
 public class CompanyAddressDaoImpl extends BaseJdbcDao<TCompanyAddress> implements ICompanyAddressDao {
-	
+
 	private static final String INSERTSQL = " insert into T_COMPANY_ADDRESS (CID, AREACODE, ADDRESS, LONGITUDE, LATITUDE, DEEP, STATUS, REALDEEP) values (:cid, :areacode, :address, :longitude, :latitude, :deep, :status, :realdeep) ";
 	private static final String UPDATESQL = " update T_COMPANY_ADDRESS set CID = :cid,  AREACODE = :areacode, ADDRESS = :address, LONGITUDE = :longitude, LATITUDE = :latitude, DEEP = :deep, STATUS = :status, REALDEEP= :realdeep where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_COMPANY_ADDRESS WHERE ID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_COMPANY_ADDRESS WHERE ID = :id ";
-	
-	private static final String BASE_SQL = " SELECT * FROM T_COMPANY_ADDRESS WHERE 1=1 "; 
+
+	private static final String BASE_SQL = " SELECT * FROM T_COMPANY_ADDRESS WHERE 1=1 ";
 
 	public void save(TCompanyAddress entity) {
 		super.save(INSERTSQL, entity);
 	}
 
 	public KeyHolder saveAutoGenerateKey(TCompanyAddress entity) {
-		return null;
+		return super.saveAutoGenerateKey(INSERTSQL, entity);
 	}
 
 	public void update(TCompanyAddress entity) {
@@ -48,6 +48,7 @@ public class CompanyAddressDaoImpl extends BaseJdbcDao<TCompanyAddress> implemen
 	}
 
 	public void delete(TCompanyAddress entity) {
+		super.delete(DELETESQLBYID, entity);
 	}
 
 	public void delete(Serializable id) {
@@ -55,7 +56,7 @@ public class CompanyAddressDaoImpl extends BaseJdbcDao<TCompanyAddress> implemen
 	}
 
 	public TCompanyAddress query(TCompanyAddress entity) {
-		return null;
+		return super.query(dynamicJoinSqlWithEntity(entity,new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public TCompanyAddress query(Serializable id) {
@@ -63,21 +64,22 @@ public class CompanyAddressDaoImpl extends BaseJdbcDao<TCompanyAddress> implemen
 	}
 
 	public List<TCompanyAddress> queryForList(TCompanyAddress entity) {
-		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		String sql = dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL));
+		return super.queryForList(sql+" ORDER BY STATUS DESC ", entity);
 	}
 
 	public List<TCompanyAddress> queryForList(Map<String, ?> args) {
-		return null;
+		return super.queryForList(BASE_SQL, args);
 	}
 
 	public QueryContext<TCompanyAddress> queryListForPagination(
 			QueryContext<TCompanyAddress> qContext) {
-		return null;
+		return super.queryListForPagination(dynamicJoinSqlWithEntity(qContext.getBeanParameter(),  new StringBuilder(BASE_SQL)), qContext);
 	}
 
 	public TCompanyAddress mapRow(ResultSet rs, int rowNum) throws SQLException {
 		TCompanyAddress t = new TCompanyAddress();
-		
+
 		t.setId(rs.getString("ID"));
 		t.setCid(rs.getString("CID"));
 		t.setAddress(rs.getString("ADDRESS"));
@@ -85,13 +87,13 @@ public class CompanyAddressDaoImpl extends BaseJdbcDao<TCompanyAddress> implemen
 		t.setDeep(rs.getFloat("DEEP"));
 		t.setLatitude(rs.getString("LATITUDE"));
 		t.setLongitude(rs.getString("LONGITUDE"));
-		t.setStatus(rs.getInt("STATUS"));
+		t.setStatus(AddressStatus.enumOf(rs.getInt("STATUS")));
 		t.setRealdeep(rs.getFloat("REALDEEP"));
-		
+
 		return t;
 	}
 
-	private String dynamicJoinSqlWithEntity(TCompanyAddress bean,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TCompanyAddress bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0) {
 			return null;
 		}

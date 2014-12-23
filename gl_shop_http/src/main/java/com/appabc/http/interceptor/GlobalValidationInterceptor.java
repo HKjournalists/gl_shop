@@ -13,15 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.appabc.bean.enums.TokenEnum;
 import com.appabc.common.base.exception.BusinessException;
 import com.appabc.common.utils.LogUtil;
 import com.appabc.common.utils.SystemConstant;
 import com.appabc.common.utils.security.BaseCoder;
-import com.appabc.datas.enums.TokenEnum;
 import com.appabc.datas.tool.UserTokenManager;
 import com.appabc.http.utils.HttpApplicationErrorCode;
 
@@ -94,12 +93,12 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 			while (e.hasMoreElements()) {
 				String name = (String) e.nextElement();
 				String parameter = request.getParameter(name);
-				String[] values = request.getParameterValues(name);
+				//String[] values = request.getParameterValues(name);
 				if (StringUtils.isNotEmpty(name.trim())
-						&& StringUtils.isNotEmpty(parameter.trim())) {
+						/*&& StringUtils.isNotEmpty(parameter.trim())*/) {
 					treeMap.put(name.trim(), parameter.trim());
-					log.debug("Key: " + name + ";   Value: " + parameter);
-				} else if (StringUtils.isNotEmpty(name)
+					log.debug("Key: " + name + "; Value: " + parameter);
+				} /*else if (StringUtils.isNotEmpty(name)
 						&& !ObjectUtils.isEmpty(values)) {
 					treeMap.put(name.trim(), Arrays.toString(values));
 					log.debug("Key: " + name + ";   Value: "
@@ -107,15 +106,15 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 				} else {
 					treeMap.put(name.trim(), parameter.trim());
 					log.debug("Key: " + name + ";   Value: " + parameter);
-				}
+				}*/
 			}
 			StringBuffer input = new StringBuffer();
-			input.append(SystemConstant.APP_KEY);
+			input.append(SystemConstant.APPID_KEY);
 			Iterator<Entry<String, String>> itor = treeMap.entrySet()
 					.iterator();
 			while (itor.hasNext()) {
 				Entry<String, String> et = itor.next();
-				if(!SystemConstant.SIGN_KEY.equalsIgnoreCase(et.getKey())){
+				if(!SystemConstant.SIGN_KEY.equalsIgnoreCase(et.getKey()) && !SystemConstant.APPID_KEY.equalsIgnoreCase(et.getKey())){
 					input.append(et.getKey());
 					input.append(et.getValue());
 				}
@@ -123,14 +122,16 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 			// 生成签名
 			String sign;
 			try {
+				log.debug("Sign input str : " + input.toString());
 				sign = BaseCoder.encryptMD5(input.toString());
-				log.debug("sign: " + sign + ";   clientSign: "	+ clientSign);
+				log.debug("Sign: " + sign + "; clientSign: "	+ clientSign);
 				if (!sign.equals(clientSign)) {
 					return false;
 				}
-				log.debug("sign.equals(clientSign): "	+ sign.equals(clientSign));
+				log.debug("The sign equals result: "	+ sign.equals(clientSign));
 			} catch (Exception e1) {
 				log.debug(e1.getMessage(), e1);
+				return false;
 			}
 		}
 		return true;
@@ -147,41 +148,60 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
-		log.info(" execute the preHandle method . ");
+		log.debug("Execute the preHandle method . ");
+		/*Enumeration<String> headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String name = (String) headerNames.nextElement();
+			String parameter = request.getHeader(name);
+			if (StringUtils.isNotEmpty(parameter)) {
+				log.info("Header N : "+name+" V:  "+ parameter.trim());
+			}
+		}*/
+		String servletContext = request.getServletContext().getContextPath();
+		log.debug("The Servlet Context Path is : " + servletContext);
 		String requestUri = request.getRequestURI();
-		log.info(" the request uri is : " + requestUri);
+		if(StringUtils.isNotEmpty(servletContext)){
+			requestUri = requestUri.replaceFirst(servletContext, StringUtils.EMPTY);
+		}
+		log.debug("The request uri is : " + requestUri);
 		// 1 排除不需要登录请求的目录,这是属于配置静态资源的文件的配置过滤
 		if (!CollectionUtils.isEmpty(notAuthDirList)) {
 			for (String dir : notAuthDirList) {
-				if (requestUri.indexOf(dir) != -1) {
+				if (requestUri.startsWith(dir)) {//.indexOf(dir) != -1
 					return super.preHandle(request, response, handler);
 				}
 			}
 		}
 		// 2 进行验证加密的处理请求，如验证成功则往下走，验证失败就不处理
-		/*boolean flag = this.verityRequestSign(request, response);
-		log.info(" The verity sign is : "+flag);
+		boolean flag = this.verityRequestSign(request, response);
+		log.debug("The verity sign is : "+flag);
 		if (!flag) {
-			throw new BusinessException("the sign parameter is invalid. ");
-		}*/
+			throw new BusinessException(HttpApplicationErrorCode.CLIENT_SIGN_ERROR,"the sign parameter is invalid. ");
+		}
 		// 3 排除不需要登录请求的地址
 		if (!CollectionUtils.isEmpty(notAuthUrlList)) {
 			for (String url : notAuthUrlList) {
-				if (requestUri.lastIndexOf(url) != -1) {
+				if (requestUri.startsWith(url)) {//requestUri.lastIndexOf(url) != -1
 					return super.preHandle(request, response, handler);
 				}
 			}
 		}
 		// 4 进行验证用户是否登录信息,主要是验证token
 		String token = request.getHeader(SystemConstant.ACCESS_TOKEN);
-		if(StringUtils.isNotEmpty(token) && userTokenManager.isExists(token) == TokenEnum.TOKEN_STATUS_EXIST.getVal()){//normal case
+		//support the nginx ignore header value
+		if(StringUtils.isEmpty(token)){
+			token = request.getHeader(StringUtils.lowerCase(SystemConstant.ACCESS_TOKEN));
+		}
+		log.debug("The token is : "+token +"; token equals result is : "+userTokenManager.isExists(token));
+		TokenEnum tokenEnum = userTokenManager.isExists(token);
+		if(StringUtils.isNotEmpty(token) && tokenEnum.equals(TokenEnum.TOKEN_STATUS_EXIST)){//normal case
 			return super.preHandle(request, response, handler);
-		}else if(StringUtils.isNotEmpty(token) && TokenEnum.TOKEN_STATUS_NOTEXIST.getVal() == userTokenManager.isExists(token)){//token not exits case : user not exits ,please user to login ; 
-			throw new BusinessException(HttpApplicationErrorCode.USERUNLOGINERROR,"user is not login, please login . ");
-		}else if(StringUtils.isNotEmpty(token) && TokenEnum.TOKEN_STATUS_EXPIRED.getVal() == userTokenManager.isExists(token)){//token is out date case ,
-			throw new BusinessException(HttpApplicationErrorCode.TOKENISOUTDATE,"the user token is out date, please login again. ");
+		}else if(StringUtils.isNotEmpty(token) && TokenEnum.TOKEN_STATUS_NOTEXIST.equals(tokenEnum)){//token not exits case : user not exits ,please user to login ; 
+			throw new BusinessException(HttpApplicationErrorCode.USER_UNLOGINE_RROR,"user is not login, please login . ");
+		}else if(StringUtils.isNotEmpty(token) && TokenEnum.TOKEN_STATUS_EXPIRED.equals(tokenEnum)){//token is out date case ,
+			throw new BusinessException(HttpApplicationErrorCode.TOKEN_IS_OUT_DATE,"the user token is out date, please login again. ");
 		}else{//the token is null case
-			throw new BusinessException(HttpApplicationErrorCode.USERUNLOGINERROR,"user is not login, please login . ");
+			throw new BusinessException(HttpApplicationErrorCode.USER_UNLOGINE_RROR,"user is not login, please login . ");
 		}
 	}
 
@@ -198,7 +218,7 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 	public void postHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		log.info(" execute the postHandle method . ");
+		log.debug("Execute The postHandle method . ");
 		super.postHandle(request, response, handler, modelAndView);
 	}
 
@@ -214,7 +234,7 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 	public void afterCompletion(HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		log.info(" execute the afterCompletion method . ");
+		log.debug("Execute the afterCompletion method . ");
 		super.afterCompletion(request, response, handler, ex);
 	}
 

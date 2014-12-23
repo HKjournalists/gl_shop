@@ -2,6 +2,7 @@ package com.appabc.bean.bo;
 
 import java.util.List;
 
+import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
 import com.appabc.bean.pvo.TOrderInfo;
 
 /**
@@ -25,7 +26,7 @@ public class ContractInfoBean extends TOrderInfo{
 	/**
      * 销售类型
      */
-	private String saleType;
+	private OrderTypeEnum saleType;
 	/**
      * 产品类型
      */
@@ -47,26 +48,48 @@ public class ContractInfoBean extends TOrderInfo{
      */
 	private Object sellerStatus;
 	/**
-     * 议价记录
+     * 第一次议价记录(抽样验收)
      */
-	private List<?> disPriceList;
-
+	private List<?> sampleCheckDisPriceList;
+	/**
+     * 第二次议价记录(全量检查)
+     */
+	private List<?> fullTakeoverDisPriceList;
+	
 	/**  
-	 * saleType  
+	 * sampleCheckDisPriceList  
 	 *  
-	 * @return  the saleType  
+	 * @return  the sampleCheckDisPriceList  
 	 * @since   1.0.0  
 	 */
 	
-	public String getSaleType() {
-		return saleType;
+	public List<?> getSampleCheckDisPriceList() {
+		return sampleCheckDisPriceList;
 	}
 
 	/**  
-	 * @param saleType the saleType to set  
+	 * @param sampleCheckDisPriceList the sampleCheckDisPriceList to set  
 	 */
-	public void setSaleType(String saleType) {
-		this.saleType = saleType;
+	public void setSampleCheckDisPriceList(List<?> sampleCheckDisPriceList) {
+		this.sampleCheckDisPriceList = sampleCheckDisPriceList;
+	}
+
+	/**  
+	 * fullTakeoverDisPriceList  
+	 *  
+	 * @return  the fullTakeoverDisPriceList  
+	 * @since   1.0.0  
+	 */
+	
+	public List<?> getFullTakeoverDisPriceList() {
+		return fullTakeoverDisPriceList;
+	}
+
+	/**  
+	 * @param fullTakeoverDisPriceList the fullTakeoverDisPriceList to set  
+	 */
+	public void setFullTakeoverDisPriceList(List<?> fullTakeoverDisPriceList) {
+		this.fullTakeoverDisPriceList = fullTakeoverDisPriceList;
 	}
 
 	/**  
@@ -160,21 +183,21 @@ public class ContractInfoBean extends TOrderInfo{
 	}
 
 	/**  
-	 * disPriceList  
+	 * saleType  
 	 *  
-	 * @return  the disPriceList  
+	 * @return  the saleType  
 	 * @since   1.0.0  
-	 */
+	*/  
 	
-	public List<?> getDisPriceList() {
-		return disPriceList;
+	public OrderTypeEnum getSaleType() {
+		return saleType;
 	}
 
 	/**  
-	 * @param disPriceList the disPriceList to set  
+	 * @param saleType the saleType to set  
 	 */
-	public void setDisPriceList(List<?> disPriceList) {
-		this.disPriceList = disPriceList;
+	public void setSaleType(OrderTypeEnum saleType) {
+		this.saleType = saleType;
 	}
-	
+
 }

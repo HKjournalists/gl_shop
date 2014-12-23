@@ -5,14 +5,15 @@
 	id="WebApp_ID" version="2.5">
 
 	<display-name>gl_shop_web</display-name>
-	
+
 	<context-param>
 	   <param-name>contextConfigLocation</param-name>
 	   <param-value>
             classpath*:applicationContext-datas.xml,
             classpath*:applicationContext-redis.xml,
+            classpath*:applicationContext-web.xml,
+            classpath*:applicationContext-tools.xml,
             classpath*:applicationContext-pay.xml,
-            classpath*:applicationContext-web.xml, 
             classpath:/security-web.xml,
 	   </param-value>
 	</context-param>

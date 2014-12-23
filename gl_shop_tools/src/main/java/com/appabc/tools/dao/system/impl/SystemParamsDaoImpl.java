@@ -3,19 +3,19 @@
  */
 package com.appabc.tools.dao.system.impl;
 
+import com.appabc.bean.pvo.TSystemParams;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.tools.dao.system.ISystemParamsDao;
+
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TSystemParams;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.tools.dao.system.ISystemParamsDao;
 
 /**
  * @Description : 系统参数DAO实现
@@ -76,19 +76,19 @@ public class SystemParamsDaoImpl extends BaseJdbcDao<TSystemParams> implements I
 		StringBuffer sql = new StringBuffer(BASE_SQL);
 		
 		if(entity.getPname() != null && !entity.getPname().isEmpty()){
-			sql.append(" AND PNAME:pname ");
+			sql.append(" AND PNAME=:pname ");
 		}
 		
 		return super.queryForList(sql.toString(), entity);
 	}
 
 	public List<TSystemParams> queryForList(Map<String, ?> args) {
-		return null;
+		return super.queryForList(BASE_SQL, args);
 	}
 
 	public QueryContext<TSystemParams> queryListForPagination(
 			QueryContext<TSystemParams> qContext) {
-		return null;
+		return super.queryListForPagination(BASE_SQL, qContext);
 	}
 
 	public TSystemParams mapRow(ResultSet rs, int rowNum) throws SQLException {

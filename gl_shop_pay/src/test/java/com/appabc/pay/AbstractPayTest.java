@@ -22,7 +22,7 @@ import com.appabc.common.utils.LogUtil;
  * @Create_Date  : 2014年10月15日 下午2:14:59
  */
 
-@ContextConfiguration(locations = {"/applicationContext-redis.xml","/applicationContext-datasource.xml","/applicationContext-pay.xml","classpath*:spring-mvc.xml" })
+@ContextConfiguration(locations = {"/applicationContext-redis.xml","/applicationContext-datasource.xml","/applicationContext-tools.xml","/applicationContext-pay.xml","classpath*:spring-mvc.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager",defaultRollback=true)  
 @Transactional
 public abstract class AbstractPayTest extends SpringTransactionalTestCase {

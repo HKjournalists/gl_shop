@@ -9,10 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.appabc.bean.enums.SmsInfo.SmsSendTypeEnum;
 import com.appabc.bean.pvo.TUser;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
-import com.appabc.datas.enums.SmsInfo;
 import com.appabc.datas.service.user.IUserService;
 import com.appabc.tools.utils.ValidateCodeManager;
 
@@ -42,23 +42,24 @@ public class SmsValidateCodeController extends BaseController<TUser> {
 	public Object send(HttpServletRequest request,
 			HttpServletResponse response) {
 		String phone = request.getParameter("phone");
-		String userName = request.getParameter("userName");
+//		String userName = request.getParameter("userName");
 		String sendType = request.getParameter("sendType"); // 发送类型
-		if(StringUtils.isNotEmpty(sendType) && sendType.equals(SmsInfo.SmsSendTypeEnum.SEND_TYPE_REGISTER.getVal())){ // 注册类型
-			if(this.userService.isExistUsername(userName)){
-				return this.buildFailResult(ErrorCode.GENERICERRORCODE, "用户已被注册");
+		if(StringUtils.isNotEmpty(sendType) && sendType.equals(SmsSendTypeEnum.SEND_TYPE_REGISTER.getVal())){ // 注册类型
+			if(this.userService.isExistUsername(phone)){
+				return this.buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "此手机号码已经注册过，请换个手机号码注册");
 			}
 		}
 		
 		if(StringUtils.isNotEmpty(phone)) {
-			if(vcm.sendSmsCode(phone, userName)) {
+			if(vcm.sendSmsCode(phone)) {
 				return this.buildSuccessResult("发送成功", "");
 			} else {
 				return this.buildFailResult(ErrorCode.SMS_SEND_FAIL, "验证码发送失败");
 			}
+		}else{
+			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "手机号不能为空");
 		}
 		
-		return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "手机号不能为空");
 	}
 	
 	/**
@@ -95,13 +96,13 @@ public class SmsValidateCodeController extends BaseController<TUser> {
 		user.setUsername(userName);
 		user = this.userService.query(user);
 		if(user == null){
-			return this.buildFailResult(ErrorCode.GENERICERRORCODE, "该用户不存在");
+			return this.buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "该用户不存在");
 		}else if(StringUtils.isEmpty(user.getPhone())) {
 			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "该用户手机号为空");
 		}
 		
 		/*******短信发送************************/
-		if(vcm.sendSmsCode(user.getPhone(), user.getNick())) {
+		if(vcm.sendSmsCode(user.getPhone())) {
 			return this.buildSuccessResult("发送成功", "");
 		} else {
 			return this.buildFailResult(ErrorCode.SMS_SEND_FAIL, "验证码发送失败");

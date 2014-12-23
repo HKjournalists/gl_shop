@@ -3,15 +3,14 @@
  */
 package com.appabc.tools.utils;
 
-import java.util.List;
-
+import com.appabc.bean.pvo.TSystemParams;
+import com.appabc.common.utils.RedisHelper;
+import com.appabc.tools.service.system.ISystemParamsService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.appabc.bean.pvo.TSystemParams;
-import com.appabc.common.utils.RedisHelper;
-import com.appabc.tools.service.system.ISystemParamsService;
+import java.util.List;
 
 /**
  * @Description : 

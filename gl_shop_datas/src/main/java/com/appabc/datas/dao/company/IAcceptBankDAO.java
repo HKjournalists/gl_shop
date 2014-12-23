@@ -1,10 +1,11 @@
 package com.appabc.datas.dao.company;
 
+import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.IBaseDao;
 import com.appabc.pay.bean.TAcceptBank;
 
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : 黄建华
@@ -13,5 +14,7 @@ import com.appabc.pay.bean.TAcceptBank;
  */
 
 public interface IAcceptBankDAO extends IBaseDao<TAcceptBank> {
-	
+
+    public QueryContext<TAcceptBank> queryListForAuditFinished(QueryContext<TAcceptBank> queryContext);
+
 }

@@ -6,18 +6,17 @@
  */
 package com.appabc.datas.service.system.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.appabc.bean.pvo.TBankInfo;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.service.BaseService;
 import com.appabc.datas.dao.system.IBankInfoDAO;
 import com.appabc.datas.service.system.IBankInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description :

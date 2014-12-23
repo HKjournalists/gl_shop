@@ -1,20 +1,19 @@
 package com.appabc.datas.dao.contract.impl;
 
+import com.appabc.bean.pvo.TCalRuleDefinition;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.SQLExpressionEnum;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.contract.ICalRuleDefinitionDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TCalRuleDefinition;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.SQLExpressionEnum;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.contract.ICalRuleDefinitionDAO;
 
 /**
  * @Description : 
@@ -34,7 +33,7 @@ public class CalRuleDefinitionDAOImpl extends BaseJdbcDao<TCalRuleDefinition> im
 	private static final String DELETE_SQL = " DELETE FROM T_CAL_RULE_DEFINITION WHERE RULEID = :id ";
 	private static final String SELECT_SQL = " SELECT RULEID,RULE,NAME,EXPRESSION,CREATOR,CREATEDATE,REMARK FROM T_CAL_RULE_DEFINITION ";
 	
-	private String dynamicJoinSqlWithEntity(TCalRuleDefinition bean,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TCalRuleDefinition bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}
@@ -88,7 +87,7 @@ public class CalRuleDefinitionDAOImpl extends BaseJdbcDao<TCalRuleDefinition> im
 	 * @see com.appabc.common.base.dao.IBaseDao#read(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TCalRuleDefinition query(TCalRuleDefinition entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -97,7 +96,7 @@ public class CalRuleDefinitionDAOImpl extends BaseJdbcDao<TCalRuleDefinition> im
 	 * @see com.appabc.common.base.dao.IBaseDao#read(java.io.Serializable)  
 	 */
 	public TCalRuleDefinition query(Serializable id) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE RULEID = :id  ");
 		return super.query(sql.toString(), id);
@@ -107,7 +106,7 @@ public class CalRuleDefinitionDAOImpl extends BaseJdbcDao<TCalRuleDefinition> im
 	 * @see com.appabc.common.base.dao.IBaseDao#readForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TCalRuleDefinition> queryForList(TCalRuleDefinition entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -125,7 +124,7 @@ public class CalRuleDefinitionDAOImpl extends BaseJdbcDao<TCalRuleDefinition> im
 	public QueryContext<TCalRuleDefinition> queryListForPagination(
 			QueryContext<TCalRuleDefinition> qContext) {
 		
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1=1  ");//CREATOR = :creator
 		this.addNameParamerSqlWithProperty(sql, "creator", "CREATOR", qContext.getParameters().get("creator"));
@@ -159,7 +158,7 @@ public class CalRuleDefinitionDAOImpl extends BaseJdbcDao<TCalRuleDefinition> im
 	 */
 	public QueryContext<TCalRuleDefinition> queryListForPaginationForSQL(
 			QueryContext<TCalRuleDefinition> qContext) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1=1  ");//CREATOR = :creator
 		List<Object> args = new ArrayList<Object>();

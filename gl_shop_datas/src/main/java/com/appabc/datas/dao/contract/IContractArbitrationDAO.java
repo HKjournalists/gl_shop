@@ -1,9 +1,9 @@
 package com.appabc.datas.dao.contract;
 
-import java.util.List;
-
 import com.appabc.bean.pvo.TOrderArbitration;
 import com.appabc.common.base.dao.IBaseDao;
+
+import java.util.List;
 
 /**
  * @Description : 

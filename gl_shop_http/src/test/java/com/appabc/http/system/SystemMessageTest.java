@@ -24,8 +24,9 @@ public class SystemMessageTest extends AbstractHttpControllerTest {
 	@Override
 	@Test
 	public void mainTest() {
-//		getCount();
+//		loginSimulation(null, null, null);
 //		getList();
+//		getCount();
 //		getInfo();
 //		read();
 		
@@ -49,7 +50,7 @@ public class SystemMessageTest extends AbstractHttpControllerTest {
 		request.setRequestURI("/msg/getList");
 		request.setMethod("GET");
 		
-		request.setParameter("cid", "000000915102014");
+		request.setParameter("cid", "241120140000015");
 		
 		try {
 			final ModelAndView mav = handle(request, response);

@@ -1,5 +1,6 @@
 package com.appabc.common.utils;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -111,7 +112,7 @@ public class MessagesUtil {
 	}
 	
 	public static String getMessage(String code,Object[] args,Locale locale){
-		log.debug("get the " + code + " values; the args is "+args+"; the locale is "+locale.getDisplayName());
+		log.debug("get the " + code + " values; the args is "+ Arrays.toString(args)+"; the locale is "+locale.getDisplayName());
 		return ms.getMessage(code, args, locale);
 	}
 	
@@ -124,7 +125,7 @@ public class MessagesUtil {
 	}
 	
 	public static String getMessage(String code,Object[] args,String defaultMessage,Locale locale){
-		log.debug("get the " + code + " values; the args is "+args+"; the locale is "+locale.getDisplayName()+" the default value is "+defaultMessage);
+		log.debug("get the " + code + " values; the args is "+Arrays.toString(args)+"; the locale is "+locale.getDisplayName()+" the default value is "+defaultMessage);
 		return ms.getMessage(code, args, defaultMessage, locale);
 	}
 	

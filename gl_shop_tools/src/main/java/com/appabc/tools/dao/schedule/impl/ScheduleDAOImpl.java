@@ -6,19 +6,18 @@
  */
 package com.appabc.tools.dao.schedule.impl;
 
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.tools.bean.ScheduleInfoBean;
+import com.appabc.tools.dao.schedule.IScheduleDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.tools.bean.ScheduleInfoBean;
-import com.appabc.tools.dao.schedule.IScheduleDAO;
 
 /**
  * @Description : 
@@ -36,7 +35,7 @@ public class ScheduleDAOImpl extends BaseJdbcDao<ScheduleInfoBean> implements IS
 	private static final String DELETE_SQL = " DELETE FROM T_SCHEDULE_INFO WHERE SCHID = :id ";
 	private static final String SELECT_SQL = " SELECT SCHID,SCH_NAME,JOB_NAME,JOB_GROUP,JOBCLASSNAME,TRIGGERNAME,TRIGGERGROUP,TRIGGERCLASSNAME,ISVALID,CREATEDATE,REMARK FROM T_SCHEDULE_INFO ";
 	
-	private String dynamicJoinSqlWithEntity(ScheduleInfoBean entity,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(ScheduleInfoBean entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
 			return null;
 		}
@@ -102,7 +101,7 @@ public class ScheduleDAOImpl extends BaseJdbcDao<ScheduleInfoBean> implements IS
 	 */
 	@Override
 	public ScheduleInfoBean query(ScheduleInfoBean entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -123,7 +122,7 @@ public class ScheduleDAOImpl extends BaseJdbcDao<ScheduleInfoBean> implements IS
 	 */
 	@Override
 	public List<ScheduleInfoBean> queryForList(ScheduleInfoBean entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}

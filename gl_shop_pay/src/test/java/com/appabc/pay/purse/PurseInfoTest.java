@@ -13,6 +13,17 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
+import com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus;
+import com.appabc.bean.enums.AcceptBankInfo.AcceptBankStatus;
+import com.appabc.bean.enums.PurseInfo.BusinessType;
+import com.appabc.bean.enums.PurseInfo.DeviceType;
+import com.appabc.bean.enums.PurseInfo.ExtractStatus;
+import com.appabc.bean.enums.PurseInfo.OnOffLine;
+import com.appabc.bean.enums.PurseInfo.PayDirection;
+import com.appabc.bean.enums.PurseInfo.PayWay;
+import com.appabc.bean.enums.PurseInfo.PurseType;
+import com.appabc.bean.enums.PurseInfo.TradeStatus;
+import com.appabc.bean.enums.PurseInfo.TradeType;
 import com.appabc.common.utils.DateUtil;
 import com.appabc.pay.AbstractPayTest;
 import com.appabc.pay.bean.OInfo;
@@ -22,23 +33,15 @@ import com.appabc.pay.bean.TPassbookDraw;
 import com.appabc.pay.bean.TPassbookInfo;
 import com.appabc.pay.bean.TPassbookPay;
 import com.appabc.pay.bean.TPassbookThirdCheck;
-import com.appabc.pay.enums.PurseInfo.BusinessType;
-import com.appabc.pay.enums.PurseInfo.DeviceType;
-import com.appabc.pay.enums.PurseInfo.OnOffLine;
-import com.appabc.pay.enums.PurseInfo.PayDirection;
-import com.appabc.pay.enums.PurseInfo.PayWay;
-import com.appabc.pay.enums.PurseInfo.PurseType;
-import com.appabc.pay.enums.PurseInfo.TradeStatus;
-import com.appabc.pay.enums.PurseInfo.TradeType;
 import com.appabc.pay.exception.ServiceException;
 import com.appabc.pay.service.IPassPayService;
-import com.appabc.pay.service.local.IAcceptBankService;
 import com.appabc.pay.service.local.IOfflinePayService;
 import com.appabc.pay.service.local.IPassbookDrawService;
 import com.appabc.pay.service.local.IPassbookInfoService;
 import com.appabc.pay.service.local.IPassbookPayService;
 import com.appabc.pay.service.local.IPassbookThirdCheckService;
-import com.appabc.pay.util.PrimaryKeyGenerator;
+import com.appabc.pay.service.local.IPayAcceptBankService;
+import com.appabc.tools.utils.PrimaryKeyGenerator;
 
 /**
  * @Description : 
@@ -62,7 +65,7 @@ public class PurseInfoTest extends AbstractPayTest {
 	@Autowired
 	private IOfflinePayService iOfflinePayService;
 	@Autowired
-	private IAcceptBankService iAcceptBankService;
+	private IPayAcceptBankService iAcceptBankService;
 	@Autowired
 	private IPassPayService iPassPayService;
 	@Autowired
@@ -75,6 +78,37 @@ public class PurseInfoTest extends AbstractPayTest {
 	@Rollback(value=true)
 	public void mainTest () {
 		//this.testPassPayService();
+		//testTransferAccounts();
+/*		String[] ids = new String[]{
+				"PASSID2014112100015212134",
+				"PASSID2014112100016212134",
+				"PASSID2014112400017120420",
+				"PASSID2014112400018120420",
+				"PASSID2014112400019130644",
+				"PASSID2014112400020130644",
+				"PASSID2014112400021141102",
+				"PASSID2014112400022141102",
+				"PASSID2014112400023143846",
+				"PASSID2014112400024143846",
+				"PASSID2014112400025145248",
+				"PASSID2014112400026145248",
+				"PASSID2014112400027150716",
+				"PASSID2014112400028150716",
+				"PASSID2014112500029114122",
+				"PASSID2014112500030114122",
+				"PASSID2014112500031145721",
+				"PASSID2014112500032145721",
+				"PASSID2014112500033170548",
+				"PASSID2014112500034170548",
+				"PASSID2014112800035140444",
+				"PASSID2014112800036140444"
+		};
+		for(String id : ids){			
+			testPassbookInfoUpdate(id);
+		}*/
+		//testTransferAccounts();
+		//testDepositAccountOffline();
+		//testDepositToGuaranty();
 	}
 	
 	public void testPassPayService(){
@@ -83,7 +117,7 @@ public class PurseInfoTest extends AbstractPayTest {
 		testSaveAcceptBank();
 		testGetAcceptBankList();
 		testDepositAccountOnline();
-		testDepositAccountOffline();
+		testDepositAccountOfflineReq();
 		testPayAccountOffline();
 		testDepositThirdOrgRecord();
 		testPayRecordList();
@@ -94,17 +128,27 @@ public class PurseInfoTest extends AbstractPayTest {
 		testOfflinePayAction();
 	}
 	
+	public void testDepositAccountOffline(){
+		log.info("===============================DepositAccountOffline start===============================");
+		String cid = "201411270000014";
+		String payNo = "PAYNO000000524092014";
+		boolean flag = iPassPayService.depositAccountOffline(cid, PurseType.GUARANTY, 1000000f, payNo);
+		boolean flag1 = iPassPayService.depositAccountOffline(cid, PurseType.DEPOSIT, 1000000f, payNo);
+		log.info(flag+" == "+flag1);
+		log.info("===============================DepositAccountOffline end===============================");
+	}
+	
 	public void testOfflinePayAction(){
 		log.info("===============================OfflinePayAction start===============================");
 		String cid = "CompanyInfoId000000811102014END";
 		TOfflinePay bean = new TOfflinePay();
 		bean.setId(PKGenerator.generatorBusinessKeyByBid("PURSEOFFLINEPAYID"));
-		bean.setOtype("1");
-		bean.setPtype(OnOffLine.OFFLINE.getValue());
+		bean.setOtype(PurseType.enumOf("1"));
+		bean.setPtype(OnOffLine.OFFLINE);
 		bean.setCreater(cid);
-		bean.setCreattime(DateUtil.getNowDate());
-		bean.setStatus(TradeStatus.REQUEST.getValue());
-		bean.setBtype(BusinessType.DEPOSIT.getValue());
+		bean.setCreatetime(DateUtil.getNowDate());
+		bean.setStatus(TradeStatus.REQUEST);
+		bean.setBtype(BusinessType.DEPOSIT);
 		bean.setAmount(5000f);
 		bean.setTotal(5000f);
 		try {
@@ -113,7 +157,7 @@ public class PurseInfoTest extends AbstractPayTest {
 			e.printStackTrace();
 		}
 		log.info(bean);
-		bean.setStatus(TradeStatus.SUCCESS.getValue());
+		bean.setStatus(TradeStatus.SUCCESS);
 		iPassPayService.auditeOfflinePay(bean);
 		log.info(bean);
 		String oid = "201410170008017";
@@ -139,17 +183,17 @@ public class PurseInfoTest extends AbstractPayTest {
 	}
 	
 	public void testTransferAccounts(){
-		log.info("===============================DepositToGuaranty start===============================");
-		String sourPassId = "PASSID2014102000007110431";
-		String destPassId = "PASSID2014102000008110431";
-		boolean flag = iPassPayService.transferAccounts(sourPassId, destPassId, 5000f, "0");
+		log.info("===============================testTransferAccounts start===============================");
+		String sourPassId = "PASSID2014102000008110431";
+		String destPassId = "PASSID2014101500006104400";
+		boolean flag = iPassPayService.transferAccounts(sourPassId, destPassId, 5000f, PurseType.GUARANTY);
 		log.info(flag);
-		log.info("===============================DepositToGuaranty end===============================");
+		log.info("===============================testTransferAccounts end===============================");
 	}
 	
 	public void testDepositToGuaranty(){
 		log.info("===============================DepositToGuaranty start===============================");
-		String cid = "CompanyInfoId000000524092014END";
+		String cid = "CompanyInfoId000000811102014END";
 		boolean flag = iPassPayService.depositToGuaranty(cid, 5000f);
 		log.info(flag);
 		log.info("===============================DepositToGuaranty end===============================");
@@ -158,18 +202,17 @@ public class PurseInfoTest extends AbstractPayTest {
 	public void testExtractCash(){
 		log.info("===============================ExtractCash start===============================");
 		String cid = "CompanyInfoId000000524092014END";
-		String type = "0";
 		String acceptId = "ACCEPTBANKID201410170000007143940";
 		String tid = "PURSEDRAWID2014102000002145122";
-		TPassbookDraw draw = iPassPayService.extractCashRequest(cid, type, 5000f, acceptId);
+		TPassbookDraw draw = iPassPayService.extractCashRequest(cid, PurseType.GUARANTY, 5000f, acceptId);
 		log.info(draw);
 		boolean flag = iPassPayService.extractCashAudit(tid, true, "无", cid);
 		log.info(flag);
 		boolean flag1 = iPassPayService.extractCashDeduct(tid);
 		log.info(flag1);
-		List<TPassbookDraw> result = iPassPayService.extractCashRequestList("0");
+		List<TPassbookDraw> result = iPassPayService.extractCashRequestList(ExtractStatus.enumOf(0));
 		log.info(result);
-		List<TPassbookDraw> result1 = iPassPayService.extractCashRequestList(cid, type);
+		List<TPassbookDraw> result1 = iPassPayService.extractCashRequestList(cid, PurseType.GUARANTY);
 		log.info(result1);
 		log.info("===============================ExtractCash end===============================");
 	}
@@ -188,7 +231,7 @@ public class PurseInfoTest extends AbstractPayTest {
 		String cid = "CompanyInfoId000000524092014END";
 		List<TPassbookPay> result = iPassPayService.payRecordList(passId);
 		log.info(result);
-		List<TPassbookPay> result1 = iPassPayService.payRecordList(cid, "0");
+		List<TPassbookPay> result1 = iPassPayService.payRecordList(cid, PurseType.GUARANTY);
 		log.info(result1);
 		log.info("===============================PayRecordList end===============================");
 	}
@@ -197,7 +240,7 @@ public class PurseInfoTest extends AbstractPayTest {
 		log.info("===============================DepositThirdOrgRecord start===============================");
 		String cid = "CompanyInfoId000000524092014END";
 		String payNo = "CompanyInfoId000000524092014END";
-		boolean flag = iPassPayService.depositThirdOrgRecord(cid, "0", 5000f, payNo);
+		boolean flag = iPassPayService.depositThirdOrgRecord(cid, PurseType.GUARANTY, 5000f, payNo);
 		log.info(flag);
 		log.info("===============================DepositThirdOrgRecord end===============================");
 	}
@@ -209,15 +252,15 @@ public class PurseInfoTest extends AbstractPayTest {
 		oid.setOid("oid123456");
 		oid.setAmount(400f);
 		oid.setTotal(500f);
-		boolean flag = iPassPayService.payAccountOffline(cid, "0", oid);
+		boolean flag = iPassPayService.payAccountOfflineRequest(cid, PurseType.GUARANTY, oid);
 		log.info(flag);
 		log.info("===============================PayAccountOffline end===============================");
 	}
 	
-	public void testDepositAccountOffline(){
+	public void testDepositAccountOfflineReq(){
 		log.info("===============================DepositAccountOffline start===============================");
 		String cid = "CompanyInfoId000000524092014END";
-		boolean flag = iPassPayService.depositAccountOffline(cid, "0");
+		boolean flag = iPassPayService.depositAccountOfflineRequest(cid, PurseType.GUARANTY);
 		log.info(flag);
 		log.info("===============================DepositAccountOffline end===============================");
 	}
@@ -226,7 +269,7 @@ public class PurseInfoTest extends AbstractPayTest {
 		log.info("===============================DepositAccountOnline start===============================");
 		String cid = "CompanyInfoId000000524092014END";
 		String payNo = "CompanyInfoId000000524092014END";
-		boolean flag = iPassPayService.depositAccountOnline(cid, "0", 500f, payNo);
+		boolean flag = iPassPayService.depositAccountOnline(cid, PurseType.GUARANTY, 500f, payNo);
 		log.info(flag);
 		log.info("===============================DepositAccountOnline end===============================");
 	}
@@ -242,9 +285,9 @@ public class PurseInfoTest extends AbstractPayTest {
 	public void testGetPurseAccountInfo(){
 		log.info("===============================GetPurseAccountInfo start===============================");
 		String cid = "CompanyInfoId000000524092014END";
-		TPassbookInfo entity0 = iPassPayService.getPurseAccountInfo(cid, "0");
+		TPassbookInfo entity0 = iPassPayService.getPurseAccountInfo(cid, PurseType.GUARANTY);
 		log.info(entity0);
-		TPassbookInfo entity1 = iPassPayService.getPurseAccountInfo(cid, "1");
+		TPassbookInfo entity1 = iPassPayService.getPurseAccountInfo(cid, PurseType.DEPOSIT);
 		log.info(entity1);
 		log.info("===============================GetPurseAccountInfo end===============================");
 	}
@@ -265,8 +308,8 @@ public class PurseInfoTest extends AbstractPayTest {
 		entity.setRemark("备注");
 		entity.setCreator(cid);
 		entity.setCreatetime(new Date());
-		entity.setStatus(0);
-		entity.setAuthstatus(0);
+		entity.setStatus(AcceptBankStatus.ACCEPT_BANK_STATUS_DEFAULT);
+		entity.setAuthstatus(AcceptAuthStatus.AUTH_STATUS_CHECK_YES);
 		try {
 			iPassPayService.saveAcceptBank(entity);
 		} catch (ServiceException e) {
@@ -279,12 +322,12 @@ public class PurseInfoTest extends AbstractPayTest {
 		String cid = "CompanyInfoId000000811102014END";
 		TOfflinePay bean = new TOfflinePay();
 		bean.setId(PKGenerator.generatorBusinessKeyByBid("PURSEOFFLINEPAYID"));
-		bean.setOtype("1");
-		bean.setPtype(OnOffLine.OFFLINE.getValue());
+		bean.setOtype(PurseType.DEPOSIT);
+		bean.setPtype(OnOffLine.OFFLINE);
 		bean.setCreater(cid);
-		bean.setCreattime(DateUtil.getNowDate());
-		bean.setStatus(TradeStatus.REQUEST.getValue());
-		bean.setBtype(BusinessType.DEPOSIT.getValue());
+		bean.setCreatetime(DateUtil.getNowDate());
+		bean.setStatus(TradeStatus.REQUEST);
+		bean.setBtype(BusinessType.DEPOSIT);
 		bean.setAmount(5000f);
 		bean.setTotal(5000f);
 		iOfflinePayService.add(bean);
@@ -320,7 +363,7 @@ public class PurseInfoTest extends AbstractPayTest {
 		entity.setId(PKGenerator.generatorBusinessKeyByBid("PURSEDRAWID"));
 		entity.setAid(aid); 
 		entity.setAmount(5000f);
-		entity.setStatus(status);
+		entity.setStatus(ExtractStatus.enumOf(1));
 		entity.setCreatetime(now);
 		entity.setDealer(dealer);
 		entity.setDealtime(now);
@@ -362,14 +405,14 @@ public class PurseInfoTest extends AbstractPayTest {
 		tptc.setPassid("PASSID2014102000008110431");
 		tptc.setAmount(5f);
 		tptc.setOid(oid);
-		tptc.setOtype(TradeType.DEPOSIT.getValue());
-		tptc.setDirection(PayDirection.INPUT.getValue());
-		tptc.setDevices(DeviceType.MOBILE.getValue());
+		tptc.setOtype(TradeType.DEPOSIT);
+		tptc.setDirection(PayDirection.INPUT);
+		tptc.setDevices(DeviceType.MOBILE);
 		tptc.setName("test third check.");
 		tptc.setPatytime(now);
 		tptc.setPayno(payno);
-		tptc.setPaytype(PayWay.NETBANK_PAY.getValue());
-		tptc.setStatus(TradeStatus.SUCCESS.getValue());
+		tptc.setPaytype(PayWay.NETBANK_PAY);
+		tptc.setStatus(TradeStatus.SUCCESS);
 		tptc.setRemark("test third check.");
 		iPassbookThirdCheckService.add(tptc);
 		return tptc;
@@ -403,17 +446,17 @@ public class PurseInfoTest extends AbstractPayTest {
 		entity.setPassid("PASSID2014102000008110431");
 		entity.setAmount(5f);
 		entity.setOid(oid);
-		entity.setOtype(TradeType.DEPOSIT.getValue());
-		entity.setDirection(PayDirection.INPUT.getValue());
+		entity.setOtype(TradeType.DEPOSIT);
+		entity.setDirection(PayDirection.INPUT);
 		entity.setCreator(cid);
 		entity.setCreatedate(now);
-		entity.setDevices(DeviceType.MOBILE.getValue());
+		entity.setDevices(DeviceType.MOBILE);
 		entity.setNeedamount(5f);
 		entity.setName("test pass book name.");
-		entity.setPatytime(now);
+		entity.setPaytime(now);
 		entity.setPayno(payno);
-		entity.setPaytype(PayWay.NETBANK_PAY.getValue());
-		entity.setStatus(TradeStatus.SUCCESS.getValue());
+		entity.setPaytype(PayWay.NETBANK_PAY);
+		entity.setStatus(TradeStatus.SUCCESS.getVal());
 		entity.setRemark("test pass book pay.");
 		entity.setUpdatedate(now);
 		iPassbookPayService.add(entity);
@@ -446,7 +489,7 @@ public class PurseInfoTest extends AbstractPayTest {
 		TPassbookInfo entity = new TPassbookInfo();
 		entity.setId(PKGenerator.generatorBusinessKeyByBid("PASSID"));
 		entity.setCid(cid);
-		entity.setPasstype(PurseType.GUARANTY.getValue());
+		entity.setPasstype(PurseType.GUARANTY);
 		entity.setAmount(5000f);
 		entity.setCreatetime(DateUtil.getNowDate());
 		entity.setRemark("guaranty account.");
@@ -454,7 +497,7 @@ public class PurseInfoTest extends AbstractPayTest {
 		TPassbookInfo entity1 = new TPassbookInfo();
 		entity1.setId(PKGenerator.generatorBusinessKeyByBid("PASSID"));
 		entity1.setCid(cid);
-		entity1.setPasstype(PurseType.DEPOSIT.getValue());
+		entity1.setPasstype(PurseType.DEPOSIT);
 		entity1.setAmount(5000f);
 		entity1.setCreatetime(DateUtil.getNowDate());
 		entity1.setRemark("deposit account.");
@@ -468,10 +511,31 @@ public class PurseInfoTest extends AbstractPayTest {
 	}
 	
 	public void testPassbookInfoUpdate(String id){
+		float balance = 50000f;
 		TPassbookInfo tpbi = iPassbookInfoService.query(id);
 		log.info(tpbi);
-		tpbi.setAmount(4000f);
+		tpbi.setAmount(balance);
 		iPassbookInfoService.modify(tpbi);
+		TPassbookPay entity = new TPassbookPay();
+		Date now = DateUtil.getNowDate();
+		entity.setId(PKGenerator.generatorBusinessKeyByBid("PURSEPAYID"));
+		entity.setPassid(tpbi.getId());
+		entity.setAmount(balance);
+		entity.setOid("");
+		entity.setOtype(TradeType.DEPOSIT);
+		entity.setDirection(PayDirection.INPUT);
+		entity.setCreator(tpbi.getCid());
+		entity.setCreatedate(now);
+		entity.setDevices(DeviceType.MOBILE);
+		entity.setNeedamount(balance);
+		entity.setName("test pass book name.");
+		entity.setPaytime(now);
+		entity.setPayno("payno123456789");
+		entity.setPaytype(PayWay.NETBANK_PAY);
+		entity.setStatus(TradeStatus.SUCCESS.getVal());
+		entity.setRemark("test pass book pay.");
+		entity.setUpdatedate(now);
+		iPassbookPayService.add(entity);
 		log.info(tpbi);
 	}
 	
@@ -505,8 +569,8 @@ public class PurseInfoTest extends AbstractPayTest {
 		entity.setRemark("备注");
 		entity.setCreator(cid);
 		entity.setCreatetime(new Date());
-		entity.setStatus(0);
-		entity.setAuthstatus(0);
+		entity.setStatus(AcceptBankStatus.ACCEPT_BANK_STATUS_DEFAULT);
+		entity.setAuthstatus(AcceptAuthStatus.AUTH_STATUS_CHECK_YES);
 		iAcceptBankService.add(entity);
 		return entity;
 	}
@@ -538,12 +602,18 @@ public class PurseInfoTest extends AbstractPayTest {
 	public void testInitializePurseAccount(){
 		log.info("===============================InitializePurseAccount start===============================");
 		String cid = "CompanyInfoId000000524092014END";
-		boolean flag = iPassPayService.initializePurseAccount(cid, "");
-		boolean flag0 = iPassPayService.initializePurseAccount(cid, "0");
-		boolean flag1 = iPassPayService.initializePurseAccount(cid, "1");
+		boolean flag = iPassPayService.initializePurseAccount(cid, null);
+		boolean flag0 = iPassPayService.initializePurseAccount(cid, PurseType.GUARANTY);
+		boolean flag1 = iPassPayService.initializePurseAccount(cid, PurseType.DEPOSIT);
 		log.info(flag);
 		log.info(flag0);
 		log.info(flag1);
 		log.info("===============================InitializePurseAccount end===============================");
+	}
+	
+	public void testGetGuarantyTotal(){
+		String cid = "000000915102014";
+		float total = iPassPayService.getGuarantyTotal(cid);
+		log.info(total);
 	}
 }

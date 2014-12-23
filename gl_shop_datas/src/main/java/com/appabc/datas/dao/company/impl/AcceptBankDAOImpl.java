@@ -1,23 +1,27 @@
 package com.appabc.datas.dao.company.impl;
 
-import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
+import com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus;
+import com.appabc.bean.enums.AcceptBankInfo.AcceptBankStatus;
+import com.appabc.bean.pvo.TAuthRecord;
+import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
 import com.appabc.datas.dao.company.IAcceptBankDAO;
 import com.appabc.pay.bean.TAcceptBank;
 import com.appabc.tools.utils.PrimaryKeyGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : 黄建华
@@ -26,134 +30,138 @@ import com.appabc.tools.utils.PrimaryKeyGenerator;
  */
 @Repository
 public class AcceptBankDAOImpl extends BaseJdbcDao<TAcceptBank> implements IAcceptBankDAO {
-	
+
 	@Autowired
 	private PrimaryKeyGenerator pkg;
 
 	private static final String INSERT_SQL = " INSERT INTO T_ACCEPT_BANK (ID,CID,AUTHID,BANKCARD,BANKACCOUNT,CARDUSER,CARDUSERID,BANKTYPE,BANKNAME,ADDR,REMARK,CREATETIME,UPDATETIME,CREATOR,STATUS,AUTHSTATUS) VALUES (:id,:cid,:authid,:bankcard,:bankaccount,:carduser,:carduserid,:banktype,:bankname,:addr,:remark,:createtime,:updatetime,:creator,:status,:authstatus) ";
 	private static final String UPDATE_SQL = " UPDATE T_ACCEPT_BANK SET CID = :cid,AUTHID = :authid,BANKCARD = :bankcard,BANKACCOUNT = :bankaccount,CARDUSER = :carduser,CARDUSERID = :carduserid,BANKTYPE = :banktype,BANKNAME = :bankname,ADDR = :addr,REMARK = :remark,CREATETIME = :createtime,UPDATETIME = :updatetime,CREATOR = :creator,STATUS=:status,AUTHSTATUS=:authstatus WHERE ID = :id ";
 	private static final String DELETE_SQL = " DELETE FROM T_ACCEPT_BANK WHERE ID = :id ";
-	private static final String SELECT_SQL = " SELECT ID,CID,AUTHID,BANKCARD,BANKACCOUNT,CARDUSER,CARDUSERID,BANKTYPE,BANKNAME,ADDR,REMARK,CREATETIME,UPDATETIME,CREATOR,STATUS,AUTHSTATUS FROM T_ACCEPT_BANK ";
-	
-	  
-	
-	private String dynamicJoinSqlWithEntity(TAcceptBank entity,StringBuffer sql){
+	private static final String SELECT_SQL = " SELECT ab.ID,ab.CID,ab.AUTHID,ab.BANKCARD,ab.BANKACCOUNT,ab.CARDUSER," +
+			"ab.CARDUSERID,ab.BANKTYPE,ab.BANKNAME,ab.ADDR,ab.REMARK,ab.CREATETIME,ab.UPDATETIME,ab.CREATOR," +
+			"ab.STATUS,ab.AUTHSTATUS, ci.cname FROM T_ACCEPT_BANK ab, T_COMPANY_INFO ci WHERE ab.cid=ci.id ";
+
+	private String dynamicJoinSqlWithEntity(TAcceptBank entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
 			return null;
 		}
-		sql.append(" WHERE 1 = 1 ");
-		addNameParamerSqlWithProperty(sql, "id", "ID", entity.getId());
-		addNameParamerSqlWithProperty(sql, "cid", "CID", entity.getCid());
-		addNameParamerSqlWithProperty(sql, "authid", "AUTHID", entity.getAuthid());
-		addNameParamerSqlWithProperty(sql, "bankcard", "BANKCARD", entity.getBankcard());
-		addNameParamerSqlWithProperty(sql, "bankaccount", "BANKACCOUNT", entity.getBankaccount());
-		addNameParamerSqlWithProperty(sql, "carduser", "CARDUSER", entity.getCarduser());
-		addNameParamerSqlWithProperty(sql, "carduserid", "CARDUSERID", entity.getCarduserid());
-		addNameParamerSqlWithProperty(sql, "blanktype", "BANKTYPE", entity.getBanktype());
-		addNameParamerSqlWithProperty(sql, "bankname", "BANKNAME", entity.getBankname());
-		addNameParamerSqlWithProperty(sql, "addr", "ADDR", entity.getAddr());
-		addNameParamerSqlWithProperty(sql, "remark", "REMARK", entity.getRemark());
-		addNameParamerSqlWithProperty(sql, "createtime", "CREATETIME", entity.getCreatetime());
-		addNameParamerSqlWithProperty(sql, "updatetime", "UPDATETIME", entity.getUpdatetime());
-		addNameParamerSqlWithProperty(sql, "creator", "CREATOR", entity.getCreator());
-		addNameParamerSqlWithProperty(sql, "status", "STATUS", entity.getStatus());
-		addNameParamerSqlWithProperty(sql, "authstatus", "AUTHSTATUS", entity.getAuthstatus());
+		if (sql.indexOf(" WHERE ") == -1) {
+			sql.append(" WHERE 1 = 1 ");
+		}
+		addNameParamerSqlWithProperty(sql, "id", "ab.ID", entity.getId());
+		addNameParamerSqlWithProperty(sql, "cid", "ab.CID", entity.getCid());
+		addNameParamerSqlWithProperty(sql, "authid", "ab.AUTHID", entity.getAuthid());
+		addNameParamerSqlWithProperty(sql, "bankcard", "ab.BANKCARD", entity.getBankcard());
+		addNameParamerSqlWithProperty(sql, "bankaccount", "ab.BANKACCOUNT", entity.getBankaccount());
+		addNameParamerSqlWithProperty(sql, "carduser", "ab.CARDUSER", entity.getCarduser());
+		addNameParamerSqlWithProperty(sql, "carduserid", "ab.CARDUSERID", entity.getCarduserid());
+		addNameParamerSqlWithProperty(sql, "blanktype", "ab.BANKTYPE", entity.getBanktype());
+		addNameParamerSqlWithProperty(sql, "bankname", "ab.BANKNAME", entity.getBankname());
+		addNameParamerSqlWithProperty(sql, "addr", "ab.ADDR", entity.getAddr());
+		addNameParamerSqlWithProperty(sql, "remark", "ab.REMARK", entity.getRemark());
+		addNameParamerSqlWithProperty(sql, "createtime", "ab.CREATETIME", entity.getCreatetime());
+		addNameParamerSqlWithProperty(sql, "updatetime", "ab.UPDATETIME", entity.getUpdatetime());
+		addNameParamerSqlWithProperty(sql, "creator", "ab.CREATOR", entity.getCreator());
+		addNameParamerSqlWithProperty(sql, "status", "ab.STATUS", entity.getStatus());
+		addNameParamerSqlWithProperty(sql, "authstatus", "ab.AUTHSTATUS", entity.getAuthstatus());
 		return sql.toString();
 	}
-	
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#save(com.appabc.common.base.bean.BaseBean)  
+
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#save(com.appabc.common.base.bean.BaseBean)
 	 */
 	public void save(TAcceptBank entity) {
 		entity.setId(pkg.generatorBusinessKeyByBid("ACCEPTBANKID"));
 		super.save(INSERT_SQL, entity);
 	}
 
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#saveAutoGenerateKey(com.appabc.common.base.bean.BaseBean)  
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#saveAutoGenerateKey(com.appabc.common.base.bean.BaseBean)
 	 */
 	public KeyHolder saveAutoGenerateKey(TAcceptBank entity) {
 		return super.saveAutoGenerateKey(INSERT_SQL, entity);
 	}
 
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#update(com.appabc.common.base.bean.BaseBean)  
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#update(com.appabc.common.base.bean.BaseBean)
 	 */
 	public void update(TAcceptBank entity) {
 		super.update(UPDATE_SQL, entity);
 	}
 
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#delete(com.appabc.common.base.bean.BaseBean)  
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#delete(com.appabc.common.base.bean.BaseBean)
 	 */
 	public void delete(TAcceptBank entity) {
 		super.delete(DELETE_SQL, entity);
 	}
 
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#delete(java.io.Serializable)  
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#delete(java.io.Serializable)
 	 */
 	public void delete(Serializable id) {
 		super.delete(DELETE_SQL, id);
 	}
 
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)  
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)
 	 */
 	public TAcceptBank query(TAcceptBank entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
 
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#query(java.io.Serializable)  
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#query(java.io.Serializable)
 	 */
 	public TAcceptBank query(Serializable id) {
 		StringBuffer sql = new StringBuffer();
 		sql.append(SELECT_SQL);
-		sql.append(" WHERE ID = :id  ");
+		sql.append(" and ab.ID = :id  ");
 		return super.query(sql.toString(), id);
 	}
 
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)  
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)
 	 */
 	public List<TAcceptBank> queryForList(TAcceptBank entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
-		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
+		String querySql = dynamicJoinSqlWithEntity(entity,sql) + " AND ab.STATUS <> " + AcceptBankStatus.ACCEPT_BANK_STATUS_DEL.getVal();
+		return super.queryForList(querySql, entity);
 	}
 
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.util.Map)  
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.util.Map)
 	 */
 	public List<TAcceptBank> queryForList(Map<String, ?> args) {
-		StringBuffer sql = new StringBuffer();
-		sql.append(SELECT_SQL);
-		sql.append(" WHERE 1 = 1 ");
-		return super.queryForList(sql.toString(), args);
+		return super.queryForList(SELECT_SQL, args);
 	}
 
-	/* (non-Javadoc)  
-	 * @see com.appabc.common.base.dao.IBaseDao#queryListForPagination(com.appabc.common.base.QueryContext)  
+	/* (non-Javadoc)
+	 * @see com.appabc.common.base.dao.IBaseDao#queryListForPagination(com.appabc.common.base.QueryContext)
 	 */
 	public QueryContext<TAcceptBank> queryListForPagination(
 			QueryContext<TAcceptBank> qContext) {
-		StringBuffer sql = new StringBuffer();
-		sql.append(SELECT_SQL);
-		sql.append(" WHERE 1 = 1 ");
-		return super.queryListForPagination(sql.toString(), qContext);
+		StringBuilder sb = new StringBuilder(SELECT_SQL.length() * 2);
+		sb.append(SELECT_SQL);
+		if (qContext.getBeanParameter() != null) {
+			dynamicJoinSqlWithEntity(qContext.getBeanParameter(), sb);
+		}
+		return super.queryListForPagination(sb.toString(), qContext);
 	}
 
-	/* (non-Javadoc)  
-	 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)  
+	/* (non-Javadoc)
+	 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)
 	 */
 	public TAcceptBank mapRow(ResultSet rs, int rowNum) throws SQLException {
 		TAcceptBank bean = new TAcceptBank();
-		
+		TCompanyInfo ci = new TCompanyInfo();
+		String cid = rs.getString("CID");
+
 		bean.setId(rs.getString("ID"));
-		bean.setCid(rs.getString("CID"));
+		bean.setCid(cid);
 		bean.setAuthid(rs.getString("AUTHID")==null? null : rs.getInt("AUTHID"));
 		bean.setBankcard(rs.getString("BANKCARD"));
 		bean.setBankaccount(rs.getString("BANKACCOUNT"));
@@ -166,10 +174,29 @@ public class AcceptBankDAOImpl extends BaseJdbcDao<TAcceptBank> implements IAcce
 		bean.setCreatetime(rs.getTimestamp("CREATETIME"));
 		bean.setUpdatetime(rs.getTimestamp("UPDATETIME"));
 		bean.setCreator(rs.getString("CREATOR"));
-		bean.setStatus(rs.getInt("STATUS"));
-		bean.setAuthstatus(rs.getInt("AUTHSTATUS"));
-		
+		bean.setStatus(AcceptBankStatus.enumOf(rs.getInt("STATUS")));
+		bean.setAuthstatus(AcceptAuthStatus.enumOf(rs.getInt("AUTHSTATUS")));
+
+		ci.setId(cid);
+		ci.setCname(rs.getString("cname"));
+		bean.setCompany(ci);
+
+		TAuthRecord ar = new TAuthRecord();
+		ar.setId(String.valueOf(bean.getAuthid()));
+
 		return bean;
 	}
 
+	@Override
+	public QueryContext<TAcceptBank> queryListForAuditFinished(QueryContext<TAcceptBank> queryContext) {
+		StringBuilder sb = new StringBuilder(SELECT_SQL.length() * 2);
+		TAcceptBank ab = new TAcceptBank();
+		ab.setAuthstatus(AcceptAuthStatus.AUTH_STATUS_CHECK_YES);
+		Map<String, Object> params = new HashMap<>();
+		params.put("authstatus", ab.getAuthstatus());
+		queryContext.setBeanParameter(ab);
+		queryContext.setParameters(params);
+		sb.append(SELECT_SQL + " and ab.authstatus<>:authstatus ");
+		return super.queryListForPagination(sb.toString(), queryContext);
+	}
 }

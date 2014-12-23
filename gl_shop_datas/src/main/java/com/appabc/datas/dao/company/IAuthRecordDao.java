@@ -3,6 +3,7 @@
  */
 package com.appabc.datas.dao.company;
 
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.pvo.TAuthRecord;
 import com.appabc.common.base.dao.IBaseDao;
 
@@ -15,5 +16,13 @@ import com.appabc.common.base.dao.IBaseDao;
  * Create Date  : 2014年9月22日 下午5:58:43
  */
 public interface IAuthRecordDao extends IBaseDao<TAuthRecord> {
+	
+	/**
+	 * 获取认证状态的记录数
+	 * @param cid
+	 * @param austatus
+	 * @return
+	 */
+	public int getCountByCidAndAuthstauts(String cid, AuthRecordStatus austatus);
 
 }

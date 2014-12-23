@@ -58,7 +58,7 @@ public class DateUtil {
 	 * @return Date 返回转换后的时间
 	 * @throws ParseException 转换异常
 	 */
-	public static Date StringToDate(String dateStr,String formatStr){
+	public static Date strToDate(String dateStr,String formatStr){
 		DateFormat sdf=new SimpleDateFormat(formatStr);
 		Date date=null;
 		try {
@@ -67,6 +67,22 @@ public class DateUtil {
 			e.printStackTrace();
 		}
 		return date;
+	}
+	
+	/**
+	 * 日期转字符串
+	 * @param date
+	 * @param formatStr
+	 * @return
+	 */
+	public static String DateToStr(Date date,String formatStr){
+		DateFormat sdf=new SimpleDateFormat(formatStr);
+		try {
+			return sdf.format(date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static int getDifferDayWithTwoDate(Date soure,Date target){
@@ -111,12 +127,16 @@ public class DateUtil {
 	
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
-		System.out.println(DateUtil.StringToDate("2010-3-5 13:13:13", DateUtil.FORMAT_YYYY_MM_DD_HH_MM_SS).toLocaleString());
+		System.out.println(DateUtil.strToDate("2010-3-5 13:13:13", DateUtil.FORMAT_YYYY_MM_DD_HH_MM_SS).toLocaleString());
 		Calendar aCalendar = Calendar.getInstance();
 		//aCalendar.set(2014, 9, 14, 10, 10, 10);
 		aCalendar.set(Calendar.MONTH, 7);
 		Date source = aCalendar.getTime();
 		System.out.println(getDifferDayWithTwoDate(source,getNowDate()));
+		
+		String s = DateUtil.DateToStr(Calendar.getInstance().getTime(), DateUtil.FORMAT_YYYY_MM_DD_HH_MM_SS);
+		
+		System.out.println(s);
 	}
     
 

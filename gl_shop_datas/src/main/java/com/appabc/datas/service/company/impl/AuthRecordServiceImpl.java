@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.pvo.TAuthRecord;
 import com.appabc.common.base.QueryContext;
 import com.appabc.datas.dao.company.IAuthRecordDao;
@@ -48,7 +49,7 @@ public class AuthRecordServiceImpl implements IAuthRecordService {
 	}
 
 	public TAuthRecord query(TAuthRecord entity) {
-		return null;
+		return this.authRecordDao.query(entity);
 	}
 
 	public TAuthRecord query(Serializable id) {
@@ -60,12 +61,20 @@ public class AuthRecordServiceImpl implements IAuthRecordService {
 	}
 
 	public List<TAuthRecord> queryForList(Map<String, ?> args) {
-		return null;
+		return this.authRecordDao.queryForList(args);
 	}
 
 	public QueryContext<TAuthRecord> queryListForPagination(
 			QueryContext<TAuthRecord> qContext) {
-		return null;
+		return this.authRecordDao.queryListForPagination(qContext);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.company.IAuthRecordService#getCountByCidAndAuthstauts(java.lang.String, com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus)
+	 */
+	@Override
+	public int getCountByCidAndAuthstauts(String cid, AuthRecordStatus austatus) {
+		return this.authRecordDao.getCountByCidAndAuthstauts(cid, austatus);
 	}
 
 }

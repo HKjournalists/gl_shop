@@ -7,7 +7,7 @@
 		<groupId>com.appabc</groupId>
 		<artifactId>gl_shop</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../gl_shop</relativePath>
+		<relativePath>../</relativePath>
 	</parent>
 
 	<groupId>com.appabc.common</groupId>
@@ -95,13 +95,7 @@
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>

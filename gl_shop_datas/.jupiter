@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Property>
+  <Review id="DEFAULT">
+    <Description>property.default.description</Description>
+    <Author></Author>
+    <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">1970-01-01 :: 00:00:00:000 GMT-10:00</CreationDate>
+    <Directory>review</Directory>
+    <Reviewers></Reviewers>
+    <Files/>
+    <FieldItems>
+      <FieldItem id="Type" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.type.label.codingStandards"/>
+        <Entry name="item.type.label.programLogic"/>
+        <Entry name="item.type.label.optimization"/>
+        <Entry name="item.type.label.usability"/>
+        <Entry name="item.type.label.clarity"/>
+        <Entry name="item.type.label.missing"/>
+        <Entry name="item.type.label.irrelevant"/>
+        <Entry name="item.type.label.suggestion"/>
+        <Entry name="item.type.label.other"/>
+      </FieldItem>
+      <FieldItem id="Severity" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.severity.label.critical"/>
+        <Entry name="item.severity.label.major"/>
+        <Entry name="item.severity.label.normal"/>
+        <Entry name="item.severity.label.minor"/>
+        <Entry name="item.severity.label.trivial"/>
+      </FieldItem>
+      <FieldItem id="Resolution" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.resolution.label.validNeedsfixing"/>
+        <Entry name="item.resolution.label.validFixlater"/>
+        <Entry name="item.resolution.label.validDuplicate"/>
+        <Entry name="item.resolution.label.validWontfix"/>
+        <Entry name="item.resolution.label.invalidWontfix"/>
+        <Entry name="item.resolution.label.unsureValidity"/>
+      </FieldItem>
+      <FieldItem id="Status" default="item.status.label.open">
+        <Entry name="item.status.label.open"/>
+        <Entry name="item.status.label.resolved"/>
+        <Entry name="item.status.label.closed"/>
+        <Entry name="item.status.label.reopened"/>
+      </FieldItem>
+    </FieldItems>
+    <Filters>
+      <Phase name="phase.individual" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="item.reviewer.label.automatic" enabled="true"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="" enabled="false"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="false"/>
+        <Filter name="Status" value="item.status.label.open" enabled="false"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+      <Phase name="phase.team" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="" enabled="false"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="" enabled="false"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="true"/>
+        <Filter name="Status" value="item.status.label.open" enabled="false"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+      <Phase name="phase.rework" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="" enabled="false"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="item.reviewer.label.automatic" enabled="true"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="false"/>
+        <Filter name="Status" value="item.status.label.open" enabled="true"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+    </Filters>
+  </Review>
+  <Review id="data代码审查">
+    <Description>data代码审查</Description>
+    <Author>刘剑</Author>
+    <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-12 :: 15:01:06:243 CST</CreationDate>
+    <Directory>review</Directory>
+    <Reviewers>
+      <Entry id="刘剑" name="刘剑"/>
+      <Entry id="杨跃宏" name="杨跃宏"/>
+      <Entry id="黄建华" name="黄建华"/>
+    </Reviewers>
+    <Files>
+      <Entry name="src/main/java/com/appabc/datas/dao/codes/impl/PublicCodesDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/codes/IPublicCodesDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/IAcceptBankDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/IAuthRecordDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/ICompanyAddressDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/ICompanyAuthDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/ICompanyContactDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/ICompanyEvaluationDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/ICompanyInfoDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/ICompanyPersonalDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/ICompanyRankingDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/ICompanyShippingDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/AcceptBankDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/AuthRecordDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/CompanyAddressDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/CompanyAuthDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/CompanyContactDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/CompanyEvaluationDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/CompanyInfoDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/CompanyPersonalDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/CompanyRankingDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/company/impl/CompanyShippingDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/ICalRuleDefinitionDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/ICalRuleUseDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/IContractArbitrationDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/IContractArbitrationResultDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/IContractCancelDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/IContractCostDetailDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/IContractDisPriceDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/IContractInfoDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/IContractOperationDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/impl/CalRuleDefinitionDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/impl/CalRuleUseDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/impl/ContractArbitrationDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/impl/ContractArbitrationResultDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/impl/ContractCancelDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/impl/ContractCostDetailDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/impl/ContractDisPriceDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/impl/ContractInfoDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/contract/impl/ContractOperationDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/impl/OrderAddressDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/impl/OrderFindDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/impl/OrderFindItemDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/impl/OrderProductInfoDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/impl/OrderProductPropertyDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/IOrderAddressDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/IOrderFindDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/IOrderFindItemDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/IOrderProductInfoDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/order/IOrderProductPropertyDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/product/impl/ProductInfoDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/product/impl/ProductPriceDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/product/impl/ProductPriceHopeDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/product/impl/ProductPropertyDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/product/IProductInfoDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/product/IProductPriceDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/product/IProductPriceHopeDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/product/IProductPropertyDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/IBankInfoDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/IBlackListDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/IMobileAppVersionDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/impl/BankInfoDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/impl/BlackListDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/impl/MobileAppVersionDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/impl/QtFqDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/impl/QtQuestionsDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/impl/SystemLogDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/impl/UploadImagesDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/IQtFqDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/IQtQuestionsDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/ISystemLogDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/system/IUploadImagesDAO.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/user/impl/UserDaoImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/dao/user/IUserDao.java"/>
+      <Entry name="src/main/java/com/appabc/datas/exception/DAOException.java"/>
+      <Entry name="src/main/java/com/appabc/datas/exception/ServiceException.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/codes/impl/PublicCodesServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/codes/IPublicCodesService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/IAcceptBankService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/IAuthRecordService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/ICompanyAddressService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/ICompanyAuthService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/ICompanyContactService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/ICompanyEvaluationService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/ICompanyInfoService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/ICompanyPersonalService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/ICompanyRankingService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/ICompanyShippingService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/AcceptBankServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/AuthRecordServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/CompanyAddressServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/CompanyAuthServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/CompanyContactServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/CompanyEvaluationServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/CompanyInfoServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/CompanyPersonalServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/CompanyRankingServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/company/impl/CompanyShippingServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/ICalRuleDefinitionService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/ICalRuleUseService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/IContractArbitrationResultService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/IContractArbitrationService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/IContractCancelService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/IContractCostDetailService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/IContractDisPriceService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/IContractInfoService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/IContractOperationService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/impl/CalRuleDefinitionServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/impl/CalRuleUseServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/impl/ContractArbitrationResultServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/impl/ContractArbitrationServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/impl/ContractCancelServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/impl/ContractCostDetailServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/impl/ContractDisPriceServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/impl/ContractInfoServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/contract/impl/ContractOperationServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/impl/OrderAddressServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/impl/OrderFindItemServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/impl/OrderFindServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/impl/OrderProductInfoServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/impl/OrderProductPropertyServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/IOrderAddressService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/IOrderFindItemService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/IOrderFindService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/IOrderProductInfoService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/order/IOrderProductPropertyService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/product/impl/ProductInfoServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/product/impl/ProductPriceHopeServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/product/impl/ProductPriceServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/product/impl/ProductPropertyServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/product/IProductInfoService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/product/IProductPriceHopeService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/product/IProductPriceService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/product/IProductPropertyService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/IBankInfoService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/IBlackListService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/IMobileAppVersionService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/impl/BankInfoServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/impl/BlackListServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/impl/MobileAppVersionServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/impl/QtFqServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/impl/QtQuestionsServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/impl/SystemLogServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/impl/UploadImagesServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/IQtFqService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/IQtQuestionsService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/ISystemLogService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/system/IUploadImagesService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/user/impl/UserServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/datas/service/user/IUserService.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/cancelcontract/CancelContractJob.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/cancelcontract/CancelContractTrigger.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/confirmcontract/ContractConfirmJob.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/confirmcontract/ContractConfirmTrigger.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/confirmgoodsinfo/ContractConfirmGoodsInfoJob.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/confirmgoodsinfo/ContractConfirmGoodsInfoTrigger.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/evaluationcontract/ContractEvaluationJob.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/evaluationcontract/ContractEvaluationTrigger.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/orderfind/OrderFindJob.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/orderfind/OrderFindTrigger.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/payfunds/ContractPayFundsJob.java"/>
+      <Entry name="src/main/java/com/appabc/datas/task/payfunds/ContractPayFundsTrigger.java"/>
+      <Entry name="src/main/java/com/appabc/datas/tool/CompanyUtil.java"/>
+      <Entry name="src/main/java/com/appabc/datas/tool/ContractCostDetailUtil.java"/>
+      <Entry name="src/main/java/com/appabc/datas/tool/UserTokenManager.java"/>
+      <Entry name="src/main/java/com/appabc/datas/tool/ViewInfoEncryptUtil.java"/>
+    </Files>
+    <FieldItems>
+      <FieldItem id="Type" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.type.label.codingStandards"/>
+        <Entry name="item.type.label.programLogic"/>
+        <Entry name="item.type.label.optimization"/>
+        <Entry name="item.type.label.usability"/>
+        <Entry name="item.type.label.clarity"/>
+        <Entry name="item.type.label.missing"/>
+        <Entry name="item.type.label.irrelevant"/>
+        <Entry name="item.type.label.suggestion"/>
+        <Entry name="item.type.label.other"/>
+      </FieldItem>
+      <FieldItem id="Severity" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.severity.label.critical"/>
+        <Entry name="item.severity.label.major"/>
+        <Entry name="item.severity.label.normal"/>
+        <Entry name="item.severity.label.minor"/>
+        <Entry name="item.severity.label.trivial"/>
+      </FieldItem>
+      <FieldItem id="Resolution" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.resolution.label.validNeedsfixing"/>
+        <Entry name="item.resolution.label.validFixlater"/>
+        <Entry name="item.resolution.label.validDuplicate"/>
+        <Entry name="item.resolution.label.validWontfix"/>
+        <Entry name="item.resolution.label.invalidWontfix"/>
+        <Entry name="item.resolution.label.unsureValidity"/>
+      </FieldItem>
+      <FieldItem id="Status" default="item.status.label.open">
+        <Entry name="item.status.label.open"/>
+        <Entry name="item.status.label.resolved"/>
+        <Entry name="item.status.label.closed"/>
+        <Entry name="item.status.label.reopened"/>
+      </FieldItem>
+    </FieldItems>
+    <Filters>
+      <Phase name="phase.individual" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="item.reviewer.label.automatic" enabled="true"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="" enabled="false"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="false"/>
+        <Filter name="Status" value="item.status.label.open" enabled="false"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+      <Phase name="phase.team" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="" enabled="false"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="" enabled="false"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="true"/>
+        <Filter name="Status" value="item.status.label.open" enabled="false"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+      <Phase name="phase.rework" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="" enabled="false"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="item.reviewer.label.automatic" enabled="true"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="false"/>
+        <Filter name="Status" value="item.status.label.open" enabled="true"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+    </Filters>
+  </Review>
+</Property>

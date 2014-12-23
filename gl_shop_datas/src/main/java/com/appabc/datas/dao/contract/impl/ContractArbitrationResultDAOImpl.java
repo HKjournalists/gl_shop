@@ -1,18 +1,17 @@
 package com.appabc.datas.dao.contract.impl;
 
+import com.appabc.bean.pvo.TOrderArbitrationResult;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.contract.IContractArbitrationResultDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TOrderArbitrationResult;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.contract.IContractArbitrationResultDAO;
 
 /**
  * @Description : 
@@ -32,7 +31,7 @@ public class ContractArbitrationResultDAOImpl extends BaseJdbcDao<TOrderArbitrat
 	private static final String DELETE_SQL = " DELETE FROM T_ORDER_ARBITRATION_RESULT WHERE RID = :id ";
 	private static final String SELECT_SQL = " SELECT RID,AID,PID,RTYPE,RCONTENT,QYTYPE,QYID,AMOUNT,PAYID FROM T_ORDER_ARBITRATION_RESULT ";
 	
-	private String dynamicJoinSqlWithEntity(TOrderArbitrationResult entity,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TOrderArbitrationResult entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
 			return null;
 		}
@@ -88,7 +87,7 @@ public class ContractArbitrationResultDAOImpl extends BaseJdbcDao<TOrderArbitrat
 	 * @see com.appabc.common.base.dao.IBaseDao#read(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TOrderArbitrationResult query(TOrderArbitrationResult entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -97,7 +96,7 @@ public class ContractArbitrationResultDAOImpl extends BaseJdbcDao<TOrderArbitrat
 	 * @see com.appabc.common.base.dao.IBaseDao#read(java.io.Serializable)  
 	 */
 	public TOrderArbitrationResult query(Serializable id) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE RID = :id  ");
 		return super.query(sql.toString(), id);
@@ -108,7 +107,7 @@ public class ContractArbitrationResultDAOImpl extends BaseJdbcDao<TOrderArbitrat
 	 */
 	public List<TOrderArbitrationResult> queryForList(
 			TOrderArbitrationResult entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}

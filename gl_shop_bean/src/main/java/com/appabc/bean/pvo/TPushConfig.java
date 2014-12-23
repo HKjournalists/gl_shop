@@ -1,6 +1,9 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.PushInfo.ConfigStatusEnum;
+import com.appabc.bean.enums.PushInfo.ConfigTypeEnum;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 /**
@@ -46,7 +49,7 @@ public class TPushConfig extends BaseBean {
     /**
      * 状态(启用、停用)
      */
-    private Integer status;
+    private ConfigStatusEnum status;
     
     /**
      * 服务器端口
@@ -56,7 +59,7 @@ public class TPushConfig extends BaseBean {
     /**
      * 类型(ANDROID,IOS)
      */
-    private String type;
+    private ConfigTypeEnum type;
 
     /**
      * 更新人
@@ -113,22 +116,6 @@ public class TPushConfig extends BaseBean {
         this.url = url == null ? null : url.trim();
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public String getUpdater() {
         return updater;
     }
@@ -159,5 +146,41 @@ public class TPushConfig extends BaseBean {
 
 	public void setCertificatepath(String certificatepath) {
 		this.certificatepath = certificatepath;
+	}
+
+	/**  
+	 * status  
+	 *  
+	 * @return  the status  
+	 * @since   1.0.0  
+	*/  
+	
+	public ConfigStatusEnum getStatus() {
+		return status;
+	}
+
+	/**  
+	 * @param status the status to set  
+	 */
+	public void setStatus(ConfigStatusEnum status) {
+		this.status = status;
+	}
+
+	/**  
+	 * type  
+	 *  
+	 * @return  the type  
+	 * @since   1.0.0  
+	*/  
+	
+	public ConfigTypeEnum getType() {
+		return type;
+	}
+
+	/**  
+	 * @param type the type to set  
+	 */
+	public void setType(ConfigTypeEnum type) {
+		this.type = type;
 	}
 }

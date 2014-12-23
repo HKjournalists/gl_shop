@@ -16,9 +16,7 @@ public class MySqlGeneratorImpl extends AbstractSQLGenerator implements ISQLGene
 	public String generatePageSql(String sql, PageModel page) {
 		StringBuffer sb = new StringBuffer(sql);
 		int currentPageStartIndex = 0;
-		if(page.getPageIndex()<=1){
-			currentPageStartIndex = 0 * page.getPageSize();
-		}else{			
+		if(page.getPageIndex() > 1){
 			currentPageStartIndex = (page.getPageIndex()-1) * page.getPageSize();
 		}
 		sb.append(" limit " + currentPageStartIndex + "," + page.getPageSize());

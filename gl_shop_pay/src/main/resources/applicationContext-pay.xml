@@ -22,7 +22,9 @@
 	
 	<!-- pay service use the local service -->
 	<bean id="IPassPayLocalService" class="com.appabc.pay.service.local.PassPayLocalServiceImpl">
-		<property name="PKGenerator" ref="PurseKeyGenerator"/>
+		<property name="gsCheck" ref="GuarantStatusCheck"/>
+		<property name="mesgSender" ref="MesgSender"/>
+		<property name="PKGenerator" ref="PKGenerator"/>
 		<property name="iPayInfoService" ref="IPayInfoService"/>
 		<property name="iPayDetailService" ref="IPayDetailService"/>
 		<property name="iOfflinePayService" ref="IOfflinePayService"/>
@@ -39,7 +41,7 @@
 	<bean id="IPayDetailService" class="com.appabc.pay.service.local.impl.PayDetailServiceImpl">
 		<property name="iPayDetailDAO" ref="IPayDetailDAO" />
 	</bean>
-	<bean id="IAcceptBankService" class="com.appabc.pay.service.local.impl.AcceptBankServiceImpl">
+	<bean id="IAcceptBankService" class="com.appabc.pay.service.local.impl.PayAcceptBankServiceImpl">
 		<property name="iAcceptBankDAO" ref="IAcceptBankDAO" />
 	</bean>
 	<bean id="IOfflinePayService" class="com.appabc.pay.service.local.impl.OfflinePayServiceImpl">
@@ -60,7 +62,7 @@
 	
 	<bean class="com.appabc.pay.dao.impl.PayInfoDAOImpl" id="IPayInfoDAO"/>
 	<bean class="com.appabc.pay.dao.impl.PayDetailDAOImpl" id="IPayDetailDAO" />
-	<bean class="com.appabc.pay.dao.impl.AcceptBankDAOImpl" id="IAcceptBankDAO" />
+	<bean class="com.appabc.pay.dao.impl.PayAcceptBankDAOImpl" id="IAcceptBankDAO" />
 	<bean class="com.appabc.pay.dao.impl.OfflinePayDAOImpl" id="IOfflinePayDAO" />
 	<bean class="com.appabc.pay.dao.impl.PassbookPayDAOImpl" id="IPassbookPayDAO" />
 	<bean class="com.appabc.pay.dao.impl.PassbookInfoDAOImpl" id="IPassbookInfoDAO" />

@@ -1,6 +1,8 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.ContractInfo.ContractDisPriceType;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TOrderDisPrice extends BaseBean {
@@ -17,7 +19,7 @@ public class TOrderDisPrice extends BaseBean {
     /**
      * 抽样验收、全部验收
      */
-    private Integer type;
+    private ContractDisPriceType type;
 
     /**
      * 变更人
@@ -69,20 +71,30 @@ public class TOrderDisPrice extends BaseBean {
      */
     private String remark;
 
-    public String getLid() {
+    /**  
+	 * type  
+	 *  
+	 * @return  the type  
+	 * @since   1.0.0  
+	 */
+	
+	public ContractDisPriceType getType() {
+		return type;
+	}
+
+	/**  
+	 * @param type the type to set  
+	 */
+	public void setType(ContractDisPriceType type) {
+		this.type = type;
+	}
+
+	public String getLid() {
         return lid;
     }
 
     public void setLid(String lid) {
         this.lid = lid == null ? null : lid.trim();
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getCanceler() {

@@ -3,17 +3,16 @@
  */
 package com.appabc.datas.service.system.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.appabc.bean.pvo.TBlackList;
 import com.appabc.common.base.QueryContext;
 import com.appabc.datas.dao.system.IBlackListDao;
 import com.appabc.datas.service.system.IBlackListService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 黑名单
@@ -47,6 +46,7 @@ public class BlackListServiceImpl implements IBlackListService {
 	 * @see com.appabc.common.base.service.IBaseService#delete(com.appabc.common.base.bean.BaseBean)
 	 */
 	public void delete(TBlackList entity) {
+		this.blackListDao.delete(entity);
 	}
 
 	/* (non-Javadoc)
@@ -81,7 +81,7 @@ public class BlackListServiceImpl implements IBlackListService {
 	 * @see com.appabc.common.base.service.IBaseService#queryForList(java.util.Map)
 	 */
 	public List<TBlackList> queryForList(Map<String, ?> args) {
-		return null;
+		return this.blackListDao.queryForList(args);
 	}
 
 	/* (non-Javadoc)
@@ -89,7 +89,7 @@ public class BlackListServiceImpl implements IBlackListService {
 	 */
 	public QueryContext<TBlackList> queryListForPagination(
 			QueryContext<TBlackList> qContext) {
-		return null;
+		return this.blackListDao.queryListForPagination(qContext);
 	}
 
 }

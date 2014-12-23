@@ -4,6 +4,7 @@
 package com.appabc.datas.dao.company;
 
 import com.appabc.bean.bo.CompanyAllInfo;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.dao.IBaseDao;
 
@@ -20,8 +21,9 @@ public interface ICompanyInfoDao extends IBaseDao<TCompanyInfo> {
 	/**
 	 * 根据企业ID查询已认证通过的企业详情
 	 * @param cid
+	 * @param authRecordStatus 认证状态
 	 * @return
 	 */
-	public CompanyAllInfo queryAuthCompanyInfo(String cid);
+	public CompanyAllInfo queryAuthCompanyInfo(String cid,AuthRecordStatus authRecordStatus);
 
 }

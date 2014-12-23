@@ -5,16 +5,15 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
 import com.appabc.common.utils.RandomValidateCode;
 import com.appabc.common.utils.RedisHelper;
 import com.appabc.common.utils.SystemConstant;
+import com.appabc.tools.bean.SMSTemplate;
 import com.appabc.tools.bean.ShortMsgInfo;
-import com.appabc.tools.enums.SmsInfo;
 import com.appabc.tools.sms.ISmsSender;
 
 /**
@@ -27,16 +26,16 @@ import com.appabc.tools.sms.ISmsSender;
  */
 @Repository
 public class ValidateCodeManager {
-	
-	private Logger logger = Logger.getLogger(this.getClass());
-	
+
+//	private Logger logger = Logger.getLogger(this.getClass());
+
 	@Autowired
 	private RedisHelper redisHelper;
 	@Autowired
 	private SystemParamsManager spm;
 	@Autowired
 	private ISmsSender smsSender;
-	
+
 	/**
 	 * 获取短信验证码
 	 * @param phone 手机号
@@ -45,16 +44,16 @@ public class ValidateCodeManager {
 	public String getSmsCode(String phone){
 		return redisHelper.getString(SystemConstant.SMS_CODE_KEY + phone);
 	}
-	
+
 	/**
 	 * 保存短信验证码
 	 * @param phone
 	 * @param smsCode
 	 */
 	public void saveSmsCode(String phone, String smsCode){
-		redisHelper.set(SystemConstant.SMS_CODE_KEY + phone, smsCode, spm.getInt("SMS_VLD_CODE_TIME_LENGTH"));
+		redisHelper.set(SystemConstant.SMS_CODE_KEY + phone, smsCode, spm.getInt(SystemConstant.SMS_VLD_CODE_TIME_LENGTH));
 	}
-	
+
 	/**
 	 * 获取图片验证码
 	 * @param userName 用户名
@@ -63,7 +62,7 @@ public class ValidateCodeManager {
 	public String getImgCode(String key){
 		return this.redisHelper.getString(SystemConstant.IMG_CODE_KEY + key);
 	}
-	
+
 	/**
 	 * 删除图片验证码
 	 * @param key
@@ -71,7 +70,7 @@ public class ValidateCodeManager {
 	public void delImgCode(String key){
 		this.redisHelper.del(SystemConstant.IMG_CODE_KEY + key);
 	}
-	
+
 	/**
 	 * 删除手机验证码
 	 * @param phone
@@ -90,42 +89,38 @@ public class ValidateCodeManager {
 	public String outputImgCode(String key, HttpServletRequest request, HttpServletResponse response){
 		RandomValidateCode rvd = new RandomValidateCode();
 		String code = rvd.getRandcode(request, response);
-		redisHelper.set(SystemConstant.IMG_CODE_KEY + key, code, spm.getInt("IMG_VLD_CODE_TIME_LENGTH"));
+		redisHelper.set(SystemConstant.IMG_CODE_KEY + key, code, spm.getInt(SystemConstant.IMG_VLD_CODE_TIME_LENGTH));
 		return code;
 	}
-	
+
 	/**
 	 * 短信验证码发送
 	 * @param phone 手机号
 	 * @param userName 用户称谓，userName=XX 例：尊敬的XX用户。userName length<=10
 	 * @return
 	 */
-	public boolean sendSmsCode(String phone, String userName){
-		if(StringUtils.isEmpty(userName)){
-			userName=" ";
-		}else if(userName.length()>10){
-			userName = userName.substring(0,10);
-			logger.info("用户名最长为10,userName="+userName);
-		}
+	public boolean sendSmsCode(String phone){
 		ShortMsgInfo smi = new ShortMsgInfo();
-		smi.setBusinessType(SmsInfo.BusinessTypeEnum.SMS_BUSINESS_TYPE_REGISTER.getVal());
-		smi.setContent(getCode());
+		smi.setBusinessType(MsgBusinessType.BUSINESS_TYPE_USER_REGISTER);
 		smi.setTel(phone);
-		smi.setType(SmsInfo.SmsTypeEnum.SMS_TEMP_TYPE_PIN.getVal());
-		smi.setUser(userName);
-		
-		return smsSender.sendMsg(smi);
+		String smsCode =  getCode();
+		smi.setTemplate(SMSTemplate.getTemplatePin(smsCode, spm.getInt(SystemConstant.SMS_VLD_CODE_TIME_LENGTH)/60+"" , spm.getString(SystemConstant.CUSTOMER_SERVICE_TEL)));
+		boolean tf = smsSender.sendMsg(smi);
+		if(tf == true){
+			saveSmsCode(phone, smsCode); // 保存验证码到缓存
+		}
+		return tf;
 	}
-	
-	
+
+
 	/**
-	 * 获取一个4位字符串，内容为数字
+	 * 获取一个字符串，内容为数字
 	 * @return
 	 */
 	private String getCode(){
 		String code = "";
-		Random random = new Random();	
-		for(int i=0; i<4; i++){
+		Random random = new Random();
+		for(int i=0; i<6; i++){
 			code += random.nextInt(10);
 		}
 		return code;

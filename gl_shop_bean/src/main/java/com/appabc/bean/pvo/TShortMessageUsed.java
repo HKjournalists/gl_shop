@@ -1,7 +1,9 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TShortMessageUsed extends BaseBean {
     /**
@@ -17,7 +19,7 @@ public class TShortMessageUsed extends BaseBean {
     /**
      * 业务类型
      */
-    private String businesstype;
+    private MsgBusinessType businesstype;
 
     /**
      * 短信内容
@@ -55,14 +57,6 @@ public class TShortMessageUsed extends BaseBean {
 
     public void setBusinessid(String businessid) {
         this.businessid = businessid == null ? null : businessid.trim();
-    }
-
-    public String getBusinesstype() {
-        return businesstype;
-    }
-
-    public void setBusinesstype(String businesstype) {
-        this.businesstype = businesstype == null ? null : businesstype.trim();
     }
 
     public String getSmcontent() {
@@ -112,4 +106,22 @@ public class TShortMessageUsed extends BaseBean {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	/**  
+	 * businesstype  
+	 *  
+	 * @return  the businesstype  
+	 * @since   1.0.0  
+	*/  
+	
+	public MsgBusinessType getBusinesstype() {
+		return businesstype;
+	}
+
+	/**  
+	 * @param businesstype the businesstype to set  
+	 */
+	public void setBusinesstype(MsgBusinessType businesstype) {
+		this.businesstype = businesstype;
+	}
 }

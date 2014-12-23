@@ -15,6 +15,11 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.support.KeyHolder;
 
+import com.appabc.bean.enums.PurseInfo.DeviceType;
+import com.appabc.bean.enums.PurseInfo.PayDirection;
+import com.appabc.bean.enums.PurseInfo.PayWay;
+import com.appabc.bean.enums.PurseInfo.TradeStatus;
+import com.appabc.bean.enums.PurseInfo.TradeType;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
 import com.appabc.pay.bean.TPassbookThirdCheck;
@@ -36,7 +41,7 @@ public class PassbookThirdCheckDAOImpl extends BaseJdbcDao<TPassbookThirdCheck> 
 	private static final String DELETE_SQL = " DELETE FROM T_PASSBOOK_THIRD_CHECK WHERE PID = :id ";
 	private static final String SELECT_SQL = " SELECT PID,PASSID,OID,OTYPE,PAYNO,NAME,AMOUNT,DIRECTION,PAYTYPE,PATYTIME,STATUS,DEVICES,REMARK FROM T_PASSBOOK_THIRD_CHECK ";
 	
-	private String dynamicJoinSqlWithEntity(TPassbookThirdCheck entity,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TPassbookThirdCheck entity,StringBuilder sql){
 		if(entity == null || sql == null || sql.length() <= 0){
 			return StringUtils.EMPTY;
 		}
@@ -98,7 +103,7 @@ public class PassbookThirdCheckDAOImpl extends BaseJdbcDao<TPassbookThirdCheck> 
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TPassbookThirdCheck query(TPassbookThirdCheck entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -107,7 +112,7 @@ public class PassbookThirdCheckDAOImpl extends BaseJdbcDao<TPassbookThirdCheck> 
 	 * @see com.appabc.common.base.dao.IBaseDao#query(java.io.Serializable)  
 	 */
 	public TPassbookThirdCheck query(Serializable id) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE PID = :id  ");
 		return super.query(sql.toString(), id);
@@ -117,7 +122,7 @@ public class PassbookThirdCheckDAOImpl extends BaseJdbcDao<TPassbookThirdCheck> 
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TPassbookThirdCheck> queryForList(TPassbookThirdCheck entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -126,7 +131,7 @@ public class PassbookThirdCheckDAOImpl extends BaseJdbcDao<TPassbookThirdCheck> 
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.util.Map)  
 	 */
 	public List<TPassbookThirdCheck> queryForList(Map<String, ?> args) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1 = 1 ");
 		//this.addNameParamerSqlWithProperty(sql, "lid", "LID", args.get("lid"));
@@ -151,15 +156,15 @@ public class PassbookThirdCheckDAOImpl extends BaseJdbcDao<TPassbookThirdCheck> 
 		bean.setId(rs.getString("PID"));
 		bean.setPassid(rs.getString("PASSID"));
 		bean.setOid(rs.getString("OID"));
-		bean.setOtype(rs.getString("OTYPE"));
+		bean.setOtype(TradeType.enumOf(rs.getString("OTYPE")));
 		bean.setPayno(rs.getString("PAYNO"));
 		bean.setName(rs.getString("NAME"));
 		bean.setAmount(rs.getFloat("AMOUNT"));
-		bean.setDirection(rs.getInt("DIRECTION"));
-		bean.setPaytype(rs.getString("PAYTYPE"));
+		bean.setDirection(PayDirection.enumOf(rs.getInt("DIRECTION")));
+		bean.setPaytype(PayWay.enumOf(rs.getString("PAYTYPE")));
 		bean.setPatytime(rs.getTimestamp("PATYTIME"));
-		bean.setStatus(rs.getString("STATUS"));
-		bean.setDevices(rs.getString("DEVICES"));
+		bean.setStatus(TradeStatus.enumOf(rs.getString("STATUS")));
+		bean.setDevices(DeviceType.enumOf(rs.getString("DEVICES")));
 		bean.setRemark(rs.getString("REMARK"));
 		
 		return bean;

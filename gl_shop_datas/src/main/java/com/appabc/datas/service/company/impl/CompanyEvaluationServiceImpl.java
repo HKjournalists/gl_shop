@@ -1,14 +1,9 @@
 package com.appabc.datas.service.company.impl;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.appabc.bean.bo.CompanyEvaluationInfo;
+import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
+import com.appabc.bean.enums.ContractInfo.ContractOperateType;
+import com.appabc.bean.enums.ContractInfo.ContractStatus;
 import com.appabc.bean.pvo.TCompanyEvaluation;
 import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderOperations;
@@ -19,12 +14,21 @@ import com.appabc.common.utils.MessagesUtil;
 import com.appabc.datas.dao.company.ICompanyEvaluationDAO;
 import com.appabc.datas.dao.contract.IContractInfoDAO;
 import com.appabc.datas.dao.contract.IContractOperationDAO;
-import com.appabc.datas.enums.ContractInfo.ContractLifeCycle;
-import com.appabc.datas.enums.ContractInfo.ContractOperateType;
-import com.appabc.datas.enums.ContractInfo.ContractStatus;
 import com.appabc.datas.exception.ServiceException;
 import com.appabc.datas.service.company.ICompanyEvaluationService;
+import com.appabc.datas.service.company.ICompanyRankingService;
+import com.appabc.datas.tool.DataSystemConstant;
+import com.appabc.datas.tool.ServiceErrorCode;
 import com.appabc.tools.utils.PrimaryKeyGenerator;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description :
@@ -44,15 +48,25 @@ public class CompanyEvaluationServiceImpl extends
 
 	@Autowired
 	private IContractOperationDAO IContractOperationDAO;
-	
+
 	@Autowired
 	private IContractInfoDAO IContractInfoDAO;
 
 	@Autowired
+	private ICompanyRankingService iCompanyRankingService;
+
+	@Autowired
 	private PrimaryKeyGenerator PKGenerator;
+	
+	private String getKey(String bid){
+		if(StringUtils.isEmpty(bid)){
+			return StringUtils.EMPTY;
+		}
+		return PKGenerator.getPKey(bid);
+	}
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#add(com.appabc.common.base
 	 * .bean.BaseBean)
@@ -64,7 +78,7 @@ public class CompanyEvaluationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#modify(com.appabc.common.
 	 * base.bean.BaseBean)
@@ -76,7 +90,7 @@ public class CompanyEvaluationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#delete(com.appabc.common.
 	 * base.bean.BaseBean)
@@ -88,7 +102,7 @@ public class CompanyEvaluationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#delete(java.io.Serializable)
 	 */
@@ -99,7 +113,7 @@ public class CompanyEvaluationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#query(com.appabc.common.base
 	 * .bean.BaseBean)
@@ -111,7 +125,7 @@ public class CompanyEvaluationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#query(java.io.Serializable)
 	 */
@@ -122,7 +136,7 @@ public class CompanyEvaluationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#queryForList(com.appabc.common
 	 * .base.bean.BaseBean)
@@ -134,7 +148,7 @@ public class CompanyEvaluationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#queryForList(java.util.Map)
 	 */
@@ -145,7 +159,7 @@ public class CompanyEvaluationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#queryListForPagination(com
 	 * .appabc.common.base.QueryContext)
@@ -158,7 +172,7 @@ public class CompanyEvaluationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.datas.service.company.ICompanyEvaluationService#toEvaluateContract
 	 * (java.lang.String)
@@ -167,44 +181,54 @@ public class CompanyEvaluationServiceImpl extends
 			TCompanyEvaluation bean) throws ServiceException{
 		Date now = new Date();
 		TOrderInfo contract = IContractInfoDAO.query(bean.getOid());
+		String buyerId = contract.getBuyerid();
+		String sellerId = contract.getSellerid();
+		if (!StringUtils.equalsIgnoreCase(buyerId, bean.getCid()) && !StringUtils.equalsIgnoreCase(sellerId, bean.getCid())) {
+			throw new ServiceException(ServiceErrorCode.CONTRACT_NOT_BUYER_SELLER_TOOPERATE_ERROR,"你不能评价当前合同");
+		}
 		if(DateUtil.getDifferDayWithTwoDate(contract.getCreatime(), now)>3){
-			throw new ServiceException("超出合同评价时间范围,系统已经自动评价完成");
+			throw new ServiceException(ServiceErrorCode.CONTRACT_TIME_OUT_EVALUATE_ERROR,"超出合同评价时间范围,系统已经自动评价完成");
 		}
 		TCompanyEvaluation entity = new TCompanyEvaluation();
 		entity.setOid(bean.getOid());
 		entity.setCreater(operator);
 		List<TCompanyEvaluation> res = this.queryForList(entity);
 		if(res!=null&&res.size()>0){
-			throw new ServiceException("您已经评价过,不能重复评价");
+			throw new ServiceException(ServiceErrorCode.CONTRACT_REPEAT_EVALUATE_ERROR,"您已经评价过,不能重复评价");
 		}
-		contract.setLifecycle(ContractLifeCycle.NORMAL_FINISHED.getValue());
-		contract.setStatus(ContractStatus.FINISHED.getValue());
+		contract.setLifecycle(ContractLifeCycle.NORMAL_FINISHED);
+		contract.setStatus(ContractStatus.FINISHED);
 		contract.setUpdater(operator);
 		contract.setUpdatetime(now);
 		IContractInfoDAO.update(contract);
-		
+
 		TOrderOperations operate = new TOrderOperations();
-		operate.setId(PKGenerator.generatorBusinessKeyByBid("CONTRACTOPERATIONID"));
+		operate.setId(getKey(DataSystemConstant.CONTRACTOPERATIONID));
 		operate.setOid(bean.getOid());
 		operate.setOperator(operator);
 		operate.setOperationtime(now);
-		operate.setType(ContractOperateType.EVALUATION_CONTRACT.getValue());
-		operate.setOrderstatus(ContractLifeCycle.NORMAL_FINISHED.getValue());
+		operate.setType(ContractOperateType.EVALUATION_CONTRACT);
+		operate.setOrderstatus(ContractLifeCycle.NORMAL_FINISHED);
 		StringBuffer result = new StringBuffer(operatorName);
 		result.append(MessagesUtil.getMessage("CONTRACTEVALUATESUCCESSTIPS"));
 		operate.setResult(result.toString());
 		operate.setRemark(result.toString());
 		IContractOperationDAO.save(operate);
-		
+
 		bean.setCratedate(now);
-		String buyerId = contract.getBuyerid();
-		String sellerId = contract.getSellerid();
-		if (StringUtils.equalsIgnoreCase(buyerId, bean.getCid()) || StringUtils.equalsIgnoreCase(sellerId, bean.getCid())) {
-			//bean.setCid(sellerId);
-			this.add(bean);
-		}else{
-			throw new ServiceException("你不能评价当前合同");
-		}
+		this.add(bean);
+		
+		//计算评价相关的交易满意度,交易诚信度
+		iCompanyRankingService.calculateTradeEvaluationRate(bean.getCid());
+	}
+
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.company.ICompanyEvaluationService#getEvaluationContractList(com.appabc.bean.bo.CompanyEvaluationInfo)
+	 */
+	@Override
+	public List<CompanyEvaluationInfo> getEvaluationContractList(
+			CompanyEvaluationInfo cei) {
+		return ICompanyEvaluationDAO.queryEvaluationContractList(cei);
 	}
 
 }

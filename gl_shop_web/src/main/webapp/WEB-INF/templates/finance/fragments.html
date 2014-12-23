@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/finance">
+<head>
+  <title>finance fragments</title>
+</head>
+<body>
+
+<div th:fragment="account_audit_tabs" class="row">
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" th:class="${#strings.contains(url, '/account_audit/pending/')} ? 'active'"><a th:href="@{/finance/account_audit/pending/1/}">待审核帐号</a></li>
+  <li role="presentation" th:class="${#strings.contains(url, '/account_audit/finished/')} ? 'active'"><a th:href="@{/finance/account_audit/finished/1/}">已审核帐号</a></li>
+</ul>
+</div>
+</body>
+</html>

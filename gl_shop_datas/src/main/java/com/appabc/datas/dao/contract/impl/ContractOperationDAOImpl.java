@@ -1,19 +1,20 @@
 package com.appabc.datas.dao.contract.impl;
 
+import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
+import com.appabc.bean.enums.ContractInfo.ContractOperateType;
+import com.appabc.bean.pvo.TOrderOperations;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.contract.IContractOperationDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TOrderOperations;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.contract.IContractOperationDAO;
 
 /**
  * @Description :
@@ -33,7 +34,7 @@ public class ContractOperationDAOImpl extends BaseJdbcDao<TOrderOperations>
 	private static final String SELECT_SQL = " SELECT LID,OID,OPERATOR,OPERATIONTIME,TYPE,RESULT,ORDERSTATUS,PLID,REMARK FROM T_ORDER_OPERATIONS ";
 
 	private String dynamicJoinSqlWithEntity(TOrderOperations entity,
-			StringBuffer sql) {
+			StringBuilder sql) {
 		if (entity == null || sql == null || sql.length() <= 0) {
 			return null;
 		}
@@ -113,7 +114,7 @@ public class ContractOperationDAOImpl extends BaseJdbcDao<TOrderOperations>
 	 * BaseBean)
 	 */
 	public TOrderOperations query(TOrderOperations entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity, sql), entity);
 	}
@@ -124,7 +125,7 @@ public class ContractOperationDAOImpl extends BaseJdbcDao<TOrderOperations>
 	 * @see com.appabc.common.base.dao.IBaseDao#read(java.io.Serializable)
 	 */
 	public TOrderOperations query(Serializable id) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE LID = :id  ");
 		return super.query(sql.toString(), id);
@@ -138,7 +139,7 @@ public class ContractOperationDAOImpl extends BaseJdbcDao<TOrderOperations>
 	 * .bean.BaseBean)
 	 */
 	public List<TOrderOperations> queryForList(TOrderOperations entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super
 				.queryForList(dynamicJoinSqlWithEntity(entity, sql), entity);
@@ -179,11 +180,11 @@ public class ContractOperationDAOImpl extends BaseJdbcDao<TOrderOperations>
 		too.setOid(rs.getString("OID"));
 		too.setOperator(rs.getString("OPERATOR"));
 		too.setOperationtime(rs.getTimestamp("OPERATIONTIME"));
-		too.setType(rs.getString("TYPE"));
+		too.setType(ContractOperateType.enumOf(rs.getString("TYPE")));
 		too.setResult(rs.getString("RESULT"));
 		too.setPlid(rs.getString("PLID"));
 		too.setRemark(rs.getString("REMARK"));
-		too.setOrderstatus(rs.getString("ORDERSTATUS"));
+		too.setOrderstatus(ContractLifeCycle.enumOf(rs.getString("ORDERSTATUS")));
 
 		return too;
 	}
@@ -196,7 +197,7 @@ public class ContractOperationDAOImpl extends BaseJdbcDao<TOrderOperations>
 	 * .util.Map)
 	 */
 	public List<TOrderOperations> queryForList(String contractId, String type) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1 = 1 ");
 		List<Object> args = new ArrayList<Object>();
@@ -209,17 +210,17 @@ public class ContractOperationDAOImpl extends BaseJdbcDao<TOrderOperations>
 	 * @see com.appabc.datas.dao.contract.IContractOperationDAO#queryForList(java.lang.String)  
 	 */
 	public List<TOrderOperations> queryForList(String contractId) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1 = 1 ");
 		List<Object> args = new ArrayList<Object>();
 		this.addStandardSqlWithParameter(sql, "OID", contractId, args);
-		sql.append(" ORDER BY OPERATIONTIME ASC ");
+		sql.append(" ORDER BY OPERATIONTIME DESC ");
 		return super.queryForList(sql.toString(), args);
 	}
 	
 	public List<TOrderOperations> queryForListWithOIDAndOper(String contractId,String operator){
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1 = 1 ");
 		List<Object> args = new ArrayList<Object>();

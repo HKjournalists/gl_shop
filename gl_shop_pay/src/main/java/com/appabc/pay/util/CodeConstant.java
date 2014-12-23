@@ -19,8 +19,8 @@ import com.appabc.common.utils.ErrorCode;
 
 public class CodeConstant extends ErrorCode {
 	/*参数为空*/
-	public final static int PARAMETERISNULL = 10000;
+	public final static int PARAMETER_IS_NULL = 10000;
 	/*返回错误*/
-	public final static int RETURNERRORCODE = 20000;
+	public final static int RETURN_ERROR_CODE = 20000;
 	
 }

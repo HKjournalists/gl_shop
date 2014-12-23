@@ -1,6 +1,11 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
+import com.appabc.bean.enums.UserInfo.ClientTypeEnum;
+import com.appabc.bean.enums.UserInfo.UserStatus;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TUser extends BaseBean {
@@ -15,6 +20,8 @@ public class TUser extends BaseBean {
     private String cid;
     
     private String cname; // 企业名称
+    
+    private CompanyType ctype;//企业类型（区分企业、船舶、个人）
 
     /**
      * 账号
@@ -44,7 +51,7 @@ public class TUser extends BaseBean {
     /**
      * 用户状态（正常、限制、禁用）
      */
-    private String status;
+    private UserStatus status;
 
     /**
      * 创建时间
@@ -64,13 +71,19 @@ public class TUser extends BaseBean {
     /**
      * 客户端类型
      */
-    private String clienttype;
+    private ClientTypeEnum clienttype;
     
     private String userToken;
     
     private Integer effTimeLength; // userToken 有效时长，单位：秒
     
     private int contractTotal; // 合同数
+    private int orderfindTotal; // 询单数
+    
+    /**
+     * 保证金缴纳状态（是否缴纳足额）
+     */
+    private CompanyBailStatus bailstatus;
 
     public String getCid() {
         return cid;
@@ -118,14 +131,6 @@ public class TUser extends BaseBean {
 
     public void setLogo(String logo) {
         this.logo = logo == null ? null : logo.trim();
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
     }
 
     public Date getCreatedate() {
@@ -176,14 +181,6 @@ public class TUser extends BaseBean {
 		this.clientid = clientid;
 	}
 
-	public String getClienttype() {
-		return clienttype;
-	}
-
-	public void setClienttype(String clienttype) {
-		this.clienttype = clienttype;
-	}
-
 	public String getCname() {
 		return cname;
 	}
@@ -191,5 +188,46 @@ public class TUser extends BaseBean {
 	public void setCname(String cname) {
 		this.cname = cname;
 	}
+
+	public UserStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(UserStatus status) {
+		this.status = status;
+	}
+
+	public ClientTypeEnum getClienttype() {
+		return clienttype;
+	}
+
+	public void setClienttype(ClientTypeEnum clienttype) {
+		this.clienttype = clienttype;
+	}
+
+	public CompanyType getCtype() {
+		return ctype;
+	}
+
+	public void setCtype(CompanyType ctype) {
+		this.ctype = ctype;
+	}
+
+	public CompanyBailStatus getBailstatus() {
+		return bailstatus;
+	}
+
+	public void setBailstatus(CompanyBailStatus bailstatus) {
+		this.bailstatus = bailstatus;
+	}
+
+	public int getOrderfindTotal() {
+		return orderfindTotal;
+	}
+
+	public void setOrderfindTotal(int orderfindTotal) {
+		this.orderfindTotal = orderfindTotal;
+	}
+	
     
 }

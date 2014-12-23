@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.service.company.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.pvo.TCompanyPersonal;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.company.ICompanyPersonalDao;
+import com.appabc.datas.service.company.ICompanyPersonalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TCompanyPersonal;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.company.ICompanyPersonalDao;
-import com.appabc.datas.service.company.ICompanyPersonalService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 个人认证信息SERVICE实现
@@ -41,6 +40,7 @@ public class CompanyPersonalServiceImpl implements ICompanyPersonalService{
 	}
 
 	public void delete(TCompanyPersonal entity) {
+		this.companyPersonalDao.delete(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -60,12 +60,12 @@ public class CompanyPersonalServiceImpl implements ICompanyPersonalService{
 	}
 
 	public List<TCompanyPersonal> queryForList(Map<String, ?> args) {
-		return null;
+		return this.companyPersonalDao.queryForList(args);
 	}
 
 	public QueryContext<TCompanyPersonal> queryListForPagination(
 			QueryContext<TCompanyPersonal> qContext) {
-		return null;
+		return this.companyPersonalDao.queryListForPagination(qContext);
 	}
 
 }

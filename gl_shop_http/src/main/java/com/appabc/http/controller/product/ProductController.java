@@ -54,7 +54,7 @@ public class ProductController extends BaseController<TProductInfo> {
 			List<TProductInfo> list = this.productInfoService.queryByPcode(pcode);
 			return list;
 		}else{
-			return this.buildFailResult(ErrorCode.GENERICERRORCODE, "pcode id is null"); 
+			return this.buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "pcode id is null"); 
 		}
 		
 	}
@@ -75,7 +75,7 @@ public class ProductController extends BaseController<TProductInfo> {
 		if(pcode != null && !pcode.equals("") && pcode != null && !pcode.equals("")){
 			return this.productPriceService.queryTodayPrice(area, pcode);
 		}else{
-			return this.buildFailResult(ErrorCode.GENERICERRORCODE, "参数值不完整"); 
+			return this.buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "参数值不完整"); 
 		}
 		
 	}
@@ -96,7 +96,7 @@ public class ProductController extends BaseController<TProductInfo> {
 		if(pcode != null && !pcode.equals("") && pcode != null && !pcode.equals("")){
 			return this.productPriceHopeService.queryHopePrice(area, pcode);
 		}else{
-			return this.buildFailResult(ErrorCode.GENERICERRORCODE, "参数值不完整"); 
+			return this.buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "参数值不完整"); 
 		}
 		
 	}

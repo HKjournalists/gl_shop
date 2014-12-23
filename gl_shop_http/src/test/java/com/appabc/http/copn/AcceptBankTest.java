@@ -24,7 +24,7 @@ public class AcceptBankTest extends AbstractHttpControllerTest {
 	@Override
 	@Test
 	public void mainTest() {
-//		this.loginSimulation(null, null, null);
+		//this.loginSimulation(null, null, null);
 //		authApply();
 //		getList();
 //		getInfo();
@@ -133,7 +133,7 @@ public class AcceptBankTest extends AbstractHttpControllerTest {
 		request.setMethod("POST");
 		
 		/***企业信息*********************/
-		request.addParameter("id", "ACCEPTBANKID201410170000006141607"); // ID
+		request.addParameter("id", "ACCEPTBANKID201410230000010164352"); // ID
 		
 		try {
 			final ModelAndView mav = handle(request, response);

@@ -1,7 +1,9 @@
 package com.appabc.common.base;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -28,6 +30,11 @@ public class QueryResult<T extends BaseBean> {
 	 * total size
 	 * */
 	private int totalSize = 0;
+	
+	/**
+	 * 其它参数
+	 */
+	private Map<String,Object> resultParam = new HashMap<String, Object>();
 	
 	/**  
 	 * result  
@@ -69,4 +76,17 @@ public class QueryResult<T extends BaseBean> {
 		return ToStringBuilder.reflectionToString(this,
 				ToStringStyle.MULTI_LINE_STYLE);
 	}
+
+	public Map<String, Object> getResultParam() {
+		return resultParam;
+	}
+
+	public void setResultParam(Map<String, Object> resultParam) {
+		if(resultParam != null) this.resultParam.putAll(resultParam);
+	}
+	
+	public void addResoutParam(String key, Object value){
+		this.resultParam.put(key, value);
+	}
+	
 }

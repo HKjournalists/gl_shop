@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.service.product.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.pvo.TProductPrice;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.product.IProductPriceDao;
+import com.appabc.datas.service.product.IProductPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TProductPrice;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.product.IProductPriceDao;
-import com.appabc.datas.service.product.IProductPriceService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 商品当日价格SERVICE实现类
@@ -41,6 +40,7 @@ public class ProductPriceServiceImpl implements IProductPriceService{
 	}
 
 	public void delete(TProductPrice entity) {
+		this.productPriceDao.delete(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -48,7 +48,7 @@ public class ProductPriceServiceImpl implements IProductPriceService{
 	}
 
 	public TProductPrice query(TProductPrice entity) {
-		return null;
+		return this.productPriceDao.query(entity);
 	}
 
 	public TProductPrice query(Serializable id) {
@@ -60,12 +60,12 @@ public class ProductPriceServiceImpl implements IProductPriceService{
 	}
 
 	public List<TProductPrice> queryForList(Map<String, ?> args) {
-		return null;
+		return this.productPriceDao.queryForList(args);
 	}
 
 	public QueryContext<TProductPrice> queryListForPagination(
 			QueryContext<TProductPrice> qContext) {
-		return null;
+		return this.productPriceDao.queryListForPagination(qContext);
 	}
 
 	/* (non-Javadoc)

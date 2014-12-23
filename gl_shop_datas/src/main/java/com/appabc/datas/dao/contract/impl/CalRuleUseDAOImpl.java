@@ -1,18 +1,17 @@
 package com.appabc.datas.dao.contract.impl;
 
+import com.appabc.bean.pvo.TCalRuleUse;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.contract.ICalRuleUseDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TCalRuleUse;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.contract.ICalRuleUseDAO;
 
 /**
  * @Description : 
@@ -31,7 +30,7 @@ public class CalRuleUseDAOImpl extends BaseJdbcDao<TCalRuleUse> implements ICalR
 	private static final String DELETE_SQL = " DELETE FROM T_CAL_RULE_USE WHERE FID = :id ";
 	private static final String SELECT_SQL = " SELECT FID,RULEID,STARTDATE,ENDDATE,ORDERBY,CREATEDATE,CREATOR,REMARK FROM T_CAL_RULE_USE ";
 	
-	private String dynamicJoinSqlWithEntity(TCalRuleUse bean, StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TCalRuleUse bean, StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}
@@ -86,7 +85,7 @@ public class CalRuleUseDAOImpl extends BaseJdbcDao<TCalRuleUse> implements ICalR
 	 * @see com.appabc.common.base.dao.IBaseDao#read(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TCalRuleUse query(TCalRuleUse entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -105,7 +104,7 @@ public class CalRuleUseDAOImpl extends BaseJdbcDao<TCalRuleUse> implements ICalR
 	 * @see com.appabc.common.base.dao.IBaseDao#readForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TCalRuleUse> queryForList(TCalRuleUse entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}

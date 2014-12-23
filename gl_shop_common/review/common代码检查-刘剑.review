@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Review id="common代码检查">
+  <ReviewIssue id="I3GUEKOW">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 13:43:48:032 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-18 :: 17:19:12:121 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="22">src/main/java/com/appabc/common/utils/security/BaseCoder.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>文案屏蔽掉</Summary>
+    <Description>文案已经屏蔽了</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GUKEWQ">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 13:48:20:474 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 13:48:32:952 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="48">src/main/java/com/appabc/common/utils/HttpXmlClient.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>添加异常处理</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GUO6EK">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 13:51:16:076 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 13:51:34:523 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="63">src/main/java/com/appabc/common/utils/RedisHelper.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>异常处理 和  默认值 概念</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GUPBTT">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 13:52:09:761 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 13:52:39:569 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="146">src/main/java/com/appabc/common/utils/RedisHelper.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>命名方式非常怪异、没有规律</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GURQIW">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 13:54:02:120 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-18 :: 17:18:14:050 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="19">src/main/java/com/appabc/common/utils/SystemConstant.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>加注释，尽量加注释</Summary>
+    <Description>加了大量注释</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+</Review>

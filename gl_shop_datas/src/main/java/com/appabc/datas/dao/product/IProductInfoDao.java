@@ -3,11 +3,11 @@
  */
 package com.appabc.datas.dao.product;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.appabc.bean.pvo.TProductInfo;
 import com.appabc.common.base.dao.IBaseDao;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Description : 商品基本信息DAO接口

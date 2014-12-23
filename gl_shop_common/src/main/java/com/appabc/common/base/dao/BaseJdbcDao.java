@@ -1,16 +1,17 @@
 package com.appabc.common.base.dao;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
+import com.appabc.common.base.MultiTypeBeanPropertySqlParameterSource;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.SQLExpressionEnum;
+import com.appabc.common.base.bean.BaseBean;
+import com.appabc.common.utils.LogUtil;
+import com.appabc.common.utils.pagination.ISQLGenerator;
+import com.appabc.common.utils.pagination.PageModel;
+import com.appabc.common.utils.pagination.PaginationInfoDataBaseBuiler;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -18,12 +19,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.Assert;
 
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.SQLExpressionEnum;
-import com.appabc.common.base.bean.BaseBean;
-import com.appabc.common.utils.LogUtil;
-import com.appabc.common.utils.pagination.ISQLGenerator;
-import com.appabc.common.utils.pagination.PaginationInfoDataBaseBuiler;
+import javax.annotation.Resource;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : BaseJdbcDao
@@ -44,12 +43,12 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 		super.setJdbcTemplate(jb);
 	}
 
-	public void addStandardSqlWithParameter(StringBuffer sql,
+	public void addStandardSqlWithParameter(StringBuilder sql,
 			String dbColumnName, Object value, List<Object> args) {
 		this.addStandardSqlWithParameter(sql, dbColumnName, value, args, null);
 	}
-	
-	public void addStandardSqlWithParameter(StringBuffer sql,
+
+	public void addStandardSqlWithParameter(StringBuilder sql,
 			String dbColumnName, Object value, List<Object> args,String sqlExpression){
 		if (sql == null || StringUtils.isEmpty(dbColumnName) || value == null) {
 			return;
@@ -58,7 +57,7 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 			sqlExpression = SQLExpressionEnum.EQ.getText();
 		}
 		boolean isNullValFlag = true;
-		if (value != null && (value instanceof String ? StringUtils.isNotEmpty(String.valueOf(value)) : true)) {
+		if (value instanceof String ? StringUtils.isNotEmpty(String.valueOf(value)) : true) {
 			isNullValFlag = false;
 		}
 		if (!isNullValFlag) {
@@ -76,21 +75,21 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 			}
 			args.add(value);
 		}
-		log.info("addStandardSqWithParameter is : " + sql.toString());
+		log.debug("addStandardSqWithParameter is : " + sql.toString());
 	}
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.dao.BaseJdbcDao#addNameParamerSqlWithProperty(
 	 * java.lang.StringBuffer, java.lang.String, java.lang.String, java.lang.Object)
 	 */
-	public void addNameParamerSqlWithProperty(StringBuffer sql,
+	public void addNameParamerSqlWithProperty(StringBuilder sql,
 			String propertyName, String dbColumnName, Object value) {
 		this.addNameParamerSqlWithProperty(sql, propertyName, dbColumnName, value, null);
 	}
-	
-	public void addNameParamerSqlWithProperty(StringBuffer sql,
+
+	public void addNameParamerSqlWithProperty(StringBuilder sql,
 			String propertyName, String dbColumnName, Object value,String sqlExpression){
 		if (value == null || sql == null || StringUtils.isEmpty(propertyName)
 				|| StringUtils.isEmpty(dbColumnName)) {
@@ -120,21 +119,21 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 				sql.append(" :" + propertyName.trim());
 			}
 		}
-		log.info("addNameParamerSqlWithProperty is : " + sql.toString());
+		log.debug("addNameParamerSqlWithProperty is : " + sql.toString());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#create(java.lang.String,
 	 * java.lang.Object)
 	 */
 	public void save(String sql, T entity) {
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notNull(entity, "the save to db object is null!");
-		log.info("the sql str is : " + sql);
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(entity, "The Save To DB Object Is Null!");
+		log.debug("The Sql Str Is : " + sql+ " ; And The Value Is : "+entity);
 		KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
-		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(
+		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(
 				entity);
 		int result = getNamedParameterJdbcTemplate().update(sql, paramSource,
 				generatedKeyHolder);
@@ -142,86 +141,86 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 		if (generatedKeyHolder.getKey() != null) {
 			entity.setId(String.valueOf(generatedKeyHolder.getKey().intValue()));
 		}
-		log.info(result);
+		log.debug(result);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.dao.IBaseDao#createAutoGenerateKey(java.lang.String
 	 * , com.appabc.common.base.bean.BaseBean)
 	 */
 	public KeyHolder saveAutoGenerateKey(String sql, T entity) {
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notNull(entity, "the save to db object is null!");
-		log.info("the sql str is : " + sql);
-		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(entity, "The Save To DB Object Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+entity);
+		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(
 				entity);
 		KeyHolder generatedKeyHolder = new GeneratedKeyHolder();
 		int result = getNamedParameterJdbcTemplate().update(sql, paramSource,
 				generatedKeyHolder);
-		log.info(result);
+		log.debug(result);
 		return generatedKeyHolder;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#update(java.lang.String,
 	 * java.lang.Object)
 	 */
 	public void update(String sql, T entity) {
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notNull(entity, "the update object is null!");
-		log.info("the sql str is : " + sql);
-		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(entity, "The Update Object Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+entity);
+		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(
 				entity);
 		int result = getNamedParameterJdbcTemplate().update(sql, paramSource);
-		log.info(result);
+		log.debug(result);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#delete(java.lang.String,
 	 * java.lang.Object)
 	 */
 	public void delete(String sql, T entity) {
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notNull(entity, "the delete object is null!");
-		log.info("the sql str is : " + sql);
-		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(entity, "The Delete Object Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+entity);
+		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(
 				entity);
 		int result = getNamedParameterJdbcTemplate().update(sql, paramSource);
-		log.info(result);
+		log.debug(result);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#delete(java.lang.String,
 	 * java.lang.String)
 	 */
 	public void delete(String sql, Serializable id) {
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notNull(id, "the delete id is null!");
-		log.info("the sql str is : " + sql);
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(id, "The Delete Id Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+id);
 		SqlParameterSource paramMap = new MapSqlParameterSource("id", id);
 		int result = getNamedParameterJdbcTemplate().update(sql, paramMap);
-		log.info(result);
+		log.debug(result);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#read(java.lang.String,
 	 * java.lang.String)
 	 */
 	public T query(String sql, Serializable id) {
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notNull(id, "the read id is null!");
-		log.info("the sql str is : " + sql);
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(id, "The Read Id Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+id);
 		SqlParameterSource paramSource = new MapSqlParameterSource("id", id);
 		List<T> result = getNamedParameterJdbcTemplate().query(sql, paramSource, this);
 		if(CollectionUtils.isNotEmpty(result)){
@@ -234,15 +233,15 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#query(java.lang.String,
 	 * java.lang.Object)
 	 */
 	public T query(String sql, T entity) {
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notNull(entity, "the read object is null!");
-		log.info("the sql str is : " + sql);
-		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(entity);
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(entity, "The Read Object Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+entity);
+		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(entity);
 		List<T> result = getNamedParameterJdbcTemplate().query(sql, paramSource, this);
 		if(CollectionUtils.isNotEmpty(result)){
 			return result.get(0);
@@ -254,14 +253,14 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#query(java.lang.String,
 	 * java.lang.List)
 	 */
 	public T query(String sql, List<?> args){
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notNull(args, "the read object is null!");
-		log.info("the sql str is : " + sql);
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(args, "The Read Object Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+args);
 		List<T> result = getJdbcTemplate().query(sql, args.toArray(), this);
 		if(CollectionUtils.isNotEmpty(result)){
 			return result.get(0);
@@ -270,51 +269,51 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 		}
 		//return getJdbcTemplate().queryForObject(sql, args.toArray(), this);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#readAll(java.lang.String,
 	 * java.lang.Object)
 	 */
 	public List<T> queryForList(String sql, T entity) {
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notNull(entity, "the read object is null!");
-		log.info("the sql str is : " + sql);
-		SqlParameterSource paramSource = new BeanPropertySqlParameterSource(
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(entity, "The Read Object Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+entity);
+		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(
 				entity);
 		return getNamedParameterJdbcTemplate().query(sql, paramSource, this);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.lang.String,
 	 * java.util.Map)
 	 */
 	public List<T> queryForList(String sql, Map<String, ?> args) {
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notEmpty(args, "the read object is null!");
-		log.info("the sql str is : " + sql);
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notEmpty(args, "The Read Object Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+args);
 		return getNamedParameterJdbcTemplate().query(sql, args, this);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.lang.String,
 	 * java.util.List)
 	 */
 	public List<T> queryForList(String sql,List<?> args){
-		Assert.hasText(sql, "the sql str is null!");
-		Assert.notEmpty(args, "the queryForList object is null!");
-		log.info("the sql str is : " + sql);
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notEmpty(args, "The QueryForList Object Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+args);
 		return getJdbcTemplate().query(sql, args.toArray(), this);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.dao.IBaseDao#queryListForPagination(java.lang.String
 	 * , com.appabc.common.base.QueryContext)
@@ -323,64 +322,74 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 			QueryContext<T> qContext) {
 		return this.queryListForPagination(sql, qContext, this);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.dao.IBaseDao#queryListForPagination(java.lang.String
 	 * , com.appabc.common.base.QueryContext,RowMapper<T> rowMapper)
 	 */
 	public QueryContext<T> queryListForPagination(String sql,
 			QueryContext<T> qContext,RowMapper<T> rowMapper){
-		Assert.hasText(sql, "the sql str is null!");
+		Assert.hasText(sql, "The Sql Str Is null!");
+
 		if (StringUtils.isNotEmpty(qContext.getOrderColumn())) {
-			StringBuffer sb = new StringBuffer(sql);
+			StringBuilder sb = new StringBuilder(sql);
 			sb.append(" ORDER BY ");
 			sb.append(qContext.getOrderColumn());
 			sb.append(" ");
 			sb.append(qContext.getOrder());
 			sql = sb.toString();
 		}
-		log.info("the sql str before page is : " + sql);
+		log.debug("The Sql Str Before Page Is : " + sql + " ; And The Value Is : "+qContext.getParameters());
+
+		/****BeanParameter中的数据不完整，不能做为参数查询，某些业务的自定义参数和分页参数不在BeanParameter中*******/
+//		SqlParameterSource parameterSource;
+//		if (qContext.getBeanParameter() != null) {
+//			parameterSource = new MultiTypeBeanPropertySqlParameterSource(qContext.getBeanParameter());
+//			System.out.println("BeanParameter");
+//		} else {
+//			parameterSource = new MapSqlParameterSource(qContext.getParameters());
+//		}
+		SqlParameterSource parameterSource = new MapSqlParameterSource(qContext.getParameters());
 		if (qContext.getPage().getPageIndex() < 0) {
-			List<T> list = getNamedParameterJdbcTemplate().query(sql,
-					qContext.getParameters(), rowMapper);
+			List<T> list = getNamedParameterJdbcTemplate().query(sql, parameterSource, rowMapper);
 			qContext.getQueryResult().setResult(list);
 			qContext.getQueryResult().setTotalSize(list.size());
 		} else {
 			ISQLGenerator iSQLGenerator = PaginationInfoDataBaseBuiler
 					.generateSQLGenerateFactory();
 			String countSql = iSQLGenerator.generateCountSql(sql);
-			log.info("the count sql str is  : " + countSql);
+			log.debug("The Count Sql Str Is  : " + countSql);
 			// 获取记录总数
-			@SuppressWarnings("deprecation")
-			int count = getNamedParameterJdbcTemplate().queryForInt(countSql,
-					qContext.getParameters());
+			Integer count = getNamedParameterJdbcTemplate().queryForObject(countSql, parameterSource, Integer.class);
 			qContext.getQueryResult().setTotalSize(count);
 			qContext.getPage().setTotalSize(count);
 
-			String pageSql = iSQLGenerator.generatePageSql(sql,
-					qContext.getPage());
-			log.info("the page sql str is  : " + pageSql);
-			// 获取分页后的记录数量
-			List<T> list = getNamedParameterJdbcTemplate().query(pageSql,
-					qContext.getParameters(), rowMapper);
-			qContext.getQueryResult().setResult(list);
+			PageModel page = qContext.getPage();
+			if(page.getPageIndex()<=page.getTotalPage()){
+				String pageSql = iSQLGenerator.generatePageSql(sql,
+						qContext.getPage());
+				log.debug("The Page Sql Str Is  : " + pageSql);
+				// 获取分页后的记录数量
+				List<T> list = getNamedParameterJdbcTemplate().query(pageSql, parameterSource, rowMapper);
+				qContext.getQueryResult().setResult(list);
+			}
 		}
 		return qContext;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.dao.IBaseDao#queryListForPaginationForStandardSQL(java.lang.String
 	 * , com.appabc.common.base.QueryContext)
 	 */
 	public QueryContext<T> queryListForPaginationForStandardSQL(String sql,
 			QueryContext<T> qContext) {
-		Assert.hasText(sql, "the sql str is null!");
+		Assert.hasText(sql, "The Sql Str Is Null!");
 		if (StringUtils.isNotEmpty(qContext.getOrderColumn())) {
 			StringBuffer sb = new StringBuffer(sql);
 			sb.append(" ORDER BY ");
@@ -389,7 +398,7 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 			sb.append(qContext.getOrder());
 			sql = sb.toString();
 		}
-		log.info("the sql str before page is : " + sql);
+		log.debug("The Sql Str Before Page Is : " + sql + " ; And The Value Is : "+qContext.getParamList());
 		if (qContext.getPage().getPageIndex() < 0) {
 			List<T> list = getJdbcTemplate().query(
 					sql,
@@ -401,7 +410,7 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 			ISQLGenerator iSQLGenerator = PaginationInfoDataBaseBuiler
 					.generateSQLGenerateFactory();
 			String countSql = iSQLGenerator.generateCountSql(sql);
-			log.info("the count sql str is  : " + countSql);
+			log.debug("The Count Sql Str Is  : " + countSql);
 			// 获取记录总数
 			@SuppressWarnings("deprecation")
 			int count = getJdbcTemplate().queryForInt(
@@ -411,15 +420,18 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 			qContext.getQueryResult().setTotalSize(count);
 			qContext.getPage().setTotalSize(count);
 
-			String pageSql = iSQLGenerator.generatePageSql(sql,
-					qContext.getPage());
-			log.info("the page sql str is  : " + pageSql);
-			// 获取分页后的记录数量
-			List<T> list = getJdbcTemplate().query(
-					pageSql,
-					CollectionUtils.isEmpty(qContext.getParamList()) ? null
-							: qContext.getParamList().toArray(), this);
-			qContext.getQueryResult().setResult(list);
+			PageModel page = qContext.getPage();
+			if(page.getPageIndex()<=page.getTotalPage()){
+				String pageSql = iSQLGenerator.generatePageSql(sql,
+						qContext.getPage());
+				log.debug("The Page Sql Str Is  : " + pageSql);
+				// 获取分页后的记录数量
+				List<T> list = getJdbcTemplate().query(
+						pageSql,
+						CollectionUtils.isEmpty(qContext.getParamList()) ? null
+								: qContext.getParamList().toArray(), this);
+				qContext.getQueryResult().setResult(list);
+			}
 		}
 		return qContext;
 	}

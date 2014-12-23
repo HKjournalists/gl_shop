@@ -1,7 +1,9 @@
 package com.appabc.pay.bean;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.PurseInfo.ExtractStatus;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TPassbookDraw extends BaseBean {
     /**
@@ -47,7 +49,7 @@ public class TPassbookDraw extends BaseBean {
     /**
      * 状态
      */
-    private Integer status;
+    private ExtractStatus status;
 
     /**
      * 备注
@@ -110,14 +112,6 @@ public class TPassbookDraw extends BaseBean {
         this.pid = pid == null ? null : pid.trim();
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
     public String getMark() {
         return mark;
     }
@@ -125,4 +119,22 @@ public class TPassbookDraw extends BaseBean {
     public void setMark(String mark) {
         this.mark = mark == null ? null : mark.trim();
     }
+
+	/**  
+	 * status  
+	 *  
+	 * @return  the status  
+	 * @since   1.0.0  
+	*/  
+	
+	public ExtractStatus getStatus() {
+		return status;
+	}
+
+	/**  
+	 * @param status the status to set  
+	 */
+	public void setStatus(ExtractStatus status) {
+		this.status = status;
+	}
 }

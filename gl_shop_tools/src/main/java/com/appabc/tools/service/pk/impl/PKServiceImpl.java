@@ -1,19 +1,18 @@
 package com.appabc.tools.service.pk.impl;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.appabc.bean.pvo.TPk;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.service.BaseService;
 import com.appabc.tools.dao.pk.IPKDao;
 import com.appabc.tools.service.pk.IPKService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 
@@ -111,14 +110,14 @@ public class PKServiceImpl extends BaseService<TPk> implements IPKService {
 	 * @see com.appabc.common.base.service.IBaseService#delete(java.io.Serializable)  
 	 */
 	public void delete(Serializable id) {
-		this.delete(id);
+		this.delete(String.valueOf(id));
 	}
 
 	/* (non-Javadoc)  
 	 * @see com.appabc.common.base.service.IBaseService#query(java.io.Serializable)  
 	 */
 	public TPk query(Serializable id) {
-		return this.query(id);
+		return this.query(String.valueOf(id));
 	}
 
 }

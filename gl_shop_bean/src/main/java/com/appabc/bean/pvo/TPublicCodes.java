@@ -27,8 +27,21 @@ public class TPublicCodes extends BaseBean {
      * 关联属性编号(父编号)
      */
     private String pcode;
+    
+    /**
+     * 序号
+     */
+    private Integer orderno;
 
-    public String getCode() {
+    public Integer getOrderno() {
+		return orderno;
+	}
+
+	public void setOrderno(Integer orderno) {
+		this.orderno = orderno;
+	}
+
+	public String getCode() {
         return code;
     }
 

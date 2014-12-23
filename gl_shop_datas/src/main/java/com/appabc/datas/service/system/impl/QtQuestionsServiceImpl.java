@@ -3,17 +3,16 @@
  */
 package com.appabc.datas.service.system.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.appabc.bean.pvo.TQtQuestions;
 import com.appabc.common.base.QueryContext;
 import com.appabc.datas.dao.system.IQtQuestionsDao;
 import com.appabc.datas.service.system.IQtQuestionsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 常见问题
@@ -47,6 +46,7 @@ public class QtQuestionsServiceImpl implements IQtQuestionsService{
 	 * @see com.appabc.common.base.service.IBaseService#delete(com.appabc.common.base.bean.BaseBean)
 	 */
 	public void delete(TQtQuestions entity) {
+		this.qtQuestionsDao.delete(entity);
 	}
 
 	/* (non-Javadoc)
@@ -81,7 +81,7 @@ public class QtQuestionsServiceImpl implements IQtQuestionsService{
 	 * @see com.appabc.common.base.service.IBaseService#queryForList(java.util.Map)
 	 */
 	public List<TQtQuestions> queryForList(Map<String, ?> args) {
-		return null;
+		return this.qtQuestionsDao.queryForList(args);
 	}
 
 	/* (non-Javadoc)
@@ -89,7 +89,7 @@ public class QtQuestionsServiceImpl implements IQtQuestionsService{
 	 */
 	public QueryContext<TQtQuestions> queryListForPagination(
 			QueryContext<TQtQuestions> qContext) {
-		return null;
+		return this.qtQuestionsDao.queryListForPagination(qContext);
 	}
 
 }

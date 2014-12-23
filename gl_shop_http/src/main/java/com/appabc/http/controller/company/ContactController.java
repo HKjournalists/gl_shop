@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.appabc.bean.enums.CompanyInfo;
 import com.appabc.bean.pvo.TCompanyContact;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
-import com.appabc.datas.enums.CompanyInfo;
 import com.appabc.datas.service.company.ICompanyContactService;
+import com.appabc.http.utils.HttpApplicationErrorCode;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -59,7 +60,6 @@ public class ContactController extends BaseController<TCompanyContact> {
 		cc.setCid(cid);
 		
 		List<TCompanyContact> ccList = companyContactService.queryForList(cc);
-		
 		return this.buildFilterResultWithString(ccList, "cid","createtime", "creater");
 	}
 	
@@ -87,6 +87,7 @@ public class ContactController extends BaseController<TCompanyContact> {
 		TCompanyContact ccBean = null;
 		
 		Gson gson = new Gson();
+		int num = 0;
 		for(JsonElement je : jsonArray){ // 企业联系人信息
 			ccBean = gson.fromJson(je, TCompanyContact.class);
 			if(ccBean.getStatus() == CompanyInfo.ContactStatus.CONTACT_STATUS_DEFULT.getVal()){ // 默认联系人信息检查
@@ -96,14 +97,30 @@ public class ContactController extends BaseController<TCompanyContact> {
 					this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "默认联系人手机不能为空");
 				}
 			}
+			if(num == 0){ // 第一个为默认联系人
+				ccBean.setStatus(CompanyInfo.ContactStatus.CONTACT_STATUS_DEFULT.getVal());
+			}else{
+				ccBean.setStatus(CompanyInfo.ContactStatus.CONTACT_STATUS_OTHER.getVal());
+			}
 			if(!StringUtils.isEmpty(ccBean.getId())){
-				this.companyContactService.modify(ccBean);
+				try {
+					this.companyContactService.modify(ccBean);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+				}
 			}else{
 				ccBean.setCid(cid);
 				ccBean.setCreater(this.getCurrentUserId(request));
 				ccBean.setCreatetime(Calendar.getInstance().getTime());
-				this.companyContactService.add(ccBean);
+				try {
+					this.companyContactService.add(ccBean);
+				} catch (Exception e) {
+					e.printStackTrace();
+					return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+				}
 			}
+			num ++ ;
 		}
 		
 		return this.buildSuccessRetJson("联系人保存成功", "");

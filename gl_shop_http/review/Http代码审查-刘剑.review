@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Review id="Http代码审查">
+  <ReviewIssue id="I3GUZZZ8">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:00:27:620 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:00:47:003 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="30">src/main/java/com/appabc/http/controller/codes/PublicCodesController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>这个类是否无用了</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GV243Y">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:02:06:286 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:05:04:162 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="67">src/main/java/com/appabc/http/controller/company/AcceptBankController.java</File>
+    <Type>item.type.label.programLogic</Type>
+    <Severity>item.severity.label.major</Severity>
+    <Summary>代码逻辑有问题，应该是判断smsCode</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GVD0MF">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:10:34:983 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:11:22:099 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="125">src/main/java/com/appabc/http/controller/company/AcceptBankController.java</File>
+    <Type>item.type.label.programLogic</Type>
+    <Severity>item.severity.label.critical</Severity>
+    <Summary>修改企业收款人代码逻辑，重新添加认证记录有问题</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GVFYTC">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:12:52:608 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 15:14:13:626 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="160">src/main/java/com/appabc/http/controller/company/AcceptBankController.java</File>
+    <Type>item.type.label.programLogic</Type>
+    <Severity>item.severity.label.minor</Severity>
+    <Summary>获取收款列表的同事需要展示图片？ 什么逻辑</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GVIBJU">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:14:42:426 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:15:20:298 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="209">src/main/java/com/appabc/http/controller/company/AcceptBankController.java</File>
+    <Type>item.type.label.optimization</Type>
+    <Severity>item.severity.label.critical</Severity>
+    <Summary>这块代码的性能太糟糕了！</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GVL3M6">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:16:52:110 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:19:40:640 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="106">src/main/java/com/appabc/http/controller/company/AddressController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>返回的信息不够清晰</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GVQOLB">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:21:12:575 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:21:35:087 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="67">src/main/java/com/appabc/http/controller/company/CompanyController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>图片ID这块的判断不统一</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GVU9JR">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:23:59:703 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-10 :: 11:39:59:280 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="87">src/main/java/com/appabc/http/controller/company/CompanyController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>这块逻辑需要讨论</Summary>
+    <Description>1.所有认证的状态修改 未过期 ？
+2.设置默认地址的这个逻辑？ 是否需要，实现设置默认地址的逻辑存在代码优化的问题
+3.验证是否有认证中的，是否应该放到services</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GVWLUX">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:25:48:969 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:26:14:198 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="77">src/main/java/com/appabc/http/controller/company/CompanyController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary></Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GVZ8CO">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:27:51:432 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:29:18:564 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="119">src/main/java/com/appabc/http/controller/company/CompanyController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>只是在输出前进行加密处理，如果多方法调用，是否每块地方都加，应该是统一的处理方式，在service层处理 或者 dao</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GW8ME8">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:35:09:536 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:35:58:887 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="141">src/main/java/com/appabc/http/controller/company/CompanyController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>企业认证图片返回多张？ 应该只是需要返回认证的图片的啊</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GWBD0Q">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:37:17:354 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:38:24:492 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="167">src/main/java/com/appabc/http/controller/company/CompanyController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>更新企业简介 对企业图片的处理感觉搞复杂了、另外图片删除没有删除图片文件的逻辑</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GWFM24">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:40:35:692 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:40:58:424 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="112">src/main/java/com/appabc/http/controller/contract/ContractController.java</File>
+    <Type>item.type.label.optimization</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>这块的代码是否可以快捷生成</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GWK4SQ">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:44:06:602 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:17:24:235 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="178">src/main/java/com/appabc/http/controller/contract/ContractController.java</File>
+    <Type>item.type.label.optimization</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>代码性能的问题，为什么不直接返回最后一条</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.resolution.label.validWontfix</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GWMF7U">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:45:53:418 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:14:39:365 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="212">src/main/java/com/appabc/http/controller/contract/ContractController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>存在的问题</Summary>
+    <Description>1.常量的问题。
+2.对方已经签订的判断过于简单
+3.</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GWU150">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:51:48:420 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-18 :: 17:26:30:249 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="282">src/main/java/com/appabc/http/controller/contract/ContractController.java</File>
+    <Type>item.type.label.optimization</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>代码顺序的优化</Summary>
+    <Description>现在做基本判断，在做数据库操作。[已经处理]</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GX1TPU">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:57:52:050 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 14:58:07:096 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="633">src/main/java/com/appabc/http/controller/contract/ContractController.java</File>
+    <Type>item.type.label.codingStandards</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>命名不规范的问题</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3GX7TEQ">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-09 :: 15:02:31:586 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-18 :: 17:25:56:105 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="795">src/main/java/com/appabc/http/controller/contract/ContractController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>没有引发重新计算用户的评价？</Summary>
+    <Description>已经引发了重新计算用户的评价</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.resolved</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3JSG79L">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:12:23:241 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:12:47:363 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="86">src/main/java/com/appabc/http/controller/file/FileController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>单独写一个方法获取文件后缀</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3JSHG7Q">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:13:21:494 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:14:25:025 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="71">src/main/java/com/appabc/http/controller/file/FileController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>由客户端开决定文件存储的位置？</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3JSOUSU">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:19:06:990 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:28:08:135 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="141">src/main/java/com/appabc/http/controller/file/FileController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>有几个问题</Summary>
+    <Description>1.代码对齐
+2.缩略图这块丢出异常，是否造成客户端认为上传图片失败。
+3.缩略图这块的性能没有做统计，生成时间的统计。
+4.缩略图的宽和高，应该做成常量或者系统参数，这块存在可能调的。</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3JTA9KJ">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:35:45:907 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:36:37:681 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="114">src/main/java/com/appabc/http/controller/order/OrderController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>问题信息</Summary>
+    <Description>1.service里 判断保证金，应该是一个单独的方法</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3JTLOCT">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:44:38:285 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 15:50:28:574 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="203">src/main/java/com/appabc/http/controller/order/OrderController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>查询供应信息的详情</Summary>
+    <Description>1.价格和地域的处理 与 发布的时候 矛盾。
+2.加密请求的问题依旧</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3JU5K3K">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 16:00:05:888 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-11 :: 16:00:31:625 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="53">src/main/java/com/appabc/http/controller/product/ProductController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>字符串判断统一</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+</Review>

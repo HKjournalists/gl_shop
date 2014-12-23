@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Property>
+  <Review id="DEFAULT">
+    <Description>property.default.description</Description>
+    <Author></Author>
+    <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">1970-01-01 :: 00:00:00:000 GMT-10:00</CreationDate>
+    <Directory>review</Directory>
+    <Reviewers></Reviewers>
+    <Files/>
+    <FieldItems>
+      <FieldItem id="Type" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.type.label.codingStandards"/>
+        <Entry name="item.type.label.programLogic"/>
+        <Entry name="item.type.label.optimization"/>
+        <Entry name="item.type.label.usability"/>
+        <Entry name="item.type.label.clarity"/>
+        <Entry name="item.type.label.missing"/>
+        <Entry name="item.type.label.irrelevant"/>
+        <Entry name="item.type.label.suggestion"/>
+        <Entry name="item.type.label.other"/>
+      </FieldItem>
+      <FieldItem id="Severity" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.severity.label.critical"/>
+        <Entry name="item.severity.label.major"/>
+        <Entry name="item.severity.label.normal"/>
+        <Entry name="item.severity.label.minor"/>
+        <Entry name="item.severity.label.trivial"/>
+      </FieldItem>
+      <FieldItem id="Resolution" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.resolution.label.validNeedsfixing"/>
+        <Entry name="item.resolution.label.validFixlater"/>
+        <Entry name="item.resolution.label.validDuplicate"/>
+        <Entry name="item.resolution.label.validWontfix"/>
+        <Entry name="item.resolution.label.invalidWontfix"/>
+        <Entry name="item.resolution.label.unsureValidity"/>
+      </FieldItem>
+      <FieldItem id="Status" default="item.status.label.open">
+        <Entry name="item.status.label.open"/>
+        <Entry name="item.status.label.resolved"/>
+        <Entry name="item.status.label.closed"/>
+        <Entry name="item.status.label.reopened"/>
+      </FieldItem>
+    </FieldItems>
+    <Filters>
+      <Phase name="phase.individual" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="item.reviewer.label.automatic" enabled="true"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="" enabled="false"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="false"/>
+        <Filter name="Status" value="item.status.label.open" enabled="false"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+      <Phase name="phase.team" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="" enabled="false"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="" enabled="false"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="true"/>
+        <Filter name="Status" value="item.status.label.open" enabled="false"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+      <Phase name="phase.rework" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="" enabled="false"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="item.reviewer.label.automatic" enabled="true"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="false"/>
+        <Filter name="Status" value="item.status.label.open" enabled="true"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+    </Filters>
+  </Review>
+  <Review id="pay模块的代码审核">
+    <Description>pay模块的代码审核</Description>
+    <Author></Author>
+    <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-13 :: 16:15:13:535 CST</CreationDate>
+    <Directory>review</Directory>
+    <Reviewers>
+      <Entry id="刘剑" name="刘剑"/>
+      <Entry id="叶跃峰" name="叶跃峰"/>
+      <Entry id="黄建华" name="黄建华"/>
+    </Reviewers>
+    <Files>
+      <Entry name="src/main/java/com/appabc/pay/bean/OInfo.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/PurseParamObj.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TAcceptBank.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TBankInfo.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TOfflinePay.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TPassbookDraw.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TPassbookInfo.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TPassbookPay.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TPassbookThirdCheck.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TPayDetail.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TPayInfo.java"/>
+      <Entry name="src/main/java/com/appabc/pay/bean/TPk.java"/>
+      <Entry name="src/main/java/com/appabc/pay/controller/PurseController.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/impl/OfflinePayDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/impl/PassbookDrawDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/impl/PassbookInfoDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/impl/PassbookPayDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/impl/PassbookThirdCheckDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/impl/PayAcceptBankDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/impl/PayDetailDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/impl/PayInfoDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/impl/PrimaryKeyDAOImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/IOfflinePayDAO.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/IPassbookDrawDAO.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/IPassbookInfoDAO.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/IPassbookPayDAO.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/IPassbookThirdCheckDAO.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/IPayAcceptBankDAO.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/IPayDetailDAO.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/IPayInfoDAO.java"/>
+      <Entry name="src/main/java/com/appabc/pay/dao/IPrimaryKeyDAO.java"/>
+      <Entry name="src/main/java/com/appabc/pay/exception/ServiceException.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/IPassPayService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/impl/OfflinePayServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/impl/PassbookDrawServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/impl/PassbookInfoServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/impl/PassbookPayServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/impl/PassbookThirdCheckServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/impl/PayAcceptBankServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/impl/PayDetailServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/impl/PayInfoServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/impl/PrimaryKeyServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/IOfflinePayService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/IPassbookDrawService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/IPassbookInfoService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/IPassbookPayService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/IPassbookThirdCheckService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/IPayAcceptBankService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/IPayDetailService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/IPayInfoService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/IPrimaryKeyService.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/local/PassPayLocalServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/service/remote/PassPayRemoteServiceImpl.java"/>
+      <Entry name="src/main/java/com/appabc/pay/util/CodeConstant.java"/>
+      <Entry name="src/main/java/com/appabc/pay/util/PrimaryKeyGenerator.java"/>
+    </Files>
+    <FieldItems>
+      <FieldItem id="Type" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.type.label.codingStandards"/>
+        <Entry name="item.type.label.programLogic"/>
+        <Entry name="item.type.label.optimization"/>
+        <Entry name="item.type.label.usability"/>
+        <Entry name="item.type.label.clarity"/>
+        <Entry name="item.type.label.missing"/>
+        <Entry name="item.type.label.irrelevant"/>
+        <Entry name="item.type.label.suggestion"/>
+        <Entry name="item.type.label.other"/>
+      </FieldItem>
+      <FieldItem id="Severity" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.severity.label.critical"/>
+        <Entry name="item.severity.label.major"/>
+        <Entry name="item.severity.label.normal"/>
+        <Entry name="item.severity.label.minor"/>
+        <Entry name="item.severity.label.trivial"/>
+      </FieldItem>
+      <FieldItem id="Resolution" default="item.label.unset">
+        <Entry name="item.label.unset"/>
+        <Entry name="item.resolution.label.validNeedsfixing"/>
+        <Entry name="item.resolution.label.validFixlater"/>
+        <Entry name="item.resolution.label.validDuplicate"/>
+        <Entry name="item.resolution.label.validWontfix"/>
+        <Entry name="item.resolution.label.invalidWontfix"/>
+        <Entry name="item.resolution.label.unsureValidity"/>
+      </FieldItem>
+      <FieldItem id="Status" default="item.status.label.open">
+        <Entry name="item.status.label.open"/>
+        <Entry name="item.status.label.resolved"/>
+        <Entry name="item.status.label.closed"/>
+        <Entry name="item.status.label.reopened"/>
+      </FieldItem>
+    </FieldItems>
+    <Filters>
+      <Phase name="phase.individual" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="item.reviewer.label.automatic" enabled="true"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="" enabled="false"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="false"/>
+        <Filter name="Status" value="item.status.label.open" enabled="false"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+      <Phase name="phase.team" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="" enabled="false"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="" enabled="false"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="true"/>
+        <Filter name="Status" value="item.status.label.open" enabled="false"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+      <Phase name="phase.rework" enabled="true">
+        <Filter name="Interval" value="7" enabled="false"/>
+        <Filter name="Reviewer" value="" enabled="false"/>
+        <Filter name="Type" value="item.label.unset" enabled="false"/>
+        <Filter name="Severity" value="item.label.unset" enabled="false"/>
+        <Filter name="AssignedTo" value="item.reviewer.label.automatic" enabled="true"/>
+        <Filter name="Resolution" value="item.label.unset" enabled="false"/>
+        <Filter name="Status" value="item.status.label.open" enabled="true"/>
+        <Filter name="File" value="" enabled="false"/>
+      </Phase>
+    </Filters>
+  </Review>
+</Property>

@@ -1,6 +1,8 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.ContractInfo.ContractCancelType;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TOrderCancel extends BaseBean {
@@ -22,7 +24,7 @@ public class TOrderCancel extends BaseBean {
     /**
      * 取消类型（单方取消、协商取消、系统取消）
      */
-    private String canceltype;
+    private ContractCancelType canceltype;
 
     /**
      * 取消时间
@@ -55,14 +57,6 @@ public class TOrderCancel extends BaseBean {
         this.canceler = canceler == null ? null : canceler.trim();
     }
 
-    public String getCanceltype() {
-        return canceltype;
-    }
-
-    public void setCanceltype(String canceltype) {
-        this.canceltype = canceltype == null ? null : canceltype.trim();
-    }
-
     public Date getCanceltime() {
         return canceltime;
     }
@@ -86,4 +80,22 @@ public class TOrderCancel extends BaseBean {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	/**  
+	 * canceltype  
+	 *  
+	 * @return  the canceltype  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractCancelType getCanceltype() {
+		return canceltype;
+	}
+
+	/**  
+	 * @param canceltype the canceltype to set  
+	 */
+	public void setCanceltype(ContractCancelType canceltype) {
+		this.canceltype = canceltype;
+	}
 }

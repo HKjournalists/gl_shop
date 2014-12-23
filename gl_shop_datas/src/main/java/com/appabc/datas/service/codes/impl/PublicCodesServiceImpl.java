@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.service.codes.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.pvo.TPublicCodes;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.codes.IPublicCodesDao;
+import com.appabc.datas.service.codes.IPublicCodesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TPublicCodes;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.codes.IPublicCodesDao;
-import com.appabc.datas.service.codes.IPublicCodesService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 公共代码SERVICE实现
@@ -41,6 +40,7 @@ public class PublicCodesServiceImpl implements IPublicCodesService{
 	}
 
 	public void delete(TPublicCodes entity) {
+		this.publicCodesDao.delete(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -48,7 +48,7 @@ public class PublicCodesServiceImpl implements IPublicCodesService{
 	}
 
 	public TPublicCodes query(TPublicCodes entity) {
-		return null;
+		return this.publicCodesDao.query(entity);
 	}
 
 	public TPublicCodes query(Serializable id) {
@@ -60,12 +60,12 @@ public class PublicCodesServiceImpl implements IPublicCodesService{
 	}
 
 	public List<TPublicCodes> queryForList(Map<String, ?> args) {
-		return null;
+		return this.publicCodesDao.queryForList(args);
 	}
 
 	public QueryContext<TPublicCodes> queryListForPagination(
 			QueryContext<TPublicCodes> qContext) {
-		return null;
+		return this.publicCodesDao.queryListForPagination(qContext);
 	}
 
 	/* (non-Javadoc)根据CODE查询

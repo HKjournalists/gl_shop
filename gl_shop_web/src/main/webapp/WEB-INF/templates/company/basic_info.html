@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/company">
+<head>
+  <title>用户资料 - 基本信息</title>
+</head>
+<body>
+
+  <h4 layout:fragment="contentNavTitle">
+    <i class="fa fa-fw fa-wrench"></i> 用户资料 / 基本信息
+  </h4>
+
+  <div layout:fragment="pageContent">
+
+    <div th:replace="company/fragments :: basicinfo"></div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 企业评价资料
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th width="20%">成功交易笔数</th>
+              <td th:text="${company.evaluationInfo.transactionSuccessNum}">6</td>
+            </tr>
+            <tr>
+              <th>企业服务满意度</th>
+              <td th:text="${company.evaluationInfo.averageEvaluation}">40</td>
+            </tr>
+            <tr>
+              <th>企业诚信满意度</th>
+              <td th:text="${company.evaluationInfo.averageCredit}">40</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 企业联系人
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tr th:each="contact, status : ${contacts}">
+              <th width="20%" th:inline="text">第[[${status.count}]]联系人姓名</th>
+              <td th:text="${contact.cname}">张三</td>
+              <th width="20%" th:inline="text">第[[${status.count}]]联系人手机</th>
+              <td th:text="${contact.cphone}">18666662520</td>
+              <th width="20%" th:inline="text">第[[${status.count}]]联系人电话</th>
+              <td th:text="${contact.tel}">0755-86013388</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(contacts)}">
+              <td colspan="6">暂无联系人</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 卸货地点
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table">
+            <tr>
+              <td colspan="2" th:text="${company.address}">广东省深圳市科技园高新南四道数字技术园</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <div class="row show-grid">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-3"></div>
+                  <div class="col-md-3"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td width="20%">水深度（单位：m）</td>
+              <td th:text="${#numbers.formatDecimal(company.deep == null ? 0 : company.deep, 1, 1)}">52</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 企业照片
+      </div>
+      <div class="panel-body">
+        <div class="row show-grid">
+          <div class="col-md-3"></div>
+          <div class="col-md-3"></div>
+          <div class="col-md-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 企业服务评价
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          <div class="list-group-item">
+            <i class="fa fa-comment fa-fw"></i> 服务评价列表
+            <span class="pull-right text-muted small">
+              <em>4 minutes ago</em>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

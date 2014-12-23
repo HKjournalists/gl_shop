@@ -1,9 +1,10 @@
 package com.appabc.datas.service.contract;
 
-import java.util.List;
-
 import com.appabc.bean.pvo.TOrderArbitration;
 import com.appabc.common.base.service.IBaseService;
+import com.appabc.datas.exception.ServiceException;
+
+import java.util.List;
 
 /**
  * @Description : 
@@ -16,9 +17,24 @@ import com.appabc.common.base.service.IBaseService;
 
 public interface IContractArbitrationService extends IBaseService<TOrderArbitration> {
 
-	/*合同仲裁操作*/
-	TOrderArbitration toContractArbitration(String contractId,String operator,String operatorName);
+	/**
+	 * @Description 合同仲裁操作
+	 * @param contractId,operator,operatorName
+	 * @return TOrderArbitration
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	TOrderArbitration toContractArbitration(String contractId,String operator,String operatorName) throws ServiceException;
 	
+	/**
+	 * @Description 获取合同仲裁历史
+	 * @param contractId
+	 * @return List<?>
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	List<?> getContractArbitrationHistroy(String contractId);
 	
 }

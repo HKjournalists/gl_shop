@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] [%t] [%c] - %m%n" />
+		</layout>
+		<!--限制输出级别 -->
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="ERROR" />
+			<param name="LevelMin" value="TRACE" />
+		</filter>
+	</appender>
+
+	<appender name="ROOTFILE" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="../logs/datas.log" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="3" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] [%t] [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="CONFIRMJOB" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="../logs/confirmjob.log" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="3" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] [%t] [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="PAYFUNDSJOB" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="../logs/payfundsjob.log" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="3" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] [%t] [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="EVALUATIONJOB" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="../logs/evaluationjob.log" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="3" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] [%t] [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="CONFIRMGOODSINFOJOB" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="../logs/confirmgoodsinfojob.log" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="3" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] [%t] [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="ORDERFINDJOB" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="../logs/orderfindjob.log" />
+		<param name="MaxFileSize" value="5MB" />
+		<param name="MaxBackupIndex" value="3" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5p] [%t] [%c{1}] - %m%n" />
+		</layout>
+	</appender>
+
+	<!--通过<category></category>的定义可以将各个包中的类日志输出到不同的日志文件中 -->
+	<category name="com.appabc.datas.task.payfunds">
+		<level value="DEBUG" />
+		<appender-ref ref="PAYFUNDSJOB" />
+	</category>
+	
+	<category name="com.appabc.datas.task.orderfind">
+		<level value="DEBUG" />
+		<appender-ref ref="ORDERFINDJOB" />
+	</category>
+	
+	<category name="com.appabc.datas.task.confirmcontract">
+		<level value="DEBUG" />
+		<appender-ref ref="CONFIRMJOB" />
+	</category>
+
+	<category name="com.appabc.datas.task.evaluationcontract">
+		<level value="DEBUG" />
+		<appender-ref ref="EVALUATIONJOB" />
+	</category>
+
+	<category name="com.appabc.datas.task.confirmgoodsinfo">
+		<level value="DEBUG" />
+		<appender-ref ref="CONFIRMGOODSINFOJOB" />
+	</category>
+	
+	<root>
+		<priority value="DEBUG" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ROOTFILE" />
+	</root>
+</log4j:configuration>

@@ -7,7 +7,7 @@
 		<groupId>com.appabc</groupId>
 		<artifactId>gl_shop</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../gl_shop</relativePath>
+		<relativePath>../</relativePath>
 	</parent>
 	<groupId>com.appabc.pay</groupId>
 	<artifactId>gl_shop_pay</artifactId>
@@ -23,8 +23,20 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>com.appabc.bean</groupId>
+			<artifactId>gl_shop_bean</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.appabc.common</groupId>
 			<artifactId>gl_shop_common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.appabc.tools</groupId>
+			<artifactId>gl_shop_tools</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

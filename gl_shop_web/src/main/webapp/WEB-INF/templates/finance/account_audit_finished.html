@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/finance">
+<head>
+  <title>财务处理 - 账户审核</title>
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 财务处理 - 账户审核
+</h4>
+
+<div layout:fragment="pageContent">
+
+  <div th:replace="finance/fragments :: account_audit_tabs"></div>
+
+  <div class="nav-tab-content">
+    <div class="tab-pane fade in active">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>用户ID</th>
+            <th>企业名称</th>
+            <th>审核结果</th>
+            <th>审核时间</th>
+            <th>审核人</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="acct : ${bankAccounts}">
+            <td th:text="${acct.cid}">18666662520</td>
+            <td th:text="${acct.company.cname}">靖江商业有限公司</td>
+            <td>
+              <th:block th:switch="${acct.authstatus}">
+                <p th:case="${T(com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus).AUTH_STATUS_CHECK_YES}">通过</p>
+                <p th:case="${T(com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus).AUTH_STATUS_CHECK_NO}">不通过</p>
+              </th:block>
+            </td>
+            <td th:text="${#calendars.format(acct.updatetime, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+            <td th:text="${#calendars.format(acct.createtime, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+            <td><a th:href="@{/finance/account_audit/finished/detail/{id}/(id=${acct.id})}">查看</a></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(bankAccounts)}">
+            <td colspan="5">暂时没有已审核结束的提款帐号</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div th:replace="layouts/fragments :: pagingNavBar"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

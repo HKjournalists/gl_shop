@@ -3,6 +3,13 @@
  */
 package com.appabc.bean.bo;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.common.base.bean.BaseBean;
 
 /**
@@ -42,12 +49,12 @@ public class CompanyAllInfo extends BaseBean {
     /**
      * 企业类型（区分企业、船舶、个人）
      */
-    private String ctype;
+    private CompanyType ctype;
 
     /**
      * 认证状态(是否认证)
      */
-    private String authstatus;
+    private CompanyAuthStatus authstatus;
 
     /**
      * 固定电话
@@ -57,15 +64,11 @@ public class CompanyAllInfo extends BaseBean {
     /**
      * 保证金缴纳状态（是否缴纳足额）
      */
-    private String bailstatus;
+    private CompanyBailStatus bailstatus;
     
-    private Integer imgid; // 认证图片ID
+    private String authid; // 认证记录ID
     
-    private String authImgUrl; //  认证图片显示URL
-    
-    private String companyImgUrls; // 企业相关照片显示路径，多个URL用逗号间隔,例: url1,url2,url3
-    
-    private String addressImgUrls; //  企业卸货地址图片显示路径，多个URL用逗号间隔,例: url1,url2,url3
+    private String authimgid; // 认证图片ID
     
     private String address; // 卸货地址
     
@@ -76,6 +79,36 @@ public class CompanyAllInfo extends BaseBean {
     private Float realdeep; // 实际吃水深度
     
     private EvaluationInfoBean evaluationInfo; // 企业评价信息
+    
+    private Date createdate; // 创建时间
+    
+    private List<ViewImgsBean> companyImgList = new ArrayList<ViewImgsBean>() ; // 企业相关照片
+    private List<ViewImgsBean> authImgList = new ArrayList<ViewImgsBean>();// 认证图片信息
+    private List<ViewImgsBean> addressImgList = new ArrayList<ViewImgsBean>();// 企业卸货地址图片
+
+	public List<ViewImgsBean> getCompanyImgList() {
+		return companyImgList;
+	}
+
+	public void setCompanyImgList(List<ViewImgsBean> companyImgList) {
+		this.companyImgList = companyImgList;
+	}
+
+	public List<ViewImgsBean> getAuthImgList() {
+		return authImgList;
+	}
+
+	public void setAuthImgList(List<ViewImgsBean> authImgList) {
+		this.authImgList = authImgList;
+	}
+
+	public List<ViewImgsBean> getAddressImgList() {
+		return addressImgList;
+	}
+
+	public void setAddressImgList(List<ViewImgsBean> addressImgList) {
+		this.addressImgList = addressImgList;
+	}
 
 	public String getCname() {
 		return cname;
@@ -109,19 +142,19 @@ public class CompanyAllInfo extends BaseBean {
 		this.cphone = cphone;
 	}
 
-	public String getCtype() {
+	public CompanyType getCtype() {
 		return ctype;
 	}
 
-	public void setCtype(String ctype) {
+	public void setCtype(CompanyType ctype) {
 		this.ctype = ctype;
 	}
 
-	public String getAuthstatus() {
+	public CompanyAuthStatus getAuthstatus() {
 		return authstatus;
 	}
 
-	public void setAuthstatus(String authstatus) {
+	public void setAuthstatus(CompanyAuthStatus authstatus) {
 		this.authstatus = authstatus;
 	}
 
@@ -133,44 +166,20 @@ public class CompanyAllInfo extends BaseBean {
 		this.tel = tel;
 	}
 
-	public String getBailstatus() {
+	public CompanyBailStatus getBailstatus() {
 		return bailstatus;
 	}
 
-	public void setBailstatus(String bailstatus) {
+	public void setBailstatus(CompanyBailStatus bailstatus) {
 		this.bailstatus = bailstatus;
 	}
 
-	public Integer getImgid() {
-		return imgid;
+	public String getAuthid() {
+		return authid;
 	}
 
-	public void setImgid(Integer imgid) {
-		this.imgid = imgid;
-	}
-
-	public String getAuthImgUrl() {
-		return authImgUrl;
-	}
-
-	public void setAuthImgUrl(String authImgUrl) {
-		this.authImgUrl = authImgUrl;
-	}
-
-	public String getCompanyImgUrls() {
-		return companyImgUrls;
-	}
-
-	public void setCompanyImgUrls(String companyImgUrls) {
-		this.companyImgUrls = companyImgUrls;
-	}
-
-	public String getAddressImgUrls() {
-		return addressImgUrls;
-	}
-
-	public void setAddressImgUrls(String addressImgUrls) {
-		this.addressImgUrls = addressImgUrls;
+	public void setAuthid(String authid) {
+		this.authid = authid;
 	}
 
 	public String getAddress() {
@@ -213,6 +222,20 @@ public class CompanyAllInfo extends BaseBean {
 		this.evaluationInfo = evaluationInfo;
 	}
 
-    
+	public Date getCreatedate() {
+		return createdate;
+	}
+
+	public void setCreatedate(Date createdate) {
+		this.createdate = createdate;
+	}
+
+	public String getAuthimgid() {
+		return authimgid;
+	}
+
+	public void setAuthimgid(String authimgid) {
+		this.authimgid = authimgid;
+	}
 
 }

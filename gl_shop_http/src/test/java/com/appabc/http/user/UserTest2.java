@@ -30,6 +30,7 @@ public class UserTest2  extends AbstractHttpControllerTest {
 	public void msmSend(){
 		request.setRequestURI("/smscode/send");
         request.setMethod("POST");
+        request.addParameter("sendType", "REGISTER");
         
         request.addParameter("phone", "15811822330");
         

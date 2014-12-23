@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.service.company.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.pvo.TCompanyAuth;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.company.ICompanyAuthDao;
+import com.appabc.datas.service.company.ICompanyAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TCompanyAuth;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.company.ICompanyAuthDao;
-import com.appabc.datas.service.company.ICompanyAuthService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 企业认证信息SERVICE实现
@@ -41,6 +40,7 @@ public class CompanyAuthServiceImpl implements ICompanyAuthService {
 	}
 
 	public void delete(TCompanyAuth entity) {
+		this.companyAuthDao.delete(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -60,12 +60,12 @@ public class CompanyAuthServiceImpl implements ICompanyAuthService {
 	}
 
 	public List<TCompanyAuth> queryForList(Map<String, ?> args) {
-		return null;
+		return this.companyAuthDao.queryForList(args);
 	}
 
 	public QueryContext<TCompanyAuth> queryListForPagination(
 			QueryContext<TCompanyAuth> qContext) {
-		return null;
+		return this.companyAuthDao.queryListForPagination(qContext);
 	}
 
 }

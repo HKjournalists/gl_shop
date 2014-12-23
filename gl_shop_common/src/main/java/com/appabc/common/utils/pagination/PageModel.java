@@ -83,9 +83,9 @@ public class PageModel {
 	public void setTotalSize(int totalSize) {
 		this.totalSize = totalSize;
 		this.totalPage = (int)Math.ceil(Double.valueOf(this.totalSize)/Double.valueOf(this.pageSize));
-		if(this.pageIndex>=this.totalPage){
+		/*if(this.pageIndex>=this.totalPage){
 			this.pageIndex = this.totalPage;
-		}
+		}*/
 	}
 
 	public int getTotalPage() {

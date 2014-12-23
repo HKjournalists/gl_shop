@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Review id="pay模块的代码审核">
+  <ReviewIssue id="I3MPKRPB">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-13 :: 16:15:16:031 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-18 :: 17:22:16:226 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo></AssignedTo>
+    <File line="1">src/main/java/com/appabc/pay/controller/PurseController.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>这个类删掉吧</Summary>
+    <Description>已经删除</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3MPLIZ9">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-13 :: 16:15:51:381 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-13 :: 16:15:57:621 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo></AssignedTo>
+    <File line="1">src/main/java/com/appabc/pay/bean/TBankInfo.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>代码删除</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3MPOJW2">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-13 :: 16:18:12:530 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-18 :: 17:22:43:577 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo></AssignedTo>
+    <File line="268">src/main/java/com/appabc/pay/service/local/PassPayLocalServiceImpl.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>能否使用一个常量类统一管理ＩＤ的别名</Summary>
+    <Description>已经覆盖了整个pay工程</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3MR8WP2">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-13 :: 17:02:01:862 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-13 :: 17:02:42:750 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo></AssignedTo>
+    <File line="589">src/main/java/com/appabc/pay/service/local/PassPayLocalServiceImpl.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>申请提现未对保证金和货款做判断，只有货款可以提现</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3MRCVBN">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-13 :: 17:05:06:707 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-13 :: 17:06:03:881 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo></AssignedTo>
+    <File line="600">src/main/java/com/appabc/pay/service/local/PassPayLocalServiceImpl.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>这块的操作为什么不调用 transferAccounts方法？</Summary>
+    <Description>1.账号和账号之间帐必须要有一个统一的方法</Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+</Review>

@@ -1,18 +1,17 @@
 package com.appabc.datas.dao.system.impl;
 
+import com.appabc.bean.pvo.TSystemLog;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.system.ISystemLogDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
-
-import com.appabc.bean.pvo.TSystemLog;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.system.ISystemLogDAO;
 
 /**
  * @Description : 
@@ -31,7 +30,7 @@ public class SystemLogDAOImpl extends BaseJdbcDao<TSystemLog> implements ISystem
 	private static final String DELETE_SQL = " DELETE FROM T_SYSTEM_LOG WHERE LOGID = :id ";
 	private static final String SELECT_SQL = " SELECT LOGID,BUSINESSID,BUSINESSTYPE,LOGCONTENT,LOGTYPE,LOGLEVEL,LOGSTATUS,CREATETIME,CREATER FROM T_SYSTEM_LOG ";
 	
-	private String dynamicJoinSqlWithEntity(TSystemLog entity,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TSystemLog entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
 			return null;
 		}
@@ -88,7 +87,7 @@ public class SystemLogDAOImpl extends BaseJdbcDao<TSystemLog> implements ISystem
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TSystemLog query(TSystemLog entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -97,7 +96,7 @@ public class SystemLogDAOImpl extends BaseJdbcDao<TSystemLog> implements ISystem
 	 * @see com.appabc.common.base.dao.IBaseDao#query(java.io.Serializable)  
 	 */
 	public TSystemLog query(Serializable id) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE LOGID = :id  ");
 		return super.query(sql.toString(), id);
@@ -107,7 +106,7 @@ public class SystemLogDAOImpl extends BaseJdbcDao<TSystemLog> implements ISystem
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TSystemLog> queryForList(TSystemLog entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}

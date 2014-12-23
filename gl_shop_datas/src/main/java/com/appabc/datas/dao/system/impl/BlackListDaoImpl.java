@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.dao.system.impl;
 
+import com.appabc.bean.pvo.TBlackList;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.system.IBlackListDao;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TBlackList;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.system.IBlackListDao;
 
 /**
  * @Description : 黑名单
@@ -27,13 +26,13 @@ import com.appabc.datas.dao.system.IBlackListDao;
  */
 @Repository
 public class BlackListDaoImpl extends BaseJdbcDao<TBlackList> implements IBlackListDao {
-	
+
 	private static final String INSERTSQL = " insert into T_BLACK_LIST (BLID, USERNAME, IPADDRESS, STATUS, NUM, UPDATETIME, CREATER, CREATETIME) values (:blid, :username, :ipaddress, :status, :num, :updatetime, :creater, :createtime) ";
 	private static final String UPDATESQL = " update T_BLACK_LIST set USERNAME = :username, IPADDRESS = :ipaddress, STATUS = :status, NUM = :num, UPDATETIME = :updatetime, CREATER = :creater, CREATETIME = :createtime where BLID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_BLACK_LIST WHERE BLID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_BLACK_LIST WHERE BLID = :id ";
-	
-	private static final String BASE_SQL = " SELECT * FROM T_BLACK_LIST WHERE 1=1 "; 
+
+	private static final String BASE_SQL = " SELECT * FROM T_BLACK_LIST WHERE 1=1 ";
 
 	/* (non-Javadoc)
 	 * @see com.appabc.common.base.dao.IBaseDao#save(com.appabc.common.base.bean.BaseBean)
@@ -46,7 +45,7 @@ public class BlackListDaoImpl extends BaseJdbcDao<TBlackList> implements IBlackL
 	 * @see com.appabc.common.base.dao.IBaseDao#saveAutoGenerateKey(com.appabc.common.base.bean.BaseBean)
 	 */
 	public KeyHolder saveAutoGenerateKey(TBlackList entity) {
-		return null;
+		return super.saveAutoGenerateKey(INSERTSQL, entity);
 	}
 
 	/* (non-Javadoc)
@@ -73,7 +72,7 @@ public class BlackListDaoImpl extends BaseJdbcDao<TBlackList> implements IBlackL
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)
 	 */
 	public TBlackList query(TBlackList entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	/* (non-Javadoc)
@@ -87,14 +86,14 @@ public class BlackListDaoImpl extends BaseJdbcDao<TBlackList> implements IBlackL
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)
 	 */
 	public List<TBlackList> queryForList(TBlackList entity) {
-		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.util.Map)
 	 */
 	public List<TBlackList> queryForList(Map<String, ?> args) {
-		return null;
+		return super.queryForList(BASE_SQL, args);
 	}
 
 	/* (non-Javadoc)
@@ -102,12 +101,12 @@ public class BlackListDaoImpl extends BaseJdbcDao<TBlackList> implements IBlackL
 	 */
 	public QueryContext<TBlackList> queryListForPagination(
 			QueryContext<TBlackList> qContext) {
-		return null;
+		return super.queryListForPagination(dynamicJoinSqlWithEntity(qContext.getBeanParameter(),  new StringBuilder(BASE_SQL)), qContext);
 	}
 
 	public TBlackList mapRow(ResultSet rs, int rowNum) throws SQLException {
 		TBlackList t = new TBlackList();
-		
+
 		t.setId(rs.getString("BLID"));
 		t.setCreater(rs.getString("CREATER"));
 		t.setCreatetime(rs.getTimestamp("CREATETIME"));
@@ -116,11 +115,11 @@ public class BlackListDaoImpl extends BaseJdbcDao<TBlackList> implements IBlackL
 		t.setStatus(rs.getInt("STATUS"));
 		t.setUpdatetime(rs.getTimestamp("UPDATETIME"));
 		t.setUsername(rs.getString("USERNAME"));
-		
+
 		return t;
 	}
-	
-	private String dynamicJoinSqlWithEntity(TBlackList bean,StringBuffer sql){
+
+	private String dynamicJoinSqlWithEntity(TBlackList bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}

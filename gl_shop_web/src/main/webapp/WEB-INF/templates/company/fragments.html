@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/company">
+<head>
+  <title>用户资料 - 基本信息</title>
+</head>
+<body>
+  <div th:fragment="basicinfo" class="panel panel-primary">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 基本资料
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th width="20%">用户ID</th>
+              <th width="20%">类型</th>
+              <th width="25%">注册时间</th>
+              <th width="25%">最近一次登录</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td th:text="${cid}">123456</td>
+              <td>2014年9月15日 15:06</td>
+              <td th:text="${#calendars.format(company.createdate, 'YYYY年m月d日 HH:MM')}"></td>
+              <td>2014年9月15日</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div th:fragment="walletinfo" class="row">
+
+    <div class="col-lg-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <i class="fa fa-bar-chart-o fa-fw"></i> 交易保证金账户（单位：元）
+        </div>
+        <div class="panel-body">
+          <h3 th:text="${balance.amount}">100000</h3>
+        </div>
+      </div> 
+    </div>
+
+    <div class="col-lg-4">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <i class="fa fa-bar-chart-o fa-fw"></i> 货款账户（单位：元）
+        </div>
+        <div class="panel-body">
+          <h3 th:text="${guaranty.amount}">100000</h3>
+        </div>
+      </div> 
+    </div>
+  </div>
+</body>
+</html>

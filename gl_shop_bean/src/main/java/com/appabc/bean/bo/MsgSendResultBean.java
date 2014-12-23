@@ -3,6 +3,7 @@
  */
 package com.appabc.bean.bo;
 
+import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
 import com.appabc.common.base.bean.BaseBean;
 
 /**
@@ -25,7 +26,7 @@ public class MsgSendResultBean extends BaseBean {
 	private String tel; // 电话号码
 	private String content; // 信息内容
 	private String businessId; // 业务ID
-	private String businessType; // 业务类型
+	private MsgBusinessType businessType; // 业务类型
 	
 	public String getResCode() {
 		return resCode;
@@ -63,10 +64,20 @@ public class MsgSendResultBean extends BaseBean {
 	public void setBusinessId(String businessId) {
 		this.businessId = businessId;
 	}
-	public String getBusinessType() {
+	/**  
+	 * businessType  
+	 *  
+	 * @return  the businessType  
+	 * @since   1.0.0  
+	*/  
+	
+	public MsgBusinessType getBusinessType() {
 		return businessType;
 	}
-	public void setBusinessType(String businessType) {
+	/**  
+	 * @param businessType the businessType to set  
+	 */
+	public void setBusinessType(MsgBusinessType businessType) {
 		this.businessType = businessType;
 	}
 	

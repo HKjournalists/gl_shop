@@ -1,7 +1,12 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
+import com.appabc.bean.enums.PushInfo.MsgTypeEnum;
+import com.appabc.bean.enums.PushInfo.PushTypeEnum;
+import com.appabc.bean.enums.UserInfo.ClientTypeEnum;
+import com.appabc.common.base.bean.BaseBean;
 
 /**
  * @Description : XMPP推送结果表
@@ -21,7 +26,7 @@ public class TPushResult extends BaseBean {
 	/**
      * 消息类型(通知、透传)
      */
-    private Integer msgtype;
+    private MsgTypeEnum msgtype;
 
     /**
      * 消息标题
@@ -36,7 +41,7 @@ public class TPushResult extends BaseBean {
     /**
      * 推送类型（单个，群休）
      */
-    private Integer pushtype;
+    private PushTypeEnum pushtype;
 
     /**
      * 推送目标（消息接收者）
@@ -62,19 +67,31 @@ public class TPushResult extends BaseBean {
      * 推送结果消息
      */
     private String resultcontent;
+    
+    /**
+     * 企业编号
+     */
+    private String cid;
+    
+    /**
+     * 业务ID
+     */
+    private String businessid;
+
+    /**
+     * 业务类型
+     */
+    private MsgBusinessType businesstype;
+    
+    /**
+     * 客户端类型
+     */
+    private ClientTypeEnum clienttype;
 
     /**
      * 备注
      */
     private String remark;
-
-    public Integer getMsgtype() {
-        return msgtype;
-    }
-
-    public void setMsgtype(Integer msgtype) {
-        this.msgtype = msgtype;
-    }
 
     public String getMsgtitle() {
         return msgtitle;
@@ -90,14 +107,6 @@ public class TPushResult extends BaseBean {
 
     public void setMsgcontent(String msgcontent) {
         this.msgcontent = msgcontent == null ? null : msgcontent.trim();
-    }
-
-    public Integer getPushtype() {
-        return pushtype;
-    }
-
-    public void setPushtype(Integer pushtype) {
-        this.pushtype = pushtype;
     }
 
     public String getPushtarget() {
@@ -147,4 +156,53 @@ public class TPushResult extends BaseBean {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	public MsgTypeEnum getMsgtype() {
+		return msgtype;
+	}
+	
+	public void setMsgtype(MsgTypeEnum msgtype) {
+		this.msgtype = msgtype;
+	}
+
+	public PushTypeEnum getPushtype() {
+		return pushtype;
+	}
+
+	public void setPushtype(PushTypeEnum pushtype) {
+		this.pushtype = pushtype;
+	}
+
+	public String getCid() {
+		return cid;
+	}
+
+	public void setCid(String cid) {
+		this.cid = cid;
+	}
+
+	public String getBusinessid() {
+		return businessid;
+	}
+
+	public void setBusinessid(String businessid) {
+		this.businessid = businessid;
+	}
+
+	public MsgBusinessType getBusinesstype() {
+		return businesstype;
+	}
+
+	public void setBusinesstype(MsgBusinessType businesstype) {
+		this.businesstype = businesstype;
+	}
+
+	public ClientTypeEnum getClienttype() {
+		return clienttype;
+	}
+
+	public void setClienttype(ClientTypeEnum clienttype) {
+		this.clienttype = clienttype;
+	}
+	
 }

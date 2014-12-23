@@ -3,19 +3,20 @@
  */
 package com.appabc.datas.dao.order.impl;
 
+import com.appabc.bean.enums.ProductInfo.UnitEnum;
+import com.appabc.bean.pvo.TOrderProductInfo;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.order.IOrderProductInfoDao;
+
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TOrderProductInfo;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.order.IOrderProductInfoDao;
 
 /**
  * @Description : 交易中的商品信息DAO实现
@@ -27,20 +28,20 @@ import com.appabc.datas.dao.order.IOrderProductInfoDao;
  */
 @Repository
 public class OrderProductInfoDaoImpl extends BaseJdbcDao<TOrderProductInfo> implements IOrderProductInfoDao {
-	
-	private static final String INSERTSQL = " insert into T_ORDER_PRODUCT_INFO (FID, SID, PID, PNAME, PTYPE, PSIZE, PCOLOR, PADDRESS, UNIT, REMARK) values (:fid, :sid, :pid, :pname, :ptype, :psize, :pcolor, :paddress, :unit, :premark) ";
-	private static final String UPDATESQL = " update T_ORDER_PRODUCT_INFO set FID = :fid, SID = :sid, PID = :pid, PNAME = :pname, PTYPE = :ptype, PSIZE = :psize, PCOLOR = :pcolor, PADDRESS = :paddress, UNIT = :unit, REMARK = :premark where ID = :id ";
+
+	private static final String INSERTSQL = " insert into T_ORDER_PRODUCT_INFO (FID, SID, PID, PNAME, PTYPE, PSIZE, PCOLOR, PADDRESS, UNIT, REMARK, PCODE) values (:fid, :sid, :pid, :pname, :ptype, :psize, :pcolor, :paddress, :unit, :premark,:pcode) ";
+	private static final String UPDATESQL = " update T_ORDER_PRODUCT_INFO set FID = :fid, SID = :sid, PID = :pid, PNAME = :pname, PTYPE = :ptype, PSIZE = :psize, PCOLOR = :pcolor, PADDRESS = :paddress, UNIT = :unit, REMARK = :premark,PCODE=:pcode where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_ORDER_PRODUCT_INFO WHERE ID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_ORDER_PRODUCT_INFO WHERE ID = :id ";
-	
-	private static final String BASE_SQL = " SELECT * FROM T_ORDER_PRODUCT_INFO WHERE 1=1 "; 
+
+	private static final String BASE_SQL = " SELECT * FROM T_ORDER_PRODUCT_INFO WHERE 1=1 ";
 
 	public void save(TOrderProductInfo entity) {
 		super.save(INSERTSQL, entity);
 	}
 
 	public KeyHolder saveAutoGenerateKey(TOrderProductInfo entity) {
-		return null;
+		return super.saveAutoGenerateKey(INSERTSQL, entity);
 	}
 
 	public void update(TOrderProductInfo entity) {
@@ -48,6 +49,7 @@ public class OrderProductInfoDaoImpl extends BaseJdbcDao<TOrderProductInfo> impl
 	}
 
 	public void delete(TOrderProductInfo entity) {
+		super.delete(DELETESQLBYID, entity);
 	}
 
 	public void delete(Serializable id) {
@@ -55,7 +57,7 @@ public class OrderProductInfoDaoImpl extends BaseJdbcDao<TOrderProductInfo> impl
 	}
 
 	public TOrderProductInfo query(TOrderProductInfo entity) {
-		return null;
+		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public TOrderProductInfo query(Serializable id) {
@@ -63,10 +65,10 @@ public class OrderProductInfoDaoImpl extends BaseJdbcDao<TOrderProductInfo> impl
 	}
 
 	public List<TOrderProductInfo> queryForList(TOrderProductInfo entity) {
-		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
-	
-	private String dynamicJoinSqlWithEntity(TOrderProductInfo bean,StringBuffer sql){
+
+	private String dynamicJoinSqlWithEntity(TOrderProductInfo bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}
@@ -81,22 +83,23 @@ public class OrderProductInfoDaoImpl extends BaseJdbcDao<TOrderProductInfo> impl
 		this.addNameParamerSqlWithProperty(sql, "paddress", "PADDRESS", bean.getPaddress());
 		this.addNameParamerSqlWithProperty(sql, "unit", "UNIT", bean.getUnit());
 		this.addNameParamerSqlWithProperty(sql, "premark", "REMARK", bean.getPremark());
+		this.addNameParamerSqlWithProperty(sql, "pcode", "PCODE", bean.getPcode());
 		return sql.toString();
 	}
 
 	public List<TOrderProductInfo> queryForList(Map<String, ?> args) {
-		return null;
+		return super.queryForList(BASE_SQL, args);
 	}
 
 	public QueryContext<TOrderProductInfo> queryListForPagination(
 			QueryContext<TOrderProductInfo> qContext) {
-		return null;
+		return super.queryListForPagination(dynamicJoinSqlWithEntity(qContext.getBeanParameter(),  new StringBuilder(BASE_SQL)), qContext);
 	}
 
 	public TOrderProductInfo mapRow(ResultSet rs, int rowNum)
 			throws SQLException {
 		TOrderProductInfo t = new TOrderProductInfo();
-		
+
 		t.setId(rs.getString("ID"));
 		t.setFid(rs.getString("FID"));
 		t.setPaddress(rs.getString("PADDRESS"));
@@ -107,8 +110,9 @@ public class OrderProductInfoDaoImpl extends BaseJdbcDao<TOrderProductInfo> impl
 		t.setPtype(rs.getString("PTYPE"));
 		t.setPremark(rs.getString("REMARK"));
 		t.setSid(rs.getString("SID"));
-		t.setUnit(rs.getString("UNIT"));
-		
+		t.setUnit(UnitEnum.enumOf(rs.getString("UNIT")));
+		t.setPcode(rs.getString("PCODE"));
+
 		return t;
 	}
 

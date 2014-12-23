@@ -11,6 +11,17 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
+import com.appabc.bean.enums.ContractInfo;
+import com.appabc.bean.enums.ContractInfo.ContractCancelType;
+import com.appabc.bean.enums.ContractInfo.ContractDisPriceType;
+import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
+import com.appabc.bean.enums.ContractInfo.ContractOperateType;
+import com.appabc.bean.enums.ContractInfo.ContractStatus;
+import com.appabc.bean.enums.ContractInfo.ContractType;
+import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
+import com.appabc.bean.enums.OrderFindInfo.OrderOverallStatusEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderStatusEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
 import com.appabc.bean.pvo.TCalRuleDefinition;
 import com.appabc.bean.pvo.TCalRuleUse;
 import com.appabc.bean.pvo.TOrderArbitration;
@@ -24,14 +35,27 @@ import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderOperations;
 import com.appabc.common.base.QueryContext;
 import com.appabc.datas.AbstractDatasTest;
-import com.appabc.datas.enums.ContractInfo;
-import com.appabc.datas.enums.OrderFindInfo;
+import com.appabc.datas.dao.contract.ICalRuleDefinitionDAO;
+import com.appabc.datas.dao.contract.ICalRuleUseDAO;
+import com.appabc.datas.dao.contract.IContractArbitrationDAO;
+import com.appabc.datas.dao.contract.IContractArbitrationResultDAO;
+import com.appabc.datas.dao.contract.IContractCancelDAO;
+import com.appabc.datas.dao.contract.IContractCostDetailDAO;
+import com.appabc.datas.dao.contract.IContractDisPriceDAO;
+import com.appabc.datas.dao.contract.IContractInfoDAO;
+import com.appabc.datas.dao.contract.IContractOperationDAO;
+import com.appabc.datas.exception.ServiceException;
+import com.appabc.datas.service.contract.IContractInfoService;
 import com.appabc.datas.service.order.IOrderFindItemService;
 import com.appabc.datas.service.order.IOrderFindService;
+import com.appabc.tools.bean.MessageInfoBean;
+import com.appabc.tools.utils.MessageSendManager;
 import com.appabc.tools.utils.PrimaryKeyGenerator;
+import com.appabc.tools.utils.SystemMessageContent;
+import com.appabc.tools.utils.ToolsConstant;
 
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : 黄建华
@@ -43,48 +67,53 @@ public class ContractTest extends AbstractDatasTest {
 
 	@Autowired
 	private PrimaryKeyGenerator prkg;
-	
+
 	@Autowired
-	private com.appabc.datas.dao.contract.IContractInfoDAO IContractInfoDAO;
-	
+	private IContractInfoDAO IContractInfoDAO;
+
 	@Autowired
-	private com.appabc.datas.dao.contract.IContractOperationDAO IContractOperationDAO;
-	
+	private IContractOperationDAO IContractOperationDAO;
+
 	@Autowired
-	private com.appabc.datas.dao.contract.IContractDisPriceDAO IContractDisPriceDAO;
-	
+	private IContractDisPriceDAO IContractDisPriceDAO;
+
 	@Autowired
-	private com.appabc.datas.dao.contract.IContractCostDetailDAO IContractCostDetailDAO;
-	
+	private IContractCostDetailDAO IContractCostDetailDAO;
+
 	@Autowired
-	private com.appabc.datas.dao.contract.IContractCancelDAO IContractCancelDAO;
-	
+	private IContractCancelDAO IContractCancelDAO;
+
 	@Autowired
-	private com.appabc.datas.dao.contract.IContractArbitrationResultDAO IContractArbitrationResultDAO;
-	
+	private IContractArbitrationResultDAO IContractArbitrationResultDAO;
+
 	@Autowired
-	private com.appabc.datas.dao.contract.IContractArbitrationDAO IContractArbitrationDAO;
-	
+	private IContractArbitrationDAO IContractArbitrationDAO;
+
 	@Autowired
-	private com.appabc.datas.dao.contract.ICalRuleUseDAO ICalRuleUseDAO;
-	
+	private ICalRuleUseDAO ICalRuleUseDAO;
+
 	@Autowired
-	private com.appabc.datas.dao.contract.ICalRuleDefinitionDAO ICalRuleDefinitionDAO;
+	private ICalRuleDefinitionDAO ICalRuleDefinitionDAO;
+
 	@Autowired
 	private IOrderFindItemService orderFindItemService;
+
 	@Autowired
 	private IOrderFindService orderFindService;
-	
+
+	@Autowired
+	private IContractInfoService iContractInfoService;
+
 	private Map<Integer,Boolean> runningStatus = new HashMap<Integer,Boolean>();
-	
+
 	private boolean isRunning = false;
-	
-	/* (non-Javadoc)  
-	 * @see com.appabc.datas.AbstractDatasTest#mainTest()  
+
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.AbstractDatasTest#mainTest()
 	 */
 	@Override
 	@Test
-	@Rollback(value=false)
+	@Rollback(value=true)
 	public void mainTest() {
 		//testInsert();
 		//testUpdate("ORDERID020204702092014END");
@@ -108,7 +137,40 @@ public class ContractTest extends AbstractDatasTest {
 		//this.testContractInfoInsert();
 //		this.testContractInfoUpdate("201409230007223");
 //		testCreateContract(20);
+		
+		/*testCreateContractByFid("101220140000109","241120140000018");
+		
+		testCreateContractByFid("101220140000110","241120140000018");
+		
+		testCreateContractByFid("101220140000111","241120140000018");
+		
+		testCreateContractByFid("101220140000112","241120140000018");
+		
+		testCreateContractByFid("101220140000113","241120140000018");
+		
+		testCreateContractByFid("101220140000114","241120140000018");
+		
+		testCreateContractByFid("101220140000115","241120140000018");*/
+		
+		/*testCreateContractByFid("111220140000136","241120140000018");
+		
+		testCreateContractByFid("111220140000135","241120140000018");
+		
+		testCreateContractByFid("111220140000134","241120140000018");
+		
+		testCreateContractByFid("111220140000133","241120140000018");
+		
+		testCreateContractByFid("121220140000148","281120140000024");*/
+		//testCreateContractByFid("221220140000157","241120140000017");
+		//testMakeAndMatchATOrderInfo();
+//		getMatchingNum();
 	}
+	
+	public void getMatchingNum(){
+		int count = this.iContractInfoService.getMatchingNumByFid("201412110000097");
+		System.out.println("count="+count);
+	}
+	
 	public void testCalRuleDefinitionSave(){
 		TCalRuleDefinition entity = new TCalRuleDefinition();
 		entity.setId(prkg.generatorBusinessKeyByBid("ArbitrationResultID"));
@@ -132,7 +194,7 @@ public class ContractTest extends AbstractDatasTest {
 		entity.setName("规则二");
 		entity.setRule("xmpp");
 		List<TCalRuleDefinition> result = ICalRuleDefinitionDAO.queryForList(entity);*/
-		
+
 		QueryContext<TCalRuleDefinition> qContext = new QueryContext<TCalRuleDefinition>();
 		qContext.getPage().setPageIndex(-1);
 		qContext.setOrderColumn("RULEID");
@@ -263,7 +325,7 @@ public class ContractTest extends AbstractDatasTest {
 					entity.setPayid("payid");
 					IContractArbitrationResultDAO.save(entity);
 					runningStatus.put(index, true);
-					
+
 					for(Entry<Integer, Boolean> entry : runningStatus.entrySet()){
 						if(!entry.getValue()){
 							return;
@@ -281,7 +343,7 @@ public class ContractTest extends AbstractDatasTest {
 				e.printStackTrace();
 			}
 		}
-		
+
 		long end = System.currentTimeMillis();
 		System.out.println("Use the time :  "+(end-start));
 	}
@@ -289,7 +351,7 @@ public class ContractTest extends AbstractDatasTest {
 		TOrderCancel entity = new TOrderCancel();
 		entity.setId(prkg.generatorBusinessKeyByBid("ORDERID"));
 		entity.setCanceler("系统");
-		entity.setCanceltype("系统取消");
+		entity.setCanceltype(ContractCancelType.SINGLE_CANCEL);
 		entity.setCanceltime(new Date());
 		entity.setReason("系统原因取消了");
 		entity.setRemark("系统原因取消了");
@@ -301,7 +363,7 @@ public class ContractTest extends AbstractDatasTest {
 		entity.setRemark("单方不想交易");
 		IContractCancelDAO.update(entity);
 		TOrderCancel entity1 = IContractCancelDAO.query("ORDERID020206004092014END");
-		entity1.setCanceltype("单方取消");
+		entity1.setCanceltype(ContractCancelType.SINGLE_CANCEL);
 		entity1.setReason("单方取消");
 		entity1.setRemark("单方取消");
 		IContractCancelDAO.update(entity1);
@@ -363,7 +425,7 @@ public class ContractTest extends AbstractDatasTest {
 	public void testContractDisPriceSave(){
 		TOrderDisPrice entity = new TOrderDisPrice();
 		entity.setId(prkg.generatorBusinessKeyByBid("ORDERID"));
-		entity.setType(10);
+		entity.setType(ContractDisPriceType.SAMPLE_CHECK);
 		entity.setCanceler("RodJson");
 		entity.setCanceltime(new Date());
 		entity.setReason("各种方面不一样");
@@ -396,7 +458,7 @@ public class ContractTest extends AbstractDatasTest {
 	}
 	public void testContractDisPriceUpdate(){
 		TOrderDisPrice todp = IContractDisPriceDAO.query("id");
-		todp.setType(todp.getType()+10);
+		todp.setType(ContractDisPriceType.FULL_TAKEOVER);
 		todp.setCanceler(todp.getCanceler()+"_canceler");
 		todp.setCanceltime(new Date());
 		todp.setReason(todp.getReason()+"_reason");
@@ -414,7 +476,7 @@ public class ContractTest extends AbstractDatasTest {
 		entity.setId(prkg.generatorBusinessKeyByBid("ORDERID"));
 		entity.setOperator("operator");
 		entity.setOperationtime(new Date());
-		entity.setType("type");
+		entity.setType(ContractOperateType.APPLY_DISPRICE);
 		entity.setResult("result");
 		entity.setRemark("remark");
 		IContractOperationDAO.save(entity);
@@ -438,7 +500,7 @@ public class ContractTest extends AbstractDatasTest {
 		entity = IContractOperationDAO.query(entity);
 		log.info(entity);
 		entity.setOperationtime(new Date());
-		entity.setType("type_update");
+		entity.setType(ContractOperateType.ARBITRATION_CONTRACT);
 		entity.setOperator("operator_update");
 		entity.setResult("result_update");
 		entity.setRemark("remark_update");
@@ -530,52 +592,95 @@ public class ContractTest extends AbstractDatasTest {
 		entity.setLimittime(now);
 		entity.setTotalamount(50.0f);
 		entity.setAmount(10.0f);
-		entity.setStatus("12");
-		entity.setOtype("2");
+		entity.setStatus(ContractStatus.enumOf("12"));
+		entity.setOtype(ContractType.enumOf("2"));
 		entity.setUpdater("updater");
 		entity.setUpdatetime(now);
 		entity.setRemark("remark");
 		entity.setAmount(10.0f);
 		IContractInfoDAO.save(entity);
 	}
+
+	public void testMakeAndMatchATOrderInfo(){
+		TOrderInfo orderInfo;
+		try {
+			orderInfo = iContractInfoService.makeAndMatchATOrderInfo("121220140000149", "241120140000019", ToolsConstant.SCHEDULER, 0, 0);
+			log.debug(orderInfo);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			log.debug(e);
+		}
+	}
 	
+	public void testCreateContractByFid(String fid,String oper){
+		TOrderInfo entity = new TOrderInfo();
+		TOrderFind of = this.orderFindService.query(fid);
+		if(of.getType() == OrderTypeEnum.ORDER_TYPE_BUY){ // 询单发布方为买方
+			entity.setBuyerid(of.getCid());
+			entity.setSellerid(oper);
+		} else {// 询单发布方为卖方
+			entity.setBuyerid(oper);
+			entity.setSellerid(of.getCid());
+		}
+		
+		String admin = "admin";//ToolsConstant.SCHEDULER
+		
+		Date now = new Date();
+		entity.setId(prkg.generatorBusinessKeyByBid("CONTRACTINFOID"));
+		entity.setFid(of.getId());
+
+		entity.setPrice(of.getPrice());
+		entity.setTotalnum(of.getTotalnum());
+		entity.setCreatime(now);
+		entity.setCreater(admin);
+		entity.setLimittime(of.getLimitime());
+		entity.setTotalamount(of.getPrice()*of.getTotalnum());
+		entity.setAmount(of.getPrice()*of.getTotalnum());
+		entity.setStatus(ContractInfo.ContractStatus.DRAFT);
+		entity.setOtype(ContractInfo.ContractType.DRAFT);
+		entity.setUpdater(admin);
+		entity.setUpdatetime(now);
+		entity.setRemark("remark");
+		entity.setLifecycle(ContractLifeCycle.DRAFTING);
+		//IContractInfoDAO.save(entity);
+		iContractInfoService.add(entity);
+
+		TOrderOperations operator = new TOrderOperations();
+		operator.setId(prkg.generatorBusinessKeyByBid("CONTRACTOPERATIONID"));
+		operator.setOid(entity.getId());
+		operator.setOperator(admin);
+		operator.setOperationtime(now);
+		operator.setType(ContractOperateType.MAKE_CONTRACT);
+		operator.setOrderstatus(ContractLifeCycle.DRAFTING);
+		StringBuffer result = new StringBuffer(admin);
+		result.append("撮合了合同操作");
+		operator.setResult(result.toString());
+		operator.setRemark(result.toString());
+		IContractOperationDAO.save(operator);
+		
+		of.setStatus(OrderStatusEnum.ORDER_STATUS_CLOSE);
+		of.setOverallstatus(OrderOverallStatusEnum.ORDER_OVERALL_STATUS_INVALID);
+		this.orderFindService.modify(of);
+		
+		MessageInfoBean mi = new MessageInfoBean(MsgBusinessType.BUSINESS_TYPE_CONTRACT_SIGN,entity.getId(),entity.getBuyerid(),SystemMessageContent.getMsgContentOfContractSign());
+		mi.setSendSystemMsg(true);
+		mi.setSendPushMsg(true);
+		mesgSender.msgSend(mi);
+
+		mi.setCid(entity.getSellerid());
+		mesgSender.msgSend(mi);
+	}
+
 	/**
 	 * 合同生成
 	 * @param ofiid 交易意向记录ID
 	 */
 	public void testCreateContract(int ofiid){
-		TOrderInfo entity = new TOrderInfo();
-		
 		TOrderFindItem ofi = this.orderFindItemService.query(ofiid);
-		
-		TOrderFind of = this.orderFindService.query(ofi.getFid());
-		
-		if(of.getType() == OrderFindInfo.OrderTypeEnum.ORDER_TYPE_BUY.getVal()){ // 询单发布方为买方
-			entity.setBuyerid(of.getCid());
-			entity.setSellerid(ofi.getUpdater()); 
-		}else{ // 询单发布方为卖方
-			entity.setBuyerid(ofi.getUpdater());
-			entity.setSellerid(of.getCid()); 
-		}
-		
-		Date now = new Date();
-		entity.setId(prkg.generatorBusinessKeyByBid("CONTRACTINFOID"));
-		entity.setFid(of.getId());
-		
-		entity.setPrice(20.0f);
-		entity.setTotalnum(100);
-		entity.setCreatime(now);
-		entity.setCreater("creater");
-		entity.setLimittime(now);
-		entity.setTotalamount(50.0f);
-		entity.setAmount(10.0f);
-		entity.setStatus(ContractInfo.ContractStatus.DOING.getValue());
-		entity.setOtype(ContractInfo.ContractType.DRAFT.getValue());
-		entity.setUpdater("updater");
-		entity.setUpdatetime(now);
-		entity.setRemark("remark");
-		entity.setAmount(10.3f);
-		IContractInfoDAO.save(entity);
+		this.testCreateContractByFid(ofi.getFid(),ofi.getUpdater());
 	}
+
+	@Autowired
+	private MessageSendManager mesgSender;
 
 }

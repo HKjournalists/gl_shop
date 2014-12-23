@@ -3,21 +3,20 @@
  */
 package com.appabc.tools.sms;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Repository;
-
 import com.appabc.bean.bo.MsgSendResultBean;
 import com.appabc.bean.pvo.TShortMessageConfig;
+import com.appabc.common.utils.DateUtil;
 import com.appabc.common.utils.HttpXmlClient;
 import com.appabc.tools.bean.ShortMsgInfo;
-import com.appabc.tools.enums.SmsInfo.SmsTypeEnum;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Description : 电信189短信发送
@@ -32,39 +31,19 @@ public class SmsSender189 extends BaseSmsSender {
 	
 	private Logger logger = Logger.getLogger(this.getClass());
 
-	private final String EFF_TIME = "5分钟";
-	
 	/* (non-Javadoc)
 	 * @see com.appabc.datas.tool.sms.IMsgSender#sendMsg(com.appabc.bean.bo.ShortMesInfo)
 	 */
 	public MsgSendResultBean sendMsg(TShortMessageConfig smc, ShortMsgInfo smi) {
-		if(smi.getType().equals(SmsTypeEnum.SMS_TEMP_TYPE_PIN.getVal())){
-			return sendPin(smc, smi);
-		}else if(smi.getType().equals(SmsTypeEnum.SMS_TEMP_TYPE_INFORM.getVal())){
-			return sendInform(smc, smi);
-		}else{
-			return null;
-		}
 		
-	}
-	
-	/**
-	 * 验证码发送
-	 * @param smi 
-	 * @return
-	 */
-	@SuppressWarnings("deprecation")
-	public MsgSendResultBean sendPin(TShortMessageConfig smc, ShortMsgInfo smi){
-		
+		String templateParam = smi.getTemplate().toJsonStr();
 		MsgSendResultBean smrb = new MsgSendResultBean();
 		smrb.setBusinessId(smi.getBusinessId());
 		smrb.setBusinessType(smi.getBusinessType());
-		smrb.setContent(smi.getContent());
+		smrb.setContent(templateParam);
 		smrb.setTel(smi.getTel());
 		
 		if(smc != null){
-//			String templateParam2 = "{\"param1\":\""+smi.getUser()+"\",\"param2\":\""+smi.getContent()+"\",\"param3\":\""+EFF_TIME+"\"}";
-			String templateParam = smc.getTemplateparam().replace("$param1", smi.getUser()).replace("$param2", smi.getContent()).replace("$param3", EFF_TIME);
 			String accessToken = getToken(smc);
 			
 			if(accessToken == null){
@@ -79,11 +58,11 @@ public class SmsSender189 extends BaseSmsSender {
 			Map<String, String> params = new HashMap<String, String>();
 			
 			params.put("acceptor_tel", smi.getTel());
-			params.put("template_id", smc.getTemplateid());
+			params.put("template_id", smi.getTemplate().getTemplateId());
 			params.put("template_param", templateParam);
 			params.put("app_id", smc.getSuser());
 			params.put("access_token", accessToken);
-			params.put("timestamp", Calendar.getInstance().getTime().toLocaleString());
+			params.put("timestamp", DateUtil.DateToStr(Calendar.getInstance().getTime(), DateUtil.FORMAT_YYYY_MM_DD_HH_MM_SS));
 			
 			String res = HttpXmlClient.post(smc.getSurl(), params); 
 			checkResult(smrb, res);
@@ -96,19 +75,6 @@ public class SmsSender189 extends BaseSmsSender {
 		return smrb;
 		
 	}
-	
-	/**
-	 * 通知发送
-	 * @param smi
-	 * @return
-	 */
-	public MsgSendResultBean sendInform(TShortMessageConfig smc, ShortMsgInfo smi){
-		
-		return null;
-	}
-	
-	
-	
 	
 	/**
 	 * 短信发送结果检查

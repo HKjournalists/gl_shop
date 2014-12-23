@@ -3,19 +3,19 @@
  */
 package com.appabc.datas.dao.order.impl;
 
+import com.appabc.bean.enums.OrderFindInfo.OrderItemEnum;
+import com.appabc.bean.pvo.TOrderFindItem;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.order.IOrderFindItemDao;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TOrderFindItem;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.order.IOrderFindItemDao;
 
 /**
  * @Description : 询单交易申请记录DAO实现
@@ -27,20 +27,20 @@ import com.appabc.datas.dao.order.IOrderFindItemDao;
  */
 @Repository
 public class OrderFindItemDaoImpl extends BaseJdbcDao<TOrderFindItem> implements IOrderFindItemDao {
-	
+
 	private static final String INSERTSQL = " insert into T_ORDER_FIND_ITEM (FID, UPDATER, CREATETIME, DEALER, RESULT, REMARK, DEALTIME, STATUS) values (:fid, :updater, :createtime, :dealer, :result, :remark, :dealtime, :status) ";
 	private static final String UPDATESQL = " update T_ORDER_FIND_ITEM set FID = :fid, UPDATER = :updater, CREATETIME = :createtime, DEALER = :dealer, RESULT = :result, REMARK = :remark, DEALTIME = :dealtime, STATUS=:status where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_ORDER_FIND_ITEM WHERE ID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_ORDER_FIND_ITEM WHERE ID = :id ";
-	
-	private static final String BASE_SQL = " SELECT * FROM T_ORDER_FIND_ITEM WHERE 1=1 "; 
+
+	private static final String BASE_SQL = " SELECT * FROM T_ORDER_FIND_ITEM WHERE 1=1 ";
 
 	public void save(TOrderFindItem entity) {
 		super.save(INSERTSQL, entity);
 	}
 
 	public KeyHolder saveAutoGenerateKey(TOrderFindItem entity) {
-		return null;
+		return super.saveAutoGenerateKey(INSERTSQL, entity);
 	}
 
 	public void update(TOrderFindItem entity) {
@@ -48,6 +48,7 @@ public class OrderFindItemDaoImpl extends BaseJdbcDao<TOrderFindItem> implements
 	}
 
 	public void delete(TOrderFindItem entity) {
+		super.delete(DELETESQLBYID, entity);
 	}
 
 	public void delete(Serializable id) {
@@ -55,7 +56,7 @@ public class OrderFindItemDaoImpl extends BaseJdbcDao<TOrderFindItem> implements
 	}
 
 	public TOrderFindItem query(TOrderFindItem entity) {
-		return null;
+		return super.query(dynamicJoinSqlWithEntity(entity,new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public TOrderFindItem query(Serializable id) {
@@ -63,21 +64,21 @@ public class OrderFindItemDaoImpl extends BaseJdbcDao<TOrderFindItem> implements
 	}
 
 	public List<TOrderFindItem> queryForList(TOrderFindItem entity) {
-		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public List<TOrderFindItem> queryForList(Map<String, ?> args) {
-		return null;
+		return super.queryForList(BASE_SQL, args);
 	}
 
 	public QueryContext<TOrderFindItem> queryListForPagination(
 			QueryContext<TOrderFindItem> qContext) {
-		return null;
+		return super.queryListForPagination(dynamicJoinSqlWithEntity(qContext.getBeanParameter(),  new StringBuilder(BASE_SQL)), qContext);
 	}
 
 	public TOrderFindItem mapRow(ResultSet rs, int rowNum) throws SQLException {
 		TOrderFindItem t = new TOrderFindItem();
-		
+
 		t.setId(rs.getString("ID"));
 		t.setFid(rs.getString("FID"));
 		t.setCreatetime(rs.getTimestamp("CREATETIME"));
@@ -86,12 +87,12 @@ public class OrderFindItemDaoImpl extends BaseJdbcDao<TOrderFindItem> implements
 		t.setRemark(rs.getString("REMARK"));
 		t.setResult(rs.getString("RESULT"));
 		t.setUpdater(rs.getString("UPDATER"));
-		t.setStatus(rs.getInt("STATUS"));
-		
+		t.setStatus(OrderItemEnum.enumOf(rs.getInt("STATUS")));
+
 		return t;
 	}
-	
-	private String dynamicJoinSqlWithEntity(TOrderFindItem bean,StringBuffer sql){
+
+	private String dynamicJoinSqlWithEntity(TOrderFindItem bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}

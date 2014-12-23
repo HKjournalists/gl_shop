@@ -19,6 +19,7 @@ import com.appabc.bean.pvo.TCompanyAddress;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
 import com.appabc.datas.service.company.ICompanyAddressService;
+import com.appabc.http.utils.HttpApplicationErrorCode;
 
 /**
  * @Description : 企业卸货地址CONTROLLER
@@ -53,7 +54,12 @@ public class AddressController extends BaseController<TCompanyAddress> {
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "地址不能为空");
 		}
 		
-		this.companyAddressService.add(caBean);
+		try {
+			this.companyAddressService.add(caBean);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		
 		return buildSuccessResult("添加成功", "");
 		
@@ -87,12 +93,17 @@ public class AddressController extends BaseController<TCompanyAddress> {
 			entity.setLongitude(caBean.getLongitude());
 			entity.setRealdeep(caBean.getRealdeep());
 			
-			this.companyAddressService.modify(entity);
+			try {
+				this.companyAddressService.modify(entity);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+			}
 			
-			return buildSuccessResult("修改成功", "");
+			return buildSuccessResult("修改成功");
 		}
 		
-		return buildSuccessResult("修改失败", "");
+		return buildSuccessResult("修改失败,数据不存在");
 		
 	}
 	
@@ -136,9 +147,9 @@ public class AddressController extends BaseController<TCompanyAddress> {
 		TCompanyAddress entity  = new TCompanyAddress();
 		entity.setCid(cid);
 		
-		List<TCompanyAddress> list = this.companyAddressService.queryForList(entity);
+		List<TCompanyAddress> list = this.companyAddressService.queryForListHaveImgs(entity);
 		
-		return buildFilterResultWithString(list, "");
+		return buildFilterResultWithString(list);
 		
 	}
 	

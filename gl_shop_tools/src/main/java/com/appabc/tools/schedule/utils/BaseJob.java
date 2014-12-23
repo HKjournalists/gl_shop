@@ -6,13 +6,12 @@
  */
 package com.appabc.tools.schedule.utils;
 
+import com.appabc.common.spring.BeanLocator;
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
-
-import com.appabc.common.spring.BeanLocator;
 
 /**
  * @Description : 
@@ -25,13 +24,15 @@ import com.appabc.common.spring.BeanLocator;
 
 public abstract class BaseJob implements Job {
 
+	protected final Logger logUtil = Logger.getLogger(this.getClass());
+	
+	protected ApplicationContext ac = BeanLocator.getApplicationContext();
+	
 	public String NAME = this.getClass().getName();
 
 	public String GROUPAFTERFIX = "_GROUP";
 	
 	public String GROUP = NAME + GROUPAFTERFIX;
-	
-	protected final Logger logUtil = Logger.getLogger(this.getClass());
 	
 	protected void preDoExecution(JobExecutionContext context){
 		logUtil.info("execute the preDoExecution method.");
@@ -40,8 +41,6 @@ public abstract class BaseJob implements Job {
 	protected void afterDoExecution(JobExecutionContext context){
 		logUtil.info("execute the afterDoExecution method.");
 	}
-	
-	protected ApplicationContext ac = BeanLocator.getApplicationContext();
 	
 	/* (non-Javadoc)  
 	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)  

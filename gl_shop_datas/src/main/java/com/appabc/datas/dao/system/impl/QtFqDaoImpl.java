@@ -1,19 +1,18 @@
 package com.appabc.datas.dao.system.impl;
 
+import com.appabc.bean.pvo.TQtFq;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.system.IQtFqDao;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TQtFq;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.system.IQtFqDao;
 
 /**
  * @Description : 意见反馈
@@ -25,13 +24,13 @@ import com.appabc.datas.dao.system.IQtFqDao;
  */
 @Repository
 public class QtFqDaoImpl extends BaseJdbcDao<TQtFq> implements IQtFqDao {
-	
+
 	private static final String INSERTSQL = " insert into T_QT_FQ (FID, QUETSION, ASKID, CREATETIME, DEVICES, STATUS) values (:fid, :quetsion, :askid, :createtime, :devices, :status) ";
 	private static final String UPDATESQL = " update T_QT_FQ set QUETSION = :quetsion, ASKID = :askid, CREATETIME = :createtime, DEVICES = :devices, STATUS = :status  where FID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_QT_FQ WHERE FID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_QT_FQ WHERE FID = :id ";
-	
-	private static final String BASE_SQL = " SELECT * FROM T_SYSTEM_PARAMS WHERE 1=1 "; 
+
+	private static final String BASE_SQL = " SELECT * FROM T_SYSTEM_PARAMS WHERE 1=1 ";
 
 	/* (non-Javadoc)
 	 * @see com.appabc.common.base.dao.IBaseDao#save(com.appabc.common.base.bean.BaseBean)
@@ -45,7 +44,7 @@ public class QtFqDaoImpl extends BaseJdbcDao<TQtFq> implements IQtFqDao {
 	 * @see com.appabc.common.base.dao.IBaseDao#saveAutoGenerateKey(com.appabc.common.base.bean.BaseBean)
 	 */
 	public KeyHolder saveAutoGenerateKey(TQtFq entity) {
-		return null;
+		return super.saveAutoGenerateKey(INSERTSQL, entity);
 	}
 
 	/* (non-Javadoc)
@@ -72,7 +71,7 @@ public class QtFqDaoImpl extends BaseJdbcDao<TQtFq> implements IQtFqDao {
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)
 	 */
 	public TQtFq query(TQtFq entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	/* (non-Javadoc)
@@ -86,14 +85,14 @@ public class QtFqDaoImpl extends BaseJdbcDao<TQtFq> implements IQtFqDao {
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)
 	 */
 	public List<TQtFq> queryForList(TQtFq entity) {
-		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.util.Map)
 	 */
 	public List<TQtFq> queryForList(Map<String, ?> args) {
-		return null;
+		return super.queryForList(BASE_SQL, args);
 	}
 
 	/* (non-Javadoc)
@@ -101,23 +100,23 @@ public class QtFqDaoImpl extends BaseJdbcDao<TQtFq> implements IQtFqDao {
 	 */
 	public QueryContext<TQtFq> queryListForPagination(
 			QueryContext<TQtFq> qContext) {
-		return null;
+		return super.queryListForPagination(dynamicJoinSqlWithEntity(qContext.getBeanParameter(),  new StringBuilder(BASE_SQL)), qContext);
 	}
 
 	public TQtFq mapRow(ResultSet rs, int rowNum) throws SQLException {
 		TQtFq t = new TQtFq();
-		
+
 		t.setId(rs.getString("FID"));
 		t.setAskid(rs.getString("ASKID"));
 		t.setCreatetime(rs.getTimestamp("CREATETIME"));
 		t.setDevices(rs.getString("DEVICES"));
 		t.setQuetsion(rs.getString("QUETSION"));
 		t.setStatus(rs.getInt("STATUS"));
-		
+
 		return t;
 	}
-	
-	private String dynamicJoinSqlWithEntity(TQtFq bean,StringBuffer sql){
+
+	private String dynamicJoinSqlWithEntity(TQtFq bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}

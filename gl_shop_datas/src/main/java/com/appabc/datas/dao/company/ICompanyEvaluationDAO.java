@@ -1,11 +1,14 @@
 package com.appabc.datas.dao.company;
 
 
+import com.appabc.bean.bo.CompanyEvaluationInfo;
 import com.appabc.bean.pvo.TCompanyEvaluation;
 import com.appabc.common.base.dao.IBaseDao;
 
+import java.util.List;
+
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : 黄建华
@@ -14,5 +17,7 @@ import com.appabc.common.base.dao.IBaseDao;
  */
 
 public interface ICompanyEvaluationDAO extends IBaseDao<TCompanyEvaluation>{
+
+	List<CompanyEvaluationInfo> queryEvaluationContractList(CompanyEvaluationInfo cei);
 
 }

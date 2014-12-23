@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/company">
+<head>
+  <title>交易行为 - 历史交易</title>
+</head>
+<body>
+
+  <h4 layout:fragment="contentNavTitle">
+    <i class="fa fa-fw fa-wrench"></i> 交易行为 - 历史交易 
+  </h4>
+
+  <div layout:fragment="pageContent">
+
+    <th:block th:each="trans : ${transactions}">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-4">
+            <i class="fa fa-bar-chart-o fa-fw"></i> 合同编号：<span th:text="${trans.contract.no}">09765853</span>
+          </div>
+          <div class="col-xs-4">生成时间：<span th:text="${#clandars.format(trans.contract.createdate, 'YYYY年m月d日')}">2014-06-30</span>G</div>
+        </div>
+        <div class="col-xs-2 pull-right">
+          <a href="#">查看详情</a></div>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="row" th:text="${trans.contract.subject}"></div>
+        <div class="row" th:text="${trans.contract.subject}">已完成6天14小时20分</div>
+
+        <div class="well">
+          <div class="row" th:each="log : ${trans.logs}">
+            <th:block th:text="${#calendars.format(log.createdate, 'YYYY年mm月dd日 HH:MM') + ${log.content}}">2014年9月16日 15:06:59 客服张三生成了合同</th:block>
+          </div>
+
+          <div class="row" th:if="${lists.isEmpty(trans.logs)}">
+            <p>没有查询到交易记录</p>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </div>
+</body>
+
+</html>

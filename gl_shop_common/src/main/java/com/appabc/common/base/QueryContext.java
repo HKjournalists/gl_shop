@@ -1,15 +1,17 @@
 package com.appabc.common.base;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-
 import com.appabc.common.base.bean.BaseBean;
 import com.appabc.common.utils.SystemConstant;
 import com.appabc.common.utils.pagination.PageModel;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+
+import java.beans.PropertyDescriptor;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 查询上下文
@@ -42,26 +44,33 @@ public class QueryContext<T extends BaseBean> {
 	/*
 	 * client query parameters
 	 */
-	private Map<String, Object> parameters = new HashMap<String, Object>();
+	private Map<String, Object> parameters = new HashMap<>();
 	
 	/*page Model*/
 	private PageModel page = new PageModel();
 	/*query result*/
 	
-	private QueryResult<T> queryResult = new QueryResult<T>();
-
-	public QueryContext() {}
+	private QueryResult<T> queryResult = new QueryResult<>();
 
 	public Map<String, Object> getParameters() {
 		return parameters;
 	}
 
 	public void setParameters(Map<String, Object> parameters) {
-		this.parameters.putAll(parameters);
+		if (parameters != null){
+			this.parameters = parameters;
+		}else{ // map clear
+			this.parameters.clear();
+		}
 	}
 
 	public void addParameter(String key, Object value) {
 		this.parameters.put(key, value);
+	}
+
+    public void addParameters(Map<String, Object> params) {
+		if (params != null)
+            this.parameters.putAll(params);
 	}
 
 	public T getBeanParameter() {
@@ -70,6 +79,19 @@ public class QueryContext<T extends BaseBean> {
 
 	public void setBeanParameter(T beanParameter) {
 		this.beanParameter = beanParameter;
+		if (beanParameter != null) {
+			BeanWrapper wrapper = new BeanWrapperImpl(beanParameter);
+			PropertyDescriptor[] descriptors = wrapper.getPropertyDescriptors();
+			Map<String, Object> properties = new HashMap<>();
+			for (PropertyDescriptor pd : descriptors) {
+				Object propValue = wrapper.getPropertyValue(pd.getName());
+				// 映射时枚举类型的值未填充到beanParameter中，这里排除掉枚举类型，避免parameters中同名参数无辜被设为空
+				if(!pd.getPropertyType().isEnum()){
+					properties.put(pd.getName(), propValue);
+				}
+			}
+			this.parameters.putAll(properties);
+		}
 	}
 
 	public QueryResult<T> getQueryResult() {
@@ -135,5 +157,9 @@ public class QueryContext<T extends BaseBean> {
 	 */
 	public void setParamList(List<?> paramList) {
 		this.paramList = paramList;
+	}
+	
+	public Object getParameter(Object key){
+		return this.parameters.get(key);
 	}
 }

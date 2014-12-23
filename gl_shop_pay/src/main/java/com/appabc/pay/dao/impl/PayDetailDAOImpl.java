@@ -6,19 +6,18 @@
  */
 package com.appabc.pay.dao.impl;
 
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.pay.bean.TPayDetail;
+import com.appabc.pay.dao.IPayDetailDAO;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.jdbc.support.KeyHolder;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.jdbc.support.KeyHolder;
-
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.pay.bean.TPayDetail;
-import com.appabc.pay.dao.IPayDetailDAO;
 
 /**
  * @Description : 
@@ -36,7 +35,7 @@ public class PayDetailDAOImpl extends BaseJdbcDao<TPayDetail> implements IPayDet
 	private static final String DELETE_SQL = " DELETE FROM T_PAY_DETAIL WHERE PAYDETAILID = :id ";
 	private static final String SELECT_SQL = " SELECT PAYDETAILID,PAYACCOUNTID,PAYFLOWID,PAYORGNUM,PAYTRADESTATUS,BUZTRADENUM,PARAMSCONTENT,PAYOPERATETYPE,BUZNOTIFYURL,TRADETIME,CREATETIME,UPDATETIME,CREATOR FROM T_PAY_DETAIL ";
 	
-	private String dynamicJoinSqlWithEntity(TPayDetail entity,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TPayDetail entity,StringBuilder sql){
 		if(entity == null || sql == null || sql.length() <= 0){
 			return StringUtils.EMPTY;
 		}
@@ -97,7 +96,7 @@ public class PayDetailDAOImpl extends BaseJdbcDao<TPayDetail> implements IPayDet
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TPayDetail query(TPayDetail entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -106,7 +105,7 @@ public class PayDetailDAOImpl extends BaseJdbcDao<TPayDetail> implements IPayDet
 	 * @see com.appabc.common.base.dao.IBaseDao#query(java.io.Serializable)  
 	 */
 	public TPayDetail query(Serializable id) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE PAYDETAILID = :id  ");
 		return super.query(sql.toString(), id);
@@ -116,7 +115,7 @@ public class PayDetailDAOImpl extends BaseJdbcDao<TPayDetail> implements IPayDet
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TPayDetail> queryForList(TPayDetail entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -125,7 +124,7 @@ public class PayDetailDAOImpl extends BaseJdbcDao<TPayDetail> implements IPayDet
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.util.Map)  
 	 */
 	public List<TPayDetail> queryForList(Map<String, ?> args) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1 = 1 ");
 		//this.addNameParamerSqlWithProperty(sql, "lid", "LID", args.get("lid"));

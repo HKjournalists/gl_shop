@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.dao.company.impl;
 
+import com.appabc.bean.pvo.TCompanyContact;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.company.ICompanyContactDao;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TCompanyContact;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.company.ICompanyContactDao;
 
 /**
  * @Description : 企业联系人DAO实现
@@ -27,20 +26,20 @@ import com.appabc.datas.dao.company.ICompanyContactDao;
  */
 @Repository
 public class CompanyContactDaoImpl extends BaseJdbcDao<TCompanyContact> implements ICompanyContactDao {
-	
+
 	private static final String INSERTSQL = " insert into T_COMPANY_CONTACT (CID, CNAME, CPHONE, TEL, STATUS, CREATETIME, CREATER)  values (:cid, :cname, :cphone, :tel, :status, :createtime, :creater) ";
 	private static final String UPDATESQL = " update T_COMPANY_CONTACT set CID = :cid, CNAME = :cname, CPHONE = :cphone, TEL = :tel, STATUS = :status, CREATETIME = :createtime, CREATER = :creater where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_COMPANY_CONTACT WHERE ID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_COMPANY_CONTACT WHERE ID = :id ";
-	
-	private static final String BASE_SQL = " SELECT * FROM T_COMPANY_CONTACT WHERE 1=1 "; 
+
+	private static final String BASE_SQL = " SELECT * FROM T_COMPANY_CONTACT WHERE 1=1 ";
 
 	public void save(TCompanyContact entity) {
 		super.save(INSERTSQL, entity);
 	}
 
 	public KeyHolder saveAutoGenerateKey(TCompanyContact entity) {
-		return null;
+		return super.saveAutoGenerateKey(INSERTSQL, entity);
 	}
 
 	public void update(TCompanyContact entity) {
@@ -48,6 +47,7 @@ public class CompanyContactDaoImpl extends BaseJdbcDao<TCompanyContact> implemen
 	}
 
 	public void delete(TCompanyContact entity) {
+		super.delete(DELETESQLBYID, entity);
 	}
 
 	public void delete(Serializable id) {
@@ -55,7 +55,7 @@ public class CompanyContactDaoImpl extends BaseJdbcDao<TCompanyContact> implemen
 	}
 
 	public TCompanyContact query(TCompanyContact entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)) + " order by ID desc limit 0,1 ", entity);
+		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)) + " order by ID desc limit 0,1 ", entity);
 	}
 
 	public TCompanyContact query(Serializable id) {
@@ -63,21 +63,21 @@ public class CompanyContactDaoImpl extends BaseJdbcDao<TCompanyContact> implemen
 	}
 
 	public List<TCompanyContact> queryForList(TCompanyContact entity) {
-		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public List<TCompanyContact> queryForList(Map<String, ?> args) {
-		return null;
+		return super.queryForList(BASE_SQL, args);
 	}
 
 	public QueryContext<TCompanyContact> queryListForPagination(
 			QueryContext<TCompanyContact> qContext) {
-		return null;
+		return super.queryListForPagination(dynamicJoinSqlWithEntity(qContext.getBeanParameter(),  new StringBuilder(BASE_SQL)), qContext);
 	}
 
 	public TCompanyContact mapRow(ResultSet rs, int rowNum) throws SQLException {
 		TCompanyContact t = new TCompanyContact();
-		
+
 		t.setId(rs.getString("ID"));
 		t.setCid(rs.getString("CID"));
 		t.setCname(rs.getString("CNAME"));
@@ -86,11 +86,11 @@ public class CompanyContactDaoImpl extends BaseJdbcDao<TCompanyContact> implemen
 		t.setCreatetime(rs.getTimestamp("CREATETIME"));
 		t.setStatus(rs.getInt("STATUS"));
 		t.setTel(rs.getString("TEL"));
-		
+
 		return t;
 	}
-	
-	private String dynamicJoinSqlWithEntity(TCompanyContact bean,StringBuffer sql){
+
+	private String dynamicJoinSqlWithEntity(TCompanyContact bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}

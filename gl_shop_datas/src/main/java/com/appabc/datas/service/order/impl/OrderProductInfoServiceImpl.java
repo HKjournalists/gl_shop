@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.service.order.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.pvo.TOrderProductInfo;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.order.IOrderProductInfoDao;
+import com.appabc.datas.service.order.IOrderProductInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TOrderProductInfo;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.order.IOrderProductInfoDao;
-import com.appabc.datas.service.order.IOrderProductInfoService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 交易中的商品信息SERVICE实现
@@ -41,6 +40,7 @@ public class OrderProductInfoServiceImpl implements IOrderProductInfoService{
 	}
 
 	public void delete(TOrderProductInfo entity) {
+		this.orderProductInfoDao.delete(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -48,12 +48,11 @@ public class OrderProductInfoServiceImpl implements IOrderProductInfoService{
 	}
 
 	public TOrderProductInfo query(TOrderProductInfo entity) {
-		return null;
+		return this.orderProductInfoDao.query(entity);
 	}
 
 	public TOrderProductInfo query(Serializable id) {
-		this.orderProductInfoDao.query(id);
-		return null;
+		return this.orderProductInfoDao.query(id);
 	}
 
 	public List<TOrderProductInfo> queryForList(TOrderProductInfo entity) {
@@ -61,12 +60,12 @@ public class OrderProductInfoServiceImpl implements IOrderProductInfoService{
 	}
 
 	public List<TOrderProductInfo> queryForList(Map<String, ?> args) {
-		return null;
+		return this.orderProductInfoDao.queryForList(args);
 	}
 
 	public QueryContext<TOrderProductInfo> queryListForPagination(
 			QueryContext<TOrderProductInfo> qContext) {
-		return null;
+		return this.orderProductInfoDao.queryListForPagination(qContext);
 	}
 
 }

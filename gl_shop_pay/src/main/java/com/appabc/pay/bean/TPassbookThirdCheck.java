@@ -1,7 +1,13 @@
 package com.appabc.pay.bean;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.PurseInfo.DeviceType;
+import com.appabc.bean.enums.PurseInfo.PayDirection;
+import com.appabc.bean.enums.PurseInfo.PayWay;
+import com.appabc.bean.enums.PurseInfo.TradeStatus;
+import com.appabc.bean.enums.PurseInfo.TradeType;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TPassbookThirdCheck extends BaseBean {
     /**  
@@ -25,7 +31,7 @@ public class TPassbookThirdCheck extends BaseBean {
     /**
      * 交易类型（充值、提取、交易缴款、交易收款、交易违约金扣款、交易服务费）
      */
-    private String otype;
+    private TradeType otype;
 
     /**
      * 银行流水号
@@ -45,12 +51,12 @@ public class TPassbookThirdCheck extends BaseBean {
     /**
      * 流入流出
      */
-    private Integer direction;
+    private PayDirection direction;
 
     /**
      * 支付方式
      */
-    private String paytype;
+    private PayWay paytype;
 
     /**
      * 支付时间
@@ -60,12 +66,12 @@ public class TPassbookThirdCheck extends BaseBean {
     /**
      * 交易状态
      */
-    private String status;
+    private TradeStatus status;
 
     /**
      * 指通过什么设备支付（手机、电脑）
      */
-    private String devices;
+    private DeviceType devices;
 
     /**
      * 备注
@@ -86,14 +92,6 @@ public class TPassbookThirdCheck extends BaseBean {
 
     public void setOid(String oid) {
         this.oid = oid == null ? null : oid.trim();
-    }
-
-    public String getOtype() {
-        return otype;
-    }
-
-    public void setOtype(String otype) {
-        this.otype = otype == null ? null : otype.trim();
     }
 
     public String getPayno() {
@@ -120,44 +118,12 @@ public class TPassbookThirdCheck extends BaseBean {
         this.amount = amount;
     }
 
-    public Integer getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Integer direction) {
-        this.direction = direction;
-    }
-
-    public String getPaytype() {
-        return paytype;
-    }
-
-    public void setPaytype(String paytype) {
-        this.paytype = paytype == null ? null : paytype.trim();
-    }
-
     public Date getPatytime() {
         return patytime;
     }
 
     public void setPatytime(Date patytime) {
         this.patytime = patytime;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
-    }
-
-    public String getDevices() {
-        return devices;
-    }
-
-    public void setDevices(String devices) {
-        this.devices = devices == null ? null : devices.trim();
     }
 
     public String getRemark() {
@@ -167,4 +133,94 @@ public class TPassbookThirdCheck extends BaseBean {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	/**  
+	 * direction  
+	 *  
+	 * @return  the direction  
+	 * @since   1.0.0  
+	*/  
+	
+	public PayDirection getDirection() {
+		return direction;
+	}
+
+	/**  
+	 * @param direction the direction to set  
+	 */
+	public void setDirection(PayDirection direction) {
+		this.direction = direction;
+	}
+
+	/**  
+	 * paytype  
+	 *  
+	 * @return  the paytype  
+	 * @since   1.0.0  
+	*/  
+	
+	public PayWay getPaytype() {
+		return paytype;
+	}
+
+	/**  
+	 * @param paytype the paytype to set  
+	 */
+	public void setPaytype(PayWay paytype) {
+		this.paytype = paytype;
+	}
+
+	/**  
+	 * status  
+	 *  
+	 * @return  the status  
+	 * @since   1.0.0  
+	*/  
+	
+	public TradeStatus getStatus() {
+		return status;
+	}
+
+	/**  
+	 * @param status the status to set  
+	 */
+	public void setStatus(TradeStatus status) {
+		this.status = status;
+	}
+
+	/**  
+	 * devices  
+	 *  
+	 * @return  the devices  
+	 * @since   1.0.0  
+	*/  
+	
+	public DeviceType getDevices() {
+		return devices;
+	}
+
+	/**  
+	 * @param devices the devices to set  
+	 */
+	public void setDevices(DeviceType devices) {
+		this.devices = devices;
+	}
+
+	/**  
+	 * otype  
+	 *  
+	 * @return  the otype  
+	 * @since   1.0.0  
+	*/  
+	
+	public TradeType getOtype() {
+		return otype;
+	}
+
+	/**  
+	 * @param otype the otype to set  
+	 */
+	public void setOtype(TradeType otype) {
+		this.otype = otype;
+	}
 }

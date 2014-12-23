@@ -1,6 +1,10 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.FileInfo.FileCommitServer;
+import com.appabc.bean.enums.FileInfo.FileOType;
+import com.appabc.bean.enums.FileInfo.FileStyle;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TUploadImages extends BaseBean {
@@ -17,7 +21,7 @@ public class TUploadImages extends BaseBean {
     /**
      * 对应类型(企业认证图片、企业图片、卸货地址图片)
      */
-    private String otype;
+    private FileOType otype;
 
     /**
      * 文件名
@@ -52,7 +56,7 @@ public class TUploadImages extends BaseBean {
     /**
      * 提交系统
      */
-    private String commitserver;
+    private FileCommitServer commitserver;
 
     /**
      * 提交时间
@@ -65,14 +69,9 @@ public class TUploadImages extends BaseBean {
     private Integer pid;
     
     /**
-     * 图片格式（原图\大\中\小）
+     * 图片规格（原图\大\中\小）
      */
-    private String fstyle;
-    
-    /**
-     * 略图
-     */
-    private String thumbPic;
+    private FileStyle fstyle;
 
     public String getOid() {
 		return oid;
@@ -81,14 +80,6 @@ public class TUploadImages extends BaseBean {
 	public void setOid(String oid) {
 		this.oid = oid == null ? null : oid.trim();
 	}
-
-	public String getOtype() {
-        return otype;
-    }
-
-    public void setOtype(String otype) {
-        this.otype = otype == null ? null : otype.trim();
-    }
 
     public String getFname() {
         return fname;
@@ -138,14 +129,6 @@ public class TUploadImages extends BaseBean {
         this.fserverid = fserverid == null ? null : fserverid.trim();
     }
 
-    public String getCommitserver() {
-        return commitserver;
-    }
-
-    public void setCommitserver(String commitserver) {
-        this.commitserver = commitserver == null ? null : commitserver.trim();
-    }
-
 	public Date getCreatedate() {
 		return createdate;
 	}
@@ -162,20 +145,59 @@ public class TUploadImages extends BaseBean {
 		this.pid = pid;
 	}
 
-	public String getFstyle() {
+	/**  
+	 * otype  
+	 *  
+	 * @return  the otype  
+	 * @since   1.0.0  
+	*/  
+	
+	public FileOType getOtype() {
+		return otype;
+	}
+
+	/**  
+	 * @param otype the otype to set  
+	 */
+	public void setOtype(FileOType otype) {
+		this.otype = otype;
+	}
+
+	/**  
+	 * fstyle  
+	 *  
+	 * @return  the fstyle  
+	 * @since   1.0.0  
+	*/  
+	
+	public FileStyle getFstyle() {
 		return fstyle;
 	}
 
-	public void setFstyle(String fstyle) {
+	/**  
+	 * @param fstyle the fstyle to set  
+	 */
+	public void setFstyle(FileStyle fstyle) {
 		this.fstyle = fstyle;
 	}
 
-	public String getThumbPic() {
-		return thumbPic;
+	/**  
+	 * commitserver  
+	 *  
+	 * @return  the commitserver  
+	 * @since   1.0.0  
+	*/  
+	
+	public FileCommitServer getCommitserver() {
+		return commitserver;
 	}
 
-	public void setThumbPic(String thumbPic) {
-		this.thumbPic = thumbPic;
+	/**  
+	 * @param commitserver the commitserver to set  
+	 */
+	public void setCommitserver(FileCommitServer commitserver) {
+		this.commitserver = commitserver;
 	}
+
 
 }

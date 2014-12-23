@@ -18,20 +18,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.appabc.bean.bo.SyncDataBean;
 import com.appabc.bean.bo.SyncInfoBean;
 import com.appabc.bean.bo.SysParam;
+import com.appabc.bean.enums.SyncInfo.SyncType;
 import com.appabc.bean.pvo.TBankInfo;
-import com.appabc.bean.pvo.TProductInfo;
-import com.appabc.bean.pvo.TPublicCodes;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.SystemConstant;
-import com.appabc.datas.enums.SyncInfo;
 import com.appabc.datas.service.codes.IPublicCodesService;
 import com.appabc.datas.service.product.IProductInfoService;
 import com.appabc.datas.service.system.IBankInfoService;
+import com.appabc.http.utils.HttpApplicationErrorCode;
 import com.appabc.tools.utils.SystemParamsManager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * @Description : 同步接口信息
@@ -69,112 +69,115 @@ public class SyncController extends BaseController<SyncInfoBean> {
 		 * 同步判断，客户端提交分类和对应的时间戳，服务器更新相应数据时同时更新【系统参数表T_SYSTEM_PARAMS】中的分类时间戳，2个时间戳进行比较，不同即更新
 		 */
 		
-		SyncInfoBean si = new SyncInfoBean();
+		boolean isSyncRiverSection = false;
+		boolean isSyncGoodsType = false;
+		boolean isSyncGoods = false;
+		boolean isSyncArea = false;
+		boolean isSyncBanks = false;
+		boolean isSyncSysParams = false;
 		
+		SyncInfoBean si = new SyncInfoBean();
 		String typeInfo  = request.getParameter("typeInfo"); // JSON格式
 		
 		if(StringUtils.isNotEmpty(typeInfo)){
-			JsonParser jsonParser = new JsonParser();
-			JsonElement jsonElement =  jsonParser.parse(typeInfo);
-			JsonArray jsonArray = jsonElement.getAsJsonArray();
-			
-			JsonObject jsonObject;
-			
-			for(JsonElement je : jsonArray){
-				jsonObject = je.getAsJsonObject();
-				SyncDataBean sd = new SyncDataBean();
+			try {
+				JsonParser jsonParser = new JsonParser();
+				JsonElement jsonElement =  jsonParser.parse(typeInfo);
+				JsonArray jsonArray = jsonElement.getAsJsonArray();
+				JsonObject jsonObject;
 				
-				if(jsonObject.get("type").getAsInt() == SyncInfo.SyncType.SYNC_TYPE_RIVER_SECTION.getVal()){ // 港口列表
-					List<TPublicCodes> riverSection = publicCodesService.queryListByCode(SystemConstant.CODE_RIVER_SECTION);
-					String time = spm.getString("RIVER_SECTION_TIME");  // 更新时间
-					if(!jsonObject.get("timeStamp").getAsString().equals(time)){
-						sd.setData(riverSection);
-						sd.setTimeStamp(time);
-						si.setRiverSection(sd);
+				for(JsonElement je : jsonArray){
+					jsonObject = je.getAsJsonObject();
+					JsonElement jeType = jsonObject.get("type");
+					if(jeType.isJsonNull()){
+						return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL, "sync type is null");
 					}
-				}else if(jsonObject.get("type").getAsInt() == SyncInfo.SyncType.SYNC_TYPE_GOOD.getVal()){ // 商品大类
-					List<TPublicCodes> goods = publicCodesService.queryListByCode(SystemConstant.CODE_GOODS);
-					String time = spm.getString("GOODS_TIME");  // 更新时间
-					if(!jsonObject.get("timeStamp").getAsString().equals(time)){
-						sd.setData(goods);
-						sd.setTimeStamp(time);
-						si.setGoods(sd);
+					SyncType syncType = SyncType.enumOf(jsonObject.get("type").getAsInt());
+					if(syncType == null){
+						return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL, "sync type error；type="+jeType);
 					}
-				}else if(jsonObject.get("type").getAsInt() == SyncInfo.SyncType.SYNC_TYPE_GOOD_CHILDREN.getVal()){ // 商品子类
-					List<TProductInfo> goodChild = this.productInfoService.queryForList(new TProductInfo());
-					String time = spm.getString("GOOD_CHILD_TIME");  // 更新时间
-					if(!jsonObject.get("timeStamp").getAsString().equals(time)){
-						sd.setData(goodChild);
-						sd.setTimeStamp(time);
-						si.setGoodChild(sd);
+					JsonElement jeTimeStamp = jsonObject.get("timeStamp");
+					String timeStamp = "";
+					if(!jeTimeStamp.isJsonNull()){
+						timeStamp = jeTimeStamp.getAsString();
 					}
-				}else if(jsonObject.get("type").getAsInt() == SyncInfo.SyncType.SYNC_TYPE_AREA.getVal()){ // 交易地域
-					List<TPublicCodes> area = publicCodesService.queryListByCode(SystemConstant.CODE_AREA);
-					String time = spm.getString("AREA_TIME");  // 更新时间
-					if(!jsonObject.get("timeStamp").getAsString().equals(time)){
-						sd.setData(area);
-						sd.setTimeStamp(time);
-						si.setArea(sd);
+					
+					if(syncType.equals(SyncType.SYNC_TYPE_RIVER_SECTION)
+							&& !timeStamp.equals(spm.getString(SystemConstant.SYNC_RIVER_SECTION_TIME))){ // 港口列表
+						isSyncRiverSection = true;
+					}else if(syncType.equals(SyncType.SYNC_TYPE_GOOD_TYPE)
+							&& !timeStamp.equals(spm.getString(SystemConstant.SYNC_GOODS_TYPE_TIME))){ // 商品类型
+						isSyncGoodsType = true;
+					}else if(syncType.equals(SyncType.SYNC_TYPE_GOODS)
+							&& !timeStamp.equals(spm.getString(SystemConstant.SYNC_GOODS_TIME))){ // 商品
+						isSyncGoods = true;
+					}else if(syncType.equals(SyncType.SYNC_TYPE_AREA)
+							&& !timeStamp.equals(spm.getString(SystemConstant.SYNC_AREA_TIME))){ // 交易地域
+						isSyncArea = true;
+					}else if(syncType.equals(SyncType.SYNC_TYPE_BANK)
+							&& !timeStamp.equals(spm.getString(SystemConstant.SYNC_BANKS_TIME))){ // 平台支持银行
+						isSyncBanks = true;
+					}else if(syncType.equals(SyncType.SYNC_TYPE_SYS_PARAM)
+							&& !timeStamp.equals(spm.getString(SystemConstant.SYNC_SYS_PARAM_TIME))){ // 系统参数
+						isSyncSysParams = true;
 					}
-				}else if(jsonObject.get("type").getAsInt() == SyncInfo.SyncType.SYNC_TYPE_BANK.getVal()){ // 平台支持银行
-					List<TBankInfo> banks = bankInfoService.queryForList(new TBankInfo());
-					String time = spm.getString("BANKS_TIME");  // 更新时间
-					if(!jsonObject.get("timeStamp").getAsString().equals(time)){
-						sd.setData(banks);
-						sd.setTimeStamp(time);
-						si.setBanks(sd);
-					}
-				}else if(jsonObject.get("type").getAsInt() == SyncInfo.SyncType.SYNC_TYPE_SYS_PARAM.getVal()){ // 保证金额度信息
-					String time = spm.getString("SYS_PARAM_TIME");  // 更新时间
-					if(!jsonObject.get("timeStamp").getAsString().equals(time)){
-						sd.setData(getSysParam());
-						sd.setTimeStamp(time);
-						si.setSysParam(sd);
-					}
+						
 				}
-				
-				
+					
+			} catch (JsonSyntaxException e) {
+				e.printStackTrace();
+				return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
 			}
 		}else{
-			List<TPublicCodes> riverSection = publicCodesService.queryListByCode(SystemConstant.CODE_RIVER_SECTION);
-			String time = spm.getString("RIVER_SECTION_TIME");  // 更新时间
-			SyncDataBean sd = new SyncDataBean();
-			sd.setData(riverSection);
-			sd.setTimeStamp(time);
-			si.setRiverSection(sd);
-			
-			sd = new SyncDataBean();
-			List<TPublicCodes> goods = publicCodesService.queryListByCode(SystemConstant.CODE_GOODS);
-			time = spm.getString("GOODS_TIME");  // 更新时间
-			sd.setData(goods);
-			sd.setTimeStamp(time);
-			si.setGoods(sd);
-			
-			sd = new SyncDataBean();
-			List<TProductInfo> goodChild = this.productInfoService.queryForList(new TProductInfo());
-			time = spm.getString("GOOD_CHILD_TIME");  // 更新时间
-			sd.setData(goodChild);
-			sd.setTimeStamp(time);
-			si.setGoodChild(sd);
-			
-			sd = new SyncDataBean();
-			List<TPublicCodes> area = publicCodesService.queryListByCode(SystemConstant.CODE_AREA);
-			time = spm.getString("AREA_TIME");  // 更新时间
-			sd.setData(area);
-			sd.setTimeStamp(time);
-			si.setArea(sd);
-			
-			sd = new SyncDataBean();
-			List<TBankInfo> banks = bankInfoService.queryForList(new TBankInfo());
-			time = spm.getString("BANKS_TIME");  // 更新时间
-			sd.setData(banks);
-			sd.setTimeStamp(time);
-			si.setBanks(sd);
+			isSyncRiverSection = true;
+			isSyncGoodsType = true;
+			isSyncGoods = true;
+			isSyncArea = true;
+			isSyncBanks = true;
+			isSyncSysParams = true;
+		}
 		
+		SyncDataBean sd;
+		
+		if(isSyncRiverSection){
 			sd = new SyncDataBean();
-			time = spm.getString("SYS_PARAM_TIME");  // 更新时间
+			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_RIVER_SECTION));
+			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_RIVER_SECTION_TIME)); // 更新时间
+			si.setRiverSection(sd);
+		}
+		
+		if(isSyncGoodsType){
+			sd = new SyncDataBean();
+			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_GOODS_TYPE));
+			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_GOODS_TYPE_TIME)); // 更新时间
+			si.setGoods(sd);
+		}
+		
+		if(isSyncGoods){
+			sd = new SyncDataBean();
+			sd.setData(this.productInfoService.queryProductAllInfoForList());
+			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_GOODS_TIME)); // 更新时间
+			si.setGoodChild(sd);
+		}
+		
+		if(isSyncArea){
+			sd = new SyncDataBean();
+			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_AREA));
+			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_AREA_TIME)); // 更新时间
+			si.setArea(sd);
+		}
+		
+		if(isSyncBanks){
+			sd = new SyncDataBean();
+			sd.setData(bankInfoService.queryForList(new TBankInfo()));
+			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_BANKS_TIME)); // 更新时间
+			si.setBanks(sd);
+		}
+		
+		if(isSyncSysParams){
+			sd = new SyncDataBean();
 			sd.setData(getSysParam());
-			sd.setTimeStamp(time);
+			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_SYS_PARAM_TIME)); // 更新时间
 			si.setSysParam(sd);
 		}
 		
@@ -192,57 +195,38 @@ public class SyncController extends BaseController<SyncInfoBean> {
 		List<SysParam> biList = new ArrayList<SysParam>();
 		SysParam bi;
 		bi = new SysParam();
-		String pname = "BOND_ENTERPRISE";
-		bi.setPname(pname);
-		bi.setPvalue(this.spm.getString(pname));
+		bi.setPname(SystemConstant.BOND_ENTERPRISE);
+		bi.setPvalue(this.spm.getString(SystemConstant.BOND_ENTERPRISE));
 		biList.add(bi);
 
 		bi = new SysParam();
-		pname = "BOND_PERSONAL";
-		bi.setPname(pname);
-		bi.setPvalue(this.spm.getString(pname));
+		bi.setPname(SystemConstant.BOND_PERSONAL);
+		bi.setPvalue(this.spm.getString(SystemConstant.BOND_PERSONAL));
 		biList.add(bi);
 		
 		bi = new SysParam();
-		pname = "BOND_SHIP_0_1000";
-		bi.setPname(pname);
-		bi.setPvalue(this.spm.getString(pname));
+		bi.setPname(SystemConstant.BOND_SHIP_0_1000);
+		bi.setPvalue(this.spm.getString(SystemConstant.BOND_SHIP_0_1000));
 		biList.add(bi);
 		
 		bi = new SysParam();
-		pname = "BOND_SHIP_1001_5000";
-		bi.setPname(pname);
-		bi.setPvalue(this.spm.getString(pname));
+		bi.setPname(SystemConstant.BOND_SHIP_1001_5000);
+		bi.setPvalue(this.spm.getString(SystemConstant.BOND_SHIP_1001_5000));
 		biList.add(bi);
 		
 		bi = new SysParam();
-		pname = "BOND_SHIP_5001_10000";
-		bi.setPname(pname);
-		bi.setPvalue(this.spm.getString(pname));
+		bi.setPname(SystemConstant.BOND_SHIP_5001_10000);
+		bi.setPvalue(this.spm.getString(SystemConstant.BOND_SHIP_5001_10000));
 		biList.add(bi);
 		
 		bi = new SysParam();
-		pname = "BOND_SHIP_10001_15000";
-		bi.setPname(pname);
-		bi.setPvalue(this.spm.getString(pname));
-		biList.add(bi);
-		
-		/*bi = new SysParam();
-		pname = "DISCOUNT_PERCENT";
-		bi.setPname(pname);
-		bi.setPvalue(this.spm.getString(pname));
+		bi.setPname(SystemConstant.BOND_SHIP_10001_15000);
+		bi.setPvalue(this.spm.getString(SystemConstant.BOND_SHIP_10001_15000));
 		biList.add(bi);
 		
 		bi = new SysParam();
-		pname = "SERVICE_PERCENT";
-		bi.setPname(pname);
-		bi.setPvalue(this.spm.getString(pname));
-		biList.add(bi);*/
-		
-		bi = new SysParam();
-		pname = "GUARANTY_PERCENT";
-		bi.setPname(pname);
-		bi.setPvalue(this.spm.getString(pname));
+		bi.setPname(SystemConstant.GUARANTY_PERCENT);
+		bi.setPvalue(this.spm.getString(SystemConstant.GUARANTY_PERCENT));
 		biList.add(bi);
 		
 		return biList;

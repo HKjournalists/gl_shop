@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.dao.system.impl;
 
+import com.appabc.bean.pvo.TQtQuestions;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.system.IQtQuestionsDao;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TQtQuestions;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.system.IQtQuestionsDao;
 
 /**
  * @Description : 常见问题
@@ -27,13 +26,13 @@ import com.appabc.datas.dao.system.IQtQuestionsDao;
  */
 @Repository
 public class QtQuestionsDaoImpl extends BaseJdbcDao<TQtQuestions> implements IQtQuestionsDao {
-	
+
 	private static final String INSERTSQL = " insert into T_QT_QUESTIONS (QID, QUETSION, ANSWERS, TYPE, UPDATER, UPDATETIME ) values (:qid, :quetsion, :answers, :type, :updater, :updatetime ) ";
 	private static final String UPDATESQL = " update T_QT_QUESTIONS set QUETSION = :quetsion, ANSWERS = :answers, TYPE = :type, UPDATER = :updater, UPDATETIME = :updatetime where QID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_QT_QUESTIONS WHERE QID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_QT_QUESTIONS WHERE QID = :id ";
-	
-	private static final String BASE_SQL = " SELECT * FROM T_QT_QUESTIONS WHERE 1=1 "; 
+
+	private static final String BASE_SQL = " SELECT * FROM T_QT_QUESTIONS WHERE 1=1 ";
 
 	/* (non-Javadoc)
 	 * @see com.appabc.common.base.dao.IBaseDao#save(com.appabc.common.base.bean.BaseBean)
@@ -46,7 +45,7 @@ public class QtQuestionsDaoImpl extends BaseJdbcDao<TQtQuestions> implements IQt
 	 * @see com.appabc.common.base.dao.IBaseDao#saveAutoGenerateKey(com.appabc.common.base.bean.BaseBean)
 	 */
 	public KeyHolder saveAutoGenerateKey(TQtQuestions entity) {
-		return null;
+		return super.saveAutoGenerateKey(INSERTSQL, entity);
 	}
 
 	/* (non-Javadoc)
@@ -73,7 +72,7 @@ public class QtQuestionsDaoImpl extends BaseJdbcDao<TQtQuestions> implements IQt
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)
 	 */
 	public TQtQuestions query(TQtQuestions entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	/* (non-Javadoc)
@@ -87,14 +86,14 @@ public class QtQuestionsDaoImpl extends BaseJdbcDao<TQtQuestions> implements IQt
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)
 	 */
 	public List<TQtQuestions> queryForList(TQtQuestions entity) {
-		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(java.util.Map)
 	 */
 	public List<TQtQuestions> queryForList(Map<String, ?> args) {
-		return null;
+		return super.queryForList(BASE_SQL, args);
 	}
 
 	/* (non-Javadoc)
@@ -102,23 +101,23 @@ public class QtQuestionsDaoImpl extends BaseJdbcDao<TQtQuestions> implements IQt
 	 */
 	public QueryContext<TQtQuestions> queryListForPagination(
 			QueryContext<TQtQuestions> qContext) {
-		return null;
+		return super.queryListForPagination(dynamicJoinSqlWithEntity(qContext.getBeanParameter(),  new StringBuilder(BASE_SQL)), qContext);
 	}
 
 	public TQtQuestions mapRow(ResultSet rs, int rowNum) throws SQLException {
 		TQtQuestions t = new TQtQuestions();
-		
+
 		t.setId(rs.getString("QID"));
 		t.setAnswers(rs.getString("ANSWERS"));
 		t.setQuetsion(rs.getString("QUETSION"));
 		t.setType(rs.getString("TYPE"));
 		t.setUpdater(rs.getString("UPDATER"));
 		t.setUpdatetime(rs.getTimestamp("UPDATETIME"));
-		
+
 		return t;
 	}
-	
-	private String dynamicJoinSqlWithEntity(TQtQuestions bean,StringBuffer sql){
+
+	private String dynamicJoinSqlWithEntity(TQtQuestions bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}

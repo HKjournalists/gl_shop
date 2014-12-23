@@ -1,7 +1,10 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordType;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TAuthRecord extends BaseBean {
     /**
@@ -22,7 +25,7 @@ public class TAuthRecord extends BaseBean {
     /**
      * 认证状态（审核中，审核通过，审核不通过）
      */
-    private String authstatus;
+    private AuthRecordStatus authstatus;
 
     /**
      * 是否有人处理（主要由于后续可能存在的任务分配）
@@ -57,7 +60,7 @@ public class TAuthRecord extends BaseBean {
     /**
      * 认证类型：企业、提款账户
      */
-    private Integer type;
+    private AuthRecordType type;
     
     /**
      * 提款人ID
@@ -78,14 +81,6 @@ public class TAuthRecord extends BaseBean {
 
     public void setImgid(Integer imgid) {
         this.imgid = imgid;
-    }
-
-    public String getAuthstatus() {
-        return authstatus;
-    }
-
-    public void setAuthstatus(String authstatus) {
-        this.authstatus = authstatus == null ? null : authstatus.trim();
     }
 
     public Integer getDealstatus() {
@@ -136,20 +131,48 @@ public class TAuthRecord extends BaseBean {
         this.remark = remark == null ? null : remark.trim();
     }
 
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
 	public String getAbid() {
 		return abid;
 	}
 
 	public void setAbid(String abid) {
 		this.abid = abid;
+	}
+
+	/**  
+	 * authstatus  
+	 *  
+	 * @return  the authstatus  
+	 * @since   1.0.0  
+	 */
+	
+	public AuthRecordStatus getAuthstatus() {
+		return authstatus;
+	}
+
+	/**  
+	 * @param authstatus the authstatus to set  
+	 */
+	public void setAuthstatus(AuthRecordStatus authstatus) {
+		this.authstatus = authstatus;
+	}
+
+	/**  
+	 * type  
+	 *  
+	 * @return  the type  
+	 * @since   1.0.0  
+	 */
+	
+	public AuthRecordType getType() {
+		return type;
+	}
+
+	/**  
+	 * @param type the type to set  
+	 */
+	public void setType(AuthRecordType type) {
+		this.type = type;
 	}
     
 }

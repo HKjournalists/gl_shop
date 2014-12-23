@@ -6,7 +6,7 @@ package com.appabc.http.copn;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.appabc.datas.enums.CompanyInfo;
+import com.appabc.bean.enums.CompanyInfo;
 import com.appabc.http.AbstractHttpControllerTest;
 
 /**
@@ -22,7 +22,7 @@ public class CompanyTest extends AbstractHttpControllerTest {
 	@Override
 	@Test
 	public void mainTest() {
-//		loginSimulation(null, null, null);
+		loginSimulation(null, null, "CompanyInfoId000000524092014END");
 //		loginSimulation("aa", "1", "000000915102014");
 //		authApply();
 //		testQuerCompanyAllInfo();
@@ -36,7 +36,7 @@ public class CompanyTest extends AbstractHttpControllerTest {
 		request.setMethod("POST");
 		
 		/***企业信息*********************/
-		request.addParameter("ctype", CompanyInfo.CompanyType.COMPANY_TYPE_PERSONAL.getVal());
+		request.addParameter("ctypeValue", CompanyInfo.CompanyType.COMPANY_TYPE_PERSONAL.getVal());
 		request.addParameter("mark", "企业介绍000");
 		request.addParameter("companyImgIds", "4,5"); // 企业照片ID
 		request.addParameter("imgid", "8"); // 认证图片ID

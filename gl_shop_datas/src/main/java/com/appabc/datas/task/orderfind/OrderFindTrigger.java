@@ -6,9 +6,9 @@
  */
 package com.appabc.datas.task.orderfind;
 
-import java.text.ParseException;
-
 import com.appabc.tools.schedule.utils.BaseCronTrigger;
+
+import java.text.ParseException;
 
 /**
  * @Description : 
@@ -33,7 +33,7 @@ public class OrderFindTrigger extends BaseCronTrigger {
 		super();
 		this.setName(NAME);
 		this.setGroup(GROUP);
-		this.setCronExpression("0 0/5 14 18 * ?");
+		this.setCronExpression("0 0/5 * * * ?");
 	}
 	
 	public OrderFindTrigger(String jobName,String jobGroup,String cronExpression) throws ParseException{

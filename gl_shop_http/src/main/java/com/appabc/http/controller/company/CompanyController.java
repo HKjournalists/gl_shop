@@ -3,8 +3,6 @@
  */
 package com.appabc.http.controller.company;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,16 +14,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.appabc.bean.bo.CompanyAllInfo;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.pvo.TAuthRecord;
-import com.appabc.bean.pvo.TCompanyAddress;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
-import com.appabc.datas.enums.AuthRecordInfo;
 import com.appabc.datas.service.company.IAuthRecordService;
 import com.appabc.datas.service.company.ICompanyInfoService;
 import com.appabc.datas.service.contract.IContractInfoService;
-import com.appabc.http.utils.ViewInfoEncryptUtil;
+import com.appabc.http.utils.HttpApplicationErrorCode;
 
 /**
  * @Description : 
@@ -58,33 +55,35 @@ public class CompanyController extends BaseController<TCompanyInfo> {
 	@ResponseBody
 	@RequestMapping(value = "/authApply",method=RequestMethod.POST)
 	public Object authApply(HttpServletRequest request,HttpServletResponse response, 
-			TCompanyInfo ciBean, TAuthRecord arBean, TCompanyAddress caBean) {
+			TCompanyInfo ciBean, TAuthRecord arBean) {
 		
-		if(arBean.getImgid() == null || arBean.getImgid() < 1){
+		String ctypeValue = request.getParameter("ctypeValue");
+		String addressid = request.getParameter("addressid"); // 默认卸货地址ID
+		String imgid = request.getParameter("imgid"); // 图片ID
+		
+		if(StringUtils.isEmpty(imgid)){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "认证图片信息不能为空");
-		}else if(StringUtils.isEmpty(ciBean.getCtype())){
+		}else if(StringUtils.isEmpty(ctypeValue)){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "未选择认证类型");
-//		}else if(StringUtils.isEmpty(ciBean.getContact())){
-//			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "联系人不能为空");
-//		}else if(StringUtils.isEmpty(ciBean.getCphone())){
-//			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "联系人手机不能空");
+		}else{
+			ciBean.setCtype(CompanyType.enumOf(ctypeValue));
 		}
-		TAuthRecord entity = new TAuthRecord();
-		entity.setCid(getCurrentUserCid(request));
-		entity.setAuthstatus(AuthRecordInfo.AuthRecordStatus.AUTH_STATUS_CHECK_ING.getVal());
-		List<TAuthRecord> arList = this.authRecordService.queryForList(entity); // 查询是否有认证中的记录
-		if(arList != null && arList.size()>0){
-			return buildFailResult(ErrorCode.GENERICERRORCODE, "请不要重复提交认证信息");
+		if(StringUtils.isNotEmpty(ciBean.getMark()) && ciBean.getMark().length()>3999){
+			return buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "企业介绍不能超过4000字");
 		}
-		
 		ciBean.setId(getCurrentUserCid(request)); // 获取用户企业ID
-		this.companyInfoService.authApply(ciBean, arBean, caBean,getCurrentUserId(request));
+		try {
+			this.companyInfoService.authApply(ciBean, arBean, addressid,
+					getCurrentUserId(request));
+		} catch (Exception e) {
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		return buildSuccessRetJson("认证申请已发送", "");
 		
 	}
 	
 	/**
-	 * 获取企业资料
+	 * 获取企业资料(非当前登录用户查询)
 	 * @param request
 	 * @param response
 	 * @return
@@ -98,18 +97,32 @@ public class CompanyController extends BaseController<TCompanyInfo> {
 		if(StringUtils.isEmpty(cid)){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业ID不能为空");
 		}
-		CompanyAllInfo cai = companyInfoService.queryAuthCompanyInfo(cid);
-		
 		String requestCid=null;
 		try {
 			requestCid = this.getCurrentUserCid(request);
 		} catch (Exception e) {
+			requestCid = "otherid";
 		}
-		if(!cid.equals(requestCid)){ // 其它用户查看
-			if(!contractInfoService.isOldCustomer(requestCid, cid)){ // 2个企业未发生过交易，进行企业加密处理
-				ViewInfoEncryptUtil.encryptCompanyInfo(cai);
-			}
+		CompanyAllInfo cai = companyInfoService.queryAuthCompanyInfo(cid, requestCid);
+		
+		return buildFilterResultWithBean(cai);
+	}
+	
+	/**
+	 * 获取我的企业资料
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getMyCompanyInfo",method=RequestMethod.GET)
+	public Object testGetCompanyInfo(HttpServletRequest request,HttpServletResponse response){
+		String cid = this.getCurrentUserCid(request); // 企业ID
+		
+		if(StringUtils.isEmpty(cid)){
+			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "用户资料不完整");
 		}
+		CompanyAllInfo cai = companyInfoService.queryAuthCompanyInfo(cid, null);
 		
 		return buildFilterResultWithBean(cai);
 	}
@@ -131,7 +144,15 @@ public class CompanyController extends BaseController<TCompanyInfo> {
 		if(StringUtils.isEmpty(cid)){
 			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业ID不能为空");
 		}
-		this.companyInfoService.updateIntroduction(cid, mark, companyImgIds);
+		if(StringUtils.isNotEmpty(mark) && mark.length()>3999){
+			return buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "企业介绍不能超过4000字");
+		}
+		try {
+			this.companyInfoService.updateIntroduction(cid, mark, companyImgIds);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		return this.buildSuccessResult("更新成功", "");
 	}
 	

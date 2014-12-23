@@ -6,19 +6,18 @@
  */
 package com.appabc.pay.dao.impl;
 
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.pay.bean.TPk;
+import com.appabc.pay.dao.IPrimaryKeyDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.pay.bean.TPk;
-import com.appabc.pay.dao.IPrimaryKeyDAO;
 
 /**
  * @Description : 
@@ -76,7 +75,7 @@ private static final String INSERT_SQL = " INSERT INTO T_PK (ID,BID,MAXVAL,MINVA
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TPk query(TPk entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(QUERYBYENTITY_SQL);
 		this.addNameParamerSqlWithProperty(sql, "id", "ID", entity.getId());
 		this.addNameParamerSqlWithProperty(sql, "bid", "BID", entity.getBid());
@@ -138,14 +137,14 @@ private static final String INSERT_SQL = " INSERT INTO T_PK (ID,BID,MAXVAL,MINVA
 	 * @see com.appabc.common.base.dao.IBaseDao#delete(java.io.Serializable)  
 	 */
 	public void delete(Serializable id) {
-		this.delete(id);
+		this.delete(String.valueOf(id));
 	}
 
 	/* (non-Javadoc)  
 	 * @see com.appabc.common.base.dao.IBaseDao#query(java.io.Serializable)  
 	 */
 	public TPk query(Serializable id) {
-		return this.query(id);
+		return this.query(String.valueOf(id));
 	}
 
 }

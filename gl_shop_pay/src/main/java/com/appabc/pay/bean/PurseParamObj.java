@@ -9,6 +9,7 @@ package com.appabc.pay.bean;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.appabc.bean.enums.PurseInfo.PurseType;
 import com.appabc.common.base.bean.BaseBean;
 
 /**
@@ -33,7 +34,7 @@ public class PurseParamObj extends BaseBean {
 	/*企业编号*/
 	private String cid;
 	/*钱包类型*/
-	private String type;
+	private PurseType type;
 	/*源地址*/
 	private String sourPassId;
 	/*目标地址*/
@@ -69,24 +70,6 @@ public class PurseParamObj extends BaseBean {
 	 */
 	public void setCid(String cid) {
 		this.cid = cid;
-	}
-
-	/**  
-	 * type  
-	 *  
-	 * @return  the type  
-	 * @since   1.0.0  
-	 */
-	
-	public String getType() {
-		return type;
-	}
-
-	/**  
-	 * @param type the type to set  
-	 */
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	/**  
@@ -263,6 +246,24 @@ public class PurseParamObj extends BaseBean {
 	 */
 	public void setPayNo(String payNo) {
 		this.payNo = payNo;
+	}
+
+	/**  
+	 * type  
+	 *  
+	 * @return  the type  
+	 * @since   1.0.0  
+	*/  
+	
+	public PurseType getType() {
+		return type;
+	}
+
+	/**  
+	 * @param type the type to set  
+	 */
+	public void setType(PurseType type) {
+		this.type = type;
 	}
 	
 }

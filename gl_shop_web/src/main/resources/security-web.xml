@@ -13,12 +13,20 @@
 	    <intercept-url pattern="/system/signin/" access="permitAll"/>
 	    <intercept-url pattern="/system/signin/error/" access="permitAll"/>
 	    <intercept-url pattern="/system/logout/" access="permitAll"/>
+	    <intercept-url pattern="/company/**" access="isAuthenticated()"/>
+	    <intercept-url pattern="/finance/remittance/input/**" access="hasRole('ROLE_REMITTANCE_INPUT')"/>
+        <intercept-url pattern="/finance/remittance/process/**" access="hasRole('ROLE_REMITTANCE_PROCESS')"/>
+        <intercept-url pattern="/finance/remittance/audit/**" access="hasRole('ROLE_REMITTANCE_AUDIT')"/>
+	    <intercept-url pattern="/finance/account_audit/**" access="hasRole('ROLE_ACCOUNT_AUDIT')"/>
 	    <intercept-url pattern="/manage/accounts/**" access="hasRole('ROLE_ACCOUNT_MANAGER')" />
-	    <intercept-url pattern="/task/" access="hasAnyRole('ROLE_PROMPT_VERIFY', 'ROLE_PROMPT_DEPOSIT', 'ROLE_PROMPT_PAYMENT', 'ROLE_PROMPT_REAL_PAY', 'ROLE_PUBLISH_INFO')"/>
+	    <intercept-url pattern="/tasks/**" access="hasAnyRole('ROLE_PROMPT_VERIFY', 'ROLE_PROMPT_DEPOSIT', 'ROLE_PROMPT_PAYMENT', 'ROLE_PROMPT_REAL_PAY', 'ROLE_PUBLISH_INFO')"/>
 	    <intercept-url pattern="/**" access="denyAll"/>
-	    
+
+		          <!--
+		            default-target-url="/company/000000915102014/info/"
+ -->
 		<form-login login-page='/system/signin/'
-		            default-target-url="/manage/accounts/1/"
+		            default-target-url="/tasks/editor/verify_info_audit/1/"
 		            always-use-default-target="true"
 		            login-processing-url="/system/doSignin/"
 		            authentication-failure-url="/system/signin/error/"
@@ -32,10 +40,10 @@
 	</http>
 
 	<beans:bean name="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
-        <beans:constructor-arg index="0" value="8" />	   
+        <beans:constructor-arg index="0" value="8" />
 	</beans:bean>
 	<beans:bean name="securityUserService" class="com.appabc.system.web.security.UserDetailsManager" />
-	
+
 	<authentication-manager alias="authenticationManager">
 	   <authentication-provider user-service-ref="securityUserService">
 	       <password-encoder ref="passwordEncoder" />

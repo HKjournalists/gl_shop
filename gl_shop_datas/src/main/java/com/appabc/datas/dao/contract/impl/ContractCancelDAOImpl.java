@@ -1,19 +1,19 @@
 package com.appabc.datas.dao.contract.impl;
 
+import com.appabc.bean.enums.ContractInfo.ContractCancelType;
+import com.appabc.bean.pvo.TOrderCancel;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.contract.IContractCancelDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TOrderCancel;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.contract.IContractCancelDAO;
 
 /**
  * @Description : 
@@ -33,7 +33,7 @@ public class ContractCancelDAOImpl extends BaseJdbcDao<TOrderCancel> implements
 	private static final String DELETE_SQL = " DELETE FROM T_ORDER_CANCEL WHERE CID = :id ";
 	private static final String SELECT_SQL = " SELECT CID,LID,CANCELER,CANCELTYPE,CANCELTIME,REASON,REMARK FROM T_ORDER_CANCEL ";
 	
-	private String dynamicJoinSqlWithEntity(TOrderCancel entity,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TOrderCancel entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
 			return null;
 		}
@@ -87,7 +87,7 @@ public class ContractCancelDAOImpl extends BaseJdbcDao<TOrderCancel> implements
 	 * @see com.appabc.common.base.dao.IBaseDao#read(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TOrderCancel query(TOrderCancel entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -106,7 +106,7 @@ public class ContractCancelDAOImpl extends BaseJdbcDao<TOrderCancel> implements
 	 * @see com.appabc.common.base.dao.IBaseDao#readForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TOrderCancel> queryForList(TOrderCancel entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -115,7 +115,7 @@ public class ContractCancelDAOImpl extends BaseJdbcDao<TOrderCancel> implements
 	 * @see com.appabc.common.base.dao.IBaseDao#readForList(java.util.Map)  
 	 */
 	public List<TOrderCancel> queryForList(Map<String, ?> args) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1 = 1 ");
 		this.addNameParamerSqlWithProperty(sql, "lid", "LID", args.get("lid"));
@@ -139,7 +139,7 @@ public class ContractCancelDAOImpl extends BaseJdbcDao<TOrderCancel> implements
 		entity.setId(rs.getString("CID"));
 		entity.setLid(rs.getString("LID"));
 		entity.setCanceler(rs.getString("CANCELER"));
-		entity.setCanceltype(rs.getString("CANCELTYPE"));
+		entity.setCanceltype(ContractCancelType.enumOf(rs.getString("CANCELTYPE")));
 		entity.setCanceltime(rs.getTimestamp("CANCELTIME"));
 		entity.setReason(rs.getString("REASON"));
 		entity.setRemark(rs.getString("REMARK"));
@@ -151,8 +151,7 @@ public class ContractCancelDAOImpl extends BaseJdbcDao<TOrderCancel> implements
 	 * @see com.appabc.datas.dao.contract.IContractCancelDAO#getCancelListByOID(java.lang.String)  
 	 */
 	public List<TOrderCancel> getCancelContractListByOID(String oid) {
-		// TODO Auto-generated method stub
-		StringBuffer sql = new StringBuffer(" SELECT toc.* FROM T_ORDER_CANCEL toc LEFT JOIN T_ORDER_OPERATIONS too on too.LID = toc.LID ");
+		StringBuilder sql = new StringBuilder(" SELECT toc.* FROM T_ORDER_CANCEL toc LEFT JOIN T_ORDER_OPERATIONS too on too.LID = toc.LID ");
 		sql.append(" where  1=1  ");//too.OID
 		List<Object> args = new ArrayList<Object>();
 		this.addStandardSqlWithParameter(sql, "too.OID", oid, args);

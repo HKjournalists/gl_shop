@@ -14,28 +14,10 @@ import org.apache.commons.codec.binary.Hex;
 /**  
  *   
  * BaseCoder.java  
- * http://snowolf.iteye.com/blog/379860 
  * @description BaseCoder.java base coder component (这里用一句话描述这个类的作用)  
  * @author Bill Huang  
  * @date 2014年8月22日 上午11:51:35
  * @version 1.0.0  
- *  加密解密，曾经是我一个毕业设计的重要组件。在工作了多年以后回想当时那个加密、解密算法，实在是太单纯了。 
- *  言归正传，这里我们主要描述Java已经实现的一些加密解密算法，最后介绍数字证书。 
- *	    如基本的单向加密算法： 
- *	BASE64 严格地说，属于编码格式，而非加密算法
- *	MD5(Message Digest algorithm 5，信息摘要算法)
- *	SHA(Secure Hash Algorithm，安全散列算法)
- *	HMAC(Hash Message Authentication Code，散列消息鉴别码)
- *	
- *	    复杂的对称加密（DES、PBE）、非对称加密算法： 
- *	DES(Data Encryption Standard，数据加密算法)
- *	PBE(Password-based encryption，基于密码验证)
- *	RSA(算法的名字以发明者的名字命名：Ron Rivest, AdiShamir 和Leonard Adleman)
- *	DH(Diffie-Hellman算法，密钥一致协议)
- *	DSA(Digital Signature Algorithm，数字签名)
- *	ECC(Elliptic Curves Cryptography，椭圆曲线密码编码学)
- *  本篇内容简要介绍BASE64、MD5、SHA、HMAC几种方法。 
- *  MD5、SHA、HMAC这三种加密算法，可谓是非可逆加密，就是不可解密的加密方法。我们通常只把他们作为加密的基础。单纯的以上三种的加密并不可靠。   
  */
 public abstract class BaseCoder {
 

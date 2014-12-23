@@ -1,6 +1,9 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
+import com.appabc.bean.enums.ContractInfo.ContractOperateType;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TOrderOperations extends BaseBean {
@@ -27,7 +30,7 @@ public class TOrderOperations extends BaseBean {
     /**
      * 操作的具体内容
      */
-    private String type;
+    private ContractOperateType type;
 
     /**
      * 操作结果
@@ -37,7 +40,7 @@ public class TOrderOperations extends BaseBean {
     /**
      * 操作时候的合同当前状态
      * */
-    private String orderstatus;
+    private ContractLifeCycle orderstatus;
     
 	/**
      * 父操作ID
@@ -73,14 +76,6 @@ public class TOrderOperations extends BaseBean {
         this.operationtime = operationtime;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type == null ? null : type.trim();
-    }
-
     public String getResult() {
         return result;
     }
@@ -104,22 +99,41 @@ public class TOrderOperations extends BaseBean {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
-    
-    /**  
+
+	/**  
+	 * type  
+	 *  
+	 * @return  the type  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractOperateType getType() {
+		return type;
+	}
+
+	/**  
+	 * @param type the type to set  
+	 */
+	public void setType(ContractOperateType type) {
+		this.type = type;
+	}
+
+	/**  
 	 * orderstatus  
 	 *  
 	 * @return  the orderstatus  
 	 * @since   1.0.0  
-	 */
+	*/  
 	
-	public String getOrderstatus() {
+	public ContractLifeCycle getOrderstatus() {
 		return orderstatus;
 	}
 
 	/**  
 	 * @param orderstatus the orderstatus to set  
 	 */
-	public void setOrderstatus(String orderstatus) {
+	public void setOrderstatus(ContractLifeCycle orderstatus) {
 		this.orderstatus = orderstatus;
 	}
+    
 }

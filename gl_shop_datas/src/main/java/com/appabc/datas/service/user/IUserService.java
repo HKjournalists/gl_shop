@@ -36,4 +36,19 @@ public interface IUserService extends IBaseService<TUser>{
 	 */
 	public boolean register(TUser user);
 	
+	/**
+	 * 根据企业ID查询USER对象
+	 * @param cid
+	 * @return
+	 */
+	public TUser getUserByCid(String cid);
+	
+	/**
+	 * 帐号与客户端绑定
+	 * @param userid
+	 * @param clientid
+	 * @param clienttype
+	 */
+	public void clientBinding(String userid, String clientid, String clienttype);
+	
 }

@@ -1,6 +1,12 @@
 package com.appabc.common.spring;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -20,7 +26,6 @@ import com.appabc.common.utils.CheckResult;
 import com.appabc.common.utils.FilterResult;
 import com.appabc.common.utils.LogUtil;
 import com.appabc.common.utils.SystemConstant;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 
 /**
  * @Description : 公用的json数据转换器
@@ -35,6 +40,77 @@ public class GenericJsonMessageConverter extends
 		MappingJackson2HttpMessageConverter{
 
 	private static final LogUtil log = LogUtil.getLogUtil(GenericJsonMessageConverter.class);
+	
+	private void setNullPropertyValueToObj(String propetyName,Object target){
+		if(target == null || StringUtils.isEmpty(propetyName)){
+			return ;
+		}
+		String methodName = "set"+StringUtils.capitalize(propetyName);
+		try {
+			Field field = null;
+			try {
+				field = target.getClass().getDeclaredField(propetyName);
+			} catch (NoSuchFieldException e) {
+				try {
+					field = target.getClass().getSuperclass().getDeclaredField(propetyName);
+				} catch (NoSuchFieldException e1) {
+					log.error(e1.getMessage(),e1);
+					return ;
+				}
+			}
+			Class<?> clz = field.getType();
+			Method method;
+			try {
+				method = target.getClass().getDeclaredMethod(methodName,clz);
+			} catch (NoSuchMethodException e) {
+				try {
+					method = target.getClass().getSuperclass().getDeclaredMethod(methodName,clz);
+				} catch (NoSuchMethodException e1) {
+					log.error(e1.getMessage(),e1);
+					return;
+				}
+			}
+			try {
+				//here need to sperator the case to apply the value.
+				//eg : String : ""
+				//eg : Object : null
+				//eg : Date : null..
+				Object obj = null;
+				if(clz == String.class){
+					obj = StringUtils.EMPTY;
+				}else if(clz == char.class || clz == Character.class){
+					obj = null;
+				}else if(clz == int.class || clz == Integer.class){
+					obj = null;
+				}else if(clz == short.class || clz == Short.class){
+					obj = null;
+				}else if(clz == long.class || clz == Long.class){
+					obj = null;
+				}else if(clz == float.class || clz == Float.class){
+					obj = null;
+				}else if(clz == double.class || clz == Float.class){
+					obj = null;
+				}else if(clz == byte.class || clz == Byte.class){
+					obj = null;
+				}else if(clz == boolean.class || clz == Boolean.class){
+					obj = null;
+				}else if(clz == Date.class){
+					obj = null;
+				}else if(clz.isEnum()){
+					obj = null;
+				}else{
+					obj = clz.newInstance();
+				}
+				method.invoke(target,obj);
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+				log.error(e.getMessage(), e);
+			}
+		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException | SecurityException e) {
+			e.printStackTrace();
+			log.error(e.getMessage(),e);
+		}
+	}
 	
 	/* (non-Javadoc)  
 	 * @see org.springframework.http.converter.AbstractHttpMessageConverter#readInternal(java.lang.Class, org.springframework.http.HttpInputMessage)  
@@ -82,17 +158,19 @@ public class GenericJsonMessageConverter extends
 			} else if (object instanceof FilterResult){
 				//the filter result can filter the collection to not output some properties
 				FilterResult result = (FilterResult)object;
-				if(result.getFilterPropertyNames()==null || result.getFilterPropertyNames().length<=0){
-					message.put(SystemConstant.RESULT, true);
-					message.put(SystemConstant.DATA, CollectionUtils.isEmpty(result.getCollection()) ? StringUtils.EMPTY : result.getCollection());
-				}else{
-					Iterator<?> it = result.getCollection().iterator();
-					Class<?> clz = it.next().getClass();
-					CustomObjectMapper com = CustomObjectMapper.getFilterObjectMapperInstance(clz,result.getFilterPropertyNames());
-					message.put(SystemConstant.RESULT, true);
-					message.put(SystemConstant.DATA, com.readValue(com.writeValueAsString(result.getCollection()),TypeFactory.defaultInstance().constructCollectionType(result.getCollection().getClass(), clz)));
-					log.debug(com);
+				if(result.getFilterPropertyNames()!=null && result.getFilterPropertyNames().length>0){
+					String[] filterPropertyNames = result.getFilterPropertyNames();
+					Collection<?> sresult = result.getCollection();
+					Iterator<?> it = sresult.iterator();
+					while(it.hasNext()){
+						Object obj = it.next();
+						for(int i = 0; i < filterPropertyNames.length; i ++){
+							setNullPropertyValueToObj(filterPropertyNames[i], obj);
+						}
+					}
 				}
+				message.put(SystemConstant.RESULT, true);
+				message.put(SystemConstant.DATA, CollectionUtils.isEmpty(result.getCollection()) ? new ArrayList<Object>(): result.getCollection());
 				message.put(SystemConstant.MESSAGE, "operator success");
 			} else if(object instanceof EmptyResult){
 				message.put(SystemConstant.RESULT, true);

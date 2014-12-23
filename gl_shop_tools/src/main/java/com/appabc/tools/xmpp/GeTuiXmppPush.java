@@ -5,6 +5,7 @@ package com.appabc.tools.xmpp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -33,7 +34,7 @@ public class GeTuiXmppPush extends BaseXmppPush {
 	 * @see com.appabc.tools.xmpp.BaseXmppPush#doAnroidXmppPushSingle(com.appabc.bean.pvo.TPushConfig, java.lang.String, java.lang.String, int, java.lang.Boolean, java.lang.Long)
 	 */
 	@Override
-	public String doAnroidXmppPushSingle(TPushConfig config, String clientId,
+	public Map<String, Object> doAnroidXmppPushSingle(TPushConfig config, String clientId,
 			String content, int pushType, Boolean offline,
 			Long offlineExpireTime)  throws Exception {
 		IGtPush push = new IGtPush(config.getUrl(), config.getAppkey(), config.getMastersecret());
@@ -54,11 +55,11 @@ public class GeTuiXmppPush extends BaseXmppPush {
         target1.setClientId(clientId);
   
         IPushResult ret = push.pushMessageToSingle(message, target1);
-        return  ret.getResponse().toString();
+        return  ret.getResponse();
 	}
 	
 	/**
-	 * 多个指定用户批量推送
+	 * 多个指定用户批量推送（暂不使用）
 	 * @param pc
 	 * @param userList
 	 * @param content
@@ -68,6 +69,7 @@ public class GeTuiXmppPush extends BaseXmppPush {
 	 * @return
 	 * @throws Exception
 	 */
+	@Deprecated
 	public String pushToList(TPushConfig pc, List<TUser> userList, String content, int pushType, Boolean offline, Long offlineExpireTime) throws Exception {
 		
 		//配置返回每个用户返回用户状态
@@ -116,7 +118,7 @@ public class GeTuiXmppPush extends BaseXmppPush {
 	    TransmissionTemplate template = new TransmissionTemplate();
 	    template.setAppId(pc.getAppid());
 	    template.setAppkey(pc.getAppkey());
-	    template.setTransmissionType(1);
+	    template.setTransmissionType(2); // 收到消息是否立即启动应用,1为立即启动,2则广播等待客户端自启动
 	    template.setTransmissionContent(content);
 	    return template;
 	}

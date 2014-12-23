@@ -29,12 +29,16 @@ public class ServiceException extends BaseException {
 		super(msg);
 	}
 	
-	public ServiceException(Throwable cause){
-		super(cause);
+	public ServiceException(int errorCode,String msg){
+		super(errorCode,msg);
 	}
 	
-	public ServiceException(String msg, Throwable cause) {
-		super(msg, cause);
+	public ServiceException(int errorCode,Throwable cause){
+		super(errorCode,cause);
+	}
+	
+	public ServiceException(int errorCode,String msg, Throwable cause) {
+		super(errorCode,msg, cause);
 	}
 	
 }

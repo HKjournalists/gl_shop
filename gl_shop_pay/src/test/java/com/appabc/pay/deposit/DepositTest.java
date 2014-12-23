@@ -10,20 +10,20 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
+import com.appabc.bean.enums.PurseInfo.DeviceType;
+import com.appabc.bean.enums.PurseInfo.PayDirection;
+import com.appabc.bean.enums.PurseInfo.PayWay;
+import com.appabc.bean.enums.PurseInfo.TradeStatus;
+import com.appabc.bean.enums.PurseInfo.TradeType;
 import com.appabc.common.utils.DateUtil;
 import com.appabc.pay.AbstractPayTest;
 import com.appabc.pay.bean.TOfflinePay;
 import com.appabc.pay.bean.TPassbookInfo;
 import com.appabc.pay.bean.TPassbookPay;
-import com.appabc.pay.enums.PurseInfo.DeviceType;
-import com.appabc.pay.enums.PurseInfo.PayDirection;
-import com.appabc.pay.enums.PurseInfo.PayWay;
-import com.appabc.pay.enums.PurseInfo.TradeStatus;
-import com.appabc.pay.enums.PurseInfo.TradeType;
 import com.appabc.pay.service.local.IOfflinePayService;
 import com.appabc.pay.service.local.IPassbookInfoService;
 import com.appabc.pay.service.local.IPassbookPayService;
-import com.appabc.pay.util.PrimaryKeyGenerator;
+import com.appabc.tools.utils.PrimaryKeyGenerator;
 
 /**
  * @Description : 
@@ -51,6 +51,10 @@ public class DepositTest extends AbstractPayTest {
 	@Test
 	@Rollback(value=true)
 	public void mainTest() {
+		
+	}
+
+	public void testCase(){
 		String cid = "CompanyInfoId000000811102014END";
 		String topId = "PURSEOFFLINEPAYID2014101500001120650";
 		String passId = "PASSID2014101500005104400";
@@ -63,18 +67,18 @@ public class DepositTest extends AbstractPayTest {
 		entity.setId(payId);
 		entity.setPassid(passId);
 		entity.setOid(bean.getId());
-		entity.setOtype(TradeType.DEPOSIT.getValue());
+		entity.setOtype(TradeType.DEPOSIT);
 		entity.setPayno(payNo);
 		//payEntity.setName("");
 		entity.setAmount(balance);
 		entity.setNeedamount(balance);
-		entity.setDirection(PayDirection.INPUT.getValue());
-		entity.setPaytype(PayWay.BANK_DEDUCT.getValue());
-		entity.setPatytime(DateUtil.getNowDate());
-		entity.setStatus(TradeStatus.SUCCESS.getValue());
+		entity.setDirection(PayDirection.INPUT);
+		entity.setPaytype(PayWay.BANK_DEDUCT);
+		entity.setPaytime(DateUtil.getNowDate());
+		entity.setStatus(TradeStatus.SUCCESS.getVal());
 		entity.setCreatedate(DateUtil.getNowDate());
 		entity.setCreator(cid);
-		entity.setDevices(DeviceType.COMPUTER.getValue());
+		entity.setDevices(DeviceType.COMPUTER);
 		entity.setRemark("remark");
 		iPassbookPayService.add(entity);
 		
@@ -87,10 +91,9 @@ public class DepositTest extends AbstractPayTest {
 		iOfflinePayService.modify(bean);
 		
 		TPassbookInfo t = iPassbookInfoService.query(passId);
-		t.setAmount(balance);
+		t.setAmount(t.getAmount()+balance);
 		t.setRemark("deposit success.");
 		iPassbookInfoService.modify(t);
 		log.info(bean);
 	}
-
 }

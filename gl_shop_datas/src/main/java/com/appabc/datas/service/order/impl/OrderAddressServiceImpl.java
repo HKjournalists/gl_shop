@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.service.order.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.pvo.TOrderAddress;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.order.IOrderAddressDao;
+import com.appabc.datas.service.order.IOrderAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TOrderAddress;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.order.IOrderAddressDao;
-import com.appabc.datas.service.order.IOrderAddressService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 询单或合同卸货地址service实现
@@ -41,6 +40,7 @@ public class OrderAddressServiceImpl implements IOrderAddressService{
 	}
 
 	public void delete(TOrderAddress entity) {
+		this.orderAddressDao.delete(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -48,7 +48,7 @@ public class OrderAddressServiceImpl implements IOrderAddressService{
 	}
 
 	public TOrderAddress query(TOrderAddress entity) {
-		return null;
+		return this.orderAddressDao.query(entity);
 	}
 
 	public TOrderAddress query(Serializable id) {
@@ -60,12 +60,12 @@ public class OrderAddressServiceImpl implements IOrderAddressService{
 	}
 
 	public List<TOrderAddress> queryForList(Map<String, ?> args) {
-		return null;
+		return this.orderAddressDao.queryForList(args);
 	}
 
 	public QueryContext<TOrderAddress> queryListForPagination(
 			QueryContext<TOrderAddress> qContext) {
-		return null;
+		return this.orderAddressDao.queryListForPagination(qContext);
 	}
 
 }

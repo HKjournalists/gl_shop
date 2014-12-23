@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.dao.company.impl;
 
+import com.appabc.bean.pvo.TCompanyShipping;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.company.ICompanyShippingDao;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TCompanyShipping;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.company.ICompanyShippingDao;
 
 /**
  * @Description : 船舶认证信息DAO实现
@@ -27,20 +26,20 @@ import com.appabc.datas.dao.company.ICompanyShippingDao;
  */
 @Repository
 public class CompanyShippingDaoImpl extends BaseJdbcDao<TCompanyShipping> implements ICompanyShippingDao {
-	
+
 	private static final String INSERTSQL = " insert into T_COMPANY_SHIPPING (AUTHID, SNAME, PREGISTRY, SNO, SORG, SOWNER, SBUSINESSER, STYPE, SCREATETIME, STOTAL, SLOAD, SLENGTH, SWIDTH, SDEEP, SOVER, SMATERIALl, UPDATEDATE) values (:authid, :sname, :pregistry, :sno, :sorg, :sowner, :sbusinesser, :stype, :screatetime, :stotal, :sload, :slength, :swidth, :sdeep, :sover, :smateriall, :updatedate) ";
 	private static final String UPDATESQL = " update T_COMPANY_SHIPPING set AUTHID = :authid, SNAME = :sname, PREGISTRY = :pregistry, SNO = :sno, SORG = :sorg, SOWNER = :sowner, SBUSINESSER = :sbusinesser, STYPE = :stype, SCREATETIME = :screatetime, STOTAL = :stotal, SLOAD = :sload, SLENGTH = :slength, SWIDTH = :swidth, SDEEP = :sdeep, SOVER = :sover, SMATERIALl = :smateriall, UPDATEDATE = :updatedate where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_COMPANY_SHIPPING WHERE ID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_COMPANY_SHIPPING WHERE ID = :id ";
-	
-	private static final String BASE_SQL = " SELECT * FROM T_COMPANY_SHIPPING WHERE 1=1 "; 
+
+	private static final String BASE_SQL = " SELECT * FROM T_COMPANY_SHIPPING WHERE 1=1 ";
 
 	public void save(TCompanyShipping entity) {
 		super.save(INSERTSQL, entity);
 	}
 
 	public KeyHolder saveAutoGenerateKey(TCompanyShipping entity) {
-		return null;
+		return super.saveAutoGenerateKey(INSERTSQL, entity);
 	}
 
 	public void update(TCompanyShipping entity) {
@@ -48,6 +47,7 @@ public class CompanyShippingDaoImpl extends BaseJdbcDao<TCompanyShipping> implem
 	}
 
 	public void delete(TCompanyShipping entity) {
+		super.delete(DELETESQLBYID, entity);
 	}
 
 	public void delete(Serializable id) {
@@ -55,7 +55,7 @@ public class CompanyShippingDaoImpl extends BaseJdbcDao<TCompanyShipping> implem
 	}
 
 	public TCompanyShipping query(TCompanyShipping entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public TCompanyShipping query(Serializable id) {
@@ -63,44 +63,44 @@ public class CompanyShippingDaoImpl extends BaseJdbcDao<TCompanyShipping> implem
 	}
 
 	public List<TCompanyShipping> queryForList(TCompanyShipping entity) {
-		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuffer(BASE_SQL)), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public List<TCompanyShipping> queryForList(Map<String, ?> args) {
-		return null;
+		return super.queryForList(BASE_SQL, args);
 	}
 
 	public QueryContext<TCompanyShipping> queryListForPagination(
 			QueryContext<TCompanyShipping> qContext) {
-		return null;
+		return super.queryListForPagination(dynamicJoinSqlWithEntity(qContext.getBeanParameter(),  new StringBuilder(BASE_SQL)), qContext);
 	}
 
 	public TCompanyShipping mapRow(ResultSet rs, int rowNum) throws SQLException {
 		TCompanyShipping t = new TCompanyShipping();
-		
+
 		t.setId(rs.getString("ID"));
-		t.setAuthid(rs.getInt("authid"));
-		t.setPregistry(rs.getString("pregistry"));
-		t.setSbusinesser(rs.getString("sbusinesser"));
-		t.setScreatetime(rs.getString("screatetime"));
-		t.setSdeep(rs.getFloat("sdeep"));
-		t.setSlength(rs.getFloat("slength"));
-		t.setSload(rs.getFloat("sload"));
-		t.setSmateriall(rs.getFloat("smateriall"));
-		t.setSname(rs.getString("sname"));
-		t.setSno(rs.getString("sno"));
-		t.setSorg(rs.getString("sorg"));
-		t.setSover(rs.getFloat("sover"));
-		t.setSowner(rs.getString("sowner"));
-		t.setStotal(rs.getFloat("stotal"));
-		t.setStype(rs.getString("stype"));
-		t.setSwidth(rs.getFloat("swidth"));
+		t.setAuthid(rs.getInt("AUTHID"));
+		t.setPregistry(rs.getString("PREGISTRY"));
+		t.setSbusinesser(rs.getString("SBUSINESSER"));
+		t.setScreatetime(rs.getString("SCREATETIME"));
+		t.setSdeep(rs.getFloat("SDEEP"));
+		t.setSlength(rs.getFloat("SLENGTH"));
+		t.setSload(rs.getFloat("SLOAD"));
+		t.setSmateriall(rs.getFloat("SMATERIALL"));
+		t.setSname(rs.getString("SNAME"));
+		t.setSno(rs.getString("SNO"));
+		t.setSorg(rs.getString("SORG"));
+		t.setSover(rs.getFloat("SOVER"));
+		t.setSowner(rs.getString("SOWNER"));
+		t.setStotal(rs.getFloat("STOTAL"));
+		t.setStype(rs.getString("STYPE"));
+		t.setSwidth(rs.getFloat("SWIDTH"));
 		t.setUpdatedate(rs.getTimestamp("UPDATEDATE"));
-		
+
 		return t;
 	}
-	
-	private String dynamicJoinSqlWithEntity(TCompanyShipping bean,StringBuffer sql){
+
+	private String dynamicJoinSqlWithEntity(TCompanyShipping bean,StringBuilder sql){
 		if(bean==null||sql==null||sql.length()<=0){
 			return null;
 		}

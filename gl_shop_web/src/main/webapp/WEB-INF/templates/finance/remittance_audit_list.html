@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/finance">
+<head>
+<title>财务处理 - 汇款审核</title>
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 财务处理 - 汇款审核
+</h4>
+
+
+<table layout:fragment="tableContent">
+  <thead>
+  <tr>
+    <th>收到汇款金额</th>
+    <th>汇款方银行帐号</th>
+    <th>录入人员</th>
+    <th>录入时间</th>
+    <th>处理人员</th>
+    <th>更新时间</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="remit : ${remittances}">
+    <td th:text="${remit.amount}">52938</td>
+    <td th:text="${remit.remitterAccount}">62999999999999</td>
+    <td th:text="${remit.creator.userName}">王五</td>
+    <td th:text="${#calendars.format(remit.createTime, 'YYYY年M月d日 HH:mm')}">2014年3月16日 16:25</td>
+    <td th:text="${remit.processor.userName}">王五</td>
+    <td th:text="${#calendars.format(remit.updateTime, 'YYYY年M月d日 HH:mm')}">2014年3月16日 16:35</td>
+    <td><a th:href="@{/finance/remittance/audit/detail/{rid}/(rid=${remit.id})}">开始审核</a></td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(remittances)}">
+    <td colspan="5">暂时没有待审核的汇款项目</td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+
+</html>

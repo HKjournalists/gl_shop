@@ -6,19 +6,18 @@
  */
 package com.appabc.datas.dao.system.impl;
 
+import com.appabc.bean.pvo.TBankInfo;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.system.IBankInfoDAO;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
-
-import com.appabc.bean.pvo.TBankInfo;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.system.IBankInfoDAO;
 
 /**
  * @Description : 
@@ -37,7 +36,7 @@ public class BankInfoDAOImpl extends BaseJdbcDao<TBankInfo> implements IBankInfo
 	private static final String DELETE_SQL = " DELETE FROM T_BANK_INFO WHERE BIID = :id ";
 	private static final String SELECT_SQL = " SELECT BIID,BANKCARDNUM,CARDUSER,BLANKTYPE,BANKNAME,CREATETIME,CREATER,UPDATER,UPATETIME FROM T_BANK_INFO ";
 	
-	private String dynamicJoinSqlWithEntity(TBankInfo entity,StringBuffer sql){
+	private String dynamicJoinSqlWithEntity(TBankInfo entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
 			return null;
 		}
@@ -94,7 +93,7 @@ public class BankInfoDAOImpl extends BaseJdbcDao<TBankInfo> implements IBankInfo
 	 * @see com.appabc.common.base.dao.IBaseDao#query(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public TBankInfo query(TBankInfo entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}
@@ -113,7 +112,7 @@ public class BankInfoDAOImpl extends BaseJdbcDao<TBankInfo> implements IBankInfo
 	 * @see com.appabc.common.base.dao.IBaseDao#queryForList(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public List<TBankInfo> queryForList(TBankInfo entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.queryForList(dynamicJoinSqlWithEntity(entity,sql), entity);
 	}

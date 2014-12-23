@@ -2,6 +2,7 @@ package com.appabc.datas.service.system;
 
 import com.appabc.bean.pvo.TMobileAppVersion;
 import com.appabc.common.base.service.IBaseService;
+import com.appabc.datas.exception.ServiceException;
 
 /**
  * @Description : 
@@ -14,4 +15,6 @@ import com.appabc.common.base.service.IBaseService;
 
 public interface IMobileAppVersionService extends IBaseService<TMobileAppVersion> {
 
+	TMobileAppVersion getMobileAppUpdateInfo(String devices,String lastNo) throws ServiceException;
+	
 }

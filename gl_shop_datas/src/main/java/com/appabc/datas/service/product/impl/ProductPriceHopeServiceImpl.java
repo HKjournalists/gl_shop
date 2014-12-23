@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.service.product.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.pvo.TProductPriceHope;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.product.IProductPriceHopeDao;
+import com.appabc.datas.service.product.IProductPriceHopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TProductPriceHope;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.product.IProductPriceHopeDao;
-import com.appabc.datas.service.product.IProductPriceHopeService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 商品预测SERVICE实现类
@@ -41,6 +40,7 @@ public class ProductPriceHopeServiceImpl implements IProductPriceHopeService{
 	}
 
 	public void delete(TProductPriceHope entity) {
+		this.productPriceHopeDao.delete(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -60,12 +60,12 @@ public class ProductPriceHopeServiceImpl implements IProductPriceHopeService{
 	}
 
 	public List<TProductPriceHope> queryForList(Map<String, ?> args) {
-		return null;
+		return this.productPriceHopeDao.queryForList(args);
 	}
 
 	public QueryContext<TProductPriceHope> queryListForPagination(
 			QueryContext<TProductPriceHope> qContext) {
-		return null;
+		return this.productPriceHopeDao.queryListForPagination(qContext);
 	}
 
 	/* (non-Javadoc)

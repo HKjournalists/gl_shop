@@ -6,9 +6,9 @@
  */
 package com.appabc.datas.task.payfunds;
 
-import java.text.ParseException;
-
 import com.appabc.tools.schedule.utils.BaseCronTrigger;
+
+import java.text.ParseException;
 
 
 /**
@@ -33,7 +33,7 @@ public class ContractPayFundsTrigger extends BaseCronTrigger {
 		super();
 		this.setName(NAME);
 		this.setGroup(GROUP);
-		this.setCronExpression("0 0/10 14 18 * ?");
+		this.setCronExpression("0 0/10 * * * ?");
 	}
 	
 	public ContractPayFundsTrigger(String jobName,String jobGroup,String cronExpression) throws ParseException{

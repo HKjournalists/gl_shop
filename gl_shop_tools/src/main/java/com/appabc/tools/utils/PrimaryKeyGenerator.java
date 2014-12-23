@@ -1,18 +1,17 @@
 package com.appabc.tools.utils;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.appabc.bean.pvo.TPk;
+import com.appabc.common.utils.LogUtil;
+import com.appabc.tools.service.pk.IPKService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.appabc.bean.pvo.TPk;
-import com.appabc.common.utils.LogUtil;
-import com.appabc.tools.service.pk.IPKService;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Description : primary key generator
@@ -198,6 +197,9 @@ public class PrimaryKeyGenerator {
 	 * @since  1.0.0  
 	 */
 	public String generatorBusinessKeyByBid(String bid) {
+		if(StringUtils.isEmpty(bid)){
+			return StringUtils.EMPTY;
+		}
 		synchronized (bid) {
 			TPk wt = new TPk();
 			wt.setBid(bid);
@@ -214,12 +216,26 @@ public class PrimaryKeyGenerator {
 	 * @since  1.0.0  
 	 */
 	public String generatorBusinessKeyById(String id) {
+		if(StringUtils.isEmpty(id)){
+			return StringUtils.EMPTY;
+		}
 		synchronized (id) {
 			TPk wt = new TPk();
 			wt.setId(id);
 			return this.generatorBusinessKey(wt);
 		}
 	}
+	
+	public String getPKey(String bid){
+		return this.generatorBusinessKeyByBid(bid);
+	}
+	
+	public String replaceCode(String code,String str,String target){
+		if(StringUtils.isEmpty(code) || StringUtils.isEmpty(str) || StringUtils.isEmpty(target)){
+			return StringUtils.EMPTY;
+		}
+		return this.matchAndReplace(code, str, target);
+	};
 	
 	public static void main(String[] args) {
 		PrimaryKeyGenerator prg = new PrimaryKeyGenerator();

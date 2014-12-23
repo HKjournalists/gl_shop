@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.service.order.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.pvo.TOrderProductProperty;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.order.IOrderProductPropertyDao;
+import com.appabc.datas.service.order.IOrderProductPropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TOrderProductProperty;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.order.IOrderProductPropertyDao;
-import com.appabc.datas.service.order.IOrderProductPropertyService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 交易中的商品属性SERVICE实现
@@ -41,6 +40,7 @@ public class OrderProductPropertyServiceImpl implements IOrderProductPropertySer
 	}
 
 	public void delete(TOrderProductProperty entity) {
+		this.orderProductPropertyDao.delete(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -48,7 +48,7 @@ public class OrderProductPropertyServiceImpl implements IOrderProductPropertySer
 	}
 
 	public TOrderProductProperty query(TOrderProductProperty entity) {
-		return null;
+		return this.orderProductPropertyDao.query(entity);
 	}
 
 	public TOrderProductProperty query(Serializable id) {
@@ -60,12 +60,12 @@ public class OrderProductPropertyServiceImpl implements IOrderProductPropertySer
 	}
 
 	public List<TOrderProductProperty> queryForList(Map<String, ?> args) {
-		return null;
+		return this.orderProductPropertyDao.queryForList(args);
 	}
 
 	public QueryContext<TOrderProductProperty> queryListForPagination(
 			QueryContext<TOrderProductProperty> qContext) {
-		return null;
+		return this.orderProductPropertyDao.queryListForPagination(qContext);
 	}
 
 }

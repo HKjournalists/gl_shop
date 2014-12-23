@@ -6,9 +6,9 @@ package com.appabc.datas.service.company;
 import com.appabc.bean.bo.CompanyAllInfo;
 import com.appabc.bean.bo.EvaluationInfoBean;
 import com.appabc.bean.pvo.TAuthRecord;
-import com.appabc.bean.pvo.TCompanyAddress;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.service.IBaseService;
+import com.appabc.datas.exception.ServiceException;
 
 /**
  * @Description : 公司信息SERVICE接口
@@ -21,11 +21,12 @@ import com.appabc.common.base.service.IBaseService;
 public interface ICompanyInfoService extends IBaseService<TCompanyInfo> {
 	
 	/**
-	 * 获取公司认证资料
+	 * 获取公司认证资料(cid与requestCid如果不相等，输出的信息可能会导致加密处理，requestCid为空将不会做加密处理)
 	 * @param cid 企业ID
+	 * @param requestCid 当前登录用户的企业ID
 	 * @return
 	 */
-	public CompanyAllInfo queryAuthCompanyInfo(String cid);
+	public CompanyAllInfo queryAuthCompanyInfo(String cid, String requestCid);
 	
 	/**  
 	 * 根据企业ID获取该企业应缴纳的保证金额度
@@ -47,13 +48,13 @@ public interface ICompanyInfoService extends IBaseService<TCompanyInfo> {
 	public void updateIntroduction(String cid, String mark, String companyImgIds);
 	
 	/**
-	 * 认证申请信息
+	 * 认证申请信息,重新认证时将原认证通过的记录改为:已过期
 	 * @param ciBean
 	 * @param arBean
-	 * @param caBean
+	 * @param addressid
 	 * @param userid 当前用户ID
 	 */
-	public void authApply(TCompanyInfo ciBean, TAuthRecord arBean, TCompanyAddress caBean,String userid);
+	public void authApply(TCompanyInfo ciBean, TAuthRecord arBean, String addressid ,String userid) throws ServiceException ;
 	
 	/**
 	 * 获取企业评价信息

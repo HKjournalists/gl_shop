@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/finance">
+<head>
+  <title>财务处理 - 汇款审核</title>
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 财务处理 - 汇款审核 </h4>
+
+<div layout:fragment="pageContent">
+
+  <form id="remittanceForm" method="POST" role="form" class="form-horizontal">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    <input type="hidden" name="mode" />
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 汇款信息
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover table-striped">
+            <tr>
+              <th width="20%">汇款金额</th>
+              <td th:text="${remittance.amount}">234234</td>
+              <th width="20%">付款方银行帐号</th>
+              <td width="30%" th:text="${remittance.remitterAccount}">6299999999999999123</td>
+            </tr>
+            <tr>
+              <th>收到汇款时间</th>
+              <td th:text="${#calendars.format(remittance.receiveTime, 'YYYY年M月d日 HH:mm')}">2014年3月15日 10:00</td>
+              <th>录入汇款时间</th>
+              <td th:text="${#calendars.format(remittance.createTime, 'YYYY年M月d日 HH:mm')}">2014年3月16日 16:25</td>
+            </tr>
+            <tr>
+              <th>银行汇款流水号</th>
+              <td th:text="${remittance.bankSerialNumber}">1234567890983748</td>
+              <th>汇款录入人</th>
+              <td colspan="3" th:text="${remittance.creator.userName}">张三</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <th:block th:if="${show_more}">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 备注信息
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover table-striped">
+            <tr>
+              <th width="20%">接收汇款用户手机号</th>
+              <td th:text="${remittance.mobile}">13700000000</td>
+              <th width="20%">汇款人姓名</th>
+              <td width="30%" th:text="${remittance.remitter}">张思</td>
+            </tr>
+            <tr>
+              <th>合同编号</th>
+              <td th:text="${remittance.contractId}">201404159280</td>
+              <th>公司名称</th>
+              <td th:text="${remittance.company}">江苏国立有限公司</td>
+            </tr>
+            <tr>
+              <th>其他信息</th>
+              <td colspan="3" th:text="${remittance.remark}">该款项为江苏国立有限公司充值</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    </th:block>
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 汇款预处理意见
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover table-striped">
+            <thead>
+            <tr>
+              <th width="25%">用户ID</th>
+              <th width="20%">用户类型</th>
+              <th width="20%">需变更账户类型</th>
+              <th width="20%">需系统增加金额</th>
+              <th width="20%">预处理人员</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td><a th:href="@{/company/{cid}/info/(cid=${target.id})}" target="_blank" th:text="${target.id}">123459o8830300</td>
+              <td th:text="${target.ctype.text}">船舶</td>
+              <td th:text="${remittance.targetWalletType.text}">货款</td>
+              <td th:text="${remittance.amount}">65000</td>
+              <td th:text="${remittance.processor.userName}">李立</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 服务记录
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          <div class="list-group-item">
+            2014年9月16日 15:06:59 张三催促用户提交认证信息
+          </div>
+        </div>
+        <textarea id="serviceLog" name="serviceLog" rows="5" cols="80" placeholder="请输入处理意见"></textarea>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-offset-5 col-sm-10">
+        <button type="button" id="btnSubmit" class="btn btn-primary">核对正确</button>
+        <button type="button" id="btnUnsovlable" class="btn btn-default">核对错误</button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmDialog" tabindex="-1" role="dialog" aria-labelledby="accountAudit" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+            <h4 class="modal-title" id="accountAudit">汇款处理</h4>
+          </div>
+          <div class="modal-body">
+            <p id="modalContent"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button id="btnDialogOk" type="button" class="btn btn-primary">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<script layout:fragment="inlineJavascript">
+var company = /*[[${target.cname}]]*/ '江苏国立网络有限公司';
+var amount = /*[[${remittance.amount}]]*/ 55000;
+var walletType = /*[[${remittance.targetWalletType.text}]]*/ ‘保证金’;
+
+$(document).ready(function() {
+    $("#btnSubmit").click(function() {
+        var message = '确定已经完成为 ' + company + ' 的' + walletType + '钱包增加' + amount + '元的汇款审核吗？';
+        $("#modalContent").html(message);
+        $('#btnDialogOk').data('action', 'FINISH');
+        $("#confirmDialog").modal("show");
+    });
+
+    $("#btnUnsolvable").click(function() {
+        var message = '确定为 ' + company + ' 的' + walletType + '钱包增加' + amount + '元的汇款核对出现错误吗？';
+        $('#btnDialogOk').data('action', 'AUDIT_FAIL');
+        $("#confirmDialog").modal("show");
+    });
+
+    $("#btnDialogOk").click(function() {
+        var action = $('#btnDialogOk').data('action');
+        $('input[name=mode]').val(action);
+        $('#remittanceForm').submit();
+    });
+});
+</script>
+</body>
+
+</html>

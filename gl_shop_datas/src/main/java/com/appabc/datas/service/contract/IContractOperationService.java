@@ -1,10 +1,10 @@
 package com.appabc.datas.service.contract;
 
-import java.util.List;
-
 import com.appabc.bean.pvo.TOrderOperations;
 import com.appabc.common.base.service.IBaseService;
 import com.appabc.datas.exception.ServiceException;
+
+import java.util.List;
 
 /**
  * @Description : 
@@ -17,21 +17,74 @@ import com.appabc.datas.exception.ServiceException;
 
 public interface IContractOperationService extends IBaseService<TOrderOperations> {
 	
-	/*确认合同信息*/
+	/**
+	 * @Description 确认合同信息
+	 * @param contractId,type,operator,result,pid
+	 * @return TOrderOperations
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	TOrderOperations applyOrNotGoodsInfo(String contractId,String type,String operator,String result,String pid);
 	
-	/*验收通过和同意的接口*/
-	TOrderOperations applyOrPassGoodsInfo(String contractId,String operType,String pid,String operator,String operatorName);
+	/**
+	 * @Description 验收通过和同意的接口
+	 * @param contractId,operType,pid,operator,operatorName
+	 * @return TOrderOperations
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	TOrderOperations applyOrPassGoodsInfo(String contractId,String operType,String pid,String operator,String operatorName) throws ServiceException;
 	
-	/*确认卸货信息*/
+	/**
+	 * @Description 确认卸货信息
+	 * @param contractId,confirmer,confirmerName
+	 * @return TOrderOperations
+	 * @since 1.0 
+	 * @throws ServiceException
+	 * @author Bill Huang
+	 * */
 	void confirmUninstallGoods(String contractId,String confirmer,String confirmerName) throws ServiceException;
 	
+	/**
+	 * @Description 获取合同变更历史
+	 * @param contractId
+	 * @return List<?>
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	List<?> getContractChangeHistory(String contractId);
 	
+	/**
+	 * @Description 获取合同操作记录
+	 * @param contractId,type
+	 * @return List<TOrderOperations>
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	List<TOrderOperations> queryForList(String contractId, String type);
 	
+	/**
+	 * @Description 获取合同操作记录
+	 * @param contractId,operator
+	 * @return List<TOrderOperations>
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	List<TOrderOperations> queryForListWithOIDAndOper(String contractId,String operator);
 	
+	/**
+	 * @Description 获取合同操作记录
+	 * @param contractId
+	 * @return List<TOrderOperations>
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	List<TOrderOperations> queryForList(String contractId);
 	
 }

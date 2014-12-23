@@ -3,11 +3,11 @@
  */
 package com.appabc.datas.dao.product;
 
-import java.util.List;
-import java.util.Map;
-
 import com.appabc.bean.pvo.TProductPriceHope;
 import com.appabc.common.base.dao.IBaseDao;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 商品价格预测DAO接口

@@ -35,6 +35,11 @@ public class TCompanyRanking extends BaseBean {
     private Float evaluation;
 
     /**
+     * 交易诚信度
+     */
+    private Float credit;
+    
+    /**
      * 统计日期
      */
     private Date statdate;
@@ -86,4 +91,23 @@ public class TCompanyRanking extends BaseBean {
     public void setStatdate(Date statdate) {
         this.statdate = statdate;
     }
+
+	/**  
+	 * credit  
+	 *  
+	 * @return  the credit  
+	 * @since   1.0.0  
+	 */
+	
+	public Float getCredit() {
+		return credit;
+	}
+
+	/**  
+	 * @param credit the credit to set  
+	 */
+	public void setCredit(Float credit) {
+		this.credit = credit;
+	}
+    
 }

@@ -1,6 +1,7 @@
 package com.appabc.datas.tool;
 
 import com.appabc.common.spring.BeanLocator;
+import com.appabc.common.utils.SystemConstant;
 import com.appabc.datas.service.company.ICompanyInfoService;
 import com.appabc.tools.utils.SystemParamsManager;
 
@@ -25,7 +26,7 @@ public class ContractCostDetailUtil {
 	}
 	
 	public static float getGuarantyCost(Float cost){
-		float gp = getSystemParamsManager().getFloat("GUARANTY_PERCENT".toUpperCase());
+		float gp = getSystemParamsManager().getFloat(SystemConstant.GUARANTY_PERCENT);
 		if(gp>0.0f){
 			return cost*gp;
 		}else{			
@@ -34,7 +35,7 @@ public class ContractCostDetailUtil {
 	}
 	
 	public static float getServiceCost(Float cost){
-		float sp = getSystemParamsManager().getFloat("SERVICE_PERCENT".toUpperCase());
+		float sp = getSystemParamsManager().getFloat(SystemConstant.SERVICE_PERCENT);
 		if(sp>0.0f){
 			return cost*sp;
 		}else{			

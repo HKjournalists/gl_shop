@@ -1,6 +1,6 @@
 package com.appabc.system.web.form;
 
-import com.appabc.system.User;
+import com.appabc.datas.system.User;
 
 /**
  * @Description : 

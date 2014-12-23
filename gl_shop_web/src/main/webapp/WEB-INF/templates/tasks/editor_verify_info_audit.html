@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+<title>我的工作台 - 认证信息审核</title>
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 编辑 - 认证信息审核
+</h4>
+
+
+<table layout:fragment="tableContent">
+  <thead>
+  <tr>
+    <th>用户</th>
+    <th>注册时间</th>
+    <th>申请认证类型</th>
+    <th>提交认证时间</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="task : ${tasks}">
+    <td><a th:href="@{/company/{cid}/info/(cid=${task.taskObject.cid})}" th:text="${task.taskObject.cid}">王五</a></td>
+    <td th:text="${#calendars.format(task.company.createdate, 'YYYY年M月d日')}">wangwu</td>
+    <td th:text="${task.company.ctype.text}">停用</td>
+    <td th:text="${#calendars.format(task.createTime, 'YYYY年M月d日')}">wangwu</td>
+    <td><a th:href="@{/tasks/editor/verify_info_audit/detail/{taskId}/(taskId=${task.id})}">开始处理</a></td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+
+</html>

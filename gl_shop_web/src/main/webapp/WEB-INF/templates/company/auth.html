@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/company">
+<head>
+  <title>用户资料 - 身份状态</title>
+</head>
+<body>
+  
+  <h4 layout:fragment="contentNavTitle">
+    <i class="fa fa-fw fa-wrench"></i> 用户资料 / 身份状态  </h4>
+
+  <div layout:fragment="pageContent">
+
+    <div th:replace="company/fragments :: basicinfo"></div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 认证信息
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th width="20%">平台认证</th>
+              <td th:text="${company.authstatus}">已认证</td>
+              <td><a href="">查看认证资料</a></td>
+            </tr>
+          </table>
+        </div>
+        <div class="list-group">
+          <div class="list-group-item">
+            2014年9月16日 15:06:59 张三催促用户提交认证信息
+          </div>
+          <div class="list-group-item">
+            2014年9月17日 15:06:59 用户提交认证信息
+          </div>
+          <div class="list-group-item">
+            2014年9月17日 15:06:59 驳回y用户认证申请，原因：用户提交信息虚假
+          </div>
+          <div class="list-group-item">
+            2014年9月17日 15:06:59 李四审核用户认证信息通过
+          </div>
+          <div class="list-group-item">
+            2014年9月17日 15:06:59 用户重新提交认证信息
+          </div>
+        </div>
+      </div>
+    </div> 
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 保证金信息
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th width="20%">交易保证金</th>
+              <td th:text="${company.authstatus}">已缴纳</td>
+              <td>当前余额 10000000</td>
+            </tr>
+          </table>
+        </div>
+        <div class="list-group">
+          <div class="list-group-item">
+            2014年9月16日 15:06:59 张三催促用户缴纳保证金
+          </div>
+          <div class="list-group-item">
+            2014年9月17日 15:06:59 用户缴纳保证金X元
+          </div>
+        </div>
+      </div>
+    </div> 
+
+  </div>
+</body>
+
+</html>

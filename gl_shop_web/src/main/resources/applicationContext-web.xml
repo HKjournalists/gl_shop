@@ -3,30 +3,30 @@
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    
+
     xsi:schemaLocation="
     http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd 
-    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context.xsd
-    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop
 	http://www.springframework.org/schema/aop/spring-aop.xsd ">
-     
-    
-	<context:component-scan base-package="com.appabc.system">
+
+
+	<context:component-scan base-package="com.appabc.datas.system">
 		<context:include-filter type="regex" expression=".*Dao,.*Service" />
 	</context:component-scan>
-	
+
 	   <!-- 声明式事务 -->
     <aop:config proxy-target-class="true">
-        <aop:advisor pointcut="execution(* com.appabc.system.*Service..*.*(..))" advice-ref="txTransactionAdvisor"/>
+        <aop:advisor pointcut="execution(* com.appabc.datas.system.*Service..*.*(..))" advice-ref="txTransactionAdvisor"/>
     </aop:config>
 
-    <beans profile="develop"> 
+    <beans profile="develop">
             <context:property-placeholder ignore-resource-not-found="false"
-                                  location="classpath:/develop-config.properties, ${local.config}" />
+                                  location="classpath*:develop-config.properties, ${local.config}" />
     </beans>
-    <beans profile="production"> 
+    <beans profile="production">
             <context:property-placeholder ignore-resource-not-found="true"
                                   location="classpath*:production-config.properties, ${local.config}" />
     </beans>

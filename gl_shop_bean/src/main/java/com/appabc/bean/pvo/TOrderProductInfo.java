@@ -1,5 +1,6 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.ProductInfo.UnitEnum;
 import com.appabc.common.base.bean.BaseBean;
 
 public class TOrderProductInfo extends BaseBean {
@@ -27,6 +28,11 @@ public class TOrderProductInfo extends BaseBean {
      * 商品名称
      */
     private String pname;
+    
+    /**
+     * 商品类型（黄砂、石子）
+     */
+    private String pcode;
 
     /**
      * 种类
@@ -51,7 +57,7 @@ public class TOrderProductInfo extends BaseBean {
     /**
      * 单位
      */
-    private String unit;
+    private UnitEnum unit;
 
     /**
      * 备注
@@ -126,11 +132,11 @@ public class TOrderProductInfo extends BaseBean {
         this.paddress = paddress == null ? null : paddress.trim();
     }
 
-    public String getUnit() {
+	public UnitEnum getUnit() {
 		return unit;
 	}
 
-	public void setUnit(String unit) {
+	public void setUnit(UnitEnum unit) {
 		this.unit = unit;
 	}
 
@@ -156,6 +162,14 @@ public class TOrderProductInfo extends BaseBean {
 
 	public void setProductImgIds(String productImgIds) {
 		this.productImgIds = productImgIds;
+	}
+
+	public String getPcode() {
+		return pcode;
+	}
+
+	public void setPcode(String pcode) {
+		this.pcode = pcode;
 	}
 	
     

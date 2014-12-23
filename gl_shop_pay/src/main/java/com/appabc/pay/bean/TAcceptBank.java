@@ -1,7 +1,14 @@
 package com.appabc.pay.bean;
 
-import com.appabc.common.base.bean.BaseBean;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.appabc.bean.bo.ViewImgsBean;
+import com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus;
+import com.appabc.bean.enums.AcceptBankInfo.AcceptBankStatus;
+import com.appabc.bean.pvo.TCompanyInfo;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TAcceptBank extends BaseBean {
     /**
@@ -13,7 +20,9 @@ public class TAcceptBank extends BaseBean {
 	 * 企业编号
 	 * */
 	private String cid;
-	
+
+    private TCompanyInfo company;
+
     /**
      * 认证记录ID
      */
@@ -75,23 +84,23 @@ public class TAcceptBank extends BaseBean {
     private String creator;
     
     /**
-     * 认证图片
+     * 用于显示的图片信息
      */
-    private String imgurl;
-    /**
-     * 认证图片
-     */
-    private String imgid;
-    
+    private List<ViewImgsBean> vImgList = new ArrayList<ViewImgsBean>();
     /**
      * 状态（默认1，普通0）
      */
-    private Integer status;
+    private AcceptBankStatus status;
 
     /**
      * 认证状态（默认1，普通0）
      */
-    private Integer authstatus;
+    private AcceptAuthStatus authstatus;
+    
+    /**
+     * 关联的图片ID
+     */
+    private String Imgid;
     
     /**  
 	 * cid  
@@ -111,7 +120,15 @@ public class TAcceptBank extends BaseBean {
 		this.cid = cid;
 	}
 
-	public Integer getAuthid() {
+    public TCompanyInfo getCompany() {
+        return company;
+    }
+
+    public void setCompany(TCompanyInfo company) {
+        this.company = company;
+    }
+
+    public Integer getAuthid() {
         return authid;
     }
 
@@ -207,35 +224,56 @@ public class TAcceptBank extends BaseBean {
         this.creator = creator == null ? null : creator.trim();
     }
 
-	public String getImgurl() {
-		return imgurl;
+	public List<ViewImgsBean> getvImgList() {
+		return vImgList;
 	}
 
-	public void setImgurl(String imgurl) {
-		this.imgurl = imgurl;
+	public void setvImgList(List<ViewImgsBean> vImgList) {
+		this.vImgList = vImgList;
 	}
 
 	public String getImgid() {
-		return imgid;
+		return Imgid;
 	}
 
 	public void setImgid(String imgid) {
-		this.imgid = imgid;
+		Imgid = imgid;
 	}
 
-	public Integer getStatus() {
+	/**  
+	 * status  
+	 *  
+	 * @return  the status  
+	 * @since   1.0.0  
+	*/  
+	
+	public AcceptBankStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	/**  
+	 * @param status the status to set  
+	 */
+	public void setStatus(AcceptBankStatus status) {
 		this.status = status;
 	}
 
-	public Integer getAuthstatus() {
+	/**  
+	 * authstatus  
+	 *  
+	 * @return  the authstatus  
+	 * @since   1.0.0  
+	*/  
+	
+	public AcceptAuthStatus getAuthstatus() {
 		return authstatus;
 	}
 
-	public void setAuthstatus(Integer authstatus) {
+	/**  
+	 * @param authstatus the authstatus to set  
+	 */
+	public void setAuthstatus(AcceptAuthStatus authstatus) {
 		this.authstatus = authstatus;
 	}
+	
 }

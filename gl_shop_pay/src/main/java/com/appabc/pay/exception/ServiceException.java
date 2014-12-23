@@ -6,6 +6,8 @@
  */
 package com.appabc.pay.exception;
 
+import com.appabc.common.base.exception.BaseException;
+
 /**
  * @Description : 
  * @Copyright   : GL. All Rights Reserved
@@ -15,7 +17,7 @@ package com.appabc.pay.exception;
  * @Create_Date  : 2014年9月26日 下午3:25:09
  */
 
-public class ServiceException extends Exception {
+public class ServiceException extends BaseException {
 
 	/**  
 	 * serialVersionUID:（用一句话描述这个变量表示什么）  

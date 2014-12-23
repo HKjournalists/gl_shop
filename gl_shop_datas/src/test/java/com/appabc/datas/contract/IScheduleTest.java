@@ -1,18 +1,26 @@
 package com.appabc.datas.contract;
 
+import com.appabc.datas.AbstractDatasTest;
+import com.appabc.datas.task.cancelcontract.CancelContractJob;
+import com.appabc.datas.task.cancelcontract.CancelContractTrigger;
+import com.appabc.datas.task.confirmcontract.ContractConfirmJob;
+import com.appabc.datas.task.confirmcontract.ContractConfirmTrigger;
+import com.appabc.datas.task.confirmgoodsinfo.ContractConfirmGoodsInfoJob;
+import com.appabc.datas.task.confirmgoodsinfo.ContractConfirmGoodsInfoTrigger;
+import com.appabc.datas.task.evaluationcontract.ContractEvaluationJob;
+import com.appabc.datas.task.evaluationcontract.ContractEvaluationTrigger;
+import com.appabc.datas.task.orderfind.OrderFindJob;
+import com.appabc.datas.task.orderfind.OrderFindTrigger;
+import com.appabc.datas.task.payfunds.ContractPayFundsJob;
+import com.appabc.datas.task.payfunds.ContractPayFundsTrigger;
+import com.appabc.tools.schedule.ScheduleInfoManager;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
-import com.appabc.common.utils.DateUtil;
-import com.appabc.datas.AbstractDatasTest;
-import com.appabc.datas.task.confirmcontract.ContractConfirmJob;
-import com.appabc.datas.task.confirmcontract.ContractConfirmTrigger;
-import com.appabc.tools.bean.ScheduleInfoBean;
-import com.appabc.tools.service.schedule.IScheduleService;
-
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : 黄建华
@@ -21,31 +29,23 @@ import com.appabc.tools.service.schedule.IScheduleService;
  */
 
 public class IScheduleTest extends AbstractDatasTest {
-	
+
 	@Autowired
-	private IScheduleService iScheduleService;
-	
-	/* (non-Javadoc)  
-	 * @see com.appabc.datas.AbstractDatasTest#mainTest()  
+	private ScheduleInfoManager scheduManager;
+
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.AbstractDatasTest#mainTest()
 	 */
 	@Override
 	@Test
 	@Rollback(value=true)
 	public void mainTest() {
-		ScheduleInfoBean entity = new ScheduleInfoBean();
-		entity.setName("first test schedule");
-		entity.setDesc("first test schedule");
-		/*entity.setJobName(jobName);
-		entity.setJobGroup(jobGroup);*/
-		entity.setJobClassName(ContractConfirmJob.class.getName());
-		
-		/*entity.setTriggerName(triggerName);
-		entity.setTriggerGroup(triggerGroup);*/
-		entity.setTriggerClassName(ContractConfirmTrigger.class.getName());
-		
-		entity.setIsValid(true);
-		entity.setCreateDate(DateUtil.getNowDate());
-		iScheduleService.add(entity);
+		scheduManager.registerScheduleInfo(CancelContractJob.class, CancelContractTrigger.class);
+		scheduManager.registerScheduleInfo(ContractConfirmJob.class, ContractConfirmTrigger.class);
+		scheduManager.registerScheduleInfo(ContractConfirmGoodsInfoJob.class, ContractConfirmGoodsInfoTrigger.class);
+		scheduManager.registerScheduleInfo(ContractEvaluationJob.class, ContractEvaluationTrigger.class);
+		scheduManager.registerScheduleInfo(OrderFindJob.class, OrderFindTrigger.class);
+		scheduManager.registerScheduleInfo(ContractPayFundsJob.class, ContractPayFundsTrigger.class);
 	}
 
 }

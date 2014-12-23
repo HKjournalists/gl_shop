@@ -8,11 +8,13 @@ import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.appabc.bean.bo.MsgSendResultBean;
+import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
 import com.appabc.bean.pvo.TShortMessageConfig;
 import com.appabc.bean.pvo.TShortMessageUsed;
+import com.appabc.tools.bean.SMSTemplate;
 import com.appabc.tools.bean.ShortMsgInfo;
-import com.appabc.tools.service.sms.IToolShortMessageConfigService;
-import com.appabc.tools.service.sms.IToolShortMessageUsedService;
+import com.appabc.tools.service.sms.IShortMessageConfigService;
+import com.appabc.tools.service.sms.IShortMessageUsedService;
 
 /**
  * @Description : 
@@ -25,9 +27,9 @@ import com.appabc.tools.service.sms.IToolShortMessageUsedService;
 public abstract class BaseSmsSender implements ISmsSender {
 
 	@Autowired
-	private IToolShortMessageUsedService shortMessageUsedService;
+	private IShortMessageUsedService shortMessageUsedService;
 	@Autowired
-	private IToolShortMessageConfigService shortMessageConfigService;
+	private IShortMessageConfigService shortMessageConfigService;
 	
 	
 	/**
@@ -43,7 +45,7 @@ public abstract class BaseSmsSender implements ISmsSender {
 		
 		boolean btf = false; 
 		
-		MsgSendResultBean msr = sendMsg(getMsgConfig(189, smi.getType()), smi);
+		MsgSendResultBean msr = sendMsg(getMsgConfig(189, null), smi);
 		if(msr.getResCode().equals("0")){
 			btf = true;
 		}
@@ -63,7 +65,7 @@ public abstract class BaseSmsSender implements ISmsSender {
 		
 		TShortMessageConfig smc = new TShortMessageConfig();
 		smc.setType(type); // 189
-		smc.setTemplatetype(templatetype);
+//		smc.setTemplatetype(templatetype);
 		smc.setStatus(0);
 		
 		return this.shortMessageConfigService.query(smc);
@@ -88,6 +90,19 @@ public abstract class BaseSmsSender implements ISmsSender {
 		
 		shortMessageUsedService.add(smu);
 		
+	}
+	
+	public static void main(String[] args) {
+		ShortMsgInfo smi = new ShortMsgInfo();
+		smi.setBusinessType(MsgBusinessType.BUSINESS_TYPE_USER_REGISTER);
+		smi.setTel("1234565");
+//		smi.setType(SmsTypeEnum.SMS_TEMP_TYPE_PIN);
+		
+		SMSTemplate template = SMSTemplate.getTemplatePin("123", "5","400-9616-816");
+		smi.setTemplate(template);
+		
+		System.out.println(smi.getTemplate().toString());
+		System.out.println(smi.getTemplate().toJsonStr());
 	}
 	
 }

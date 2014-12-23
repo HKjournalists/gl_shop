@@ -1,7 +1,11 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
+import com.appabc.bean.enums.MsgInfo.MsgStatus;
+import com.appabc.bean.enums.MsgInfo.MsgType;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TSystemMessage extends BaseBean {
     /**
@@ -16,13 +20,14 @@ public class TSystemMessage extends BaseBean {
 
     /**
      * 消息内容
+     * 参考 SystemMsgInfo.MsgContent
      */
-    private String content;
+    private String content; 
 
     /**
      * 消息类型
      */
-    private Integer type;
+    private MsgType type;
 
     /**
      * 业务ID
@@ -32,12 +37,12 @@ public class TSystemMessage extends BaseBean {
     /**
      * 业务类型
      */
-    private String businesstype;
+    private MsgBusinessType businesstype;
 
     /**
      * 消息状态:已读，未读
      */
-    private Integer status;
+    private MsgStatus status;
 
     /**
      * 消息创建时间
@@ -65,36 +70,12 @@ public class TSystemMessage extends BaseBean {
         this.content = content == null ? null : content.trim();
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
     public String getBusinessid() {
         return businessid;
     }
 
     public void setBusinessid(String businessid) {
         this.businessid = businessid == null ? null : businessid.trim();
-    }
-
-    public String getBusinesstype() {
-        return businesstype;
-    }
-
-    public void setBusinesstype(String businesstype) {
-        this.businesstype = businesstype == null ? null : businesstype.trim();
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public Date getCreatetime() {
@@ -112,4 +93,58 @@ public class TSystemMessage extends BaseBean {
     public void setReadtime(Date readtime) {
         this.readtime = readtime;
     }
+
+	/**  
+	 * type  
+	 *  
+	 * @return  the type  
+	 * @since   1.0.0  
+	*/  
+	
+	public MsgType getType() {
+		return type;
+	}
+
+	/**  
+	 * @param type the type to set  
+	 */
+	public void setType(MsgType type) {
+		this.type = type;
+	}
+
+	/**  
+	 * businesstype  
+	 *  
+	 * @return  the businesstype  
+	 * @since   1.0.0  
+	*/  
+	
+	public MsgBusinessType getBusinesstype() {
+		return businesstype;
+	}
+
+	/**  
+	 * @param businesstype the businesstype to set  
+	 */
+	public void setBusinesstype(MsgBusinessType businesstype) {
+		this.businesstype = businesstype;
+	}
+
+	/**  
+	 * status  
+	 *  
+	 * @return  the status  
+	 * @since   1.0.0  
+	*/  
+	
+	public MsgStatus getStatus() {
+		return status;
+	}
+
+	/**  
+	 * @param status the status to set  
+	 */
+	public void setStatus(MsgStatus status) {
+		this.status = status;
+	}
 }

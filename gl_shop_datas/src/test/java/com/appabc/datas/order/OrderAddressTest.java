@@ -3,18 +3,17 @@
  */
 package com.appabc.datas.order;
 
-import java.util.Date;
-
+import com.appabc.bean.pvo.TOrderAddress;
+import com.appabc.datas.AbstractDatasTest;
+import com.appabc.datas.service.order.IOrderAddressService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
-import com.appabc.bean.pvo.TOrderAddress;
-import com.appabc.datas.AbstractDatasTest;
-import com.appabc.datas.service.order.IOrderAddressService;
+import java.util.Date;
 
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : 杨跃红
@@ -25,7 +24,7 @@ public class OrderAddressTest extends AbstractDatasTest{
 
 	@Autowired
 	private IOrderAddressService orderAddressService;
-	
+
 	@Override
 	@Test
 	@Rollback(value=false)
@@ -47,8 +46,8 @@ public class OrderAddressTest extends AbstractDatasTest{
 		t.setOid(null);
 		t.setRealdeep(4.3f);
 		t.setType("1");
-		
+
 		orderAddressService.add(t);
 	}
-	
+
 }

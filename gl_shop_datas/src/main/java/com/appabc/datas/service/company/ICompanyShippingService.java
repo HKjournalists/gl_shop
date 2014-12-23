@@ -14,6 +14,13 @@ import com.appabc.common.base.service.IBaseService;
  * @version     : 1.0
  * Create Date  : 2014年9月25日 下午8:40:27
  */
-public interface ICompanyShippingService extends IBaseService<TCompanyShipping>{
+public interface ICompanyShippingService extends IBaseService<TCompanyShipping> {
+	
+	/**
+	 * 根据公司ID查询船舶信息
+	 * @param cid
+	 * @return
+	 */
+	public TCompanyShipping queryByCid(String cid);
 
 }

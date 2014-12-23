@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/company">
+<head>
+  <title>用户钱包 - 当前余额</title>
+</head>
+<body>
+
+  <h4 layout:fragment="contentNavTitle">
+    <i class="fa fa-fw fa-wrench"></i> 用户钱包 / 当前余额  </h4>
+
+    <div layout:fragment="pageContent">
+
+      <div th:replace="company/fragments :: basicinfo"></div>
+
+      <div th:replace="company/fragments :: walletinfo"></div>
+
+    </div>
+  </body>
+
+  </html>

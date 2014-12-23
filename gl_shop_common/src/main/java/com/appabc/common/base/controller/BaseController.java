@@ -1,44 +1,32 @@
 package com.appabc.common.base.controller;
 
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.bean.BaseBean;
+import com.appabc.common.base.bean.EmptyResult;
+import com.appabc.common.base.bean.UserInfoBean;
+import com.appabc.common.base.exception.BusinessException;
+import com.appabc.common.utils.*;
+import com.appabc.common.utils.pagination.PageModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.bean.BaseBean;
-import com.appabc.common.base.bean.EmptyResult;
-import com.appabc.common.base.bean.UserInfoBean;
-import com.appabc.common.base.exception.BusinessException;
-import com.appabc.common.utils.CheckResult;
-import com.appabc.common.utils.ErrorCode;
-import com.appabc.common.utils.FilterResult;
-import com.appabc.common.utils.LogUtil;
-import com.appabc.common.utils.RedisHelper;
-import com.appabc.common.utils.SerializeUtil;
-import com.appabc.common.utils.SystemConstant;
-import com.appabc.common.utils.pagination.PageModel;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import javax.servlet.http.HttpServletRequest;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * @Description : controller 基类和一些公用的方法
@@ -103,13 +91,17 @@ public abstract class BaseController<T extends BaseBean> {
 		final String USERTOKEN_MAP_KEY = "TOKEN_MAP";
 		String userToken = request.getHeader(SystemConstant.ACCESS_TOKEN);
 		if(StringUtils.isEmpty(userToken)){
-			throw new BusinessException(ErrorCode.USERUNLOGINERROR,"user is un login,please login first.");
+			throw new BusinessException(ErrorCode.USER_UNLOGINE_RROR,"user is un login,please login first.");
 		}
-		byte[] bytes = this.redisHelper.hget(USERTOKEN_MAP_KEY.getBytes(), userToken.getBytes());
-		if(bytes != null){
-			u =  (UserInfoBean) SerializeUtil.unserialize(bytes);
-		}else{
-			throw new BusinessException(ErrorCode.USERUNLOGINERROR,"get login user info throw the error,please login again.");
+		try {
+			byte[] bytes = this.redisHelper.hget(USERTOKEN_MAP_KEY.getBytes("UTF-8"), userToken.getBytes("UTF-8"));
+			if(bytes != null){
+				u =  (UserInfoBean) SerializeUtil.unserialize(bytes);
+			}else{
+				throw new BusinessException(ErrorCode.USER_UNLOGINE_RROR,"get login user info throw the error,please login again.");
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 		return u;
 	}
@@ -163,7 +155,7 @@ public abstract class BaseController<T extends BaseBean> {
 		if(ex instanceof BusinessException){
 			result = new CheckResult(((BusinessException) ex).getErrorCode(), ex.getMessage());
 		}else{
-			result = new CheckResult(ErrorCode.GENERICEXCEPTIONCODE, SystemConstant.EXCEPTIONMESSAGE);
+			result = new CheckResult(ErrorCode.GENERIC_EXCEPTION_CODE, SystemConstant.EXCEPTIONMESSAGE);
 		}
 		mav.addObject(SystemConstant.ERRORCODE,result);
 		ex.printStackTrace();
@@ -434,7 +426,7 @@ public abstract class BaseController<T extends BaseBean> {
 	 */
 	public QueryContext<T> initializeQueryContext(
 			javax.servlet.http.HttpServletRequest req) {
-		QueryContext<T> qContext = new QueryContext<T>();
+		QueryContext<T> qContext = new QueryContext<>();
 		PageModel page = initilizePageParams(qContext.getPage(),req);
 		qContext.setPage(page);
 		qContext = this.buildParametersToQueryContext(qContext, req);
@@ -460,30 +452,6 @@ public abstract class BaseController<T extends BaseBean> {
 		return page;
 	}
 	
-	/**
-	 * 初始化查询上下文,填充分页信息和查询数据的参数到泛型实体
-	 * @param req
-	 * @param otherParam 自定义参数，KEY必须对应泛型类的属性才能填充进去
-	 * @return
-	 */
-	public QueryContext<T> initializeQueryContext(
-			javax.servlet.http.HttpServletRequest req, Map<String,Object> otherParam) {
-		QueryContext<T> qContext = new QueryContext<T>();
-		qContext.getParameters().putAll(otherParam);
-		
-		String pageIndex = req.getParameter(SystemConstant.PAGEINDEX);
-		int currentPage = pageIndex == null ? 1 : Integer.parseInt(pageIndex);
-		String page_Size = req
-				.getParameter(com.appabc.common.utils.SystemConstant.PAGESIZE);
-		int pageSize = page_Size == null ? 10 : Integer.parseInt(page_Size);
-		
-		qContext.getPage().setPageIndex(currentPage);
-		qContext.getPage().setPageSize(pageSize);
-		qContext = this.buildParametersToQueryContext(qContext, req);
-		return qContext;
-	}
-	
-
 	/**  
 	 * buildParametersToQueryContext (填充查询数据的参数)  
 	 * @param qContext ; req
@@ -495,22 +463,21 @@ public abstract class BaseController<T extends BaseBean> {
 	@SuppressWarnings("unchecked")
 	public QueryContext<T> buildParametersToQueryContext(QueryContext<T> qContext,
 			HttpServletRequest req) {
-		qContext.setParameters(this.buildParametersToMap(qContext.getParameters(), req));
-		qContext.setBeanParameter((T) this.buildParametersToBean(qContext.getParameters()));
+		qContext.setParameters(this.buildParametersToMap(req));
+		qContext.setBeanParameter((T) this.buildParametersToBean(req));
 		return qContext;
 	}
 
 	/**  
 	 * buildParametersToMap (填充查询数据的参数)  
-	 * @param map req
-	 * @author Bill huang 
+	 * @author Bill huang
 	 * @return Map<String, Object>  
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	public Map<String, Object> buildParametersToMap(Map<String, Object> map,
-			HttpServletRequest req) {
+	public Map<String, Object> buildParametersToMap(HttpServletRequest req) {
 		Enumeration<?> e = req.getParameterNames();
+		Map<String, Object> map = new HashMap<>();
 		
 		while (e.hasMoreElements()) {
 			String name = (String) e.nextElement();
@@ -525,37 +492,15 @@ public abstract class BaseController<T extends BaseBean> {
 	
 	/**
 	 * 将查询数据填充到泛型实体中
-	 * @param map
 	 * @return
 	 */
-	private Object buildParametersToBean(Map<String, Object> map){
+	private Object buildParametersToBean(HttpServletRequest req){
 		try {
 			@SuppressWarnings("rawtypes")
 			Class type = getGenericType(0);
-			BeanInfo beanInfo = Introspector.getBeanInfo(type); // 获取类属性 
-			Object obj = type.newInstance(); // 创建 JavaBean 对象 
-			// 给 JavaBean 对象的属性赋值 
-			PropertyDescriptor[] propertyDescriptors =  beanInfo.getPropertyDescriptors(); 
-			
-			for (int i = 0; i< propertyDescriptors.length; i++) { 
-			    PropertyDescriptor descriptor = propertyDescriptors[i]; 
-			    String propertyName = descriptor.getName(); 
-
-			    if (map.containsKey(propertyName)) { 
-			        Object value = null;
-					try {
-						value = map.get(propertyName);
-					} catch (Exception e) {
-						log.error(e.getMessage());
-					} 
-
-			        Object[] args = new Object[1]; 
-			        args[0] = value; 
-
-			        descriptor.getWriteMethod().invoke(obj, args); 
-			    } 
-			}
-			
+			Object obj = type.newInstance();
+			ServletRequestDataBinder binder = new ServletRequestDataBinder(obj);
+			binder.bind(req);
 			return obj;
 		} catch (Exception e) {
 			log.error(e.getMessage());

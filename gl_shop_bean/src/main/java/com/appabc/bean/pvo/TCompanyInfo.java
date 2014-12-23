@@ -1,11 +1,15 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TCompanyInfo extends BaseBean {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 4050498410377638848L;
 
@@ -32,12 +36,12 @@ public class TCompanyInfo extends BaseBean {
     /**
      * 企业类型（区分企业、船舶、个人）
      */
-    private String ctype;
+    private CompanyType ctype;
 
     /**
      * 认证状态(是否认证)
      */
-    private String authstatus;
+    private CompanyAuthStatus authstatus;
 
     /**
      * 处理是否禁用、禁言（预留状态）
@@ -58,17 +62,17 @@ public class TCompanyInfo extends BaseBean {
      * 更新者
      */
     private String updater;
-    
+
     /**
      * 固定电话
      */
     private String tel;
-    
+
     /**
      * 保证金缴纳状态（是否缴纳足额）
      */
-    private String bailstatus;
-    
+    private CompanyBailStatus bailstatus;
+
     private String companyImgIds; // 企业相关照片ID，多个ID用逗号间隔,例: id1,id2,id3
 
     public String getCname() {
@@ -103,21 +107,23 @@ public class TCompanyInfo extends BaseBean {
         this.cphone = cphone == null ? null : cphone.trim();
     }
 
-    public String getCtype() {
-        return ctype;
-    }
+    /**
+	 * ctype
+	 *
+	 * @return  the ctype
+	 * @since   1.0.0
+	 */
 
-    public void setCtype(String ctype) {
-        this.ctype = ctype == null ? null : ctype.trim();
-    }
+	public CompanyType getCtype() {
+		return ctype;
+	}
 
-    public String getAuthstatus() {
-        return authstatus;
-    }
-
-    public void setAuthstatus(String authstatus) {
-        this.authstatus = authstatus == null ? null : authstatus.trim();
-    }
+	/**
+	 * @param ctype the ctype to set
+	 */
+	public void setCtype(CompanyType ctype) {
+		this.ctype = ctype;
+	}
 
     public String getStatus() {
         return status;
@@ -159,14 +165,6 @@ public class TCompanyInfo extends BaseBean {
 		this.tel = tel;
 	}
 
-	public String getBailstatus() {
-		return bailstatus;
-	}
-
-	public void setBailstatus(String bailstatus) {
-		this.bailstatus = bailstatus;
-	}
-
 	public String getCompanyImgIds() {
 		return companyImgIds;
 	}
@@ -174,4 +172,53 @@ public class TCompanyInfo extends BaseBean {
 	public void setCompanyImgIds(String companyImgIds) {
 		this.companyImgIds = companyImgIds == null ? null : companyImgIds.trim();
 	}
+
+	/**
+	 * authstatus
+	 *
+	 * @return  the authstatus
+	 * @since   1.0.0
+	*/
+
+	public CompanyAuthStatus getAuthstatus() {
+		return authstatus;
+	}
+
+	/**
+	 * @param authstatus the authstatus to set
+	 */
+	public void setAuthstatus(CompanyAuthStatus authstatus) {
+		this.authstatus = authstatus;
+	}
+
+	/**
+	 * bailstatus
+	 *
+	 * @return  the bailstatus
+	 * @since   1.0.0
+	*/
+
+	public CompanyBailStatus getBailstatus() {
+		return bailstatus;
+	}
+
+	/**
+	 * @param bailstatus the bailstatus to set
+	 */
+	public void setBailstatus(CompanyBailStatus bailstatus) {
+		this.bailstatus = bailstatus;
+	}
+
+    public boolean equals(Object o) {
+        if (!(o instanceof TCompanyInfo)) {
+            return false;
+        }
+
+        TCompanyInfo other = (TCompanyInfo) o;
+        if (this.getId() == null || other.getId() == null) {
+            return false;
+        }
+
+        return this.getId().equals(other.getId());
+    }
 }

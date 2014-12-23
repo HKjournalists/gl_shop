@@ -10,16 +10,18 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
+import com.appabc.bean.enums.PurseInfo.DeviceType;
+import com.appabc.bean.enums.PurseInfo.PayDirection;
+import com.appabc.bean.enums.PurseInfo.PayWay;
+import com.appabc.bean.enums.PurseInfo.TradeStatus;
+import com.appabc.bean.enums.PurseInfo.TradeType;
 import com.appabc.common.utils.DateUtil;
 import com.appabc.pay.AbstractPayTest;
+import com.appabc.pay.bean.TPassbookInfo;
 import com.appabc.pay.bean.TPassbookPay;
-import com.appabc.pay.enums.PurseInfo.DeviceType;
-import com.appabc.pay.enums.PurseInfo.ExtractStatus;
-import com.appabc.pay.enums.PurseInfo.PayDirection;
-import com.appabc.pay.enums.PurseInfo.PayWay;
-import com.appabc.pay.enums.PurseInfo.TradeType;
+import com.appabc.pay.service.local.IPassbookInfoService;
 import com.appabc.pay.service.local.IPassbookPayService;
-import com.appabc.pay.util.PrimaryKeyGenerator;
+import com.appabc.tools.utils.PrimaryKeyGenerator;
 
 /**
  * @Description : 
@@ -33,6 +35,8 @@ import com.appabc.pay.util.PrimaryKeyGenerator;
 public class PayTest extends AbstractPayTest {
 
 	@Autowired
+	private IPassbookInfoService iPassbookInfoService;
+	@Autowired
 	private IPassbookPayService iPassbookPayService;
 	@Autowired
 	private PrimaryKeyGenerator PKGenerator;
@@ -43,27 +47,36 @@ public class PayTest extends AbstractPayTest {
 	@Test
 	@Rollback(value=true)
 	public void mainTest() {
-		String cid = "CompanyInfoId000000811102014END";
-		String passId = "PASSID2014101500005104400";
-		float balance = 50000f;
+		testCase();
+	}
+	
+	public void testCase(){
+		String cid = "181120140000013";
+		String passId = "PASSID2014111800014154246";//PASSID2014111800014154246 //PASSID2014111800013154246
+		float balance = 1000000f;
 		String payno = "PAYNO0000000000003";
-		String oid = "201410160007816";
+		String oid = "";
+		
+		TPassbookInfo info = iPassbookInfoService.query(passId);
+		info.setAmount(info.getAmount()+balance);
+		iPassbookInfoService.modify(info);
+		
 		TPassbookPay pay = new TPassbookPay();
 		pay.setId(PKGenerator.generatorBusinessKeyByBid("PURSEPAYID"));
 		pay.setPassid(passId);
-		pay.setOtype(TradeType.EXTRACT_CASH_REQUEST.getValue());
+		pay.setOtype(TradeType.DEPOSIT);
 		pay.setOid(oid);
 		pay.setName(cid);
 		pay.setPayno(payno);
 		pay.setAmount(balance);
 		pay.setNeedamount(balance);
-		pay.setDirection(PayDirection.INPUT.getValue());
-		pay.setPaytype(PayWay.BANK_DEDUCT.getValue());
-		pay.setPatytime(DateUtil.getNowDate());
-		pay.setStatus(String.valueOf(ExtractStatus.REQUEST.getValue()));
+		pay.setDirection(PayDirection.INPUT);
+		pay.setPaytype(PayWay.BANK_DEDUCT);
+		pay.setPaytime(DateUtil.getNowDate());
+		pay.setStatus(TradeStatus.SUCCESS.getVal());
 		pay.setCreatedate(DateUtil.getNowDate());
 		pay.setCreator(cid);
-		pay.setDevices(DeviceType.MOBILE.getValue());
+		pay.setDevices(DeviceType.MOBILE);
 		iPassbookPayService.add(pay);
 	}
 

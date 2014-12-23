@@ -1,6 +1,8 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.ProductInfo.UnitEnum;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TProductPrice extends BaseBean {
@@ -22,7 +24,7 @@ public class TProductPrice extends BaseBean {
     /**
      * 单位
      */
-    private String unit;
+    private UnitEnum unit;
 
     /**
      * 时间点
@@ -60,14 +62,6 @@ public class TProductPrice extends BaseBean {
         this.price = price;
     }
 
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit == null ? null : unit.trim();
-    }
-
     public Date getDatepoint() {
         return datepoint;
     }
@@ -99,4 +93,22 @@ public class TProductPrice extends BaseBean {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
+
+	/**  
+	 * unit  
+	 *  
+	 * @return  the unit  
+	 * @since   1.0.0  
+	*/  
+	
+	public UnitEnum getUnit() {
+		return unit;
+	}
+
+	/**  
+	 * @param unit the unit to set  
+	 */
+	public void setUnit(UnitEnum unit) {
+		this.unit = unit;
+	}
 }

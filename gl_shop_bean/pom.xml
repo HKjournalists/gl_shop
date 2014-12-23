@@ -7,7 +7,7 @@
 		<groupId>com.appabc</groupId>
 		<artifactId>gl_shop</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../gl_shop</relativePath>
+		<relativePath>../</relativePath>
 	</parent>
 
 	<groupId>com.appabc.bean</groupId>

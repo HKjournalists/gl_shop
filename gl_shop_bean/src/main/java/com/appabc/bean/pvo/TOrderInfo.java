@@ -1,6 +1,10 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
+import com.appabc.bean.enums.ContractInfo.ContractStatus;
+import com.appabc.bean.enums.ContractInfo.ContractType;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TOrderInfo extends BaseBean {
@@ -62,17 +66,17 @@ public class TOrderInfo extends BaseBean {
     /**
      * 订单状态(订单的进行中的状态)
      */
-    private String status;
+    private ContractStatus status;
 
     /**
      * 订单的类型（未签订，已经签订）
      */
-    private String otype;
+    private ContractType otype;
 
     /**
      * 订单生命周期
      */
-    private String lifecycle;
+    private ContractLifeCycle lifecycle;
     
 	/**
      * 备注
@@ -126,24 +130,6 @@ public class TOrderInfo extends BaseBean {
 		this.updater = updater;
 	}
 
-	/**  
-	 * lifecycle  
-	 *  
-	 * @return  the lifecycle  
-	 * @since   1.0.0  
-	 */
-	
-	public String getLifecycle() {
-		return lifecycle;
-	}
-
-	/**  
-	 * @param lifecycle the lifecycle to set  
-	 */
-	public void setLifecycle(String lifecycle) {
-		this.lifecycle = lifecycle;
-	}
-	
 	public String getFid() {
         return fid;
     }
@@ -224,22 +210,6 @@ public class TOrderInfo extends BaseBean {
         this.amount = amount;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
-    }
-
-    public String getOtype() {
-        return otype;
-    }
-
-    public void setOtype(String otype) {
-        this.otype = otype == null ? null : otype.trim();
-    }
-
     public String getRemark() {
         return remark;
     }
@@ -247,4 +217,58 @@ public class TOrderInfo extends BaseBean {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	/**  
+	 * status  
+	 *  
+	 * @return  the status  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractStatus getStatus() {
+		return status;
+	}
+
+	/**  
+	 * @param status the status to set  
+	 */
+	public void setStatus(ContractStatus status) {
+		this.status = status;
+	}
+
+	/**  
+	 * lifecycle  
+	 *  
+	 * @return  the lifecycle  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractLifeCycle getLifecycle() {
+		return lifecycle;
+	}
+
+	/**  
+	 * @param lifecycle the lifecycle to set  
+	 */
+	public void setLifecycle(ContractLifeCycle lifecycle) {
+		this.lifecycle = lifecycle;
+	}
+
+	/**  
+	 * otype  
+	 *  
+	 * @return  the otype  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractType getOtype() {
+		return otype;
+	}
+
+	/**  
+	 * @param otype the otype to set  
+	 */
+	public void setOtype(ContractType otype) {
+		this.otype = otype;
+	}
 }

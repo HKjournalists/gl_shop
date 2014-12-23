@@ -9,8 +9,8 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.appabc.bean.enums.CompanyInfo;
 import com.appabc.bean.pvo.TCompanyContact;
-import com.appabc.datas.enums.CompanyInfo;
 import com.appabc.http.AbstractHttpControllerTest;
 import com.google.gson.Gson;
 
@@ -37,7 +37,7 @@ public class ContactTest extends AbstractHttpControllerTest {
 	 * 保存企业联系人
 	 */
 	public void save(){
-		request.setRequestURI("/contact/save");
+		request.setRequestURI("/copn/contact/save");
 		request.setMethod("POST");
 		
 		List<TCompanyContact> ccList = new ArrayList<TCompanyContact>();
@@ -71,7 +71,7 @@ public class ContactTest extends AbstractHttpControllerTest {
 	}
 	
 	public void getList(){
-		request.setRequestURI("/contact/getList");
+		request.setRequestURI("/copn/contact/getList");
 		request.setMethod("GET");
 		
 		request.addParameter("cid", "CompanyInfoId000000524092014END");

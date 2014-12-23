@@ -3,16 +3,17 @@
  */
 package com.appabc.datas.order;
 
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-
+import com.appabc.bean.enums.ProductInfo.UnitEnum;
 import com.appabc.bean.pvo.TOrderProductInfo;
 import com.appabc.datas.AbstractDatasTest;
 import com.appabc.datas.service.order.IOrderProductInfoService;
 
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : 杨跃红
@@ -23,17 +24,17 @@ public class OrderProductInfoTest extends AbstractDatasTest{
 
 	@Autowired
 	private IOrderProductInfoService orderProductInfoService;
-	
+
 	@Override
 	@Test
 	@Rollback(value=false)
 	public void mainTest() {
 //		addTest();
 	}
-	
+
 	public void addTest(){
 		TOrderProductInfo t = new TOrderProductInfo();
-		
+
 		t.setFid("StartId000000111092014END");
 		t.setPaddress("CD001");
 		t.setPcolor("red");
@@ -43,11 +44,11 @@ public class OrderProductInfoTest extends AbstractDatasTest{
 		t.setPtype(null);
 		t.setPremark("这个碎石不太碎");
 		t.setSid(null);
-		t.setUnit("1");
-		
+		t.setUnit(UnitEnum.UNIT_TON);
+
 		this.orderProductInfoService.add(t);
-		
+
 	}
-	
+
 
 }

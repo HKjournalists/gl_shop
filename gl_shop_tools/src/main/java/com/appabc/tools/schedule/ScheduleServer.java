@@ -6,11 +6,10 @@
  */
 package com.appabc.tools.schedule;
 
+import com.appabc.tools.schedule.utils.TaskScheduleManager;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import com.appabc.tools.schedule.utils.TaskScheduleManager;
 
 /**
  * @Description :
@@ -26,7 +25,7 @@ public class ScheduleServer {
 	protected static final Logger logUtil = Logger
 			.getLogger(ScheduleServer.class);
 
-	private static ScheduleServer instance;
+	private volatile static ScheduleServer instance;
 
 	private static ApplicationContext context;
 
@@ -36,9 +35,17 @@ public class ScheduleServer {
 
 	public static ScheduleServer getInstance() {
 		// return instance;
-		if (instance == null) {
+		/*if (instance == null) {
 			synchronized (ScheduleServer.class) {
 				instance = new ScheduleServer();
+			}
+		}
+		return instance;*/
+		if (instance == null) {
+			synchronized (ScheduleServer.class) {
+				if (instance == null) {
+					instance = new ScheduleServer();
+				}
 			}
 		}
 		return instance;

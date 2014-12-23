@@ -1,11 +1,14 @@
 package com.appabc.system.web;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.appabc.datas.system.User;
+import com.appabc.system.web.security.UserDetailsImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description :
@@ -14,31 +17,35 @@ import org.springframework.ui.ModelMap;
  * @author : zouxifeng
  * @version : 1.0 Create Date : Oct 24, 2014 1:59:25 PM
  */
-public class AbstractListBaseController {
+public abstract class AbstractListBaseController {
 
 	public final static int DEFAULT_SHOW_PAGE = 10;
 	public final static int DEFAULT_PAGE_SIZE = 20;
 	public final static String NAV_PAGING_ATTR_NAME = "paging";
 	public final static String PAGE_MORE_TEXT = "...";
-	
+
+    protected final static User getCurrentUser() {
+        return ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getRawUser();
+    }
+
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	protected int calculateStartRow(int page) {
 		return this.calculatePageCount(page, DEFAULT_PAGE_SIZE);
 	}
-	
+
 	protected int calculateStartRow(int page, int pageSize) {
 		return (page - 1) * pageSize;
 	}
-	
+
 	protected int calculatePageCount(int rowCount) {
 		return this.calculatePageCount(rowCount, DEFAULT_PAGE_SIZE);
 	}
-	
+
 	protected int calculatePageCount(int rowCount, int pageSize) {
-		return (rowCount + 1) / pageSize + 1;
+		return (rowCount - 1) / pageSize + 1;
 	}
-	
+
 	protected void calculatePagingData(ModelMap model, String urlBase,
 			int currentPage, int rowCount) {
 		calculatePagingData(model, urlBase, currentPage, rowCount, DEFAULT_PAGE_SIZE);
@@ -47,7 +54,7 @@ public class AbstractListBaseController {
 	protected void calculatePagingData(ModelMap model, String urlBase,
 			int currentPage, int rowCount, int pageSize) {
 		int pageCount = this.calculatePageCount(rowCount, pageSize);
-		List<ListPage> paging = new ArrayList<ListPage>();
+		List<ListPage> paging = new ArrayList<>();
 		model.addAttribute(NAV_PAGING_ATTR_NAME, paging);
 		if (pageCount <= 1) {
 			if (logger.isDebugEnabled()) {
@@ -68,7 +75,7 @@ public class AbstractListBaseController {
 
 		int currentPageGroup = (currentPage - 1) / showPage + 1;
 		int basePage = (currentPageGroup - 1) * showPage + 1;
-		if (currentPageGroup >= 1) {
+		if (currentPageGroup > 1) {
 			page = new ListPage();
 			page.setActive(false);
 			page.setUrl(urlBase.replace("{}", String.valueOf(basePage - showPage)));
@@ -103,7 +110,7 @@ public class AbstractListBaseController {
 		page.setUrl(urlBase.replace("{}", String.valueOf(pageCount)));
 		page.setText(lastPage);
 		paging.add(page);
-		
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("Page groups: [{}], current page group: [{}], current page: [{}], base page: [{}]",
 					pageGroups, currentPageGroup, currentPage, basePage);

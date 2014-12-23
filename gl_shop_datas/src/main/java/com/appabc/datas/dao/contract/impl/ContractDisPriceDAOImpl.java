@@ -1,5 +1,16 @@
 package com.appabc.datas.dao.contract.impl;
 
+import com.appabc.bean.enums.ContractInfo.ContractDisPriceType;
+import com.appabc.bean.enums.ContractInfo.ContractOperateType;
+import com.appabc.bean.pvo.TContractDisPriceOperation;
+import com.appabc.bean.pvo.TOrderDisPrice;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.contract.IContractDisPriceDAO;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,16 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import com.appabc.bean.pvo.TContractDisPriceOperation;
-import com.appabc.bean.pvo.TOrderDisPrice;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.contract.IContractDisPriceDAO;
 
 /**
  * @Description :
@@ -36,7 +37,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 	private static final String SELECT_SQL = " SELECT CID,LID,TYPE,CANCELER,CANCELTIME,REASON,BEGINAMOUNT,ENDAMOUNT,BEGINNUM,ENDNUM,PUNREASON,PUNDAY,REMARK FROM T_ORDER_DIS_PRICE ";
 
 	private String dynamicJoinSqlWithEntity(TOrderDisPrice entity,
-			StringBuffer sql) {
+			StringBuilder sql) {
 		if (entity == null || sql == null || sql.length() <= 0) {
 			return null;
 		}
@@ -128,7 +129,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 	 * BaseBean)
 	 */
 	public TOrderDisPrice query(TOrderDisPrice entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super.query(dynamicJoinSqlWithEntity(entity, sql), entity);
 	}
@@ -153,7 +154,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 	 * .bean.BaseBean)
 	 */
 	public List<TOrderDisPrice> queryForList(TOrderDisPrice entity) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		return super
 				.queryForList(dynamicJoinSqlWithEntity(entity, sql), entity);
@@ -191,7 +192,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 
 		todp.setId(rs.getString("CID"));
 		todp.setLid(rs.getString("LID"));
-		todp.setType(rs.getInt("TYPE"));
+		todp.setType(ContractDisPriceType.enumOf(rs.getInt("TYPE")+""));
 		todp.setCanceler(rs.getString("CANCELER"));
 		todp.setCanceltime(rs.getTimestamp("CANCELTIME"));
 		todp.setReason(rs.getString("REASON"));
@@ -230,7 +231,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 	 */
 	public List<TContractDisPriceOperation> queryGoodsDisPriceHisList(
 			String contractId, String operateId, String disPriceId,String disPriceType) {
-		StringBuffer sql = new StringBuffer(
+		StringBuilder sql = new StringBuilder(
 				" SELECT too.LID as LID,too.OID as OID,too.OPERATOR as OPERATOR,too.OPERATIONTIME as OPERATIONTIME, ");
 		sql.append(" too.TYPE as TYPE, too.RESULT as RESULT,too.PLID as PLID,too.REMARK as REMARK, ");
 		sql.append(" todp.CID as CID,todp.LID as DLID,todp.TYPE as DTYPE, todp.CANCELER as CANCELER,todp.CANCELTIME as CANCELTIME, ");
@@ -244,7 +245,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 		this.addStandardSqlWithParameter(sql, " todp.CID ", disPriceId, args);
 		this.addStandardSqlWithParameter(sql, " todp.TYPE ", disPriceType, args);
 		sql.append(" and too.TYPE in (5 , 6 , 7) ");
-		sql.append(" ORDER BY too.OPERATIONTIME ASC ");
+		sql.append(" ORDER BY too.OPERATIONTIME DESC ");
 		log.info("the sql str is : " + sql);
 		return getJdbcTemplate().query(sql.toString(), args.toArray(),
 				new RowMapper<TContractDisPriceOperation>() {
@@ -256,7 +257,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 						bean.setOid(rs.getString("OID"));
 						bean.setOperator(rs.getString("OPERATOR"));
 						bean.setOperationtime(rs.getTimestamp("OPERATIONTIME"));
-						bean.setType(rs.getString("TYPE"));
+						bean.setType(ContractOperateType.enumOf(rs.getString("TYPE")));
 						bean.setResult(rs.getString("RESULT"));
 						bean.setPlid(rs.getString("PLID"));
 						bean.setRemark(rs.getString("REMARK"));

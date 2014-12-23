@@ -15,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus;
+import com.appabc.bean.enums.AcceptBankInfo.AcceptBankStatus;
+import com.appabc.bean.enums.FileInfo;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
-import com.appabc.datas.enums.AcceptBankInfo.AcceptBankStatus;
-import com.appabc.datas.enums.FileInfo;
+import com.appabc.common.utils.RandomUtil;
 import com.appabc.datas.service.company.IAcceptBankService;
 import com.appabc.datas.service.system.IUploadImagesService;
+import com.appabc.http.utils.HttpApplicationErrorCode;
 import com.appabc.pay.bean.TAcceptBank;
 import com.appabc.tools.utils.ValidateCodeManager;
 
@@ -61,7 +64,7 @@ public class AcceptBankController extends BaseController<TAcceptBank> {
 			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "验证不能为空");
 		}else{
 			String smsCode = vcm.getSmsCode(this.getCurrentUser(request).getPhone());
-			if(code == null){
+			if(smsCode == null){
 				return this.buildFailResult(ErrorCode.ERROR_VLD_CODE, "验证码不存在或已过期");
 			}else if(!code.equals(smsCode)){
 				return this.buildFailResult(ErrorCode.ERROR_VLD_CODE, "验证码错误");
@@ -81,8 +84,13 @@ public class AcceptBankController extends BaseController<TAcceptBank> {
 		}
 		
 		abBean.setCarduserid(this.getCurrentUserId(request));
-		abBean.setStatus(AcceptBankStatus.ACCEPT_BANK_STATUS_OTHER.getVal());
-		this.acceptBankService.authApply(abBean);
+		abBean.setStatus(AcceptBankStatus.ACCEPT_BANK_STATUS_OTHER);
+		try {
+			this.acceptBankService.authApply(abBean);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		
 		return buildSuccessResult("添加成功", "");
 		
@@ -113,7 +121,12 @@ public class AcceptBankController extends BaseController<TAcceptBank> {
 		}
 		
 		abBean.setCarduserid(this.getCurrentUserId(request));
-		this.acceptBankService.reAuthApply(abBean);
+		try {
+			this.acceptBankService.reAuthApply(abBean);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		
 		return buildSuccessResult("修改成功", "");
 		
@@ -140,14 +153,12 @@ public class AcceptBankController extends BaseController<TAcceptBank> {
 		TAcceptBank ab = new TAcceptBank();
 		ab.setCid(cid);
 		if(StringUtils.isNotEmpty(authStatus)){ // 添加过滤条件，在管理页面可以查看审核中的提款人
-			ab.setAuthstatus(Integer.parseInt(authStatus));
+			ab.setAuthstatus(AcceptAuthStatus.enumOf(RandomUtil.str2int(authStatus)));
 		}
-		
 		List<TAcceptBank> list = this.acceptBankService.queryForList(ab);
 		
 		for (int i=0; i<list.size(); i++){// 图片获取
-			String url = uploadImagesService.getUrlsByOidAndOtype(list.get(i).getId(), FileInfo.FileOType.FILE_OTYPE_BANK.getVal());
-			list.get(i).setImgurl(url);
+			list.get(i).setvImgList(uploadImagesService.getViewImgsByOidAndOtype(list.get(i).getId(), FileInfo.FileOType.FILE_OTYPE_BANK.getVal()));;
 		}
 		
 		String[] filterPropertyNames = {"createtime","updatetime","creator"};
@@ -194,7 +205,12 @@ public class AcceptBankController extends BaseController<TAcceptBank> {
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "收款人ID不能为空");
 		}
 		
-		this.acceptBankService.setDefault(id);
+		try {
+			this.acceptBankService.setDefault(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		return buildSuccessResult("设置成功", "");
 		
 	}
@@ -215,9 +231,13 @@ public class AcceptBankController extends BaseController<TAcceptBank> {
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "收款人ID不能为空");
 		}
 		
-		TAcceptBank ab = this.acceptBankService.query(id);
+		try {
+			return this.acceptBankService.query(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		
-		return ab;
 		
 	}
 

@@ -1,7 +1,9 @@
 package com.appabc.pay.bean;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.PurseInfo.PurseType;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TPassbookInfo extends BaseBean {
     /**
@@ -17,13 +19,18 @@ public class TPassbookInfo extends BaseBean {
     /**
      * 保证金 或者 钱包
      */
-    private String passtype;
+    private PurseType passtype;
 
     /**
      * 总额
      */
     private Float amount;
 
+    /**
+     * 保证金是否充足
+     */
+    private boolean isGuarantyEnough;
+    
     /**
      * 创建时间
      */
@@ -33,14 +40,6 @@ public class TPassbookInfo extends BaseBean {
      * 备注
      */
     private String remark;
-
-    public String getPasstype() {
-        return passtype;
-    }
-
-    public void setPasstype(String passtype) {
-        this.passtype = passtype == null ? null : passtype.trim();
-    }
 
     public Float getAmount() {
         return amount;
@@ -81,6 +80,42 @@ public class TPassbookInfo extends BaseBean {
 	 */
 	public void setCid(String cid) {
 		this.cid = cid;
+	}
+
+	/**  
+	 * passtype  
+	 *  
+	 * @return  the passtype  
+	 * @since   1.0.0  
+	*/  
+	
+	public PurseType getPasstype() {
+		return passtype;
+	}
+
+	/**  
+	 * @param passtype the passtype to set  
+	 */
+	public void setPasstype(PurseType passtype) {
+		this.passtype = passtype;
+	}
+
+	/**  
+	 * isGuarantyEnough  
+	 *  
+	 * @return  the isGuarantyEnough  
+	 * @since   1.0.0  
+	*/  
+	
+	public boolean isGuarantyEnough() {
+		return isGuarantyEnough;
+	}
+
+	/**  
+	 * @param isGuarantyEnough the isGuarantyEnough to set  
+	 */
+	public void setGuarantyEnough(boolean isGuarantyEnough) {
+		this.isGuarantyEnough = isGuarantyEnough;
 	}
     
 }

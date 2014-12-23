@@ -27,7 +27,7 @@ public class RedisHelper {
 	}
 	
 	/**
-	 * 使用些方法获取的连接将需要自己关闭
+	 * 使用此方法获取的连接将需要自己关闭
 	 * @return
 	 */
 	public ShardedJedisPool getShardedJedisPool() {
@@ -61,27 +61,57 @@ public class RedisHelper {
 	}
 	
 	public int getInt(String key){
-		return Integer.valueOf(getString(key));
+		try {
+			return Integer.valueOf(getString(key));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
 	
 	public long getLong(String key){
-		return Long.valueOf(getString(key));
+		try {
+			return Long.valueOf(getString(key));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
 	
 	public float getFloat(String key){
-		return Float.valueOf(getString(key));
+		try {
+			return Float.valueOf(getString(key));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
 	
 	public Double getDouble(String key){
-		return Double.valueOf(getString(key));
+		try {
+			return Double.valueOf(getString(key));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return 0.0;
+		}
 	}
 	
 	public Short getShort(String key){
-		return Short.valueOf(getString(key));
+		try {
+			return Short.valueOf(getString(key));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
 	
 	public Byte getByte(String key){
-		return Byte.valueOf(getString(key));
+		try {
+			return Byte.valueOf(getString(key));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**

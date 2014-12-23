@@ -17,12 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.appabc.bean.enums.MsgInfo.MsgStatus;
 import com.appabc.bean.pvo.TSystemMessage;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
-import com.appabc.datas.enums.MsgInfo;
-import com.appabc.datas.service.system.ISystemMessageService;
+import com.appabc.http.utils.HttpApplicationErrorCode;
+import com.appabc.tools.service.system.ISystemMessageService;
 
 /**
  * @Description : 系统消息CONTROLLER
@@ -53,12 +54,18 @@ public class MsgController extends BaseController<TSystemMessage> {
 		if(StringUtils.isEmpty(cid)){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业编号不能为空");
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("qyid", cid);
+		QueryContext<TSystemMessage> qContext = initializeQueryContext(request);
+		qContext.addParameter("cid", cid);
+		try {
+			qContext = systemMessageService.queryListForPagination(qContext);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		
-		QueryContext<TSystemMessage> qContext = initializeQueryContext(request, map);
-		qContext = systemMessageService.queryListForPagination(qContext);
+		int unreadTotalSize = this.systemMessageService.getUnreadMsgCountByCid(cid);
 		
+		qContext.getQueryResult().addResoutParam("unreadTotalSize", unreadTotalSize);
 		return qContext.getQueryResult();
 	}
 	
@@ -77,9 +84,15 @@ public class MsgController extends BaseController<TSystemMessage> {
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "消息ID不能为空");
 		}
 		
-		TSystemMessage msg = this.systemMessageService.query(msgid);
+		TSystemMessage msg;
+		try {
+			msg = this.systemMessageService.query(msgid);
+			return buildFilterResultWithBean(msg);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
 		
-		return buildFilterResultWithBean(msg);
 	}
 	
 	/**
@@ -99,9 +112,14 @@ public class MsgController extends BaseController<TSystemMessage> {
 		String ids[] = msgids.split(",");
 		for(String id : ids){
 			TSystemMessage msg = this.systemMessageService.query(id);
-			msg.setStatus(MsgInfo.MsgStatus.STATUS_IS_READ_YES.getVal()); // 设置已读
+			msg.setStatus(MsgStatus.STATUS_IS_READ_YES); // 设置已读
 			msg.setReadtime(Calendar.getInstance().getTime());
-			this.systemMessageService.modify(msg);
+			try {
+				this.systemMessageService.modify(msg);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+			}
 		}
 		return buildSuccessResult("设置已读成功", "");
 	}
@@ -120,10 +138,10 @@ public class MsgController extends BaseController<TSystemMessage> {
 		if(StringUtils.isEmpty(cid)){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业编号不能为空");
 		}
-		int total = this.systemMessageService.getMsgCountByCid(cid);
+		int unreadTotalSize = this.systemMessageService.getUnreadMsgCountByCid(cid);
 		
 		Map<String, Integer> map = new  HashMap<String, Integer>();
-		map.put("total", total);
+		map.put("total", unreadTotalSize);
 		
 		return buildSuccessResult("未读消息数", map);
 	}

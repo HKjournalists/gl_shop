@@ -21,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.bean.pvo.TUser;
 import com.appabc.common.base.bean.UserInfoBean;
@@ -98,7 +100,7 @@ public abstract class AbstractHttpControllerTest {
 			logUtil.info("ContentAsString    : "+response.getContentAsString());
 			logUtil.info("CharacterEncoding  : "+response.getCharacterEncoding());
 			logUtil.info("######################Junit Test SpringMVC Controller End###########################");
-		}catch(Exception e){}
+		}catch(Exception e){e.printStackTrace();}
 	}
 	
 	public ApplicationContext getApplicationContext() {
@@ -140,8 +142,8 @@ public abstract class AbstractHttpControllerTest {
 		user.setCid(cid);
 		
 		ci.setCname("abc公司");
-		ci.setAuthstatus("1");
-		ci.setCtype("1");
+		ci.setAuthstatus(CompanyAuthStatus.enumOf("1"));
+		ci.setCtype(CompanyType.enumOf("1"));
 		
 		
 		UserInfoBean ut = this.userTokenManager.saveUserToken(user, ci);

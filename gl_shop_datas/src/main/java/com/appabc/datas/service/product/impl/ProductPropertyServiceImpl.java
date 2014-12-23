@@ -3,19 +3,18 @@
  */
 package com.appabc.datas.service.product.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.pvo.TProductProperty;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.product.IProductPropertyDao;
+import com.appabc.datas.service.product.IProductPropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TProductProperty;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.product.IProductPropertyDao;
-import com.appabc.datas.service.product.IProductPropertyService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 商品属性SERVICE实现
@@ -41,6 +40,7 @@ public class ProductPropertyServiceImpl implements IProductPropertyService{
 	}
 
 	public void delete(TProductProperty entity) {
+		this.productPropertyDao.delete(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -48,7 +48,7 @@ public class ProductPropertyServiceImpl implements IProductPropertyService{
 	}
 
 	public TProductProperty query(TProductProperty entity) {
-		return null;
+		return this.productPropertyDao.query(entity);
 	}
 
 	public TProductProperty query(Serializable id) {
@@ -60,12 +60,12 @@ public class ProductPropertyServiceImpl implements IProductPropertyService{
 	}
 
 	public List<TProductProperty> queryForList(Map<String, ?> args) {
-		return null;
+		return this.productPropertyDao.queryForList(args);
 	}
 
 	public QueryContext<TProductProperty> queryListForPagination(
 			QueryContext<TProductProperty> qContext) {
-		return null;
+		return this.productPropertyDao.queryListForPagination(qContext);
 	}
 
 }

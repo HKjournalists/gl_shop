@@ -1,6 +1,8 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.OrderFindInfo.OrderItemEnum;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TOrderFindItem extends BaseBean {
@@ -42,7 +44,7 @@ public class TOrderFindItem extends BaseBean {
     /**
      * 状态
      */
-    private Integer status;
+    private OrderItemEnum status;
 
     /**
      * 处理时间
@@ -105,12 +107,22 @@ public class TOrderFindItem extends BaseBean {
         this.dealtime = dealtime;
     }
 
-	public Integer getStatus() {
+	/**  
+	 * status  
+	 *  
+	 * @return  the status  
+	 * @since   1.0.0  
+	*/  
+	
+	public OrderItemEnum getStatus() {
 		return status;
 	}
 
-	public void setStatus(Integer status) {
+	/**  
+	 * @param status the status to set  
+	 */
+	public void setStatus(OrderItemEnum status) {
 		this.status = status;
 	}
-    
+
 }

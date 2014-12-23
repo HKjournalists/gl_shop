@@ -26,6 +26,7 @@ import com.appabc.datas.service.codes.IPublicCodesService;
  */
 @Controller
 @RequestMapping(value = "/codes")
+@Deprecated
 public class PublicCodesController extends BaseController<TPublicCodes> {
 	
 	@Autowired
@@ -58,7 +59,7 @@ public class PublicCodesController extends BaseController<TPublicCodes> {
 	public Object getGoods(HttpServletRequest request,HttpServletResponse response){
 		
 		TPublicCodes t = new TPublicCodes();
-		t.setCode(SystemConstant.CODE_GOODS);
+		t.setCode(SystemConstant.CODE_GOODS_TYPE);
 		
 		return this.publicCodesService.queryForList(t);
 	}

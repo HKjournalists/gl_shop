@@ -1,10 +1,11 @@
 package com.appabc.datas.service.contract;
 
-import java.util.List;
-
 import com.appabc.bean.pvo.TOrderCancel;
 import com.appabc.common.base.exception.BaseException;
 import com.appabc.common.base.service.IBaseService;
+import com.appabc.datas.exception.ServiceException;
+
+import java.util.List;
 
 /**
  * @Description : 
@@ -17,19 +18,33 @@ import com.appabc.common.base.service.IBaseService;
 
 public interface IContractCancelService extends IBaseService<TOrderCancel> {
 
-	/*最终取消合同*/
-	void singleCancelContract(String contractId,String userId,String userName) throws BaseException;
+	/**
+	 * @Description 最终取消合同
+	 * @param contractId,userId,userName
+	 * @return void
+	 * @since 1.0
+	 * @throws BaseException
+	 * @author Bill Huang
+	 * */
+	void singleCancelContract(String contractId,String userId,String userName) throws ServiceException;
 	
 	/**
-	 * description : 双方多次取消合同
+	 * @Description 双方多次取消合同
 	 * @param contractId,userId,userName
 	 * @return 0是一方确认取消合同, 1是双方确认取消合同
-	 * @since 
+	 * @since 1.0
+	 * @throws BaseException
 	 * @author Administrator
 	 * */
-	int multiCancelContract(String contractId,String userId,String userName) throws BaseException;
+	int multiCancelContract(String contractId,String userId,String userName) throws ServiceException;
 	
-	/*通过合同编号获取取消列表信息*/
+	/**
+	 * @Description 通过合同编号获取取消列表信息
+	 * @param oid
+	 * @return List<TOrderCancel>
+	 * @since 1.0
+	 * @author Bill Huang
+	 * */
 	List<TOrderCancel> getCancelContractListByOID(String oid);
 	
 }

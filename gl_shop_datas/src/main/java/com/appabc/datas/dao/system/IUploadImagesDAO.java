@@ -14,4 +14,11 @@ import com.appabc.common.base.dao.IBaseDao;
 
 public interface IUploadImagesDAO extends IBaseDao<TUploadImages> {
 	
+	/**
+	 * 统计引用同一个文件的记录
+	 * @param fPath
+	 * @return
+	 */
+	public int getCountByFpath(String fPath);
+	
 }

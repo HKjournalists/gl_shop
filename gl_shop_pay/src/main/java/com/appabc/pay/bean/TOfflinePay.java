@@ -1,7 +1,12 @@
 package com.appabc.pay.bean;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.PurseInfo.BusinessType;
+import com.appabc.bean.enums.PurseInfo.OnOffLine;
+import com.appabc.bean.enums.PurseInfo.PurseType;
+import com.appabc.bean.enums.PurseInfo.TradeStatus;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TOfflinePay extends BaseBean {
     /**  
@@ -25,7 +30,7 @@ public class TOfflinePay extends BaseBean {
     /**
      * 保证金、货款
      */
-    private String otype;
+    private PurseType otype;
 
     /**
      * 应收金额
@@ -40,7 +45,7 @@ public class TOfflinePay extends BaseBean {
     /**
      * 线上、线下（主要线下）
      */
-    private String ptype;
+    private OnOffLine ptype;
 
     /**
      * 收款人
@@ -50,12 +55,12 @@ public class TOfflinePay extends BaseBean {
     /**
      * 收款时间
      */
-    private Date creattime;
+    private Date createtime;
 
     /**
      * 状态
      */
-    private String status;
+    private TradeStatus status;
 
     /**
      * 处理人员
@@ -75,7 +80,7 @@ public class TOfflinePay extends BaseBean {
     /**
      * 业务类型[支付和充值]
      */
-    private String btype;
+    private BusinessType btype;
 
     public String getPid() {
         return pid;
@@ -91,14 +96,6 @@ public class TOfflinePay extends BaseBean {
 
     public void setOid(String oid) {
         this.oid = oid == null ? null : oid.trim();
-    }
-
-    public String getOtype() {
-        return otype;
-    }
-
-    public void setOtype(String otype) {
-        this.otype = otype == null ? null : otype.trim();
     }
 
     public Float getTotal() {
@@ -117,36 +114,12 @@ public class TOfflinePay extends BaseBean {
         this.amount = amount;
     }
 
-    public String getPtype() {
-        return ptype;
-    }
-
-    public void setPtype(String ptype) {
-        this.ptype = ptype == null ? null : ptype.trim();
-    }
-
     public String getCreater() {
         return creater;
     }
 
     public void setCreater(String creater) {
         this.creater = creater == null ? null : creater.trim();
-    }
-
-    public Date getCreattime() {
-        return creattime;
-    }
-
-    public void setCreattime(Date creattime) {
-        this.creattime = creattime;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
     }
 
     public String getDealer() {
@@ -173,11 +146,94 @@ public class TOfflinePay extends BaseBean {
         this.dealresult = dealresult == null ? null : dealresult.trim();
     }
 
-    public String getBtype() {
-        return btype;
-    }
+	/**  
+	 * otype  
+	 *  
+	 * @return  the otype  
+	 * @since   1.0.0  
+	*/  
+	
+	public PurseType getOtype() {
+		return otype;
+	}
 
-    public void setBtype(String btype) {
-        this.btype = btype == null ? null : btype.trim();
-    }
+	/**  
+	 * @param otype the otype to set  
+	 */
+	public void setOtype(PurseType otype) {
+		this.otype = otype;
+	}
+
+	/**  
+	 * ptype  
+	 *  
+	 * @return  the ptype  
+	 * @since   1.0.0  
+	*/  
+	
+	public OnOffLine getPtype() {
+		return ptype;
+	}
+
+	/**  
+	 * @param ptype the ptype to set  
+	 */
+	public void setPtype(OnOffLine ptype) {
+		this.ptype = ptype;
+	}
+
+	/**  
+	 * btype  
+	 *  
+	 * @return  the btype  
+	 * @since   1.0.0  
+	*/  
+	
+	public BusinessType getBtype() {
+		return btype;
+	}
+
+	/**  
+	 * @param btype the btype to set  
+	 */
+	public void setBtype(BusinessType btype) {
+		this.btype = btype;
+	}
+
+	/**  
+	 * status  
+	 *  
+	 * @return  the status  
+	 * @since   1.0.0  
+	*/  
+	
+	public TradeStatus getStatus() {
+		return status;
+	}
+
+	/**  
+	 * @param status the status to set  
+	 */
+	public void setStatus(TradeStatus status) {
+		this.status = status;
+	}
+
+	/**  
+	 * createtime  
+	 *  
+	 * @return  the createtime  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getCreatetime() {
+		return createtime;
+	}
+
+	/**  
+	 * @param createtime the createtime to set  
+	 */
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
+
 }

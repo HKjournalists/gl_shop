@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+  <title>编辑 - 认证信息审核</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 编辑 - 认证信息审核
+</h4>
+
+<div layout:fragment="pageContent">
+
+  <form id="auditForm" method="post" class="form-horizontal" data-enable-shim="true">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
+    <div class="nav-tab-content">
+      <div class="well">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th width="33%">用户ID</th>
+              <th width="33%">申请认证类型</th>
+              <th width="33%">申请提交时间</th>
+            </tr>
+            <tr>
+              <td><a th:href="@{/company/{cid}/info/(cid=${task.company.id})}" th:text="${task.company.id}">18666662520</a></td>
+              <td th:text="${task.company.ctype.text}">企业</td>
+              <td th:text="${#calendars.format(task.createTime, 'YYYY年M月d日')}">2014年11月30日</td>
+            </tr>
+          </table>
+        </div>
+        <div th:each="img : ${auth_images}" class="row">
+          <div class="col-sm-5">
+            <img th:src="@{${img.url}}" />
+          </div>
+        </div>
+        <div id="auditButtonBar" class="row">
+          <button id="btnAuditPass" type="button" class="btn btn-primary">审核通过</button>
+          <button id="btnAuditFail" type="button" class="btn btn-default">审核不通过</button>
+        </div>
+
+        <div class="form-group" th:if="${#strings.equals(type, 'create')}">
+          <label for="password" class="col-sm-2 control-label">密码</label>
+          <div class="col-sm-4">
+            <input pattern=".{8,20}" type="password" class="form-control" id="password" name="password" th:value="${user.password}" placeholder="输入密码" required="required" title="密码长度8-20个字符" />
+          </div>
+          <div class="col-sm-6 help-inline">
+            <div class="error" role="alert" data-validation-message-for="password"></div>
+          </div>
+        </div>
+        <div class="form-group" th:if="${#strings.equals(type, 'create')}">
+          <label for="confirmPassword" class="col-sm-2 control-label">确认密码</label>
+          <div class="col-sm-4">
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" th:value="${user.password}" placeholder="确认密码" required="required" title="两次密码不一致" />
+          </div>
+          <div id="auditFailRemark" style="display: none">
+            <div class="row">
+              <textarea id="remark" name="remark" type="text" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="row">
+              <button id="btnAuditFailSubmit" type="button" class="btn btn-primary">提交</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Modal -->
+  <div class="modal fade" id="auditConfirmDialog" tabindex="-1" role="dialog" aria-labelledby="accountAudit" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="accountAudit">认证信息审核</h4>
+        </div>
+        <div class="modal-body">
+          <span th:text="${task.company.cname}"></span>
+          <p id="dialogContent">确认审核通过？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button id="btnDialogOk" type="button" class="btn btn-primary">确定</button>
+        </div>
+      </div>
+    </div>
+</div><!-- /modal end -->
+
+</div>
+
+<script layout:fragment="inlineJavascript">
+var url = /*[[@{/tasks/editor/verify_info_audit/detail/{id}/(id=${task.id})}]]*/ '/tasks/editor/verify_info_audit/detail/100/pass/';
+
+$('#btnAuditPass').click(function() {
+    $('#dialogContent').html('确认审核通过？');
+    $('#auditConfirmDialog').modal('show');
+    $('#btnDialogOk').click(function(evt) {
+        $('#auditConfirmDialog').modal('hide');
+        $('#auditForm').attr('action', url + 'pass/');
+        $('#auditForm').submit();
+    });
+});
+$('#btnAuditFail').click(function() {
+    $('#dialogContent').html('确认审核不通过？');
+    $('#auditConfirmDialog').modal('show');
+    $('#btnDialogOk').click(function(evt) {
+        console.log('Audit failed.');
+        $('#auditConfirmDialog').modal('hide');
+        $('#auditButtonBar').hide();
+        $('#auditFailRemark').show();
+        $('#auditForm').attr('action', url + 'fail/');
+        $('#auditForm').submit();
+        // TODO: need to be implemented.
+    });
+});
+
+$('#btnAuditFailSubmit').click(function() {
+    if ($('textarea[name=remark]').val() === '') {
+        alert('请输入审核不通过原因');
+        return;
+    }
+    $('#auditForm').attr('action', url + 'fail/');
+    $('#auditForm').submit();
+});
+</script>
+</body>
+
+</html>

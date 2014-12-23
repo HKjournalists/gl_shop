@@ -3,23 +3,22 @@
  */
 package com.appabc.datas.service.company.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-
+import com.appabc.bean.enums.CompanyInfo;
+import com.appabc.bean.pvo.TCompanyContact;
+import com.appabc.bean.pvo.TCompanyInfo;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.company.ICompanyContactDao;
+import com.appabc.datas.dao.company.ICompanyInfoDao;
+import com.appabc.datas.service.company.ICompanyContactService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.appabc.bean.pvo.TCompanyContact;
-import com.appabc.bean.pvo.TCompanyInfo;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.company.ICompanyContactDao;
-import com.appabc.datas.dao.company.ICompanyInfoDao;
-import com.appabc.datas.enums.CompanyInfo;
-import com.appabc.datas.service.company.ICompanyContactService;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description : 企业联系人service实现
@@ -49,6 +48,7 @@ public class CompanyContactServiceImpl implements ICompanyContactService {
 				cc.setCname(entity.getCname());
 				cc.setCphone(entity.getCphone());
 				cc.setTel(entity.getTel());
+				cc.setStatus(entity.getStatus());
 				companyContactDao.update(cc);
 				
 				// 将默认联系人更新企业信息表中
@@ -67,6 +67,7 @@ public class CompanyContactServiceImpl implements ICompanyContactService {
 	}
 
 	public void delete(TCompanyContact entity) {
+		this.companyContactDao.query(entity);
 	}
 
 	public void delete(Serializable id) {
@@ -86,12 +87,12 @@ public class CompanyContactServiceImpl implements ICompanyContactService {
 	}
 
 	public List<TCompanyContact> queryForList(Map<String, ?> args) {
-		return null;
+		return this.companyContactDao.queryForList(args);
 	}
 
 	public QueryContext<TCompanyContact> queryListForPagination(
 			QueryContext<TCompanyContact> qContext) {
-		return null;
+		return this.companyContactDao.queryListForPagination(qContext);
 	}
 
 }

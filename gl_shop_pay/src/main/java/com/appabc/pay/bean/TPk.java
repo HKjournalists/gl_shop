@@ -1,7 +1,8 @@
 package com.appabc.pay.bean;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.common.base.bean.BaseBean;
 
 public class TPk extends BaseBean {
     /**

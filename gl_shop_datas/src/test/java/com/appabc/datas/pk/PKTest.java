@@ -1,22 +1,21 @@
 package com.appabc.datas.pk;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-
 import com.appabc.bean.pvo.TPk;
 import com.appabc.common.utils.RandomUtil;
 import com.appabc.datas.AbstractDatasTest;
 import com.appabc.tools.service.pk.IPKService;
 import com.appabc.tools.utils.PrimaryKeyGenerator;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : 黄建华
@@ -28,15 +27,15 @@ public class PKTest extends AbstractDatasTest {
 
 	@Autowired
 	private IPKService service;
-	
+
 	@Autowired
 	private PrimaryKeyGenerator prkg;
-	
+
 	private Map<Integer,Boolean> runningStatus = new HashMap<Integer,Boolean>();
-	
+
 	private boolean isRunning = false;
-	/* (non-Javadoc)  
-	 * @see com.appabc.datas.AbstractDatasTest#mainTest()  
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.AbstractDatasTest#mainTest()
 	 */
 	@Test
 	@Rollback(value=true)
@@ -44,7 +43,7 @@ public class PKTest extends AbstractDatasTest {
 		//testInsertTPK();
 		//testThreadGetId();
 	}
-	
+
 	void testThreadGetId(){
 		isRunning = true;
 		long start = System.currentTimeMillis();
@@ -55,7 +54,7 @@ public class PKTest extends AbstractDatasTest {
 				public void run() {
 					testR();
 					runningStatus.put(index, true);
-					
+
 					for(Entry<Integer, Boolean> entry : runningStatus.entrySet()){
 						if(!entry.getValue()){
 							return;
@@ -73,16 +72,16 @@ public class PKTest extends AbstractDatasTest {
 				e.printStackTrace();
 			}
 		}
-		
+
 		long end = System.currentTimeMillis();
 		System.out.println("Use the time :  "+(end-start));
 	}
-	
+
 	void testR(){
 		String key = prkg.generatorBusinessKeyByBid("TESTID");
 		log.fatal(key);
 	}
-	
+
 	void testInsertTPK(){
 		TPk entity = new TPk();
 		entity.setId(RandomUtil.getUUID());

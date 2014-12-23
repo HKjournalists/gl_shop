@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/finance">
+<head>
+  <title>财务处理 - 账户审核</title>
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 财务处理 - 账户审核
+</h4>
+
+<div layout:fragment="pageContent">
+
+  <div th:replace="finance/fragments :: account_audit_tabs"></div>
+
+  <div class="nav-tab-content">
+    <div class="tab-pane fade in active">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>用户ID</th>
+            <th>企业名称</th>
+            <th>新增加收款人姓名</th>
+            <th>申请提交时间</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="acct : ${bankAccounts}">
+            <td><a th:href="@{/company/{cid}/info/(cid=${acct.cid})}" th:text="${acct.cid}">18666662520</a></td>
+            <td th:text="${acct.company.cname}">靖江商业有限公司</td>
+            <td th:text="${acct.carduser}">张三</td>
+            <td th:text="${#calendars.format(acct.createtime, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+            <td><a th:href="@{/finance/account_audit/pending/{id}/audit/(id=${acct.id})}">开始审核</a></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(bankAccounts)}">
+            <td colspan="5">暂时没有未审核的提款帐号</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div th:replace="layouts/fragments :: pagingNavBar"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

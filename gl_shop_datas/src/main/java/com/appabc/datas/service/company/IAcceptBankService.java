@@ -1,10 +1,11 @@
 package com.appabc.datas.service.company;
 
+import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.service.IBaseService;
 import com.appabc.pay.bean.TAcceptBank;
 
 /**
- * @Description : 
+ * @Description :
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 江苏国立网络技术有限公司
  * @author      : 黄建华
@@ -13,13 +14,13 @@ import com.appabc.pay.bean.TAcceptBank;
  */
 
 public interface IAcceptBankService extends IBaseService<TAcceptBank> {
-	
+
 	/**
 	 * 提款人认证申请
 	 * @param abBean
 	 */
 	public void authApply(TAcceptBank abBean);
-	
+
 	/**
 	 * 设置默认提款人
 	 * @param id
@@ -32,4 +33,17 @@ public interface IAcceptBankService extends IBaseService<TAcceptBank> {
 	 */
 	void reAuthApply(TAcceptBank abBean);
 
+	/**
+	 * 审核通过
+	 * @param abBean
+	 */
+	void authPass(TAcceptBank abBean, String auditor);
+
+	/**
+	 * 审核不通过
+	 * @param abBean
+	 */
+	void authFail(TAcceptBank abBean, String auditor);
+
+	QueryContext<TAcceptBank> queryListForAuthFinished(QueryContext<TAcceptBank> queryContext);
 }

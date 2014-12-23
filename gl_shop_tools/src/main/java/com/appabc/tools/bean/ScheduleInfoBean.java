@@ -6,9 +6,9 @@
  */
 package com.appabc.tools.bean;
 
-import java.util.Date;
-
 import com.appabc.common.base.bean.BaseBean;
+
+import java.util.Date;
 
 /**
  * @Description : 

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Review id="data代码审查">
+  <ReviewIssue id="I3L7HLJL">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-12 :: 15:01:08:817 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-12 :: 15:01:37:614 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="461">src/main/java/com/appabc/datas/service/contract/impl/ContractInfoServiceImpl.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>这个判断逻辑置前</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3L7O2XM">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-12 :: 15:06:11:290 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-12 :: 15:06:33:009 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="578">src/main/java/com/appabc/datas/service/contract/impl/ContractInfoServiceImpl.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>一个SQL应该就可以搞</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+  <ReviewIssue id="I3L7QDSD">
+    <ReviewIssueMeta>
+      <CreationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-12 :: 15:07:58:669 CST</CreationDate>
+      <LastModificationDate format="yyyy-MM-dd :: HH:mm:ss:SSS z">2014-12-12 :: 15:08:40:009 CST</LastModificationDate>
+    </ReviewIssueMeta>
+    <ReviewerId>刘剑</ReviewerId>
+    <AssignedTo>刘剑</AssignedTo>
+    <File line="626">src/main/java/com/appabc/datas/service/contract/impl/ContractInfoServiceImpl.java</File>
+    <Type>item.label.unset</Type>
+    <Severity>item.label.unset</Severity>
+    <Summary>这个查询方式非常妨碍代码阅读，能否形成一个单独的方法</Summary>
+    <Description></Description>
+    <Annotation></Annotation>
+    <Revision></Revision>
+    <Resolution>item.label.unset</Resolution>
+    <Status>item.status.label.open</Status>
+  </ReviewIssue>
+</Review>

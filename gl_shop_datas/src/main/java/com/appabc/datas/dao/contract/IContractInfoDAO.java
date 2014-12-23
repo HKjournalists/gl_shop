@@ -38,4 +38,11 @@ public interface IContractInfoDAO extends IBaseDao<TOrderInfo> {
 	 */
 	int countByBuyerAndSeller(String buyerid, String sellerid);
 
+	/**
+	 * 获取询单被撮合的次数
+	 * @param fid
+	 * @return
+	 */
+	int getMatchingNumByFid(String fid);
+
 }

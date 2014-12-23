@@ -1,5 +1,6 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.ProductInfo.UnitEnum;
 import com.appabc.common.base.bean.BaseBean;
 
 public class TProductInfo extends BaseBean {
@@ -37,18 +38,31 @@ public class TProductInfo extends BaseBean {
      * 产地
      */
     private String paddress;
-
+    
     /**
      * 单位
      */
-    private String unit;
+    private UnitEnum unit;
 
     /**
      * 备注
      */
     private String remark;
+    
+    /**
+     * 序号
+     */
+    private Integer orderno;
 
-    public String getPname() {
+    public Integer getOrderno() {
+		return orderno;
+	}
+
+	public void setOrderno(Integer orderno) {
+		this.orderno = orderno;
+	}
+
+	public String getPname() {
         return pname;
     }
 
@@ -96,15 +110,15 @@ public class TProductInfo extends BaseBean {
         this.paddress = paddress == null ? null : paddress.trim();
     }
 
-    public String getUnit() {
-        return unit;
-    }
+    public UnitEnum getUnit() {
+		return unit;
+	}
 
-    public void setUnit(String unit) {
-        this.unit = unit == null ? null : unit.trim();
-    }
+	public void setUnit(UnitEnum unit) {
+		this.unit = unit;
+	}
 
-    public String getRemark() {
+	public String getRemark() {
         return remark;
     }
 

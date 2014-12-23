@@ -12,7 +12,7 @@ import com.appabc.common.base.dao.IBaseDao;
  * @version : 1.0 Create Date : 2014年8月23日 下午3:49:02
  */
 
-public interface IToolUserDao extends IBaseDao<TUser>{
+public interface IToolUserDao extends IBaseDao<TUser> {
 	
 	/**
 	 * 根据用户名和密码查询用户

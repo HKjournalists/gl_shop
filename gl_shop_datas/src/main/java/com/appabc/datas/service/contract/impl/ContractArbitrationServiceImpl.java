@@ -1,28 +1,28 @@
 package com.appabc.datas.service.contract.impl;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.appabc.bean.enums.ContractInfo.ContractOperateType;
 import com.appabc.bean.pvo.TOrderArbitration;
 import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderOperations;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.service.BaseService;
-import com.appabc.common.utils.MessagesUtil;
 import com.appabc.datas.dao.contract.IContractArbitrationDAO;
 import com.appabc.datas.dao.contract.IContractInfoDAO;
 import com.appabc.datas.dao.contract.IContractOperationDAO;
-import com.appabc.datas.enums.ContractInfo.ContractLifeCycle;
-import com.appabc.datas.enums.ContractInfo.ContractOperateType;
-import com.appabc.datas.enums.ContractInfo.ContractStatus;
+import com.appabc.datas.exception.ServiceException;
 import com.appabc.datas.service.contract.IContractArbitrationService;
+import com.appabc.datas.tool.DataSystemConstant;
 import com.appabc.tools.utils.PrimaryKeyGenerator;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description :
@@ -47,21 +47,28 @@ public class ContractArbitrationServiceImpl extends
 
 	@Autowired
 	private PrimaryKeyGenerator pKGenerator;
+	
+	private String getKey(String bid){
+		if(StringUtils.isEmpty(bid)){
+			return StringUtils.EMPTY;
+		}
+		return pKGenerator.getPKey(bid);
+	}
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#add(com.appabc.common.base
 	 * .bean.BaseBean)
 	 */
 	public void add(TOrderArbitration entity) {
-		entity.setId(pKGenerator.generatorBusinessKeyByBid("CONTRACTARBITRATIONID"));
+		entity.setId(getKey(DataSystemConstant.CONTRACTARBITRATIONID));
 		iContractArbitrationDAO.save(entity);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#modify(com.appabc.common.
 	 * base.bean.BaseBean)
@@ -72,7 +79,7 @@ public class ContractArbitrationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#delete(com.appabc.common.
 	 * base.bean.BaseBean)
@@ -83,7 +90,7 @@ public class ContractArbitrationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#delete(java.io.Serializable)
 	 */
@@ -93,7 +100,7 @@ public class ContractArbitrationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#query(com.appabc.common.base
 	 * .bean.BaseBean)
@@ -104,7 +111,7 @@ public class ContractArbitrationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#query(java.io.Serializable)
 	 */
@@ -114,7 +121,7 @@ public class ContractArbitrationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#queryForList(com.appabc.common
 	 * .base.bean.BaseBean)
@@ -125,7 +132,7 @@ public class ContractArbitrationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#queryForList(java.util.Map)
 	 */
@@ -135,7 +142,7 @@ public class ContractArbitrationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.appabc.common.base.service.IBaseService#queryListForPagination(com
 	 * .appabc.common.base.QueryContext)
@@ -147,37 +154,50 @@ public class ContractArbitrationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.datas.service.contract.IContractArbitrationService#
 	 * toContractArbitration(java.lang.String, java.lang.String)
 	 */
 	@Transactional(rollbackFor = Exception.class)
 	public TOrderArbitration toContractArbitration(String contractId,
-			String operator,String operatorName) {
+			String operator,String operatorName) throws ServiceException{
 		// step 1 : update the contract info;
 		TOrderInfo contract = iContractInfoDAO.query(contractId);
 		Date now = new Date();
-		contract.setStatus(ContractStatus.DOING.getValue());
-		contract.setLifecycle(ContractLifeCycle.ARBITRATION.getValue());
+		/*contract.setStatus(ContractStatus.DOING);
+		contract.setLifecycle(ContractLifeCycle.ARBITRATION);
 		contract.setUpdater(operator);
 		contract.setUpdatetime(now);
-		iContractInfoDAO.update(contract);
+		iContractInfoDAO.update(contract);*/
 		// step 2 : save the operation info to operation table;
+		
+		/*operate.setOid(contractId);
+		operate.setOperator(operator);
+		operate.setType(ContractOperateType.CONSULTING_SERVICE);
+		List<TOrderOperations> res = iContractOperationDAO.queryForList(operate);
+		if(CollectionUtils.isNotEmpty(res)){
+			throw new ServiceException("您已经操作过了,不能重复咨询客服.");
+		}*/
 		StringBuffer result = new StringBuffer(operatorName);
-		result.append(MessagesUtil.getMessage("TOCONTRACTARBITRATIONTIPS"));
+		result.append("合同在");
+		result.append(contract.getLifecycle().getText());
+		result.append("环节,");
+		result.append(ContractOperateType.CONSULTING_SERVICE.getText());
+		result.append("成功.");
+		//result.append(MessagesUtil.getMessage("TOCONTRACTARBITRATIONTIPS"));
 		TOrderOperations operate = new TOrderOperations();
-		operate.setId(pKGenerator.generatorBusinessKeyByBid("CONTRACTOPERATIONID"));
+		operate.setId(getKey(DataSystemConstant.CONTRACTOPERATIONID));
 		operate.setOid(contractId);
 		operate.setOperator(operator);
 		operate.setOperationtime(now);
-		operate.setType(ContractOperateType.ARBITRATION_CONTRACT.getValue());
-		operate.setOrderstatus(ContractLifeCycle.ARBITRATION.getValue());
+		operate.setType(ContractOperateType.CONSULTING_SERVICE);
+		operate.setOrderstatus(contract.getLifecycle());
 		operate.setResult(result.toString());
 		operate.setRemark(result.toString());
 		iContractOperationDAO.save(operate);
 		// step 3 : save the arbitration to the arbitration table;
 		TOrderArbitration arbitration = new TOrderArbitration();
-		arbitration.setId(pKGenerator.generatorBusinessKeyByBid("CONTRACTARBITRATIONID"));
+		arbitration.setId(getKey(DataSystemConstant.CONTRACTARBITRATIONID));
 		arbitration.setLid(operate.getId());
 		arbitration.setCreater(operator);
 		arbitration.setCreatetime(now);
@@ -189,7 +209,7 @@ public class ContractArbitrationServiceImpl extends
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.appabc.datas.service.contract.IContractArbitrationService#
 	 * getContractArbitrationHistroy(java.lang.String)
 	 */

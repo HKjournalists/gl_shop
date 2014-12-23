@@ -29,11 +29,13 @@
 	
 	<mvc:interceptors>
 		<bean class="com.appabc.http.interceptor.GlobalValidationInterceptor">
+		    <!-- 不需要过滤的目录,不需要签名加密验证和登录验证 -->
 			<property name="notAuthDirList">
-				<value>/css/;/js/;/images/;/res/;/html/;/auth/;/user/;/codes/;/product/;/order/open/;/smscode/;/imgcode/;/sync/</value>
+				<value>/css/;/js/;/images/;/res/;/html/;/file/upload</value>
 			</property>
+			<!-- 不需要过滤的目录地址,需要签名和加密,但不需要登录的地址 -->
 			<property name="notAuthUrlList">
-				<value>/login;/logout;/index;/noAuthUrl</value>
+				<value>/login;/logout;/index;/noAuthUrl;/auth/;/user/;/codes/;/product/;/order/open/;/smscode/;/imgcode/;/sync/;/copn/getCompanyInfo</value>
 			</property>
 			<property name="userTokenManager" ref="userTokenManager" />
 		</bean>
@@ -44,7 +46,8 @@
             <list>
             	 <bean id="DateConverter" class="com.appabc.common.spring.DateConverter">
 					<property name="pattern" value="yyyy-MM-dd HH:mm:ss" />
-				</bean>   
+				</bean>
+				<bean class="com.appabc.common.spring.EnumConverterFactory" />   
             </list>    
         </property>
 	</bean>

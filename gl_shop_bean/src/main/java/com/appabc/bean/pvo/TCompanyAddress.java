@@ -1,5 +1,10 @@
 package com.appabc.bean.pvo;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.appabc.bean.bo.ViewImgsBean;
+import com.appabc.bean.enums.CompanyInfo.AddressStatus;
 import com.appabc.common.base.bean.BaseBean;
 
 public class TCompanyAddress extends BaseBean {
@@ -41,7 +46,7 @@ public class TCompanyAddress extends BaseBean {
     /**
      * 状态（默认的卸货地址）
      */
-    private Integer status;
+    private AddressStatus status;
     
     /**
      * 实际吃水深度
@@ -50,9 +55,20 @@ public class TCompanyAddress extends BaseBean {
     
     private String addressImgIds; //  缺货地点图片ID，多个ID用逗号间隔
     
-    private String addressImgUrls; //  缺货地点图片路径，多个URL用逗号间隔
+    /**
+     * 用于显示的图片信息
+     */
+    private List<ViewImgsBean> vImgList = new ArrayList<ViewImgsBean>();
 
-    public String getCid() {
+    public List<ViewImgsBean> getvImgList() {
+		return vImgList;
+	}
+
+	public void setvImgList(List<ViewImgsBean> vImgList) {
+		this.vImgList = vImgList;
+	}
+
+	public String getCid() {
         return cid;
     }
 
@@ -100,14 +116,6 @@ public class TCompanyAddress extends BaseBean {
         this.deep = deep;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
 	public Float getRealdeep() {
 		return realdeep;
 	}
@@ -124,11 +132,22 @@ public class TCompanyAddress extends BaseBean {
 		this.addressImgIds = addressImgIds;
 	}
 
-	public String getAddressImgUrls() {
-		return addressImgUrls;
+	/**  
+	 * status  
+	 *  
+	 * @return  the status  
+	 * @since   1.0.0  
+	*/  
+	
+	public AddressStatus getStatus() {
+		return status;
 	}
 
-	public void setAddressImgUrls(String addressImgUrls) {
-		this.addressImgUrls = addressImgUrls;
+	/**  
+	 * @param status the status to set  
+	 */
+	public void setStatus(AddressStatus status) {
+		this.status = status;
 	}
+
 }

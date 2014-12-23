@@ -26,6 +26,7 @@ public class AddressTest extends AbstractHttpControllerTest {
 	public void mainTest() {
 //		loginSimulation("", "", "");
 //		queryList();
+//		getInfo();
 		
 	}
 	
@@ -36,6 +37,23 @@ public class AddressTest extends AbstractHttpControllerTest {
 		
 		/***企业信息*********************/
 		request.addParameter("cid", "CompanyInfoId000000811102014END"); // 企业ID
+		
+		
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void getInfo(){
+		
+		request.setRequestURI("/copn/address/getInfo");
+		request.setMethod("GET");
+		
+		/***企业信息*********************/
+		request.addParameter("id", "7"); // 企业ID
 		
 		
 		try {

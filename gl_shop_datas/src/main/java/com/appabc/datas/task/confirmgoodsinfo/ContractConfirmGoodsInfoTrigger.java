@@ -6,9 +6,9 @@
  */
 package com.appabc.datas.task.confirmgoodsinfo;
 
-import java.text.ParseException;
-
 import com.appabc.tools.schedule.utils.BaseCronTrigger;
+
+import java.text.ParseException;
 
 
 /**
@@ -34,7 +34,7 @@ public class ContractConfirmGoodsInfoTrigger extends BaseCronTrigger {
 		super();
 		this.setName(NAME);
 		this.setGroup(GROUP);
-		setCronExpression("0 0/10 14 18 * ?");
+		setCronExpression("0 0/10 * * * ?");
 	}
 	
 	public ContractConfirmGoodsInfoTrigger(String jobName,String jobGroup,String cronExpression) throws ParseException{

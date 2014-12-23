@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/company">
+<head>
+  <title>交易行为 - 当前交易</title>
+</head>
+<body>
+
+  <h4 layout:fragment="contentNavTitle">
+    <i class="fa fa-fw fa-wrench"></i> 交易行为 / 当前交易 </h4>
+
+    <div layout:fragment="pageContent">
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <i class="fa fa-bar-chart-o fa-fw"></i> 进行中交易
+        </div>
+        <div class="panel-body">
+          <div class="table-responsive" th:remove="${#lists.isEmpty(transactions)}">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th width="20%">当前状态<select id="transType" class="form-control">
+                    <option value="0">全部</option>
+                    <option value="1">正在发布</option>
+                    <option value="2">合同状态</option>
+                    <option value="3">交易状态</option>
+                  </select></th>
+                  <th width="50%">内容</th>
+                  <th width="15%">当前进度</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="trans : ${transactions}">
+                  <td th:text="${trans.contract.state.text}">发布信息状态</td>
+                  <td th:text="${trans.subject}">求购黄沙50吨</td>
+                  <td th:text="${trans.progress.text}">等待签订</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row" th:if="${list.isEmpty(transactions)}">
+            <p>没有查询到交易记录</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+
+  </html>

@@ -1,54 +1,66 @@
 package com.appabc.http.controller.contract;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import com.appabc.bean.bo.ContractInfoBean;
+import com.appabc.bean.bo.MoreAreaInfos;
+import com.appabc.bean.bo.OrderAllInfor;
+import com.appabc.bean.enums.ContractInfo.ContractDisPriceType;
+import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
+import com.appabc.bean.enums.ContractInfo.ContractOperateType;
+import com.appabc.bean.enums.ContractInfo.ContractStatus;
 import com.appabc.bean.pvo.TCompanyEvaluation;
 import com.appabc.bean.pvo.TContractDisPriceOperation;
 import com.appabc.bean.pvo.TOrderDisPrice;
 import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderOperations;
+import com.appabc.bean.pvo.TPublicCodes;
 import com.appabc.bean.pvo.TUser;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.bean.UserInfoBean;
 import com.appabc.common.base.controller.BaseController;
-import com.appabc.common.base.exception.BaseException;
+import com.appabc.common.utils.CheckResult;
+import com.appabc.common.utils.ErrorCode;
 import com.appabc.common.utils.MessagesUtil;
 import com.appabc.common.utils.RandomUtil;
 import com.appabc.common.utils.pagination.PageModel;
-import com.appabc.datas.enums.ContractInfo.ContractDisPriceType;
-import com.appabc.datas.enums.ContractInfo.ContractLifeCycle;
-import com.appabc.datas.enums.ContractInfo.ContractOperateType;
 import com.appabc.datas.exception.ServiceException;
+import com.appabc.datas.service.codes.IPublicCodesService;
 import com.appabc.datas.service.company.ICompanyEvaluationService;
 import com.appabc.datas.service.contract.IContractArbitrationService;
 import com.appabc.datas.service.contract.IContractCancelService;
 import com.appabc.datas.service.contract.IContractDisPriceService;
 import com.appabc.datas.service.contract.IContractInfoService;
 import com.appabc.datas.service.contract.IContractOperationService;
+import com.appabc.datas.service.order.IOrderFindService;
 import com.appabc.datas.service.user.IUserService;
 import com.appabc.http.utils.HttpApplicationErrorCode;
 import com.appabc.tools.utils.ValidateCodeManager;
+
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 /**
  * @Description  : 合同相关的接口信息
@@ -85,7 +97,29 @@ public class ContractController extends BaseController<TOrderInfo> {
 	private IUserService iUserService;
 	
 	@Autowired
+	private IOrderFindService iOrderFindService;
+	
+	@Autowired
+	private IPublicCodesService iPublicCodesService;
+	
+	@Autowired
 	private ValidateCodeManager validateCodeManager;
+	
+	@Autowired
+    private FreeMarkerConfigurer freeMarkerConfigurer;
+	
+	private int getBusinessExceptionErrorCode(ServiceException se,int defaultCode){
+		if(se == null){
+			return defaultCode;
+		}
+		return se.getErrorCode()!=ErrorCode.GENERIC_ERROR_CODE ? se.getErrorCode() : defaultCode;
+	}
+	
+	private CheckResult getBuildFailureResult(ServiceException se,int defaultCode){
+		int errorCode = this.getBusinessExceptionErrorCode(se, defaultCode);
+		return buildFailResult(errorCode, se.getMessage());
+	}
+	
 	/**
 	 * getContractListForPage(获取合同信息列表，根据分页信息)
 	 * 
@@ -104,7 +138,7 @@ public class ContractController extends BaseController<TOrderInfo> {
 		QueryContext<ContractInfoBean> qContext = new QueryContext<ContractInfoBean>();
 		PageModel page = initilizePageParams(qContext.getPage(), request);
 		qContext.setPage(page);
-		qContext.setParameters(buildParametersToMap(qContext.getParameters(), request));
+		qContext.setParameters(buildParametersToMap(request));
 		qContext.addParameter("cid", this.getCurrentUserCid(request));
 		qContext = iContractInfoService.queryContractInfoListForPagination(qContext);
 		return qContext.getQueryResult().getResult();
@@ -155,24 +189,18 @@ public class ContractController extends BaseController<TOrderInfo> {
 		CNBean.setSellerStatus(sellerOperatorList != null&&sellerOperatorList.size()>0 ? sellerOperatorList.get(0) : null);
 		List<TOrderOperations> buyerOperatorList = iContractOperationService.queryForListWithOIDAndOper(id, CNBean.getBuyerid());
 		CNBean.setBuyerStatus(buyerOperatorList != null&&buyerOperatorList.size()>0 ? buyerOperatorList.get(0) : null);
-		if (StringUtils.equalsIgnoreCase(CNBean.getLifecycle(),
-				ContractLifeCycle.SIMPLE_CHECKING.getValue())
-				|| StringUtils.equalsIgnoreCase(CNBean.getLifecycle(),
-						ContractLifeCycle.SIMPLE_CHECKED.getValue())){
+		if (CNBean.getLifecycle() == ContractLifeCycle.SIMPLE_CHECKING || CNBean.getLifecycle() == ContractLifeCycle.SIMPLE_CHECKED){
 			//抽样中/抽样通过： 返回第一次议价列表
-			List<?> sample_check_list = iContractDisPriceService.getGoodsDisPriceHisList(id, StringUtils.EMPTY, StringUtils.EMPTY, ContractDisPriceType.SAMPLE_CHECK.getValue());
-			CNBean.setDisPriceList(sample_check_list);
-		} else if (StringUtils.equalsIgnoreCase(CNBean.getLifecycle(),
-				ContractLifeCycle.FULL_TAKEOVERING.getValue())
-				|| StringUtils.equalsIgnoreCase(CNBean.getLifecycle(),
-						ContractLifeCycle.FULL_TAKEOVERED.getValue())){
+			List<?> sampleCheckList = iContractDisPriceService.getGoodsDisPriceHisList(id, StringUtils.EMPTY, StringUtils.EMPTY, ContractDisPriceType.SAMPLE_CHECK.getVal());
+			CNBean.setSampleCheckDisPriceList(sampleCheckList);
+		} else if (CNBean.getLifecycle() == ContractLifeCycle.FULL_TAKEOVERING || CNBean.getLifecycle() == ContractLifeCycle.FULL_TAKEOVERED){
 			//全量抽样中/全量抽样通过：返回第一次议价的最后一条，和 第二议价的列表
-			List<TContractDisPriceOperation> sample_check_list = iContractDisPriceService.getGoodsDisPriceHisList(id, StringUtils.EMPTY, StringUtils.EMPTY, ContractDisPriceType.SAMPLE_CHECK.getValue());
-			List<TContractDisPriceOperation> full_takeover_list = iContractDisPriceService.getGoodsDisPriceHisList(id, StringUtils.EMPTY, StringUtils.EMPTY, ContractDisPriceType.FULL_TAKEOVER.getValue());
-			List<TContractDisPriceOperation> list = new ArrayList<TContractDisPriceOperation>();
-			list.add(sample_check_list.get(sample_check_list.size()-1));
-			list.addAll(full_takeover_list);
-			CNBean.setDisPriceList(list);
+			List<TContractDisPriceOperation> sampleCheckList = iContractDisPriceService.getGoodsDisPriceHisList(id, StringUtils.EMPTY, StringUtils.EMPTY, ContractDisPriceType.SAMPLE_CHECK.getVal());
+			List<TContractDisPriceOperation> fullTakeoverList = iContractDisPriceService.getGoodsDisPriceHisList(id, StringUtils.EMPTY, StringUtils.EMPTY, ContractDisPriceType.FULL_TAKEOVER.getVal());
+			if(!CollectionUtils.isEmpty(sampleCheckList)){
+				CNBean.setSampleCheckDisPriceList(Collections.singletonList(sampleCheckList.get(sampleCheckList.size()-1)));
+			}
+			CNBean.setFullTakeoverDisPriceList(fullTakeoverList);
 		}
 		return CNBean;
 	}
@@ -190,18 +218,19 @@ public class ContractController extends BaseController<TOrderInfo> {
 	@RequestMapping(value = "/toConfirmContract",method=RequestMethod.POST)
 	public Object toConfirmContract(HttpServletRequest request,HttpServletResponse response){
 		String id = request.getParameter("OID");
-		UserInfoBean uib = this.getCurrentUser(request);
-		String updater = uib.getCid();
-		String updaterName = uib.getCname();
 		if (StringUtils.isEmpty(id)) {
 			return this.buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_ID_IS_NULL"));
 		}
+		UserInfoBean uib = this.getCurrentUser(request);
+		String updater = uib.getCid();
+		String updaterName = uib.getCname();
 		try {//这里需要去扣除保证金操作
-			int i = iContractInfoService.toConfirmContract(id, updater,updaterName);
-			return buildSuccessResult(MessagesUtil.getMessage("CONTRACTCONFIRMSUCCESSTIPS"),i);
+			//int i = iContractInfoService.toConfirmContract(id, updater,updaterName);
+			List<TOrderOperations> result = iContractInfoService.toConfirmContractRetOperator(id, updater, updaterName);
+			return buildSuccessResult(MessagesUtil.getMessage("CONTRACTCONFIRMSUCCESSTIPS"),result);
 		} catch (ServiceException e) {
 			e.printStackTrace();
-			return buildFailResult(HttpApplicationErrorCode.CONTRACT_CONFIRM_CONTRACT_ERROR, e.getMessage());
+			return getBuildFailureResult(e,HttpApplicationErrorCode.CONTRACT_CONFIRM_CONTRACT_ERROR);
 		}
 	}
 	
@@ -231,8 +260,8 @@ public class ContractController extends BaseController<TOrderInfo> {
 			//order operation and change the contract status and life cycle
 			iContractInfoService.payContractFundsOffline(id, buyer, getCurrentUser(request).getCname());
 			return buildSuccessResult(MessagesUtil.getMessage("PAYCONTRACTFUNDSTIPS"));
-		} catch (Exception e) {
-			return buildFailResult(HttpApplicationErrorCode.CONTRACT_PAY_ERROR, e.getMessage());
+		} catch (ServiceException e) {
+			return getBuildFailureResult(e,HttpApplicationErrorCode.CONTRACT_PAY_ERROR);
 		}
 	}
 	
@@ -249,6 +278,9 @@ public class ContractController extends BaseController<TOrderInfo> {
 	@RequestMapping(value = "/payContractFundsOnline",method=RequestMethod.POST)
 	public Object payContractFundsOnline(HttpServletRequest request,HttpServletResponse response){
 		String id = request.getParameter("OID");
+		if (StringUtils.isEmpty(id)) {
+			return this.buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_ID_IS_NULL"));
+		}
 		String validateCode = request.getParameter("validateCode");
 		if (StringUtils.isEmpty(validateCode)) {
 			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,"验证码不能为空.");
@@ -256,7 +288,7 @@ public class ContractController extends BaseController<TOrderInfo> {
 		UserInfoBean userInfoBean = this.getCurrentUser(request);
 		String smsCode = validateCodeManager.getSmsCode(userInfoBean.getPhone());
 		if(!StringUtils.equalsIgnoreCase(validateCode, smsCode)){
-			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,"验证码过期.");
+			return buildFailResult(HttpApplicationErrorCode.ERROR_VLD_CODE,"验证码过期.");
 		}
 		String password = request.getParameter("password");
 		if (StringUtils.isEmpty(password)) {
@@ -267,14 +299,13 @@ public class ContractController extends BaseController<TOrderInfo> {
 		if(user==null){
 			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,"用户密码不对.");
 		}
-		if (StringUtils.isEmpty(id)) {
-			return this.buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_ID_IS_NULL"));
-		}
 		try {
 			iContractInfoService.payContractFunds(id, userInfoBean.getCid(), userInfoBean.getCname());
+			//业务操作完成,删除前面的的手机验证.
+			validateCodeManager.delSmsCode(userInfoBean.getPhone());
 			return buildSuccessResult(MessagesUtil.getMessage("PAYCONTRACTFUNDSTIPS"));
-		} catch (BaseException e) {
-			return buildFailResult(HttpApplicationErrorCode.CONTRACT_PAY_ERROR, e.getMessage());
+		} catch (ServiceException e) {
+			return getBuildFailureResult(e,HttpApplicationErrorCode.CONTRACT_PAY_ERROR);
 		}
 	}
 	
@@ -293,9 +324,11 @@ public class ContractController extends BaseController<TOrderInfo> {
 		QueryContext<ContractInfoBean> qContext = new QueryContext<ContractInfoBean>();
 		PageModel page = initilizePageParams(qContext.getPage(), request);
 		qContext.setPage(page);
-		qContext.setParameters(buildParametersToMap(qContext.getParameters(), request));
-		qContext.addParameter("lifecycle", ContractLifeCycle.SINGED.getValue());
+		qContext.setParameters(buildParametersToMap(request));
+		qContext.addParameter("lifecycle", ContractLifeCycle.SINGED.getVal());
 		qContext.addParameter("cid", this.getCurrentUserCid(request));
+		qContext.addParameter("status", ContractStatus.DOING.getVal());
+		qContext.addParameter("isUnPayContractList", true);
 		//qContext = iContractInfoService.queryListForPagination(qContext);
 		qContext = iContractInfoService.queryContractInfoListForPagination(qContext);
 		return qContext.getQueryResult().getResult();
@@ -318,17 +351,68 @@ public class ContractController extends BaseController<TOrderInfo> {
 			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_ID_IS_NULL"));
 		}
 		ContractInfoBean contractInfo = iContractInfoService.getContractInfoById(getCurrentUserCid(request),id);
-		@SuppressWarnings("deprecation")
-		String rourse = request.getRealPath(MessagesUtil.getMessage("CONTRACTTEMPLATEPATH"));
+		List<TOrderOperations> sellerOperatorList = iContractOperationService.queryForListWithOIDAndOper(id, contractInfo.getSellerid());
+		contractInfo.setSellerStatus(CollectionUtils.isEmpty(sellerOperatorList) ? null : sellerOperatorList.get(0));
+		List<TOrderOperations> buyerOperatorList = iContractOperationService.queryForListWithOIDAndOper(id, contractInfo.getBuyerid());
+		contractInfo.setBuyerStatus(CollectionUtils.isEmpty(buyerOperatorList) ? null : buyerOperatorList.get(0));
+		Map<String,Object> model = new HashMap<String,Object>();
+		model.put("contract", contractInfo);
+		if(StringUtils.isNotEmpty(contractInfo.getFid())){
+			OrderAllInfor oaif = iOrderFindService.queryInfoById(contractInfo.getFid(), null);
+			List<MoreAreaInfos> moreAreaInfos = oaif.getMoreAreaInfos();
+			if(CollectionUtils.isEmpty(moreAreaInfos)){
+				//区域
+				if(oaif != null&&StringUtils.isNotEmpty(oaif.getArea())){
+					TPublicCodes entity = new TPublicCodes();
+					entity.setCode("RIVER_SECTION");
+					entity.setVal(oaif.getArea());
+					entity = iPublicCodesService.query(entity);
+					if(StringUtils.isNotEmpty(entity.getName())){
+						oaif.setArea(entity.getName());
+					}
+				}
+				//种类
+				if(oaif != null&&StringUtils.isNotEmpty(oaif.getPtype())){
+					TPublicCodes entity = new TPublicCodes();
+					entity.setCode("GOODS");
+					entity.setVal(oaif.getPtype());
+					entity = iPublicCodesService.query(entity);
+					if(StringUtils.isNotEmpty(entity.getName())){
+						oaif.setPtype(entity.getName());
+					}
+				}
+			}
+			model.put("orderFind", oaif);
+		}
 		try {
-			String content = FileUtils.readFileToString(new File(rourse));
+			/*String rourse = request.getRealPath(MessagesUtil.getMessage("CONTRACTTEMPLATEPATH"));
+			String fileContent = FileUtils.readFileToString(new File(rourse));
+			try {
+				String md5Str = BaseCoder.encryptMD5(fileContent);
+				log.info(md5Str);
+			} catch (Exception e) {
+				log.error(e);
+				e.printStackTrace();
+			}*/
 			//here need to format the contract info.
-			String base64Str = Base64Utils.encodeToString(content.getBytes()); 
+			Template template = freeMarkerConfigurer.getConfiguration().getTemplate("template/ContractTemplate.html");
+			String content = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+			Properties prop = System.getProperties();
+			Enumeration<Object> enums =  prop.keys();
+			while(enums.hasMoreElements()){
+				String key = enums.nextElement().toString();
+				log.debug(key+" ==K==V== "+System.getProperty(key));
+			}
+			log.debug(content);
+			String base64Str = Base64Utils.encodeToString(content.getBytes("UTF-8")); 
 			Map<String,Object> retVal = new HashMap<String,Object>();
 			retVal.put("template", base64Str);
 			retVal.put("bean", contractInfo);
 			return retVal;
 		} catch (IOException e) {
+			log.debug(e.getMessage(), e);
+			return buildFailResult(HttpApplicationErrorCode.CONTRACT_DETAIL_TEMPLATE_ISNULL, e.getMessage());
+		} catch (TemplateException e) {
 			log.debug(e.getMessage(), e);
 			return buildFailResult(HttpApplicationErrorCode.CONTRACT_DETAIL_TEMPLATE_ISNULL, e.getMessage());
 		}
@@ -376,8 +460,8 @@ public class ContractController extends BaseController<TOrderInfo> {
 		try {
 			iContractCancelService.singleCancelContract(id,canceler,uib.getCname());
 			return buildSuccessResult(MessagesUtil.getMessage("CONTRACTCANCELSUCCESSTIPS"));
-		} catch (BaseException e) {
-			return buildFailResult(HttpApplicationErrorCode.CONTACT_SINGLE_CANCEL_ERROR, e.getMessage());
+		} catch (ServiceException e) {
+			return getBuildFailureResult(e,HttpApplicationErrorCode.CONTRACT_SINGLE_CANCEL_ERROR);
 		}
 	}
 	
@@ -403,8 +487,8 @@ public class ContractController extends BaseController<TOrderInfo> {
 		try {
 			i = iContractCancelService.multiCancelContract(id, canceler,uib.getCname());
 			return buildSuccessResult(MessagesUtil.getMessage("CONTRACTCANCELSUCCESSTIPS"),i);
-		} catch (BaseException e) {
-			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE, e.getMessage());
+		} catch (ServiceException e) {
+			return getBuildFailureResult(e,HttpApplicationErrorCode.RESULT_ERROR_CODE);
 		}
 	}
 	
@@ -471,9 +555,9 @@ public class ContractController extends BaseController<TOrderInfo> {
 			return this.buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_APPLY_RESULT_ISNULL"));
 		}
 		if (!StringUtils.equalsIgnoreCase(operate,
-				ContractOperateType.APPLY_DISPRICE.getValue())
+				ContractOperateType.APPLY_DISPRICE.getVal())
 				&& !StringUtils.equalsIgnoreCase(operate,
-						ContractOperateType.VALIDATE_PASS.getValue())) {
+						ContractOperateType.VALIDATE_PASS.getVal())) {
 			return buildFailResult(
 					HttpApplicationErrorCode.PARAMETER_IS_NULL,
 					MessagesUtil.getMessage("CONTRACT_INVALIDATION_TYPE"));
@@ -481,8 +565,12 @@ public class ContractController extends BaseController<TOrderInfo> {
 		//if the fid is null, so the operator interface is first time.
 		String fid = request.getParameter("fid");
 		UserInfoBean uib = getCurrentUser(request);
-		TOrderOperations too = iContractOperationService.applyOrPassGoodsInfo(contractId, operate, fid, uib.getCid(),uib.getCname());
-		return buildSuccessResult(MessagesUtil.getMessage("OPERATESUCCESSTIPS"),too);
+		try {
+			TOrderOperations too = iContractOperationService.applyOrPassGoodsInfo(contractId, operate, fid, uib.getCid(),uib.getCname());
+			return buildSuccessResult(MessagesUtil.getMessage("OPERATESUCCESSTIPS"),too);
+		} catch (ServiceException e) {
+			return getBuildFailureResult(e,HttpApplicationErrorCode.CONTRACT_PAY_ERROR);
+		}
 	}
 	
 	/**
@@ -499,6 +587,20 @@ public class ContractController extends BaseController<TOrderInfo> {
 	public Object validateGoodsDisPrice(HttpServletRequest request,HttpServletResponse response){
 		//contract id
 		String contractId = request.getParameter("OID");
+		if(StringUtils.isEmpty(contractId)){
+			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_ID_IS_NULL"));
+		}
+		TOrderInfo contract = this.iContractInfoService.query(contractId);
+		if(contract == null){
+			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_ID_IS_NULL"));
+		}
+		//first dis price no need to the dis num.
+		boolean isFirstDisPrice = true;
+		if (ContractLifeCycle.PAYED_FUNDS == contract.getLifecycle()
+				|| ContractLifeCycle.SENT_GOODS == contract.getLifecycle()
+				|| ContractLifeCycle.SIMPLE_CHECKING == contract.getLifecycle()) {
+			isFirstDisPrice = false;
+		}
 		//operation table id
 		String operateId = request.getParameter("LID");
 		String disPrice = request.getParameter("disPrice");
@@ -513,7 +615,8 @@ public class ContractController extends BaseController<TOrderInfo> {
 		if(StringUtils.isEmpty(disPrice) || !NumberUtils.isNumber(disPrice)){
 			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_DISPRICE_ISNULL"));
 		}
-		if(StringUtils.isEmpty(disNum) || !NumberUtils.isNumber(disNum)){
+		//first dis price no need to the dis num.
+		if(isFirstDisPrice && (StringUtils.isEmpty(disNum) || !NumberUtils.isNumber(disNum))){
 			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_DISNUM_ISNULL"));
 		}
 		UserInfoBean uib = getCurrentUser(request);
@@ -530,8 +633,12 @@ public class ContractController extends BaseController<TOrderInfo> {
 		dPrice.setRemark(remark);
 		dPrice.setEndamount(RandomUtil.str2float(disPrice));
 		dPrice.setEndnum(RandomUtil.str2float(disNum));
-		iContractDisPriceService.validateGoodsDisPrice(contractId,uib.getCname(),dPrice);
-		return buildSuccessResult(MessagesUtil.getMessage("OPERATESUCCESSTIPS"),dPrice);
+		try {
+			iContractDisPriceService.validateGoodsDisPrice(contractId,uib.getCname(),dPrice);
+			return buildSuccessResult(MessagesUtil.getMessage("OPERATESUCCESSTIPS"),dPrice);
+		} catch (ServiceException e) {
+			return getBuildFailureResult(e,HttpApplicationErrorCode.CONTRACT_VALIDATE_GOODS_DIS_PRICE);
+		}
 	}
 	
 	/**
@@ -552,8 +659,8 @@ public class ContractController extends BaseController<TOrderInfo> {
 		if(StringUtils.isEmpty(contractId)){
 			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_ID_IS_NULL"));
 		}
-		List<?> sample_check_list = iContractDisPriceService.getGoodsDisPriceHisList(contractId, operateId, disPriceId, ContractDisPriceType.SAMPLE_CHECK.getValue());
-		List<?> full_takeover_list = iContractDisPriceService.getGoodsDisPriceHisList(contractId, operateId, disPriceId, ContractDisPriceType.FULL_TAKEOVER.getValue());
+		List<?> sample_check_list = iContractDisPriceService.getGoodsDisPriceHisList(contractId, operateId, disPriceId, ContractDisPriceType.SAMPLE_CHECK.getVal());
+		List<?> full_takeover_list = iContractDisPriceService.getGoodsDisPriceHisList(contractId, operateId, disPriceId, ContractDisPriceType.FULL_TAKEOVER.getVal());
 		if(CollectionUtils.isEmpty(sample_check_list)&&CollectionUtils.isEmpty(full_takeover_list)){
 			return new Object[]{};
 		}else{			
@@ -582,7 +689,7 @@ public class ContractController extends BaseController<TOrderInfo> {
 			this.iContractOperationService.confirmUninstallGoods(contractId, uib.getCid(),uib.getCname());
 			return buildSuccessResult(MessagesUtil.getMessage("CONTRACTCONFIRMUNINSTALLGOODS"));
 		} catch (ServiceException e) {
-			return buildFailResult(HttpApplicationErrorCode.CONTRACT_CONFIRM_UNINSTALLGOODS_ERROR, e.getMessage());
+			return getBuildFailureResult(e,HttpApplicationErrorCode.CONTRACT_CONFIRM_UNINSTALLGOODS_ERROR);
 		}
 	}
 	
@@ -607,7 +714,7 @@ public class ContractController extends BaseController<TOrderInfo> {
 			iContractInfoService.validateGoodsInfo(contractId, uib.getCid(),uib.getCname());
 			return buildSuccessResult(MessagesUtil.getMessage("CONTRACTVALIDATEGOODSINFO"));
 		} catch (ServiceException e) {
-			return buildFailResult(HttpApplicationErrorCode.CONTRACT_CONFIRM_RECEIVEGOODS_ERROR, e.getMessage());
+			return getBuildFailureResult(e,HttpApplicationErrorCode.CONTRACT_CONFIRM_RECEIVEGOODS_ERROR);
 		}
 		
 	}
@@ -629,8 +736,12 @@ public class ContractController extends BaseController<TOrderInfo> {
 			return buildFailResult(HttpApplicationErrorCode.PARAMETER_IS_NULL,MessagesUtil.getMessage("CONTRACT_ID_IS_NULL"));
 		}
 		UserInfoBean uib = getCurrentUser(request);
-		iContractArbitrationService.toContractArbitration(contractId, uib.getCid(),uib.getCname());
-		return buildSuccessResult(MessagesUtil.getMessage("OPERATESUCCESSTIPS"));
+		try {
+			iContractArbitrationService.toContractArbitration(contractId, uib.getCid(),uib.getCname());
+			return buildSuccessResult(MessagesUtil.getMessage("OPERATESUCCESSTIPS"));
+		} catch (ServiceException e) {
+			return getBuildFailureResult(e,HttpApplicationErrorCode.CONTRACT_CONSULTING_SERVICE_ERROR);
+		}
 	}
 	
 	/**
@@ -714,12 +825,12 @@ public class ContractController extends BaseController<TOrderInfo> {
 			iCompanyEvaluationService.toEvaluateContract(creater,uib.getCname(),bean);
 			return buildSuccessResult(MessagesUtil.getMessage("CONTRACTEVALUATESUCCESSTIPS"));
 		} catch (ServiceException e) {
-			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+			return getBuildFailureResult(e,HttpApplicationErrorCode.RESULT_ERROR_CODE);
 		}
 	}
 	
 	/**
-	 * getEvaluationContractList(评价合同接口)
+	 * getEvaluationContractList(评价合同接口,请见NoAuthUrlController里面的方法)
 	 * 
 	 * @param request,response
 	 * @author Bill huang
@@ -727,8 +838,9 @@ public class ContractController extends BaseController<TOrderInfo> {
 	 * @exception
 	 * @since 1.0.0
 	 */
-	@ResponseBody
-	@RequestMapping(value = "/getEvaluationContractList",method={RequestMethod.POST,RequestMethod.GET})
+	//@ResponseBody
+	//@RequestMapping(value = "/getEvaluationContractList",method={RequestMethod.POST,RequestMethod.GET})
+	@Deprecated
 	public Object getEvaluationContractList(HttpServletRequest request,HttpServletResponse response){
 		String id = request.getParameter("ID");
 		if (StringUtils.isEmpty(id)) {
@@ -753,8 +865,8 @@ public class ContractController extends BaseController<TOrderInfo> {
 	}
 	
 	@Deprecated
-	@ResponseBody
-	@RequestMapping(value = "/saveContractDetail")
+	//@ResponseBody
+	//@RequestMapping(value = "/saveContractDetail")
 	public Object saveContractDetail(TOrderInfo orderInfo,HttpServletRequest request,HttpServletResponse response){
 		Date now = new Date();
 		
@@ -765,8 +877,8 @@ public class ContractController extends BaseController<TOrderInfo> {
 	}
 	
 	@Deprecated
-	@ResponseBody
-	@RequestMapping(value = "/updateContractDetail")
+	//@ResponseBody
+	//@RequestMapping(value = "/updateContractDetail")
 	public Object updateContractDetail(HttpServletRequest request,HttpServletResponse response){
 		String id = request.getParameter("OID");
 		if (StringUtils.isEmpty(id)) {
@@ -779,8 +891,8 @@ public class ContractController extends BaseController<TOrderInfo> {
 	}
 	
 	@Deprecated
-	@ResponseBody
-	@RequestMapping(value = "/deleteContractDetail")
+	//@ResponseBody
+	//@RequestMapping(value = "/deleteContractDetail")
 	public Object deleteContractDetail(HttpServletRequest request,HttpServletResponse response){
 		/* here parameter need to get from request */
 		String id = request.getParameter("userId");

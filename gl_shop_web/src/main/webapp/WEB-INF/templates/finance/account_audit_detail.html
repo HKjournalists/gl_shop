@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/finance">
+<head>
+  <title>财务处理 - 账户审核</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 财务处理 - 账户审核
+</h4>
+
+<div layout:fragment="pageContent">
+
+  <div th:replace="finance/fragments :: account_audit_tabs"></div>
+
+    <div class="nav-tab-content">
+      <div class="well">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th width="15%">用户ID</th>
+              <td width="35%" th:text="${account.company.id}">18666662520</td>
+              <th width="15%">开户行</th>
+              <td width="35%" th:text="${account.bankname}">18666662520</td>
+            </tr>
+            <tr>
+              <th>支行名称</th>
+              <td th:text="${account.bankname}">深圳科技园支行</td>
+              <th>银行卡号</th>
+              <td th:text="${account.bankcard}">6225 8878 2017 7521</td>
+            </tr>
+          </table>
+        </div>
+        <div th:each="img : ${account.vImgList}" class="row">
+          <div class="col-sm-5">
+            <img th:src="@{${img.url}}" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-5">
+            <ul>
+              <li th:text="${account.remark}">未通过的理由</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+
+</body>
+
+</html>
