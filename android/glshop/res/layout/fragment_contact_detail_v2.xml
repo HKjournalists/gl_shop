@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical"
+    android:padding="@dimen/buy_item_padding" >
+
+    <!-- 合同地址及对方资料 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical|right"
+        android:padding="@dimen/buy_item_padding" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_address"
+            android:contentDescription="@null" />
+
+        <Button
+            android:id="@+id/btn_discharge_addr"
+            style="@style/button_small_white2"
+            android:padding="3dp"
+            android:text="合同交易地址"
+            android:textColor="@color/gray" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/ic_view_info"
+            android:contentDescription="@null" />
+
+        <Button
+            android:id="@+id/btn_view_profile"
+            style="@style/button_small_white2"
+            android:padding="3dp"
+            android:text="查看对方资料"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selector_item_single"
+        android:gravity="center_vertical"
+        android:padding="@dimen/buy_item_padding" >
+
+        <WebView
+            android:id="@+id/wv_contract_detail_model"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</LinearLayout>

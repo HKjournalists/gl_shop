@@ -75,6 +75,7 @@ public abstract class BaseMenuDialog<T, V> extends BaseDialog implements OnItemC
 
 	public void setMenuType(int type) {
 		this.mMenuType = type;
+		setDialogType(type);
 	}
 
 	public BasicAdapter<MenuItemInfo> getAdapter() {
@@ -101,7 +102,7 @@ public abstract class BaseMenuDialog<T, V> extends BaseDialog implements OnItemC
 		case R.id.dialog_btn_confirm:
 			mBtnConfirm.setClickable(false);
 			if (callback != null && checkResult()) {
-				callback.onConfirm(getResult());
+				callback.onConfirm(mDialogType, getResult());
 			}
 			closeDialog();
 			break;
@@ -109,7 +110,7 @@ public abstract class BaseMenuDialog<T, V> extends BaseDialog implements OnItemC
 		case R.id.dialog_btn_cancel:
 			mBtnCancel.setClickable(false);
 			if (callback != null) {
-				callback.onCancel();
+				callback.onCancel(mDialogType);
 			}
 			closeDialog();
 			break;
@@ -120,7 +121,7 @@ public abstract class BaseMenuDialog<T, V> extends BaseDialog implements OnItemC
 	public void onBackPressed() {
 		super.onBackPressed();
 		if (callback != null) {
-			callback.onCancel();
+			callback.onCancel(mDialogType);
 		}
 	}
 

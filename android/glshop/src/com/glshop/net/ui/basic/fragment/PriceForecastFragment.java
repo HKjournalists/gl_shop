@@ -19,7 +19,7 @@ import com.glshop.net.logic.cache.DataCenter;
 import com.glshop.net.logic.cache.DataCenter.DataType;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.ui.basic.BasicFragment;
-import com.glshop.net.ui.basic.adapter.ForecastPriceAdapter;
+import com.glshop.net.ui.basic.adapter.buy.ForecastPriceAdapter;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
 import com.glshop.platform.api.DataConstants.ProductType;
 import com.glshop.platform.api.DataConstants.SysCfgCode;

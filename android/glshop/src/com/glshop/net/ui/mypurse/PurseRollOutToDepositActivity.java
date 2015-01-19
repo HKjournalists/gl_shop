@@ -51,9 +51,6 @@ public class PurseRollOutToDepositActivity extends BasicActivity {
 
 	private float aviableMoney;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	private IPurseLogic mPurseLogic;
 	private IUserLogic mUserLogic;
 

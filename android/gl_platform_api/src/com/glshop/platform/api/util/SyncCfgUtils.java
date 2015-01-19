@@ -16,6 +16,7 @@ import com.glshop.platform.api.syscfg.data.model.SysParamInfoModel;
 import com.glshop.platform.api.syscfg.data.model.SyscfgInfoModel;
 import com.glshop.platform.net.base.ResultItem;
 import com.glshop.platform.utils.BeanUtils;
+import com.glshop.platform.utils.StringUtils;
 
 /**
  * @Description : 系统参数配置工具类
@@ -123,7 +124,7 @@ public class SyncCfgUtils {
 	 * @param sysCfgTimestamp
 	 * @return
 	 */
-	public static List<AreaInfoModel> parseSysAreaData(ResultItem areaItem, Map<String, String> sysCfgTimestamp) {
+	public static List<AreaInfoModel> parseSysPortData(ResultItem areaItem, Map<String, String> sysCfgTimestamp) {
 		List<AreaInfoModel> areaList = new ArrayList<AreaInfoModel>();
 		if (areaItem != null) {
 			List<ResultItem> areaItemList = (ArrayList<ResultItem>) areaItem.get("data");
@@ -201,8 +202,10 @@ public class SyncCfgUtils {
 		List<SysParamInfoModel> sysParamList = new ArrayList<SysParamInfoModel>();
 		if (sysParamItem != null) {
 			List<ResultItem> sysParamItemList = (ArrayList<ResultItem>) sysParamItem.get("data");
-			if (sysParamItemList != null && sysParamItemList.size() > 0) {
-				sysCfgTimestamp.put(SysCfgCode.TYPE_SYSPARAM, sysParamItem.getString("timeStamp"));
+			if (BeanUtils.isNotEmpty(sysParamItemList)) {
+				if (sysCfgTimestamp != null) {
+					sysCfgTimestamp.put(SysCfgCode.TYPE_SYSPARAM, sysParamItem.getString("timeStamp"));
+				}
 				for (ResultItem ri : sysParamItemList) {
 					SysParamInfoModel info = new SysParamInfoModel();
 					info.type = SysCfgCode.TYPE_SYSPARAM;
@@ -214,6 +217,71 @@ public class SyncCfgUtils {
 			}
 		}
 		return sysParamList;
+	}
+
+	/**
+	 * 解析省市区列表
+	 * @param areaItem
+	 * @return
+	 */
+	public static List<AreaInfoModel> parseAreaData(ResultItem areaItem) {
+		List<AreaInfoModel> areaList = new ArrayList<AreaInfoModel>();
+		if (areaItem != null) {
+			List<ResultItem> areaItemList = (ArrayList<ResultItem>) areaItem.get("data");
+			if (BeanUtils.isNotEmpty(areaItemList)) {
+				for (ResultItem ri : areaItemList) {
+					AreaInfoModel info = new AreaInfoModel();
+					info.type = SysCfgCode.TYPE_AREA;
+					info.id = ri.getString("id");
+					info.code = ri.getString("val");
+					info.name = ri.getString("name");
+					info.pCode = ri.getString("pcode");
+					info.orderNo = ri.getString("orderno");
+					areaList.add(info);
+				}
+			}
+		}
+		return areaList;
+	}
+
+	/**
+	 * 解析省市区省份过滤列表
+	 * @param areaItem
+	 * @return
+	 */
+	public static List<AreaInfoModel> parseProvinceAreaData(ResultItem areaItem, Map<String, String> sysCfgTimestamp) {
+		List<AreaInfoModel> areaList = new ArrayList<AreaInfoModel>();
+		if (areaItem != null) {
+			String areaProvinceList = areaItem.getString("data");
+			if (StringUtils.isNotEmpty(areaProvinceList)) {
+				if (sysCfgTimestamp != null) {
+					sysCfgTimestamp.put(SysCfgCode.TYPE_AREA_PROVINCE_CONTROL, areaItem.getString("timeStamp"));
+				}
+				if (areaProvinceList.indexOf(",") != -1) {
+					String[] areaCodeList = areaProvinceList.split(",");
+					for (String code : areaCodeList) {
+						AreaInfoModel info = new AreaInfoModel();
+						info.type = SysCfgCode.TYPE_AREA_PROVINCE_CONTROL;
+						//info.id = "";
+						info.code = code;
+						//info.name = "";
+						//info.pCode = "";
+						//info.orderNo = "";
+						areaList.add(info);
+					}
+				} else {
+					AreaInfoModel info = new AreaInfoModel();
+					info.type = SysCfgCode.TYPE_AREA_PROVINCE_CONTROL;
+					//info.id = "";
+					info.code = areaProvinceList;
+					//info.name = "";
+					//info.pCode = "";
+					//info.orderNo = "";
+					areaList.add(info);
+				}
+			}
+		}
+		return areaList;
 	}
 
 	private static String getProductTypeName(String typeCode, List<SyscfgInfoModel> list) {

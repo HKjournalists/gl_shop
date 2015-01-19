@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <include layout="@layout/layout_load_data_status" />
+
+    <LinearLayout
+        android:id="@+id/ll_contract_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <!-- 货物概要信息 -->
+
+        <include layout="@layout/layout_buy_summary_info" />
+
+        <View
+            style="@style/item_devider_line"
+            android:layout_marginTop="12dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:visibility="gone" >
+
+            <RadioGroup
+                android:id="@+id/rdoGroup_contract_info_type"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/common_radio_btn_height"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/rdoBtn_operation"
+                    style="@style/radio_button_left"
+                    android:checked="true"
+                    android:text="@string/contract_tab_opr" />
+
+                <RadioButton
+                    android:id="@+id/rdoBtn_status"
+                    style="@style/radio_button_right"
+                    android:text="@string/contract_tab_status" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <com.glshop.net.ui.basic.view.TabIndicator
+            android:id="@+id/tab_pager_indicator"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:background="#ffffff"
+            glshop:footerColor="@color/tab_indicator_text_selected"
+            glshop:footerLineHeight="0dp"
+            glshop:footerTriangleHeight="@dimen/contract_tab_triangle_height"
+            glshop:textColor="@color/tab_indicator_text"
+            glshop:textSizeNormal="@dimen/contract_tab_text_size"
+            glshop:textSizeSelected="@dimen/contract_tab_text_size" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/contract_tab_line_height"
+            android:background="#D9D9D9" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/contract_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</LinearLayout>

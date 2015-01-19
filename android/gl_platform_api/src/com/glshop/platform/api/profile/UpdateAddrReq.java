@@ -33,9 +33,11 @@ public class UpdateAddrReq extends BaseRequest<CommonResult> {
 	@Override
 	protected void buildParams() {
 		request.addParam("id", info.addrId);
+		request.addParam("areacode", info.areaCode);
 		request.addParam("address", info.deliveryAddrDetail);
 		request.addParam("deep", info.uploadPortWaterDepth);
-		request.addParam("realdeep", info.uploadPortShippingWaterDepth);
+		//request.addParam("realdeep", info.uploadPortShippingWaterDepth);
+		request.addParam("shippington", info.shippingTon);
 
 		if (info.addrImageList != null) {
 			StringBuffer imgId = new StringBuffer();

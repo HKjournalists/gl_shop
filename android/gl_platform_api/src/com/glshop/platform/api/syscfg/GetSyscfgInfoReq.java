@@ -15,6 +15,7 @@ import com.glshop.platform.api.syscfg.data.GetSyscfgInfoResult;
 import com.glshop.platform.api.syscfg.data.model.SyncInfoModel;
 import com.glshop.platform.api.util.SyncCfgUtils;
 import com.glshop.platform.net.base.ResultItem;
+import com.glshop.platform.utils.BeanUtils;
 import com.glshop.platform.utils.Logger;
 
 /**
@@ -41,7 +42,7 @@ public class GetSyscfgInfoReq extends BaseRequest<GetSyscfgInfoResult> {
 
 	@Override
 	protected void buildParams() {
-		if (sysCfgTimestamp != null && sysCfgTimestamp.size() > 0) {
+		if (BeanUtils.isNotEmpty(sysCfgTimestamp)) {
 			JSONArray array = new JSONArray();
 			Iterator<Entry<String, String>> it = sysCfgTimestamp.entrySet().iterator();
 			while (it.hasNext()) {
@@ -65,6 +66,7 @@ public class GetSyscfgInfoReq extends BaseRequest<GetSyscfgInfoResult> {
 		ResultItem productItem = (ResultItem) item.get("DATA|goods");
 		ResultItem productSpecItem = (ResultItem) item.get("DATA|goodChild");
 		//ResultItem areaItem = (ResultItem) item.get("DATA|area");
+		ResultItem provinceAreaItem = (ResultItem) item.get("DATA|areaProvinceControl");
 		//ResultItem bankItem = (ResultItem) item.get("DATA|banks");
 		ResultItem areaItem = (ResultItem) item.get("DATA|riverSection");
 		ResultItem sysParamItem = (ResultItem) item.get("DATA|sysParam");
@@ -73,7 +75,8 @@ public class GetSyscfgInfoReq extends BaseRequest<GetSyscfgInfoResult> {
 
 		SyncInfoModel sysSyncInfo = new SyncInfoModel();
 		sysSyncInfo.mProductList = SyncCfgUtils.parseSysProductData(productItem, productSpecItem, sysCfgTimestamp);
-		sysSyncInfo.mAreaList = SyncCfgUtils.parseSysAreaData(areaItem, sysCfgTimestamp);
+		sysSyncInfo.mPortList = SyncCfgUtils.parseSysPortData(areaItem, sysCfgTimestamp);
+		sysSyncInfo.mSupportProvinceList = SyncCfgUtils.parseProvinceAreaData(provinceAreaItem, sysCfgTimestamp);
 		sysSyncInfo.mSysParamList = SyncCfgUtils.parseSysParamData(sysParamItem, sysCfgTimestamp);
 
 		result.sysCfgTimestamp = sysCfgTimestamp;

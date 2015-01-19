@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical"
+    android:padding="@dimen/buy_item_padding" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <!-- 待支付状态文案 -->
+
+            <LinearLayout
+                android:id="@+id/ll_to_pay_limit_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="货款支付期限为：" />
+
+                <TextView
+                    android:id="@+id/tv_to_pay_limit_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="12天3小时30分"
+                    android:textColor="@color/red" />
+            </LinearLayout>
+
+            <!-- 当前操作状态文案 -->
+
+            <TextView
+                android:id="@+id/ll_operation_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
+                android:text="您已向平台支付货款." />
+
+            <!-- 操作提示 -->
+
+            <LinearLayout
+                android:id="@+id/ll_operation_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_star"
+                    android:textColor="@color/red" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="请速向平台付款"
+                    android:textColor="@color/red" />
+            </LinearLayout>
+
+            <!-- 结算账单 -->
+
+            <LinearLayout
+                android:id="@+id/ll_bill_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" >
+
+                <include layout="@layout/layout_contract_bill_info" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 合同常驻可操作按钮 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btn_contract_action"
+            style="@style/button_orange"
+            android:layout_marginBottom="8dp"
+            android:text="Action" />
+
+        <Button
+            android:id="@+id/btn_contract_action_cancel"
+            style="@style/button_blue"
+            android:text="取消合同" />
+    </LinearLayout>
+
+</LinearLayout>

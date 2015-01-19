@@ -21,7 +21,7 @@ import com.glshop.net.logic.cache.DataCenter.DataType;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.purse.IPurseLogic;
 import com.glshop.net.ui.basic.BasicActivity;
-import com.glshop.net.ui.basic.adapter.PayeeListAdapter;
+import com.glshop.net.ui.basic.adapter.profile.PayeeListAdapter;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
 import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.utils.BeanUtils;
@@ -150,11 +150,6 @@ public class PayeeMgrActivity extends BasicActivity implements OnItemClickListen
 	}
 
 	@Override
-	protected void initLogics() {
-		mPurseLogic = LogicFactory.getLogicByClass(IPurseLogic.class);
-	}
-
-	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Logger.e(TAG, "onActivityResult: reqCode = " + requestCode + ", respCode = " + resultCode);
 		switch (requestCode) {
@@ -164,5 +159,15 @@ public class PayeeMgrActivity extends BasicActivity implements OnItemClickListen
 			}
 			break;
 		}
+	}
+
+	@Override
+	protected int[] getDataType() {
+		return new int[] { DataType.PAYEE_SELECT_LIST };
+	}
+
+	@Override
+	protected void initLogics() {
+		mPurseLogic = LogicFactory.getLogicByClass(IPurseLogic.class);
 	}
 }

@@ -19,23 +19,29 @@
             android:orientation="vertical"
             android:padding="@dimen/buy_item_padding" >
 
-            <!-- 详细地址 -->
+            <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                android:id="@+id/ll_item_trade_area"
+                style="@style/BuyTextItem.Top"
+                glshop:itemContent="@string/data_select"
+                glshop:itemContentColor="@color/black"
+                glshop:itemInputType="numberDecimal"
+                glshop:itemTitle="省、市、区"
+                glshop:showItemClickIcon="true"
+                glshop:showItemIcon="true" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/buy_item_height"
-                android:gravity="center_vertical"
-                android:text="请填写卸货地址" />
+            <View style="@style/item_devider_line" />
 
             <!-- 地址详情及照片 -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/selector_item_top"
+                android:background="@drawable/selector_item_middle"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/buy_item_padding"
                 android:paddingRight="@dimen/buy_item_padding" >
+
+                <!-- 详细地址 -->
 
                 <EditText
                     android:id="@+id/et_discharge_address"
@@ -67,28 +73,18 @@
                         android:layout_marginLeft="6dp"
                         android:layout_marginRight="6dp"
                         android:background="@drawable/ic_upload_pic"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        android:visibility="invisible" />
 
                     <ImageView
                         android:id="@+id/iv_item_addr_pic_3"
                         android:layout_width="@dimen/image_thumbnail_width"
                         android:layout_height="@dimen/image_thumbnail_heigh"
                         android:background="@drawable/ic_upload_pic"
-                        android:contentDescription="@null" />
+                        android:contentDescription="@null"
+                        android:visibility="invisible" />
                 </LinearLayout>
             </LinearLayout>
-
-            <View style="@style/item_devider_line" />
-
-            <!-- 水深度 -->
-
-            <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
-                style="@style/BuyTextItem.Middle"
-                glshop:itemContentColor="@color/gray"
-                glshop:itemSecondTitle="@string/product_unit_m"
-                glshop:itemTitle="@string/business_water_depth"
-                glshop:showItemClickIcon="false"
-                glshop:showItemIcon="false" />
 
             <View style="@style/item_devider_line" />
 
@@ -98,25 +94,53 @@
                 android:id="@+id/ll_item_port_water_depth"
                 style="@style/BuyTextItem.Middle"
                 glshop:itemContentColor="@color/gray"
+                glshop:itemEditWidth="80dp"
                 glshop:itemInputType="numberDecimal"
-                glshop:itemSecondTitle="@string/product_unit_m"
+                glshop:itemSecondTitle="@string/unit_m_v3"
                 glshop:itemTitle="@string/business_discharge_port_water_depth"
                 glshop:showItemClickIcon="false"
-                glshop:showItemIcon="false" />
+                glshop:showItemIcon="true" />
 
             <View style="@style/item_devider_line" />
 
-            <!-- 实际船舶吃水深度 -->
+            <!-- 可停泊载重船吨位 -->
 
             <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
-                android:id="@+id/ll_item_port_shipping_water_depth"
-                style="@style/BuyTextItem.Bottom"
+                android:id="@+id/ll_item_shipping_ton"
+                style="@style/BuyTextItem.Middle"
                 glshop:itemContentColor="@color/gray"
+                glshop:itemEditWidth="80dp"
                 glshop:itemInputType="numberDecimal"
-                glshop:itemSecondTitle="@string/product_unit_m"
-                glshop:itemTitle="@string/business_discharge_port_shipping_water_depth"
+                glshop:itemSecondTitle="@string/unit_ton_v3"
+                glshop:itemTitle="@string/business_discharge_shipping_ton"
                 glshop:showItemClickIcon="false"
-                glshop:showItemIcon="false" />
+                glshop:showItemIcon="true" />
+
+            <View
+                android:id="@+id/item_devider_set_default"
+                style="@style/item_devider_line" />
+            <!-- 设置默认卸货地址 -->
+
+            <LinearLayout
+                android:id="@+id/ll_item_set_default"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_bottom"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <CheckedTextView
+                    android:id="@+id/chkTv_set_default"
+                    style="@style/ckb_textview" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="设置为默认卸货地址"
+                    android:textSize="@dimen/sp16" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
@@ -125,7 +149,7 @@
         style="@style/button_blue"
         android:layout_marginLeft="@dimen/buy_item_padding"
         android:layout_marginRight="@dimen/buy_item_padding"
-        android:text="设置为卸货地址"
+        android:text="设置为默认卸货地址"
         android:visibility="gone" />
 
     <Button

@@ -49,9 +49,6 @@ public class UserRegSubmitActivity extends BasicActivity {
 
 	private String mRegAccount;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

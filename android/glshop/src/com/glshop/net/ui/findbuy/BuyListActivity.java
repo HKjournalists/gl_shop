@@ -1,9 +1,9 @@
 package com.glshop.net.ui.findbuy;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,22 +15,17 @@ import com.glshop.net.R;
 import com.glshop.net.common.GlobalAction;
 import com.glshop.net.common.GlobalConstants.TabStatus;
 import com.glshop.net.common.GlobalMessageType;
-import com.glshop.net.logic.buy.IBuyLogic;
-import com.glshop.net.logic.syscfg.mgr.SysCfgMgr;
+import com.glshop.net.logic.model.MenuItemInfo;
 import com.glshop.net.ui.MainActivity;
 import com.glshop.net.ui.basic.BasicFragmentActivity;
 import com.glshop.net.ui.basic.fragment.BuyListFragment;
 import com.glshop.net.ui.basic.view.dialog.menu.BaseMenuDialog;
-import com.glshop.net.ui.basic.view.dialog.menu.BuyFilterDialog;
-import com.glshop.net.ui.basic.view.dialog.menu.PopupMenu;
-import com.glshop.net.ui.basic.view.dialog.menu.PopupMenu.IMenuCallback;
+import com.glshop.net.ui.basic.view.dialog.menu.MenuDialog;
+import com.glshop.net.utils.MenuUtil;
 import com.glshop.platform.api.DataConstants.BuyOrderType;
 import com.glshop.platform.api.DataConstants.BuyType;
 import com.glshop.platform.api.DataConstants.OrderStatus;
-import com.glshop.platform.api.buy.data.model.BuyFilterInfoModel;
-import com.glshop.platform.api.syscfg.data.model.AreaInfoModel;
-import com.glshop.platform.api.syscfg.data.model.ProductCfgInfoModel;
-import com.glshop.platform.base.manager.LogicFactory;
+import com.glshop.platform.api.buy.data.model.BuyFilterInfoModelV2;
 import com.glshop.platform.utils.Logger;
 
 /**
@@ -59,11 +54,9 @@ public class BuyListActivity extends BasicFragmentActivity implements BaseMenuDi
 	private RadioButton mRdoBtnSeller;
 
 	private View mDropdownMenu;
+	private MenuDialog menuBuyOrder;
 
-	private BuyFilterDialog mFilerMenuDilaog;
-	private BuyFilterInfoModel mBuyFilterInfo = new BuyFilterInfoModel();
-
-	private IBuyLogic mBuyLogic;
+	private BuyFilterInfoModelV2 mBuyFilterInfoV2 = new BuyFilterInfoModelV2();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +82,6 @@ public class BuyListActivity extends BasicFragmentActivity implements BaseMenuDi
 		getView(R.id.iv_common_back).setOnClickListener(this);
 		getView(R.id.btn_pub_message).setOnClickListener(this);
 		getView(R.id.ll_dropdown_menu).setOnClickListener(this);
-		getView(R.id.ll_dropdown_menu).setOnClickListener(this);
 		getView(R.id.rdoBtn_buyer).setOnClickListener(this);
 		getView(R.id.rdoBtn_seller).setOnClickListener(this);
 
@@ -101,8 +93,6 @@ public class BuyListActivity extends BasicFragmentActivity implements BaseMenuDi
 			updateTabState();
 			Logger.e(TAG, "TabIndex = " + buyType.toValue());
 		}
-		Calendar calendar = Calendar.getInstance();
-		mBuyFilterInfo.year = String.valueOf(calendar.get(Calendar.YEAR));
 		mFragmentBuyer = getFragment(TAB_BUYER);
 		mFragmentSeller = getFragment(TAB_SELLER);
 
@@ -115,15 +105,13 @@ public class BuyListActivity extends BasicFragmentActivity implements BaseMenuDi
 			mFragmentSeller.setArguments(createFragmentArgs(BuyType.SELLER));
 		}
 
-		mFragmentBuyer.setBuyFilterInfo(mBuyFilterInfo);
-		mFragmentSeller.setBuyFilterInfo(mBuyFilterInfo);
-
 		switchView();
 	}
 
 	private Bundle createFragmentArgs(BuyType type) {
 		Bundle args = new Bundle();
 		args.putInt(GlobalAction.BuyAction.EXTRA_KEY_BUY_INFO_TYPE, type.toValue());
+		args.putSerializable(GlobalAction.BuyAction.EXTRA_KEY_BUY_FILTER_INFO, mBuyFilterInfoV2);
 		return args;
 	}
 
@@ -131,11 +119,11 @@ public class BuyListActivity extends BasicFragmentActivity implements BaseMenuDi
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.ll_dropdown_menu:
-			showDropdownMenu();
+			showBuyOrderMenu();
 			break;
 
 		case R.id.btn_commmon_action:
-			showFilterMenu();
+			showFilterMenuV2();
 			break;
 
 		case R.id.rdoBtn_buyer:
@@ -174,47 +162,26 @@ public class BuyListActivity extends BasicFragmentActivity implements BaseMenuDi
 		}
 	}
 
-	private void showDropdownMenu() {
-		List<String> menus = Arrays.asList(getResources().getStringArray(R.array.find_buy_filter_type));
+	private void showBuyOrderMenu() {
+		closeDialog(menuBuyOrder);
+		List<MenuItemInfo> menus = MenuUtil.makeMenuList(Arrays.asList(getResources().getStringArray(R.array.find_buy_order_type)));
 		mDropdownMenu.setEnabled(false);
 		mDropdownMenu.findViewById(R.id.iv_common_menu_icon).setBackgroundResource(R.drawable.ic_dropdown_menu_up);
-		final int index = getDropFilterIndex();
-		PopupMenu menu = new PopupMenu(this, menus, menus.get(index), mDropdownMenu.getWidth(), new IMenuCallback() {
-
-			@Override
-			public void onMenuItemClick(int position) {
-				Logger.e(TAG, "Click Menu position = " + position);
-				if (index != position) {
-					saveDropFilterStatus(position);
-					if (buyType == BuyType.BUYER) {
-						mFragmentBuyer.setBuyFilterInfo(mBuyFilterInfo);
-						mFragmentBuyer.onReloadData();
-					} else {
-						mFragmentSeller.setBuyFilterInfo(mBuyFilterInfo);
-						mFragmentSeller.onReloadData();
-					}
-				}
-			}
-
-			@Override
-			public void onDismiss() {
-				Logger.d(TAG, "onDismiss");
-				mDropdownMenu.findViewById(R.id.iv_common_menu_icon).setBackgroundResource(R.drawable.ic_dropdown_menu_down);
-				mDropdownMenu.setEnabled(true);
-			}
-		});
-		menu.showAsDropDown(mDropdownMenu);
+		menuBuyOrder = new MenuDialog(this, menus, this, true, menus.get(getDropFilterIndex()));
+		menuBuyOrder.setMenuType(GlobalMessageType.MenuType.SELECT_BUY_ORDER_TYPE);
+		menuBuyOrder.setTitle(getString(R.string.menu_title_select_buy_order));
+		menuBuyOrder.show();
 	}
 
 	private int getDropFilterIndex() {
-		BuyOrderType orderType = mBuyFilterInfo.orderType;
-		OrderStatus orderStatus = mBuyFilterInfo.orderStatus;
+		BuyOrderType orderType = mBuyFilterInfoV2.orderType;
+		OrderStatus orderStatus = mBuyFilterInfoV2.orderStatus;
 		int index = 0;
 		if (orderType == BuyOrderType.EXPIRY && orderStatus == OrderStatus.DESC) {
 			index = 0;
-		} else if (orderType == BuyOrderType.PRICE && orderStatus == OrderStatus.DESC) {
-			index = 1;
 		} else if (orderType == BuyOrderType.PRICE && orderStatus == OrderStatus.ASC) {
+			index = 1;
+		} else if (orderType == BuyOrderType.PRICE && orderStatus == OrderStatus.DESC) {
 			index = 2;
 		} else if (orderType == BuyOrderType.CREDIT && orderStatus == OrderStatus.DESC) {
 			index = 3;
@@ -227,32 +194,28 @@ public class BuyListActivity extends BasicFragmentActivity implements BaseMenuDi
 	private void saveDropFilterStatus(int index) {
 		switch (index) {
 		case 0:
-			mBuyFilterInfo.orderType = BuyOrderType.EXPIRY;
-			mBuyFilterInfo.orderStatus = OrderStatus.DESC;
+			mBuyFilterInfoV2.orderType = BuyOrderType.EXPIRY;
+			mBuyFilterInfoV2.orderStatus = OrderStatus.DESC;
 			break;
 		case 1:
-			mBuyFilterInfo.orderType = BuyOrderType.PRICE;
-			mBuyFilterInfo.orderStatus = OrderStatus.DESC;
+			mBuyFilterInfoV2.orderType = BuyOrderType.PRICE;
+			mBuyFilterInfoV2.orderStatus = OrderStatus.ASC;
 			break;
 		case 2:
-			mBuyFilterInfo.orderType = BuyOrderType.PRICE;
-			mBuyFilterInfo.orderStatus = OrderStatus.ASC;
+			mBuyFilterInfoV2.orderType = BuyOrderType.PRICE;
+			mBuyFilterInfoV2.orderStatus = OrderStatus.DESC;
 			break;
 		case 3:
-			mBuyFilterInfo.orderType = BuyOrderType.CREDIT;
-			mBuyFilterInfo.orderStatus = OrderStatus.DESC;
+			mBuyFilterInfoV2.orderType = BuyOrderType.CREDIT;
+			mBuyFilterInfoV2.orderStatus = OrderStatus.DESC;
 			break;
 		}
 	}
 
-	private void showFilterMenu() {
-		closeDialog(mFilerMenuDilaog);
-		List<AreaInfoModel> areaList = SysCfgMgr.getIntance(this).loadAreaList();
-		List<ProductCfgInfoModel> productList = SysCfgMgr.getIntance(this).loadProductList();
-		BuyFilterDialog filerMenu = new BuyFilterDialog(this, this, areaList, productList, mBuyFilterInfo);
-		filerMenu.setMenuType(GlobalMessageType.MenuType.SELECT_PRODUCT_SPEC);
-		filerMenu.setTitle(getString(R.string.menu_title_buy_filter));
-		filerMenu.show();
+	private void showFilterMenuV2() {
+		Intent intent = new Intent(this, BuyFilterActivity.class);
+		intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_BUY_FILTER_INFO, mBuyFilterInfoV2);
+		startActivityForResult(intent, GlobalMessageType.ActivityReqCode.REQ_EDIT_BUY_FILTER_INFO);
 	}
 
 	private void pubBuyInfo() {
@@ -271,32 +234,55 @@ public class BuyListActivity extends BasicFragmentActivity implements BaseMenuDi
 
 	@Override
 	public void onMenuClick(int type, int position, Object obj) {
-
-	}
-
-	@Override
-	public void onConfirm(Object obj) {
-		if (obj != null && !mBuyFilterInfo.equals((BuyFilterInfoModel) obj)) {
-			mBuyFilterInfo = (BuyFilterInfoModel) obj;
-			if (buyType == BuyType.BUYER) {
-				mFragmentBuyer.setBuyFilterInfo(mBuyFilterInfo);
-				mFragmentBuyer.onReloadData();
-			} else {
-				mFragmentSeller.setBuyFilterInfo(mBuyFilterInfo);
-				mFragmentSeller.onReloadData();
+		if (type == GlobalMessageType.MenuType.SELECT_BUY_ORDER_TYPE) {
+			restoreFilterIcon();
+			if (position != getDropFilterIndex()) {
+				saveDropFilterStatus(position);
+				updateBuyList();
 			}
 		}
 	}
 
 	@Override
-	public void onCancel() {
-
+	public void onConfirm(int type, Object obj) {
+		if (type == GlobalMessageType.MenuType.SELECT_BUY_ORDER_TYPE) {
+			restoreFilterIcon();
+		}
 	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putInt(GlobalAction.BuyAction.EXTRA_KEY_SELECTED_TAB, buyType.toValue());
+	public void onCancel(int type) {
+		if (type == GlobalMessageType.MenuType.SELECT_BUY_ORDER_TYPE) {
+			restoreFilterIcon();
+		}
+	}
+
+	private void restoreFilterIcon() {
+		mDropdownMenu.findViewById(R.id.iv_common_menu_icon).setBackgroundResource(R.drawable.ic_dropdown_menu_down);
+		mDropdownMenu.setEnabled(true);
+	}
+
+	private void updateBuyList() {
+		mFragmentBuyer.updateBuyFilterInfo(mBuyFilterInfoV2);
+		mFragmentSeller.updateBuyFilterInfo(mBuyFilterInfoV2);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Logger.e(TAG, "onActivityResult: reqCode = " + requestCode + ", respCode = " + resultCode);
+		switch (requestCode) {
+		case GlobalMessageType.ActivityReqCode.REQ_EDIT_BUY_FILTER_INFO:
+			if (resultCode == Activity.RESULT_OK) {
+				if (data != null) {
+					BuyFilterInfoModelV2 filterInfo = (BuyFilterInfoModelV2) data.getSerializableExtra(GlobalAction.BuyAction.EXTRA_KEY_BUY_FILTER_INFO);
+					if (filterInfo != null && !filterInfo.equals(mBuyFilterInfoV2)) {
+						mBuyFilterInfoV2 = filterInfo;
+						updateBuyList();
+					}
+				}
+			}
+			break;
+		}
 	}
 
 	@Override
@@ -305,8 +291,9 @@ public class BuyListActivity extends BasicFragmentActivity implements BaseMenuDi
 	}
 
 	@Override
-	protected void initLogics() {
-		mBuyLogic = LogicFactory.getLogicByClass(IBuyLogic.class);
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt(GlobalAction.BuyAction.EXTRA_KEY_SELECTED_TAB, buyType.toValue());
 	}
 
 }

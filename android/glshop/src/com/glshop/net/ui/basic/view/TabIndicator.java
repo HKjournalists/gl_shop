@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.glshop.net.R;
-import com.glshop.net.ui.basic.adapter.TabPagerAdapter.TabInfo;
+import com.glshop.net.ui.basic.adapter.base.TabPagerAdapter.TabInfo;
 
 /**
  * @Description : 通用Tab页面指示器

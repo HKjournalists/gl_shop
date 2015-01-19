@@ -66,9 +66,6 @@ public class PayeeAddSubmitActivity extends BasicActivity implements IMenuCallba
 
 	private String bankCode;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	private FileInfo mFileInfo;
 
 	private IPurseLogic mPurseLogic;
@@ -107,10 +104,12 @@ public class PayeeAddSubmitActivity extends BasicActivity implements IMenuCallba
 			}
 			bankCode = info.bankCode;
 			MenuItemInfo defaultItem = getDefaultMenu();
-			if (StringUtils.isEmpty(bankCode)) {
-				bankCode = defaultItem.menuCode;
+			if (defaultItem != null) {
+				if (StringUtils.isEmpty(bankCode)) {
+					bankCode = defaultItem.menuCode;
+				}
+				mTvBank.setText(defaultItem.menuText);
 			}
-			mTvBank.setText(defaultItem.menuText);
 			mEtSubBankName.setText(info.subBank);
 			mEtSubBankName.setSelection(mEtSubBankName.getText().toString().length());
 			mEtBankCard.setText(info.card);
@@ -308,12 +307,12 @@ public class PayeeAddSubmitActivity extends BasicActivity implements IMenuCallba
 	}
 
 	@Override
-	public void onConfirm(Object obj) {
+	public void onConfirm(int type, Object obj) {
 
 	}
 
 	@Override
-	public void onCancel() {
+	public void onCancel(int type) {
 
 	}
 

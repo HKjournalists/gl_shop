@@ -1,0 +1,232 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_list_item_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:minHeight="60dp"
+    android:orientation="vertical"
+    android:padding="12dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_item_single"
+        android:orientation="vertical" >
+
+        <!-- 交货时间 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/buy_item_height"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/buy_item_padding"
+            android:paddingRight="@dimen/buy_item_padding" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_contract_datetime" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:text="交货时间:"
+                android:textColor="@color/gray"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_contract_end_datetime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:singleLine="true"
+                android:text="2015年1月1日"
+                android:textColor="@color/red"
+                android:textSize="@dimen/sp16" />
+        </LinearLayout>
+
+        <View style="@style/item_devider_line" />
+
+        <!-- 货物信息 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/buy_item_padding"
+            android:paddingLeft="@dimen/buy_item_padding"
+            android:paddingRight="@dimen/buy_item_padding"
+            android:paddingTop="@dimen/buy_item_padding" >
+
+            <!-- 买卖类型 -->
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/iv_buy_type_icon"
+                    style="@style/Ic_Buy_Bg"
+                    android:text="@string/buy" />
+
+                <Button
+                    android:id="@+id/iv_sell_type_icon"
+                    style="@style/Ic_Sell_Bg"
+                    android:text="@string/sell"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="5dp" >
+
+                <!-- 货物名称及规格 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/tv_buy_product_spec"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:text="黄砂.河砂.特细砂(0.7-1.5)mm"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- 货物单价及数量 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp" >
+
+                    <!-- 单价 -->
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:id="@+id/tv_buy_unit_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:text="0"
+                            android:textColor="@color/red"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_price_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="元/吨"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- 数量 -->
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:id="@+id/tv_buy_amount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:text="0"
+                            android:textColor="@color/blue"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_amount_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="吨"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View style="@style/item_devider_line" />
+
+        <!-- 合同签订状态状态 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/buy_item_padding"
+            android:paddingRight="@dimen/buy_item_padding" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingBottom="6dp"
+                android:paddingTop="6dp" >
+
+                <!-- 当前状态 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="当前状态:"
+                        android:textColor="@color/gray"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_contract_status_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
+                        android:singleLine="true"
+                        android:text="有效，"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_contract_status_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="2dp"
+                        android:singleLine="true"
+                        android:text="请速向平台付款"
+                        android:textColor="@color/red"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_ongoing_contract_next_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="等待货到后实际确认货物并确认实付金额。"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_view_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selector_btn_more"
+                android:contentDescription="@null"
+                android:duplicateParentState="true" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

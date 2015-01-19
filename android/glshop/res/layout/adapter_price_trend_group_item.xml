@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:background="#EDEDED"
     android:gravity="center_vertical"
-    android:minHeight="48dp" >
+    android:minHeight="36dp" >
 
     <ImageView
         android:id="@+id/iv_product_group_expand"

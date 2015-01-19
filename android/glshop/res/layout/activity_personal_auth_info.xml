@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <LinearLayout
+        android:id="@+id/ll_company_auth_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="6dp" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:gravity="center_vertical"
+                    android:text="用户身份: 个人" />
+
+                <!-- 姓名 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_personal_name"
+                    style="@style/BuyTextItem.Top"
+                    glshop:itemContent="姓名"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="姓名" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 性别 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_personal_sex"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="性别"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="性别" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 出生日期 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_birth_date"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="出生日期"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="出生日期" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 住址 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_addr"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="住址"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="住址" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 身份证号 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_id_no"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="身份证号"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="身份证号" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 签发机关 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_sign_org"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="签发机关"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="签发机关" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 有效期限 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_limit_range"
+                    style="@style/BuyTextItem.Bottom"
+                    glshop:itemContent="有效期限"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="有效期限" />
+
+                <View style="@style/item_devider_line" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>

@@ -20,9 +20,19 @@ public class SyncInfoModel extends ResultItem {
 	public List<ProductCfgInfoModel> mProductList;
 
 	/**
-	 * 地域信息列表
+	 * 港口信息列表
+	 */
+	public List<AreaInfoModel> mPortList;
+
+	/**
+	 * 省市区信息列表
 	 */
 	public List<AreaInfoModel> mAreaList;
+
+	/**
+	 * 支持的省份列表
+	 */
+	public List<AreaInfoModel> mSupportProvinceList;
 
 	/**
 	 * 银行信息列表

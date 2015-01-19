@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalAction;
+import com.glshop.net.common.GlobalConfig;
 import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.common.GlobalMessageType.CommonMessageType;
 import com.glshop.net.common.GlobalMessageType.ContractMessageType;
@@ -38,9 +39,8 @@ import com.glshop.platform.utils.StringUtils;
  */
 public class PaymentSubmitActivity extends BaseContractInfoActivity {
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
+	private TextView mTvToPayMoney;
+	private TextView mTvAviableMoney;
 	private TextView mTvPhone;
 	private EditText mEtSmsCode;
 	private EditText mEtPassword;
@@ -55,11 +55,14 @@ public class PaymentSubmitActivity extends BaseContractInfoActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_purse_payment_submit);
 		initView();
+		initData();
 	}
 
 	private void initView() {
 		((TextView) getView(R.id.tv_commmon_title)).setText(R.string.purse_payment);
 
+		mTvToPayMoney = getView(R.id.tv_to_pay_money);
+		mTvAviableMoney = getView(R.id.tv_aviable_money);
 		mTvPhone = getView(R.id.tv_phone_number);
 		mEtSmsCode = getView(R.id.et_sms_verify_code);
 		mEtPassword = getView(R.id.et_input_pwd);
@@ -68,10 +71,13 @@ public class PaymentSubmitActivity extends BaseContractInfoActivity {
 		getView(R.id.btn_get_sms_verfiycode).setOnClickListener(this);
 		getView(R.id.btn_submit).setOnClickListener(this);
 		getView(R.id.iv_common_back).setOnClickListener(this);
+	}
 
+	private void initData() {
 		mTvPhone.setText(getUserPhone());
-
 		needPayMoney = getIntent().getFloatExtra(GlobalAction.PurseAction.EXTRA_KEY_PAY_MONEY, 0);
+		mTvToPayMoney.setText(String.valueOf(needPayMoney));
+		mTvAviableMoney.setText(String.valueOf(GlobalConfig.getInstance().getPaymentBalance()));
 	}
 
 	@Override

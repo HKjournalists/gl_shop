@@ -24,6 +24,16 @@ public interface ISysCfgLogic extends ILogic {
 	List<ProductCfgInfoModel> getLocalProductList();
 
 	/**
+	 * 获取已分类的货物信息列表
+	 */
+	List<ProductCfgInfoModel> getLocalProductCategoryList();
+
+	/**
+	 * 获取港口信息列表
+	 */
+	List<AreaInfoModel> getLocalPortList();
+
+	/**
 	 * 获取交易地域信息列表
 	 */
 	List<AreaInfoModel> getLocalAreaList();
@@ -48,5 +58,22 @@ public interface ISysCfgLogic extends ILogic {
 	 * @param typeList
 	 */
 	void syncSysCfgInfo(List<String> typeList);
+
+	/**
+	 * 导入本地地域信息
+	 */
+	void importAreaCfgInfo();
+
+	/**
+	 * 获取父地域信息
+	 * @param areaCode
+	 */
+	List<AreaInfoModel> getParentAreaInfo(String areaCode);
+
+	/**
+	 * 获取子地域信息
+	 * @param areaCode
+	 */
+	List<AreaInfoModel> getChildAreaInfo(String areaCode);
 
 }

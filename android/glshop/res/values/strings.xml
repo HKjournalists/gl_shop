@@ -37,11 +37,17 @@
     <string name="unit_price">元</string>
     <string name="unit_price_ton">元/吨</string>
     <string name="data_no_input">未填写</string>
+    <string name="data_to_input">填写</string>
+    <string name="data_select">选择</string>
+    <string name="data_selected">已选择</string>
     <string name="data_empty">无</string>
+    <string name="data_unknown">未知</string>
     <string name="price_data_empty">N/A</string>
     <string name="status_valid">有效</string>
     <string name="status_invalid">无效</string>
+    <string name="reset">重置</string>
     <string name="default_company_name">长江电商VIP</string>
+    <string name="tv_star">★</string>
 
     <!-- User -->
     <string name="input_message_hint">填写</string>
@@ -132,13 +138,19 @@
     <!-- 找买找卖 -->
     <string name="find_buy">找买找卖</string>
     <string name="menu_title_buy_filter">选择筛选类型</string>
+    <string name="buy_filter_title_product">种类规格</string>
+    <string name="buy_filter_title_area">交易地域</string>
+    <string name="buy_filter_title_datetime">交易时间范围</string>
     <string name="pub_by_custom_service">致电平台代为发布信息</string>
     <string name="pub_by_myself">自己发布信息</string>
     <string name="publish_buy_message">发布信息</string>
     <string name="publish_buy_message_prev">发布信息预览</string>
+    <string name="menu_title_select_buy_order">选择查看排序</string>
+    <string name="menu_title_select_mybuy_filter">选择查看供求分类</string>
     <string name="menu_title_select_buy_type">选择发布信息类型</string>
     <string name="menu_title_select_product_type">选择货物信息类型</string>
-    <string name="menu_title_select_product_spec">选择货物规格类型</string>
+    <string name="menu_title_select_product_category">选择货物分类</string>
+    <string name="menu_title_select_product_spec">选择货物规格</string>
     <string name="publish_type_buy">求购信息</string>
     <string name="publish_type_sell">出售信息</string>
     <string name="publish_buy_type">发布信息类型</string>
@@ -159,27 +171,47 @@
     <string name="product_unit_cube_hint">立方</string>
     <string name="business_water_depth">水深度</string>
     <string name="business_discharge_port_water_depth">卸货地港口水深度</string>
-    <string name="business_discharge_port_shipping_water_depth">实际船舶吃水深度</string>
+    <string name="business_discharge_shipping_ton">可停泊载重船吨位</string>
     <string name="business_buy_remarks">购买备注</string>
-    <string name="business_buy_remarks_hint"> <!-- 此处是购买备注信息 -->
-填写</string>
-    <string name="business_buyer_tips">        温馨提示：\n 
-		1、*号为必填项；\n
-		2、现在起平台推出优惠政策，只要您交易成功后即可获得平台送出的补贴奖励。</string>
+    <string name="business_buy_remarks_hint">填写</string>
+    <string name="business_buyer_tips">1、*号为必填项；\n2、现在起平台推出优惠政策，只要您交易成功后即可获得平台送出的补贴奖励。</string>
+    <string name="buy_status_valid">发布时间: %s</string>
+    <string name="buy_status_invalid_unpass_review">该信息已于%s客服审核不通过</string>
+    <string name="buy_status_invalid_expired">该信息已于%s过期</string>
+    <string name="buy_status_invalid_contract_going">该信息已于%s产生交易</string>
+    <string name="buy_status_invalid_contract_finished">该信息已于%s交易完成</string>
+    <string name="buy_status_invalid_contract_canceled">该信息已于%s取消发布</string>
+
+    <!-- 单位 -->
+    <string name="unit_ton_v1">吨</string>
+    <string name="unit_cube_v1">立方</string>
+    <string name="unit_mm_v1">mm</string>
+    <string name="unit_m_v1">米</string>
+    <string name="unit_rmb_v1">元</string>
+    <string name="unit_ton_v2">单位:吨</string>
+    <string name="unit_cube_v2">单位:立方</string>
+    <string name="unit_mm_v2">单位:mm</string>
+    <string name="unit_m_v2">单位:米</string>
+    <string name="unit_rmb_v2">单位:元</string>
+    <string name="unit_ton_v3">(单位:吨)</string>
+    <string name="unit_cube_v3">(单位:立方)</string>
+    <string name="unit_mm_v3">(单位:mm)</string>
+    <string name="unit_m_v3">(单位:米)</string>
+    <string name="unit_rmb_v3">(单位:元)</string>
+    <string name="unit_price_ton_v1">元/吨</string>
+    <string name="unit_price_cute_v1">元/立方</string>
+    <string name="unit_price_rmb_ton_v1">(单位：元/吨)</string>
 
     <!-- For seller -->
     <string name="business_product_sales_volume">销售量</string>
     <string name="business_sell_more_area">多地发布</string>
     <string name="business_sell_more_area_tips">将同批货物销售信息发布到其它地域</string>
     <string name="business_sell_area_title">地域%d</string>
-    <string name="business_sell_real_product_message">实物信息</string>
+    <string name="business_sell_real_product_message">实物照片</string>
     <string name="business_sell_real_product_message_tips">请在此上传实物照片</string>
     <string name="business_sell_remarks">销售备注</string>
-    <string name="business_sell_remarks_hint"> <!-- 此处是销售备注信息 -->
-填写</string>
-    <string name="business_seller_tips">        温馨提示：\n 
-		1、*号为必填项；\n
-		2、本平台提供真实高效的交易，成交后平台将收取您的交易手续费。</string>
+    <string name="business_sell_remarks_hint">填写</string>
+    <string name="business_seller_tips">1、*号为必填项；\n2、本平台提供真实高效的交易，成交后平台将收取您的交易手续费。</string>
 
     <!-- 货物规格 -->
     <string name="product_type_name">种类:</string>
@@ -194,7 +226,7 @@
     <string name="product_sturdiness_percentage">坚固性指标</string>
     <string name="product_crunch_percentage">压碎值指标</string>
     <string name="product_needle_plate_percentage">针片状颗粒含量</string>
-    <string name="product_specifications_remarks">货物信息备注</string>
+    <string name="product_specifications_remarks">货物备注</string>
     <string name="product_unit_percent">(%)</string>
     <string name="product_unit_density">(kg/m3)</string>
     <string name="product_unit_price">(元)</string>
@@ -225,6 +257,8 @@
     <string name="my_ongoing_contract">进行中的合同</string>
     <string name="my_ended_contract">已结束合同</string>
     <string name="my_to_pay_contract">待付款合同列表</string>
+    <string name="contract_tab_opr">待处理</string>
+    <string name="contract_tab_status">合同进度</string>
     <string name="contract_status_end">已结束</string>
     <string name="contract_model">电子合同详情</string>
     <string name="contract_opr_history">合同执行进度</string>
@@ -246,6 +280,10 @@
     <string name="contract_modify_price_reason">卸货完后，发现货物的平均质量与抽样检时不一致。</string>
     <string name="contract_title_contact_custom_service">联系平台客服</string>
     <string name="confirmed_contract_warning_tip">您正在确认一笔交易电子合同，请仔细查阅，确认后将遵循其义务与权责。</string>
+    <string name="confirmed_contract_payment_warning_tip">您的确认信息在卖方确认以后，平台将帮助完成您的实际货款支付。</string>
+    <string name="contract_arbitarte_warning_tip">请确认是否申请仲裁，申请仲裁后合同将被冻结。</string>
+    <string name="cancel_contract_warning_tip">您正在取消合同，请再次确认，取消后该合同将即刻生效。</string>
+    <string name="delete_contract_warning_tip">该合同已无效，请确认是否删除。</string>
     <string name="contract_to_pay_warning_tip">请您在72小时内将货款支付到平台，逾期将被视为违约，您的交易保证金将被作为违约金赔偿给卖方。</string>
     <string name="contract_to_wait_buyer_pay_tip">买方将在48小时内向平台支付货款，平台会冻结货款并在交易完成时支付实际给您。如买方不按期向平台支付货款，平台视为买方违约，将违约金赔付给您。您可以按计划发货了。  </string>
     <string name="contract_to_wait_buyer_first_check_tip">您将等待买方验收货物，确认实际货物与合同中描述一致。  </string>
@@ -258,6 +296,84 @@
     <string name="contract_status_user_canceled">该合同已于%s被取消</string>
     <string name="contract_status_system_canceled">该合同已于%s被取消</string>
     <string name="contract_wait_time">还有%s结束!</string>
+    <string name="ufm_contract_invalide_1">双方逾期未确认</string>
+    <string name="ufm_contract_invalide_2">对方已取消</string>
+    <string name="ufm_contract_valide_1">请尽快确认</string>
+    <string name="ufm_contract_valide_2">对方已确认，请尽快确认</string>
+    <string name="ufm_contract_valide_3">等待对方确认</string>
+    <string name="ongoing_contract_buyer_valid_1">请速向平台付货款</string>
+    <string name="ongoing_contract_buyer_valid_2">已向平台付货款</string>
+    <string name="ongoing_contract_buyer_valid_3">已向卖方提交了实付货款确认</string>
+    <string name="ongoing_contract_buyer_valid_4">卖方已确认了实收货款</string>
+    <string name="ongoing_contract_buyer_valid_5">您已申请了平台仲裁</string>
+    <string name="ongoing_contract_buyer_valid_6">卖方已申请了平台仲裁</string>
+    <string name="ongoing_contract_buyer_invalid_1">预期未支付货款，合同失效</string>
+    <string name="ongoing_contract_buyer_invalid_2">卖方已经取消了交易</string>
+    <string name="ongoing_contract_buyer_invalid_3">平台仲裁结束</string>
+    <string name="ongoing_contract_buyer_invalid_4">卖方已确认了实收货款</string>
+    <string name="ongoing_contract_buyer_action_1">等待货到后实际确认货物并确认实付金额</string>
+    <string name="ongoing_contract_buyer_action_2">等待卖方最终确认实付货款金额</string>
+    <string name="ongoing_contract_buyer_action_3">违约金已被汇入卖方的平台账号</string>
+    <string name="ongoing_contract_buyer_action_4">交易正常结束，请评价一下交易中的对方</string>
+    <string name="ongoing_contract_buyer_action_5">违约金已被汇入您的平台账号</string>
+    <string name="ongoing_contract_buyer_action_6">交易冻结</string>
+    <string name="ongoing_contract_buyer_action_7">交易结束</string>
+    <string name="ongoing_contract_buyer_action_8">交易正常结束</string>
+    <string name="ongoing_contract_seller_valid_1">买家正向平台付货款</string>
+    <string name="ongoing_contract_seller_valid_2">货款已到平台</string>
+    <string name="ongoing_contract_seller_valid_3">买方已提交了实付货款确认</string>
+    <string name="ongoing_contract_seller_valid_4">您已确认了实收货款</string>
+    <string name="ongoing_contract_seller_valid_5">买方已申请了平台仲裁</string>
+    <string name="ongoing_contract_seller_valid_6">您已申请了平台仲裁</string>
+    <string name="ongoing_contract_seller_invalid_1">买方预期未支付货款，合同失效</string>
+    <string name="ongoing_contract_seller_invalid_2">买方已经取消了交易</string>
+    <string name="ongoing_contract_seller_invalid_3">平台仲裁结束</string>
+    <string name="ongoing_contract_seller_invalid_4">您已确认了实收货款</string>
+    <string name="ongoing_contract_seller_action_1">请按时送货</string>
+    <string name="ongoing_contract_seller_action_2">请按时送货并配合抽样验货</string>
+    <string name="ongoing_contract_seller_action_3">请确认实收货款金额</string>
+    <string name="ongoing_contract_seller_action_4">违约金已被汇入您的平台账号</string>
+    <string name="ongoing_contract_seller_action_5">交易正常结束，请评价一下交易中的对方</string>
+    <string name="ongoing_contract_seller_action_6">交易冻结</string>
+    <string name="ongoing_contract_seller_action_7">交易结束</string>
+    <string name="ended_contract_buyer_invalid_1">您预期未支付货款，合同失效</string>
+    <string name="ended_contract_buyer_invalid_2">您已经取消了交易</string>
+    <string name="ended_contract_buyer_action_1">违约金已被汇入对方的平台账号</string>
+    <string name="ended_contract_seller_invalid_1">您已确认了实收货款</string>
+    <string name="ended_contract_seller_invalid_2">买方已经取消了交易</string>
+    <string name="contract_action_to_pay">向平台支付货款</string>
+    <string name="contract_action_payment_confirm">货物与货款实际确认</string>
+    <string name="contract_action_to_eva">查看评价</string>
+    <string name="contract_action_move_to_ended">移至已结束的合同</string>
+    <string name="contract_action_cancel">取消合同</string>
+    <string name="contract_status_payed_buyer">您已向平台支付货款</string>
+    <string name="contract_status_payed_seller">买方已向平台支付货款</string>
+    <string name="contract_status_confirmed">您已经向卖方提交了实际货物付款确认</string>
+    <string name="contract_status_normal_finished">交易正常结束</string>
+    <string name="contract_status_unpay_finished_buyer">由于您预期未支付货款，合同失效</string>
+    <string name="contract_status_unpay_finished_seller">买家预期未支付货款，合同失效</string>
+    <string name="contract_status_canceled_finished">您已经取消了交易</string>
+    <string name="contract_status_buyer_canceled_finished">买方已经取消了交易</string>
+    <string name="contract_status_seller_canceled_finished">卖方已经取消了交易</string>
+    <string name="contract_status_arbitrate_canceled_finished">仲裁结束</string>
+    <string name="contract_status_arbitrating">您已经申请了平台仲裁</string>
+    <string name="contract_status_buyer_arbitrating">买方已经申请了平台仲裁</string>
+    <string name="contract_status_seller_arbitrating">卖方已经申请了平台仲裁</string>
+    <string name="contract_action_to_pay_warning">请速向平台支付货款</string>
+    <string name="contract_action_send_warning">请您按时送货</string>
+    <string name="contract_action_payment_confirm_warning1">等待货物到后，请根据合同记载事项，实际确认货物并最终确认实际应付货款金额。</string>
+    <string name="contract_action_payment_confirm_warning2">请您按时送货，货到后请配合买方实际确认货物，并根据实际情况确认应收货款金额。</string>
+    <string name="contract_action_wait_confirm_warning1">卖方确认实际货物付款后，平台将按实际金额支付货款并将货款余额返回至您的账户。</string>
+    <string name="contract_action_wait_confirm_warning2">请您尽快确认实收金额，在您确认后，平台将按实际金额将货款打人您的平台货款账户。</string>
+    <string name="contract_action_normal_finished_warning1">平台已按实际金额支付货款并将货款余额返回至您的账户。</string>
+    <string name="contract_action_normal_finished_warning2">平台已按实际金额支付货款并将货款余额返回至您的账户。请评价一下交易中的对方。</string>
+    <string name="contract_action_unpay_finished_warning1">您的交易保证金已被作为违约金汇入卖方的平台账号。</string>
+    <string name="contract_action_unpay_finished_warning2">买方的交易保证金已被作为违约金汇入您的平台账号。</string>
+    <string name="contract_action_canceled_finished_warning1">您的交易保证金已被作为违约金汇入买方的平台账号。</string>
+    <string name="contract_action_canceled_finished_warning2">您的交易保证金已被作为违约金汇入卖方的平台账号。</string>
+    <string name="contract_action_canceled_finished_warning3">买方的交易保证金已被作为违约金汇入您的平台账号。</string>
+    <string name="contract_action_canceled_finished_warning4">卖方的交易保证金已被作为违约金汇入您的平台账号。</string>
+    <string name="contract_action_arbitrating_warning">交易冻结，仲裁结果将由平台通知您。</string>
 
     <!-- 我的钱包 -->
     <string name="my_purse">我的钱包</string>
@@ -284,6 +400,7 @@
     <string name="rollout_to_deposit_security_tips">货款账户余额可转款至交易保证金账户，交易保证金账户不可转款至交易保证金账户。</string>
     <string name="recharge_input_ship_weight_security_tips">请确认船的载重量，填写不正确会导致交易时不能顺畅进行。</string>
     <string name="recharge_security_tips">交易保证金账号由上海浦东发展银行托管，直接汇入上海浦东发展银行指定账号，账号受上海浦东发展银行进行资金监控</string>
+    <string name="contract_pay_security_tips">您的货款将托管于平台指定的银行，当交易最终成功时才被转移到卖方账号。</string>
     <string name="recharge_bank_info">请您向以上平台账号转账%s元充值您的保证金/货款账户，在转账备注信息中填写您的手机号码/公司名称/汇款人姓名其中一项即可），转账后1—2个工作日平台在确认后自动更新您的的保证金/货款账户，敬请留意。</string>
     <string name="recharge_offline_info">请联系我们的工作人员进行上门收取或前往我们的柜台进行现场充值交易保证金</string>
     <string name="deposit_deal_list_title">收支明细</string>
@@ -305,14 +422,18 @@
     <string name="pay_deposits_tips_not_enough">您的保证金不足，可能在下一次交易中由于交易保证金不够造成不能交易，建议补足交易保证金！</string>
     <string name="pay_payment_tips_empty">您的货款账户余额为0，赶紧去充值吧，否则将无法进行交易哦！</string>
     <string name="confirmed_delete_payee_warning_tip">请确认是否要删除该收款人？</string>
+    <string name="deposit_status_unrecharge">未缴纳</string>
+    <string name="deposit_status_recharged">已缴纳</string>
 
     <!-- 我的资料 -->
     <string name="my_profile">我的资料</string>
     <string name="my_discharge_address">卸货地址</string>
     <string name="my_discharge_address_select">选择卸货地址</string>
+    <string name="my_discharge_area_addr_select">地区选择</string>
     <string name="my_discharge_address_mgr">卸货地址管理</string>
     <string name="discharge_address_mgr">管理</string>
     <string name="my_discharge_address_add">新增卸货地址</string>
+    <string name="contract_trade_address">合同交易地址</string>
     <string name="my_discharge_address_update">修改卸货地址</string>
     <string name="contact_mgr">企业联系人管理</string>
     <string name="company_info_mgr">企业信息管理</string>
@@ -324,6 +445,9 @@
     <string name="auth_type_people">个人认证</string>
     <string name="auth_type_company">企业认证</string>
     <string name="auth_type_ship">船舶认证</string>
+    <string name="auth_type_people_v1">个人</string>
+    <string name="auth_type_company_v1">企业</string>
+    <string name="auth_type_ship_v1">船舶</string>
     <string name="submit_auth">提交认证申请</string>
     <string name="menu_title_select_auth_type">选择认证身份类型</string>
     <string name="auth_tips">本平台的所有企业用户都经过认证，以保障平台的信息真实与交易真实。</string>
@@ -333,6 +457,12 @@
     <string name="user_exit_warning_tips">请确认是否要退出登陆？</string>
     <string name="user_auth_security_tips">1、未经过平台认证的用户，不可以在平台上发布信息或者进行交易。\n2、标*号为必填项。</string>
     <string name="confirmed_delete_addr_warning_tip">请确认是否要删除该地址？</string>
+    <string name="sex_female">女</string>
+    <string name="sex_male">男</string>
+    <string name="auth_status_unauth">未认证</string>
+    <string name="auth_status_authed">已认证</string>
+    <string name="auth_status_authing">审核中</string>
+    <string name="auth_status_auth_failed">认证失败</string>
 
     <!-- 消息中心 -->
     <string name="message_type_system">系统消息</string>
@@ -441,7 +571,7 @@
     <string name="operator_tips_contract_pay_success">您已成功支付%s元货款至平台，对方将尽快为您安排发货，敬请留意。</string>
     <string name="operator_tips_contact_custom_service_success">已收到您的反馈，平台客服将在48小时致电与您到得联系，敬请耐心等待！</string>
     <string name="operator_tips_contract_cancel_success">已收到您的取消合同申请，平台客服将在48小时致电与您到得联系，敬请耐心等待！</string>
-    <string name="operator_tips_contract_agree_cancel_success">该合同已                     <!-- 与XXXX日 -->
+    <string name="operator_tips_contract_agree_cancel_success">该合同已                                                                                                                                                                             <!-- 与XXXX日 -->
 双方协商一致取消成功！</string>
     <string name="operator_tips_submit_negotiate_success">您的修改意见已成功提交给对方，请耐心等待对方确认。</string>
     <string name="operator_tips_agree_first_negotiate_success">您已同意对方意见，系统将会自动更新合同最新价格，在您确认收货后，48个小时内系统将会将货款支付给买方，并将剩余差价返还至您的货款账户，敬请留意。</string>
@@ -485,6 +615,5 @@
     <string name="dialog_context_upgrade">立即下载</string>
     <string name="common_loadmore_fail">加载下一页失败</string>
     <string name="common_loadmore_ing">加载中，请稍候</string>
-    <string name="timeline_welcome">欢迎</string>
 
 </resources>

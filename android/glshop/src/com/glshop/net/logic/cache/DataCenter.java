@@ -233,10 +233,14 @@ public final class DataCenter {
 	/**
 	 * 重置内存中DataType类型数据
 	 */
-	public synchronized void cleanData(int dataType) {
-		List data = mDataMap.get(dataType);
-		if (BeanUtils.isNotEmpty(data)) {
-			data.clear();
+	public synchronized void cleanData(int... typeList) {
+		if (BeanUtils.isNotEmpty(typeList)) {
+			for (int type : typeList) {
+				List data = getData(type);
+				if (BeanUtils.isNotEmpty(data)) {
+					data.clear();
+				}
+			}
 		}
 	}
 

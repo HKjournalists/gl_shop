@@ -93,7 +93,7 @@ public class ConfirmDialog extends BaseDialog {
 		case R.id.dialog_btn_confirm:
 			mBtnConfirm.setClickable(false);
 			if (callback != null) {
-				callback.onConfirm(null);
+				callback.onConfirm(mDialogType, null);
 			}
 			closeDialog();
 			break;
@@ -101,7 +101,7 @@ public class ConfirmDialog extends BaseDialog {
 		case R.id.dialog_btn_cancel:
 			mBtnCancel.setClickable(false);
 			if (callback != null) {
-				callback.onCancel();
+				callback.onCancel(mDialogType);
 			}
 			closeDialog();
 			break;

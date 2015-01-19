@@ -4,7 +4,10 @@ import java.util.List;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -17,6 +20,8 @@ import com.glshop.net.R;
 import com.glshop.net.common.GlobalConstants.DataStatus;
 import com.glshop.net.logic.syscfg.mgr.SysCfgUtils;
 import com.glshop.platform.api.buy.data.model.TodayPriceModel;
+import com.glshop.platform.utils.BeanUtils;
+import com.glshop.platform.utils.Logger;
 import com.glshop.platform.utils.StringUtils;
 
 /**
@@ -124,6 +129,12 @@ public class TodayPriceListView extends LinearLayout implements View.OnClickList
 	}
 
 	@Override
+	public boolean dispatchTouchEvent(MotionEvent ev) {
+		mGestureDetector.onTouchEvent(ev);
+		return super.dispatchTouchEvent(ev);
+	}
+
+	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.ll_empty_data:
@@ -175,8 +186,12 @@ public class TodayPriceListView extends LinearLayout implements View.OnClickList
 	 */
 	public void setPriceList(List<TodayPriceModel> list) {
 		this.mPriceList = list;
-		if (mPriceList != null && mPriceList.size() > 0) {
+		if (BeanUtils.isNotEmpty(mPriceList)) {
 			updatePriceList();
+		} else {
+			mBtnPrevious.setEnabled(false);
+			mBtnNext.setEnabled(false);
+			updateDataStatus(DataStatus.EMPTY);
 		}
 	}
 
@@ -195,7 +210,6 @@ public class TodayPriceListView extends LinearLayout implements View.OnClickList
 	 * 更新列表
 	 */
 	private void updatePriceList() {
-		//TODO 更新列表数据
 		curIndex = 0;
 		isFirstPage = true;
 		mBtnPrevious.setEnabled(false);
@@ -275,7 +289,7 @@ public class TodayPriceListView extends LinearLayout implements View.OnClickList
 			for (int i = 0; i < PAGE_SIZE && curIndex + i < mPriceList.size(); i++) {
 				//Logger.e(TAG, "View-" + (i + PAGE_SIZE) + ", CurIndex = " + (curIndex + i));
 				TodayPriceModel info = mPriceList.get(curIndex + i);
-				updateProductUI(info, viewArray[i]);
+				updateProductUI(info, viewArray[i + PAGE_SIZE]);
 			}
 		}
 	}
@@ -295,6 +309,7 @@ public class TodayPriceListView extends LinearLayout implements View.OnClickList
 		} else {
 			tvPrice.setText(info.todayPrice);
 		}
+
 		if (info.productInfo != null) {
 			// 显示大类型
 			String topCategory = info.productInfo.mCategoryName;
@@ -313,6 +328,7 @@ public class TodayPriceListView extends LinearLayout implements View.OnClickList
 			} else {
 				tvSubCategory.setVisibility(View.GONE);
 			}
+			//Logger.e(TAG, "Price = " + info.todayPrice + ", topCategory = " + info.productInfo.mCategoryName + ", subCategory = " + subCategory);
 		} else {
 			tvTopCategory.setVisibility(View.GONE);
 			tvSubCategory.setVisibility(View.GONE);
@@ -338,6 +354,51 @@ public class TodayPriceListView extends LinearLayout implements View.OnClickList
 	public void setCallback(Callback callback) {
 		this.mCallback = callback;
 	}
+
+	private GestureDetector mGestureDetector = new GestureDetector(new OnGestureListener() {
+
+		@Override
+		public boolean onSingleTapUp(MotionEvent e) {
+			return false;
+		}
+
+		@Override
+		public void onShowPress(MotionEvent e) {
+		}
+
+		@Override
+		public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+			return false;
+		}
+
+		@Override
+		public void onLongPress(MotionEvent e) {
+		}
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			Logger.e(TAG, "onFling");
+			if (BeanUtils.isNotEmpty(mPriceList)) {
+				if (e1.getX() - e2.getX() > 120) {//如果是从右向 左滑动  
+					if (mBtnNext.getVisibility() == View.VISIBLE && mBtnNext.isEnabled()) {
+						mBtnNext.performClick();
+						return true;
+					}
+				} else if (e1.getX() - e2.getX() < -120) {//如果是从左向 右滑动 
+					if (mBtnPrevious.getVisibility() == View.VISIBLE && mBtnPrevious.isEnabled()) {
+						mBtnPrevious.performClick();
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public boolean onDown(MotionEvent e) {
+			return false;
+		}
+	});
 
 	@SuppressWarnings("unchecked")
 	public <T extends View> T getView(int id) {

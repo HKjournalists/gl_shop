@@ -46,15 +46,14 @@ public class GetContactListReq extends BaseRequest<GetContactListResult> {
 		List<ResultItem> items = (ArrayList<ResultItem>) item.get("DATA");
 		List<ContactInfoModel> itemList = new ArrayList<ContactInfoModel>();
 		if (BeanUtils.isNotEmpty(items)) {
-			for (ResultItem contactItem : items) {
-				ContactInfoModel info = new ContactInfoModel();
-				info.id = contactItem.getString("id");
-				info.name = contactItem.getString("cname");
-				info.telephone = contactItem.getString("cphone");
-				info.fixPhone = contactItem.getString("tel");
-				info.isDefault = "1".equals(contactItem.getString("status"));
-				itemList.add(info);
-			}
+			ResultItem contactItem = items.get(0);
+			ContactInfoModel info = new ContactInfoModel();
+			info.id = contactItem.getString("id");
+			info.name = contactItem.getString("cname");
+			info.telephone = contactItem.getString("cphone");
+			info.fixPhone = contactItem.getString("tel");
+			info.isDefault = "1".equals(contactItem.getString("status"));
+			itemList.add(info);
 		}
 		result.datas = itemList;
 	}

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.EditText;
 
 import com.glshop.net.GLApplication;
 import com.glshop.net.R;
@@ -28,6 +29,7 @@ import com.glshop.net.common.GlobalConstants;
 import com.glshop.net.common.GlobalConstants.DataStatus;
 import com.glshop.net.common.GlobalErrorMessage;
 import com.glshop.net.common.GlobalMessageType;
+import com.glshop.net.logic.cache.DataCenter;
 import com.glshop.net.logic.model.MenuItemInfo;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.upgrade.IUpgradeLogic;
@@ -48,6 +50,7 @@ import com.glshop.net.utils.DateUtils;
 import com.glshop.net.utils.MenuUtil;
 import com.glshop.net.utils.NetworkUtil;
 import com.glshop.net.utils.SDCardUtils;
+import com.glshop.net.utils.ToastUtil;
 import com.glshop.platform.api.DataConstants;
 import com.glshop.platform.api.profile.data.model.ImageInfoModel;
 import com.glshop.platform.api.setting.data.model.UpgradeInfoModel;
@@ -116,6 +119,9 @@ public abstract class BasicActivity extends BaseActivity implements OnClickListe
 
 	/** 升级提示对话框 */
 	protected UpgradeDialog mUpgradeTipsDialog;
+
+	/** 当前请求标识 */
+	protected String mInvoker = String.valueOf(System.currentTimeMillis());
 
 	protected IUpgradeLogic mUpgradeLogic;
 
@@ -284,6 +290,11 @@ public abstract class BasicActivity extends BaseActivity implements OnClickListe
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		DataCenter.getInstance().cleanData(getDataType());
+	}
+
+	protected int[] getDataType() {
+		return new int[] {};
 	}
 
 	/**
@@ -398,12 +409,12 @@ public abstract class BasicActivity extends BaseActivity implements OnClickListe
 		menuUploadPicType = new MenuDialog(this, menu, new IMenuCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 
@@ -587,12 +598,12 @@ public abstract class BasicActivity extends BaseActivity implements OnClickListe
 		mOfflineDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				gotoLogin();
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});
@@ -623,7 +634,7 @@ public abstract class BasicActivity extends BaseActivity implements OnClickListe
 		mUpgradeTipsDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				// test data
 				/*UpgradeInfoModel info = new UpgradeInfoModel();
 				info.url = "http://www.916816.com/glshop_test4_20141205_3.apk";
@@ -633,11 +644,33 @@ public abstract class BasicActivity extends BaseActivity implements OnClickListe
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});
 		mUpgradeTipsDialog.show();
+	}
+
+	/**
+	 * 焦点定位文本末尾
+	 * @param view
+	 */
+	protected void requestSelection(EditText view) {
+		if (view != null) {
+			view.setSelection(view.getText().toString().length());
+		}
+	}
+
+	@Override
+	protected void showToast(String msg) {
+		//super.showToast(msg);
+		ToastUtil.showDefaultToast(this, msg);
+	}
+
+	@Override
+	protected void showToast(int resId) {
+		//super.showToast(resId);
+		ToastUtil.showDefaultToast(this, resId);
 	}
 
 	@SuppressWarnings("unchecked")

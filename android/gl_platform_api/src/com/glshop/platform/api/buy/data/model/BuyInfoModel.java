@@ -2,11 +2,17 @@ package com.glshop.platform.api.buy.data.model;
 
 import java.util.List;
 
+import com.glshop.platform.api.DataConstants.AuthStatusType;
 import com.glshop.platform.api.DataConstants.BuyStatus;
 import com.glshop.platform.api.DataConstants.BuyType;
+import com.glshop.platform.api.DataConstants.ContractStatusTypeV2;
 import com.glshop.platform.api.DataConstants.DeliveryAddrType;
+import com.glshop.platform.api.DataConstants.DepositStatusType;
+import com.glshop.platform.api.DataConstants.ProductUnitType;
+import com.glshop.platform.api.DataConstants.ProfileType;
 import com.glshop.platform.api.profile.data.model.AddrInfoModel;
 import com.glshop.platform.api.profile.data.model.ImageInfoModel;
+import com.glshop.platform.api.syscfg.data.model.ProductCfgInfoModel;
 import com.glshop.platform.net.base.ResultItem;
 
 /**
@@ -25,9 +31,14 @@ public class BuyInfoModel extends ResultItem implements Cloneable {
 	public String buyId;
 
 	/**
+	 * 关联合同ID
+	 */
+	public String contractId;
+
+	/**
 	 * 买卖类型
 	 */
-	public BuyType buyType = BuyType.BUYER;
+	public BuyType buyType;
 
 	/**
 	 * 企业ID
@@ -37,27 +48,42 @@ public class BuyInfoModel extends ResultItem implements Cloneable {
 	/**
 	 * 货物大类型编码
 	 */
-	public String productCode;
+	public String productTypeCode;
 
 	/**
-	 * 货物名称
+	 * 货物大类型名称
 	 */
-	public String productName;
-	
-	/**
-	 * 货物子类型编码
-	 */
-	public String productSubCode;
+	public String productTypeName;
 
 	/**
-	 * 规格ID
+	 * 货物子分类编码
 	 */
-	public String specId;
+	public String productCategoryCode;
 
 	/**
-	 * 规格名称
+	 * 货物子分类名称
 	 */
-	public String specName;
+	public String productCategoryName;
+
+	/**
+	 * 货物规格ID
+	 */
+	public String productSpecId;
+
+	/**
+	 * 货物规格名称
+	 */
+	public String productSpecName;
+
+	/**
+	 * 颜色
+	 */
+	public String productColor;
+
+	/**
+	 * 产地
+	 */
+	public String productArea;
 
 	/**
 	 * 单价
@@ -70,14 +96,24 @@ public class BuyInfoModel extends ResultItem implements Cloneable {
 	public float tradeAmount;
 
 	/**
+	 * 货物单位类型
+	 */
+	public ProductUnitType unitType = ProductUnitType.TON;
+
+	/**
 	 * 已交易的数量
 	 */
 	public float tradedAmount;
 
 	/**
-	 * 交易地域
+	 * 交易地域编码
 	 */
-	public String tradeArea;
+	public String tradeAreaCode;
+
+	/**
+	 * 交易地域名称
+	 */
+	public String tradeAreaName;
 
 	/**
 	 * 是否多地域发布
@@ -92,7 +128,12 @@ public class BuyInfoModel extends ResultItem implements Cloneable {
 	/**
 	 * 货物规格信息
 	 */
-	public ProductInfoModel productInfo;
+	public ProductCfgInfoModel productSepcInfo;
+
+	/**
+	 * 货物属性信息
+	 */
+	public ProductInfoModel productPropInfo;
 
 	/**
 	 * 实物照片信息
@@ -115,14 +156,29 @@ public class BuyInfoModel extends ResultItem implements Cloneable {
 	public String tradeEndDate;
 
 	/**
+	 * 交易更新时间
+	 */
+	public String tradeUpdateDate;
+
+	/**
+	 * 合同结束时间
+	 */
+	public String tradeContractEndDate;
+
+	/**
 	 * 交货地址方式
 	 */
-	public DeliveryAddrType deliveryAddrType = DeliveryAddrType.ME_DECIDE;
+	public DeliveryAddrType deliveryAddrType;
 
 	/**
 	 * 卸货地址信息
 	 */
 	public AddrInfoModel addrInfo;
+
+	/**
+	 * 货物备注
+	 */
+	public String productRemarks;
 
 	/**
 	 * 交易备注
@@ -138,6 +194,21 @@ public class BuyInfoModel extends ResultItem implements Cloneable {
 	 * 信息发布者公司名称
 	 */
 	public String publisherCompany;
+
+	/**
+	 * 信息发布者企业类型
+	 */
+	public ProfileType publisherProfileType;
+
+	/**
+	 * 信息发布者认证状态
+	 */
+	public AuthStatusType publisherAuthStatus = AuthStatusType.UN_AUTH;
+
+	/**
+	 * 信息发布者保证金状态
+	 */
+	public DepositStatusType publisherDepositStatus = DepositStatusType.UN_RECHARGE;
 
 	/**
 	 * 信息发布者的满意度
@@ -175,9 +246,9 @@ public class BuyInfoModel extends ResultItem implements Cloneable {
 	public BuyStatus buyStatus = BuyStatus.VALID;
 
 	/**
-	 * 发布买卖信息状态时间：取消发布的时间、审核未通过的时间、交易已完成的时间等
+	 * 相关合同状态
 	 */
-	public long pubBuyStatusTime;
+	public ContractStatusTypeV2 contractStatus;
 
 	@Override
 	public Object clone() {
@@ -221,7 +292,7 @@ public class BuyInfoModel extends ResultItem implements Cloneable {
 		StringBuffer sb = new StringBuffer();
 		sb.append("BuyInfoModel[");
 		sb.append("buyId=" + buyId);
-		sb.append(", buyType=" + buyType.toValue());
+		sb.append(", buyType=" + buyType != null ? buyType.toValue() : buyType);
 		sb.append(", unitPrice=" + unitPrice);
 		sb.append(", tradeAmount=" + tradeAmount);
 		sb.append(", tradePubDate=" + tradePubDate);

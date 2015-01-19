@@ -24,6 +24,8 @@ public abstract class BaseDialog extends Dialog implements View.OnClickListener 
 
 	protected IDialogCallback callback;
 
+	protected int mDialogType = -1;
+
 	/**
 	 * @param context
 	 */
@@ -65,6 +67,10 @@ public abstract class BaseDialog extends Dialog implements View.OnClickListener 
 		this.callback = callback;
 	}
 
+	public void setDialogType(int type) {
+		this.mDialogType = type;
+	}
+
 	@Override
 	public void onClick(View v) {
 
@@ -102,9 +108,9 @@ public abstract class BaseDialog extends Dialog implements View.OnClickListener 
 	 */
 	public interface IDialogCallback {
 
-		public void onConfirm(Object obj);
+		public void onConfirm(int type, Object obj);
 
-		public void onCancel();
+		public void onCancel(int type);
 
 	}
 

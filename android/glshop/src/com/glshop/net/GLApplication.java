@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Stack;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 
 import com.glshop.net.common.GlobalConfig;
@@ -35,6 +36,7 @@ import com.glshop.net.logic.user.UserLogic;
 import com.glshop.net.logic.xmpp.XmppMgr;
 import com.glshop.net.utils.ActivityUtil;
 import com.glshop.net.utils.SDCardUtils;
+import com.glshop.net.utils.ToastUtil;
 import com.glshop.platform.base.config.PlatformConfig;
 import com.glshop.platform.base.manager.ApplicationExceptionHandler;
 import com.glshop.platform.base.manager.BaseApplication;
@@ -66,37 +68,62 @@ public class GLApplication extends BaseApplication {
 	public void onCreate() {
 		super.onCreate();
 		mContext = getApplicationContext();
-		// 初始化全局配置
-		GlobalConfig.getInstance().init(mContext);
 
 		// 初始化日志
 		Logger.initLogger(Logger.VERBOSE, true, GlobalConstants.AppDirConstants.LOG);
 		// 异常统一处理
 		Thread.setDefaultUncaughtExceptionHandler(new ApplicationExceptionHandler(mContext));
 
-		Logger.e(TAG, "onCreate");
-		Logger.e(TAG, "AppVersion = " + ActivityUtil.getVersionName(this));
+		// ToastUtil初始化
+		ToastUtil.init(mContext);
 
-		// 初始化所有的参数
-		PlatformConfig.init(mContext);
-		// 初始化服务器URL
-		PlatformConfig.setValue(PlatformConfig.SERVICES_URL, GlobalConstants.Common.SERVER_URL);
-		PlatformConfig.setValue(PlatformConfig.SERVICES_URL_IMAGE, GlobalConstants.Common.SERVER_URL_IMAGE);
+		if (isMainAppProcess()) {
+			Logger.e(TAG, "onCreate");
+			Logger.e(TAG, "AppVersion = " + ActivityUtil.getVersionName(this));
 
-		// 升级管理
-		onUpgrade();
+			// 初始化全局配置
+			GlobalConfig.getInstance().init(mContext);
 
-		// 推送初始化
-		xmppInit();
+			// 初始化所有的参数
+			PlatformConfig.init(mContext);
+			// 初始化服务器URL
+			PlatformConfig.setValue(PlatformConfig.SERVICES_URL, GlobalConstants.Common.SERVER_URL);
+			PlatformConfig.setValue(PlatformConfig.SERVICES_URL_IMAGE, GlobalConstants.Common.SERVER_URL_IMAGE);
 
-		// 初始化Logic
-		initAllLogics();
+			// 升级管理
+			onUpgrade();
 
-		// 初始化目录信息
-		initDir();
+			// 推送初始化
+			xmppInit();
 
-		// 同步系统配置信息，暂时放在Application调用，后续视情况再调整。
-		syncSysCfg();
+			// 初始化Logic
+			initAllLogics();
+
+			// 初始化目录信息
+			initDir();
+
+			// 同步系统配置信息
+			syncSysCfg();
+		}
+	}
+
+	/**
+	 * 判断当前是否为主进程
+	 * @return
+	 */
+	private boolean isMainAppProcess() {
+		String pkgName = ActivityUtil.getPackageName(mContext, "com.glshop.net");
+		int pid = android.os.Process.myPid();
+		ActivityManager mActivityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+		for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager.getRunningAppProcesses()) {
+			//Logger.e(TAG, "PID = " + appProcess.pid + ", PName = " + appProcess.processName);
+			if (appProcess.pid == pid) {
+				if (appProcess.processName.equalsIgnoreCase(pkgName)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -105,7 +132,7 @@ public class GLApplication extends BaseApplication {
 	private void onUpgrade() {
 		PlatformConfig.setValue(GlobalConstants.SPKey.CUR_VERSION_NAME, ActivityUtil.getVersionName(mContext));
 		PlatformConfig.setValue(GlobalConstants.SPKey.CUR_VERSION_CODE, ActivityUtil.getVersionCode(mContext));
-		// TODO 后续实现
+		// TODO 后续完善
 	}
 
 	/**
@@ -172,6 +199,20 @@ public class GLApplication extends BaseApplication {
 		ISysCfgLogic mSysCfgLogic = LogicFactory.getLogicByClass(ISysCfgLogic.class);
 		if (mSysCfgLogic != null) {
 			mSysCfgLogic.syncSysCfgInfo();
+		}
+		importAreaCfg();
+	}
+
+	/**
+	 * 导入本地地域列表信息
+	 */
+	private void importAreaCfg() {
+		ISysCfgLogic mSysCfgLogic = LogicFactory.getLogicByClass(ISysCfgLogic.class);
+		boolean isImported = PlatformConfig.getBoolean(GlobalConstants.SPKey.IS_IMPORTED_AREA_CFG);
+		if (!isImported) {
+			if (mSysCfgLogic != null) {
+				mSysCfgLogic.importAreaCfgInfo();
+			}
 		}
 	}
 

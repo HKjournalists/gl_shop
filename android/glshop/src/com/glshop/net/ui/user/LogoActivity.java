@@ -6,11 +6,14 @@ import android.os.Message;
 
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalMessageType;
+import com.glshop.net.common.GlobalMessageType.UserMessageType;
+import com.glshop.net.logic.message.IMessageLogic;
 import com.glshop.net.logic.user.IUserLogic;
 import com.glshop.net.ui.MainActivity;
 import com.glshop.net.ui.basic.BasicActivity;
 import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.utils.Logger;
+import com.glshop.platform.utils.StringUtils;
 
 /**
  * @Description : 启动页面
@@ -22,8 +25,11 @@ import com.glshop.platform.utils.Logger;
  */
 public class LogoActivity extends BasicActivity {
 
-	private static final String TAG = "LoginActivity";
+	private static final String TAG = "LogoActivity";
 
+	private boolean needToUpdateUnReadMsgNum = false;
+
+	private IMessageLogic mMessageLogic;
 	private IUserLogic mUserLogic;
 
 	@Override
@@ -34,16 +40,20 @@ public class LogoActivity extends BasicActivity {
 	}
 
 	private void showBootPage() {
-		getHandler().sendEmptyMessageDelayed(GlobalMessageType.UserMessageType.MSG_BOOT_COMPLETE, 3000);
+		getHandler().sendEmptyMessageDelayed(GlobalMessageType.UserMessageType.MSG_BOOT_COMPLETE, 2000);
 	}
 
 	@Override
 	protected void handleStateMessage(Message message) {
 		super.handleStateMessage(message);
+		Logger.d(TAG, "handleStateMessage: what = " + message.what);
 		switch (message.what) {
 		case GlobalMessageType.UserMessageType.MSG_BOOT_COMPLETE:
 			autoLogin();
 			gotoMainPage();
+			break;
+		case UserMessageType.MSG_REFRESH_TOKEN_SUCCESS:
+			needToUpdateUnReadMsgNum = true;
 			break;
 		}
 	}
@@ -58,6 +68,19 @@ public class LogoActivity extends BasicActivity {
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
 		finish();
+
+		if (needToUpdateUnReadMsgNum) {
+			refreshMessageStatus();
+		}
+	}
+
+	/**
+	 * 刷新未读消息个数
+	 */
+	private void refreshMessageStatus() {
+		if (isLogined() && StringUtils.isNotEmpty(getCompanyId())) {
+			mMessageLogic.getUnreadedNumberFromServer(getCompanyId());
+		}
 	}
 
 	@Override
@@ -67,6 +90,7 @@ public class LogoActivity extends BasicActivity {
 
 	@Override
 	protected void initLogics() {
+		mMessageLogic = LogicFactory.getLogicByClass(IMessageLogic.class);
 		mUserLogic = LogicFactory.getLogicByClass(IUserLogic.class);
 	}
 

@@ -23,7 +23,7 @@ public class DateUtils {
 	public static final String PUB_DATE_FORMAT = "yyyy.MM.dd";
 	public static final String TAKE_PHOTO_NAME_FORMAT = "yyyyMMdd_HHmmss";
 	public static final String TRADE_DATE_FORMAT = "yyyy年MM月dd日";
-	public static final String DEAL_DATE_FORMAT = "yyyy-MM-dd";
+	public static final String TRADE_DATE_FORMAT_V2 = "yyyy-MM-dd";
 	public static final String CONTRACT_DATETIME_FORMAT = "yyyy年MM月dd日HH时mm分ss秒";
 	public static final String CONTRACT_DATETIME_FORMAT_V2 = "yyyy年MM月dd日HH时mm分";
 	private static final String TRADE_WAIT_TIME_FORMAT = "%s天%s小时%s分";

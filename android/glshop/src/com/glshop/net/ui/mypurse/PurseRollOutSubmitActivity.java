@@ -64,9 +64,6 @@ public class PurseRollOutSubmitActivity extends BasicActivity {
 
 	private InputDialog mInputPwdDialog;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	private IPurseLogic mPurseLogic;
 	private IUserLogic mUserLogic;
 
@@ -214,7 +211,7 @@ public class PurseRollOutSubmitActivity extends BasicActivity {
 		mInputPwdDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				if (StringUtils.isEmpty((String) obj)) {
 					showToast(getString(R.string.password_empty));
 				} else {
@@ -230,7 +227,7 @@ public class PurseRollOutSubmitActivity extends BasicActivity {
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});

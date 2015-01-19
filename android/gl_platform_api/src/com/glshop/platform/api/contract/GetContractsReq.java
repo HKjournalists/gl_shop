@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.glshop.platform.api.DataConstants.BuyType;
+import com.glshop.platform.api.DataConstants.ContractDraftStatus;
 import com.glshop.platform.api.DataConstants.ContractLifeCycle;
 import com.glshop.platform.api.DataConstants.ContractStatusType;
 import com.glshop.platform.api.DataConstants.ContractType;
@@ -62,19 +63,27 @@ public class GetContractsReq extends BaseRequest<GetContractsResult> {
 		if (BeanUtils.isNotEmpty(items)) {
 			for (ResultItem contractItem : items) {
 				ContractSummaryInfoModel info = new ContractSummaryInfoModel();
-				info.contractType = ContractType.convert(contractItem.getInt("status|val"));
-				info.lifeCycle = ContractLifeCycle.convert(contractItem.getInt("lifecycle|val"));
-				info.statusType = ContractStatusType.convert(contractItem.getInt("otype|val"));
+				info.contractType = ContractType.convert(contractItem.getEnumValue("status"));
+				info.lifeCycle = ContractLifeCycle.convert(contractItem.getEnumValue("lifecycle"));
+				info.statusType = ContractStatusType.convert(contractItem.getEnumValue("otype"));
 				info.contractId = contractItem.getString("id");
 				info.productName = contractItem.getString("productName");
+				info.productCode = contractItem.getString("productCode");
+				info.productSubCode = contractItem.getString("productType");
+				info.productSpecId = contractItem.getString("productId");
 				info.amount = contractItem.getString("totalnum");
-				info.buyType = BuyType.convert(contractItem.getInt("saleType|val"));
+				info.unitPrice = contractItem.getString("price");
+				info.buyType = BuyType.convert(contractItem.getEnumValue("saleType"));
 				info.buyCompanyId = contractItem.getString("buyerid");
 				info.buyCompanyName = contractItem.getString("buyerName");
 				info.sellCompanyId = contractItem.getString("sellerid");
 				info.sellCompanyName = contractItem.getString("sellerName");
 				info.createTime = contractItem.getString("creatime");
 				info.expireTime = contractItem.getString("limittime");
+				info.draftExpireTime = contractItem.getString("draftLimitTime");
+				info.payExpireTime = contractItem.getString("payGoodsLimitTime");
+				info.buyerDraftStatus = ContractDraftStatus.convert(contractItem.getEnumValue("buyerDraftStatus"));
+				info.sellerDraftStatus = ContractDraftStatus.convert(contractItem.getEnumValue("sellerDraftStatus"));
 				itemList.add(info);
 			}
 		}
@@ -83,7 +92,7 @@ public class GetContractsReq extends BaseRequest<GetContractsResult> {
 
 	@Override
 	protected String getTypeURL() {
-		return "/contract/getContractListWitPage";
+		return "/contract/getMyContractListWithPaginiation";
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.glshop.platform.api.buy.data.model;
 
+import java.io.Serializable;
+
 import com.glshop.platform.api.DataConstants.BuyOrderType;
 import com.glshop.platform.api.DataConstants.OrderStatus;
 
@@ -11,7 +13,12 @@ import com.glshop.platform.api.DataConstants.OrderStatus;
  * @version     : 1.0
  * Create Date  : 2014-7-30 下午4:16:39
  */
-public class BuyFilterInfoModel {
+public class BuyFilterInfoModel implements Serializable {
+
+	/**
+	 * ID
+	 */
+	private static final long serialVersionUID = -6630984664767618722L;
 
 	/**
 	 * 排序类别

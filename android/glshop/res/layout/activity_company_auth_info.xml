@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <LinearLayout
+        android:id="@+id/ll_company_auth_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="6dp" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:gravity="center_vertical"
+                    android:text="用户身份: 企业" />
+
+                <!-- 公司名称 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_company_name"
+                    style="@style/BuyTextItem.Top"
+                    glshop:itemContent="公司名称"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="公司名称" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 注册地址 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_registe_addr"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="注册地址"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="注册地址" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 成立时间 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_registe_datetime"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="成立时间"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="成立时间" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 注册号 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_registe_no"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="注册号"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="注册号" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 法定代表人姓名 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_company_law_people"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="法定代表人姓名"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="法定代表人姓名" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 登记机关 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_register_org"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="登记机关"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="登记机关" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 企业类型 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_register_company_type"
+                    style="@style/BuyTextItem.Bottom"
+                    glshop:itemContent="企业类型"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="企业类型" />
+
+                <View style="@style/item_devider_line" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>

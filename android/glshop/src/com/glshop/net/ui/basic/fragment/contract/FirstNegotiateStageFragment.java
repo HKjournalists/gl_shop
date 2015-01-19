@@ -11,7 +11,7 @@ import com.glshop.net.common.GlobalAction;
 import com.glshop.net.common.GlobalMessageType.ContractMessageType;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.model.TipInfoModel;
-import com.glshop.net.ui.basic.adapter.FirstNegotiateAdapter;
+import com.glshop.net.ui.basic.adapter.contract.FirstNegotiateAdapter;
 import com.glshop.net.ui.basic.view.NegotiateListView;
 import com.glshop.net.ui.mycontract.ContractOprResultTipsActivity;
 import com.glshop.net.ui.mycontract.InputFirstNegotiateActivity;

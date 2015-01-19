@@ -18,7 +18,7 @@ import com.glshop.net.common.GlobalConstants.DataStatus;
 import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.logic.model.MenuItemInfo;
 import com.glshop.net.logic.model.RespInfo;
-import com.glshop.net.ui.basic.adapter.ForecastPriceExAdapter;
+import com.glshop.net.ui.basic.adapter.buy.ForecastPriceExAdapter;
 import com.glshop.platform.api.buy.data.model.ForecastPriceModel;
 import com.glshop.platform.utils.BeanUtils;
 import com.glshop.platform.utils.Logger;

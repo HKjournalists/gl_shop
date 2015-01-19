@@ -19,7 +19,7 @@ public class ProductPropInfoModel extends ResultItem implements Cloneable {
 	public String mCategoryCode;
 	public String mSubCategoryCode;
 
-	public float mRealSize;
+	public String mRealSize;
 	public float mDefaultSize;
 	public float mMaxSize;
 	public float mMinSize;

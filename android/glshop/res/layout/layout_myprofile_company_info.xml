@@ -6,7 +6,8 @@
     android:layout_margin="@dimen/buy_item_padding"
     android:background="@drawable/selector_item_single"
     android:orientation="vertical"
-    android:padding="@dimen/buy_item_padding" >
+    android:paddingLeft="@dimen/buy_item_padding"
+    android:paddingRight="@dimen/buy_item_padding" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,10 +34,11 @@
         android:id="@+id/tv_company_intro"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:text="企业介绍企业介绍企业介绍企业介绍企业介绍企业介绍企业介绍企业介绍企业介绍"
+        android:text="企业介绍详情信息"
         android:textColor="@color/blue" />
 
     <LinearLayout
+        android:id="@+id/ll_company_pic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

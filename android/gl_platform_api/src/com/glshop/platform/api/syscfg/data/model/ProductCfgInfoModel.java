@@ -33,4 +33,28 @@ public class ProductCfgInfoModel extends ResultItem {
 
 	public List<ProductPropInfoModel> mPropList;
 
+	public ProductCfgInfoModel parent;
+	public List<ProductCfgInfoModel> childList;
+
+	public boolean isSelectedForUI;
+	public boolean isSelectedForDB;
+
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("ProductCfgInfoModel[");
+		sb.append("mTypeCode=" + mTypeCode);
+		sb.append(", mTypeName=" + mTypeName);
+		sb.append(", mCategoryCode=" + mCategoryCode);
+		sb.append(", mCategoryName=" + mCategoryName);
+		sb.append(", mCategoryOrder=" + mCategoryOrder);
+		sb.append(", mSubCategoryCode=" + mSubCategoryCode);
+		sb.append(", mSubCategoryName=" + mSubCategoryName);
+		sb.append(", mSubCategoryOrder=" + mSubCategoryOrder);
+		sb.append(", mMaxSize=" + mMaxSize);
+		sb.append(", mMinSize=" + mMinSize);
+		sb.append("]");
+		return sb.toString();
+	}
+
 }

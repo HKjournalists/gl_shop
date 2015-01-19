@@ -20,9 +20,10 @@ import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.profile.IProfileLogic;
 import com.glshop.net.ui.basic.BasicActivity;
-import com.glshop.net.ui.basic.adapter.AddrListAdapter;
+import com.glshop.net.ui.basic.adapter.profile.AddrListAdapter;
 import com.glshop.platform.api.profile.data.model.AddrInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
+import com.glshop.platform.utils.Logger;
 
 /**
  * @Description : 选择卸货地点列表界面
@@ -65,6 +66,7 @@ public class DischargeAddrSelectActivity extends BasicActivity implements OnItem
 		mLvAddr.setAdapter(mAdapter);
 		mLvAddr.setOnItemClickListener(this);
 
+		getView(R.id.ll_item_add_address).setOnClickListener(this);
 		getView(R.id.iv_common_back).setOnClickListener(this);
 	}
 
@@ -84,10 +86,10 @@ public class DischargeAddrSelectActivity extends BasicActivity implements OnItem
 		super.handleStateMessage(message);
 		RespInfo respInfo = getRespInfo(message);
 		switch (message.what) {
-		case GlobalMessageType.ProfileMessageType.MSG_GET_ADDR_LIST_SUCCESS:
+		case GlobalMessageType.ProfileMessageType.MSG_GET_DISCHARGE_ADDR_LIST_SUCCESS:
 			onGetSuccess(respInfo);
 			break;
-		case GlobalMessageType.ProfileMessageType.MSG_GET_ADDR_LIST_FAILED:
+		case GlobalMessageType.ProfileMessageType.MSG_GET_DISCHARGE_ADDR_LIST_FAILED:
 			onGetFailed(respInfo);
 			break;
 		}
@@ -131,9 +133,25 @@ public class DischargeAddrSelectActivity extends BasicActivity implements OnItem
 			intent = new Intent(this, DischargeAddrMgrActivity.class);
 			startActivity(intent);
 			break;
-
+		case R.id.ll_item_add_address:
+			intent = new Intent(this, DischargeAddrAddActivity.class);
+			startActivityForResult(intent, GlobalMessageType.ActivityReqCode.REQ_EDIT_DISCHARGE_ADDRESS);
+			break;
 		case R.id.iv_common_back:
 			finish();
+			break;
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Logger.e(TAG, "onActivityResult: reqCode = " + requestCode + ", respCode = " + resultCode);
+		switch (requestCode) {
+		case GlobalMessageType.ActivityReqCode.REQ_EDIT_DISCHARGE_ADDRESS:
+			if (resultCode == Activity.RESULT_OK) {
+				mProfileLogic.getAddrList(getCompanyId());
+			}
 			break;
 		}
 	}

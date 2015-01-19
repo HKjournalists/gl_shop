@@ -16,7 +16,7 @@ public class DBConstants {
 
 		public static final String DATABASE_NAME = "gl_shop.db";
 
-		public static final int DATABASE_VERSION = 3;
+		public static final int DATABASE_VERSION = 4;
 
 	}
 
@@ -205,6 +205,76 @@ public class DBConstants {
 			Column.MAX_SIZE, 
 			Column.MIN_SIZE, 
 			Column.DEFAULT_SIZE };
+
+	}
+	
+	/**
+	 * 系统交易地域显示配置数据表
+	 */
+	public interface TableAreaCfg {
+
+		public static final String TABLE_NAME = "table_trade_area_cfg";
+
+		public interface Column extends BaseColumns { 
+			
+			public static final String AREA_ID = "area_id";
+
+			public static final String CODE = "code";
+			
+			public static final String NAME = "name";
+			
+		}
+
+		public static final String CREATE_TABLE_SQL = "create table " + TABLE_NAME + "(" 
+				+ Column._ID + " INTEGER primary key autoincrement," 
+				+ Column.AREA_ID + " text," 
+				+ Column.CODE + " text," 
+				+ Column.NAME + " text)";
+
+		public static final String[] ALL_COLUMNS = new String[] { 
+			Column._ID, 
+			Column.AREA_ID, 
+			Column.CODE, 
+			Column.NAME };
+
+	}
+	
+	/**
+	 * 系统交易地域列表数据表
+	 */
+	public interface TableAreaData {
+
+		public static final String TABLE_NAME = "table_trade_area_data";
+
+		public interface Column extends BaseColumns { 
+			
+			public static final String AREA_ID = "area_id";
+
+			public static final String CODE = "code";
+			
+			public static final String NAME = "name";
+			
+			public static final String PCODE = "pcode";
+			
+			public static final String ORDER_NO = "order_no";
+
+		}
+
+		public static final String CREATE_TABLE_SQL = "create table " + TABLE_NAME + "(" 
+				+ Column._ID + " INTEGER primary key autoincrement," 
+				+ Column.AREA_ID + " text," 
+				+ Column.CODE + " text," 
+				+ Column.NAME + " text," 
+				+ Column.PCODE + " text," 
+				+ Column.ORDER_NO + " text)";
+
+		public static final String[] ALL_COLUMNS = new String[] { 
+			Column._ID, 
+			Column.AREA_ID, 
+			Column.CODE, 
+			Column.NAME, 
+			Column.PCODE, 
+			Column.ORDER_NO };
 
 	}
 	

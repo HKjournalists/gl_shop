@@ -4,7 +4,7 @@ import com.glshop.net.common.GlobalConstants.DataReqType;
 import com.glshop.platform.api.DataConstants.BuyType;
 import com.glshop.platform.api.DataConstants.MyBuyFilterType;
 import com.glshop.platform.api.DataConstants.ProductType;
-import com.glshop.platform.api.buy.data.model.BuyFilterInfoModel;
+import com.glshop.platform.api.buy.data.model.BuyFilterInfoModelV2;
 import com.glshop.platform.api.buy.data.model.BuyInfoModel;
 import com.glshop.platform.base.logic.ILogic;
 
@@ -31,7 +31,7 @@ public interface IBuyLogic extends ILogic {
 	/**
 	 * 获取求购/供应信息列表(包括筛选/排序)
 	 */
-	public void getBuys(BuyFilterInfoModel filterInfo, BuyType type, int pageIndex, int pageSize, DataReqType reqType);
+	public void getBuys(BuyFilterInfoModelV2 filterInfo, BuyType type, int pageIndex, int pageSize, DataReqType reqType);
 
 	/**
 	 * 获取求购/供应信息详情

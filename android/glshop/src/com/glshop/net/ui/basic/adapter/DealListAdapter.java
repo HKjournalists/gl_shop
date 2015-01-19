@@ -42,7 +42,7 @@ public class DealListAdapter extends BasicAdapter<DealSummaryInfoModel> {
 		tvDealType.setText(EnumUtil.parseDealType(model.oprType));
 
 		TextView tvDealTime = ViewHolder.get(convertView, R.id.tv_deal_time);
-		tvDealTime.setText(DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.DEAL_DATE_FORMAT, model.dealTime));
+		tvDealTime.setText(DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.TRADE_DATE_FORMAT_V2, model.dealTime));
 
 		TextView tvDealBalance = ViewHolder.get(convertView, R.id.tv_deal_balance);
 		tvDealBalance.setText(StringUtils.getCashNumber(String.valueOf(model.balance)));

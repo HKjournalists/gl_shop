@@ -1,7 +1,6 @@
 package com.glshop.net.ui.mybuy;
 
 import android.os.Bundle;
-import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,13 +10,14 @@ import com.glshop.net.ui.basic.BasicActivity;
 import com.glshop.platform.utils.Logger;
 
 /**
- * @Description : 我发布的买卖信息详情
+ * @Description : 我的供求买卖信息详情(目前统一使用BuyInfoActivity.java显示，此类暂保留)
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 深圳市国立数码动画有限公司
  * @author      : 叶跃丰
  * @version     : 1.0
  * Create Date  : 2014-7-17 下午5:01:00
  */
+@Deprecated
 public class MyBuyInfoActivity extends BasicActivity {
 
 	private static final String TAG = "MyBuyInfoActivity";
@@ -40,17 +40,6 @@ public class MyBuyInfoActivity extends BasicActivity {
 	private void initData() {
 		pubBuyId = getIntent().getLongExtra(GlobalAction.BuyAction.EXTRA_KEY_BUY_ID, 0);
 		Logger.e(TAG, "PubBuyId = " + pubBuyId);
-		/*if (pubBuyId > 0) {
-
-		} else {
-			showToast("PubBuyId error...");
-			finish();
-		}*/
-	}
-
-	@Override
-	protected void handleStateMessage(Message message) {
-
 	}
 
 	@Override

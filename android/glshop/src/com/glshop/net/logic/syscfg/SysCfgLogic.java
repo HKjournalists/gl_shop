@@ -6,9 +6,10 @@ import java.util.Map;
 import android.content.Context;
 import android.os.Message;
 
-import com.glshop.net.common.GlobalMessageType.SettingMessageType;
+import com.glshop.net.common.GlobalMessageType.SysCfgMessageType;
 import com.glshop.net.logic.basic.BasicLogic;
 import com.glshop.net.logic.model.RespInfo;
+import com.glshop.net.logic.syscfg.mgr.SysCfgLocalMgr;
 import com.glshop.net.logic.syscfg.mgr.SysCfgMgr;
 import com.glshop.platform.api.IReturnCallback;
 import com.glshop.platform.api.syscfg.GetSyscfgInfoReq;
@@ -37,6 +38,16 @@ public class SysCfgLogic extends BasicLogic implements ISysCfgLogic {
 	@Override
 	public List<ProductCfgInfoModel> getLocalProductList() {
 		return SysCfgMgr.getIntance(mcontext).loadProductList();
+	}
+
+	@Override
+	public List<ProductCfgInfoModel> getLocalProductCategoryList() {
+		return SysCfgMgr.getIntance(mcontext).getProductCategoryList();
+	}
+
+	@Override
+	public List<AreaInfoModel> getLocalPortList() {
+		return SysCfgMgr.getIntance(mcontext).loadPortList();
 	}
 
 	@Override
@@ -72,12 +83,12 @@ public class SysCfgLogic extends BasicLogic implements ISysCfgLogic {
 					RespInfo respInfo = getOprRespInfo(result);
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-						message.what = SettingMessageType.MSG_GET_SYSCFG_INFO_SUCCESS;
+						message.what = SysCfgMessageType.MSG_GET_SYSCFG_INFO_SUCCESS;
 						//respInfo.data = result.data;
 						//保存同步参数信息
 						SysCfgMgr.getIntance(mcontext).saveSysCfgInfo(result.sysCfgTimestamp, result.sysSyncInfo);
 					} else {
-						message.what = SettingMessageType.MSG_GET_SYSCFG_INFO_FAILED;
+						message.what = SysCfgMessageType.MSG_GET_SYSCFG_INFO_FAILED;
 					}
 					sendMessage(message);
 				}
@@ -86,4 +97,20 @@ public class SysCfgLogic extends BasicLogic implements ISysCfgLogic {
 		req.sysCfgTimestamp = typeTimestamp;
 		req.exec();
 	}
+
+	@Override
+	public void importAreaCfgInfo() {
+		SysCfgLocalMgr.getIntance(mcontext).importLocalAreaCfg();
+	}
+
+	@Override
+	public List<AreaInfoModel> getParentAreaInfo(String areaCode) {
+		return SysCfgMgr.getIntance(mcontext).loadParentAreaList(areaCode);
+	}
+
+	@Override
+	public List<AreaInfoModel> getChildAreaInfo(String areaCode) {
+		return SysCfgMgr.getIntance(mcontext).loadTreadAreaList(areaCode);
+	}
+
 }

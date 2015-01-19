@@ -40,9 +40,6 @@ public class ContractInfoActivity extends BaseContractInfoActivity {
 
 	private BaseContractInfoFragment mFragmentContract;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

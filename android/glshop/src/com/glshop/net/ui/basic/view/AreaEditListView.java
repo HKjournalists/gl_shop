@@ -191,12 +191,12 @@ public class AreaEditListView extends LinearLayout implements View.OnClickListen
 		menuPortList = new MenuDialog(this.getContext(), mAreaMenu, new IMenuCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 

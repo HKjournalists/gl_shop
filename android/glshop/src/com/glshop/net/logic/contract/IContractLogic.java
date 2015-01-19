@@ -1,6 +1,8 @@
 package com.glshop.net.logic.contract;
 
 import com.glshop.net.common.GlobalConstants.DataReqType;
+import com.glshop.platform.api.DataConstants.ContractCancelType;
+import com.glshop.platform.api.DataConstants.ContractConfirmType;
 import com.glshop.platform.api.DataConstants.ContractType;
 import com.glshop.platform.api.contract.data.model.EvaluationInfoModel;
 import com.glshop.platform.api.contract.data.model.NegotiateInfoModel;
@@ -47,6 +49,11 @@ public interface IContractLogic extends ILogic {
 	public void getContractModel(String contractId);
 
 	/**
+	 * 获取合同地址详情
+	 */
+	public void getContractAddrInfo(String buyId);
+
+	/**
 	 * 获取合同操作历史记录列表
 	 * @param contractId
 	 */
@@ -88,6 +95,11 @@ public interface IContractLogic extends ILogic {
 	public void cancelContract(String contractId);
 
 	/**
+	 * 多取消合同
+	 */
+	public void multiCancelContract(String contractId, ContractCancelType type);
+
+	/**
 	 * 同意取消合同
 	 */
 	public void agreeCancelContract(String contractId);
@@ -106,6 +118,11 @@ public interface IContractLogic extends ILogic {
 	 * 确认收货
 	 */
 	public void confirmReceipt(String contractId);
+
+	/**
+	 * 多确认操作(包括货款确认、确认同意、申请仲裁)
+	 */
+	public void multiConfirmContract(String contractId, ContractConfirmType type, String disUnitPrice, String disAmount);
 
 	/**
 	 * 合同评价

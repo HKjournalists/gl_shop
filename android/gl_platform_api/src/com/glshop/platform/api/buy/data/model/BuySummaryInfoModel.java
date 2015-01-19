@@ -1,6 +1,7 @@
 package com.glshop.platform.api.buy.data.model;
 
 import com.glshop.platform.api.DataConstants.BuyType;
+import com.glshop.platform.api.DataConstants.ProductUnitType;
 import com.glshop.platform.net.base.ResultItem;
 
 /**
@@ -44,6 +45,11 @@ public class BuySummaryInfoModel extends ResultItem {
 	public String productSubCode;
 
 	/**
+	 * 货物规格ID
+	 */
+	public String productSpecId;
+
+	/**
 	 * 单价
 	 */
 	public float unitPrice;
@@ -54,9 +60,19 @@ public class BuySummaryInfoModel extends ResultItem {
 	public float tradeAmount;
 
 	/**
-	 * 交易地域
+	 * 货物单位类型
 	 */
-	public String tradeArea;
+	public ProductUnitType unitType = ProductUnitType.TON;
+
+	/**
+	 * 交易地域编码
+	 */
+	public String tradeAreaCode;
+
+	/**
+	 * 交易地域名称
+	 */
+	public String tradeAreaName;
 
 	/**
 	 * 交易发布时间
@@ -72,6 +88,11 @@ public class BuySummaryInfoModel extends ResultItem {
 	 * 交易结束时间
 	 */
 	public String tradeEndDate;
+
+	/**
+	 * 信息发布者的诚信度
+	 */
+	public float publisherCredit;
 
 	@Override
 	public boolean equals(Object o) {
@@ -108,12 +129,15 @@ public class BuySummaryInfoModel extends ResultItem {
 		sb.append(", buyType=" + buyType.toValue());
 		sb.append(", productName=" + productName);
 		sb.append(", productSubCode=" + productSubCode);
+		sb.append(", productSpecId=" + productSpecId);
 		sb.append(", unitPrice=" + unitPrice);
 		sb.append(", tradeAmount=" + tradeAmount);
-		sb.append(", tradeArea=" + tradeArea);
+		sb.append(", tradeAreaCode=" + tradeAreaCode);
+		sb.append(", tradeAreaName=" + tradeAreaName);
 		sb.append(", tradePubDate=" + tradePubDate);
 		sb.append(", tradeBeginDate=" + tradeBeginDate);
 		sb.append(", tradeEndDate=" + tradeEndDate);
+		sb.append(", publisherCredit=" + publisherCredit);
 		sb.append("]");
 		return sb.toString();
 	}

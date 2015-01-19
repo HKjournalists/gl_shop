@@ -49,9 +49,12 @@ public class GetAddrListReq extends BaseRequest<GetAddrListResult> {
 			AddrInfoModel info = new AddrInfoModel();
 			info.addrId = addrItem.getString("id");
 			info.companyId = addrItem.getString("cid");
+			info.areaCode = addrItem.getString("areacode");
+			info.areaName = addrItem.getString("areaFullName");
 			info.deliveryAddrDetail = addrItem.getString("address");
 			info.uploadPortWaterDepth = addrItem.getFloat("deep");
-			info.uploadPortShippingWaterDepth = addrItem.getFloat("realdeep");
+			//info.uploadPortShippingWaterDepth = addrItem.getFloat("realdeep");
+			info.shippingTon = addrItem.getFloat("shippington");
 			info.isDefaultAddr = "1".equals(addrItem.getString("status|val"));
 
 			// 解析图片信息

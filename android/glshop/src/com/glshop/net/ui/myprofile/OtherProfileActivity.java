@@ -60,7 +60,7 @@ public class OtherProfileActivity extends BasicActivity {
 
 	private TextView mTvAddrDetail;
 	private BuyTextItemView mItemPortWaterDepth;
-	private BuyTextItemView mItemPortShipWaterDepth;
+	private BuyTextItemView mItemPortShipTon;
 
 	private String companyId;
 
@@ -95,7 +95,7 @@ public class OtherProfileActivity extends BasicActivity {
 		mTvCompanyIntro = getView(R.id.tv_company_intro);
 
 		mItemPortWaterDepth = getView(R.id.ll_item_port_water_depth);
-		mItemPortShipWaterDepth = getView(R.id.ll_item_port_shipping_water_depth);
+		mItemPortShipTon = getView(R.id.ll_item_shipping_ton);
 
 		mIvItemAddrPic1 = getView(R.id.iv_item_addr_pic_1);
 		mIvItemAddrPic2 = getView(R.id.iv_item_addr_pic_2);
@@ -205,7 +205,7 @@ public class OtherProfileActivity extends BasicActivity {
 			AddrInfoModel addr = info.defaultAddr;
 			mTvAddrDetail.setText(StringUtils.isNotEmpty(addr.deliveryAddrDetail) ? addr.deliveryAddrDetail : getString(R.string.data_empty));
 			mItemPortWaterDepth.setContentText(addr.uploadPortWaterDepth != 0 ? String.valueOf(addr.uploadPortWaterDepth) : getString(R.string.data_empty));
-			mItemPortShipWaterDepth.setContentText(addr.uploadPortShippingWaterDepth != 0 ? String.valueOf(addr.uploadPortShippingWaterDepth) : getString(R.string.data_empty));
+			mItemPortShipTon.setContentText(addr.shippingTon != 0 ? String.valueOf(addr.shippingTon) : getString(R.string.data_empty));
 
 			List<ImageInfoModel> imgUrl = addr.addrImageList;
 			if (BeanUtils.isEmpty(imgUrl)) {

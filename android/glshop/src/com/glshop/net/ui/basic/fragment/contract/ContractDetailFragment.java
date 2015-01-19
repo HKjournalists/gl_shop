@@ -12,7 +12,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.TextView;
 
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalAction;
@@ -22,7 +21,6 @@ import com.glshop.net.logic.contract.IContractLogic;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.ui.basic.BasicFragment;
 import com.glshop.net.ui.mycontract.UfmContractInfoActivity;
-import com.glshop.platform.api.DataConstants.BuyType;
 import com.glshop.platform.api.contract.data.model.ContractModelInfo;
 import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.utils.Logger;
@@ -147,15 +145,6 @@ public class ContractDetailFragment extends BasicFragment {
 
 	private void updateUI() {
 		if (mModelInfo != null) {
-			String summary = "";
-			if (mModelInfo.buyType == BuyType.BUYER) {
-				summary = getString(R.string.buy) + mModelInfo.sellCompanyName + mModelInfo.productName;
-			} else {
-				summary = getString(R.string.sell) + mModelInfo.sellCompanyName + mModelInfo.productName;
-			}
-			((TextView) getView(R.id.tv_contract_name)).setText(/*mModelInfo.contractName*/summary);
-			((TextView) getView(R.id.tv_contract_first_party)).setText(mModelInfo.buyCompanyName);
-			((TextView) getView(R.id.tv_contract_second_party)).setText(mModelInfo.sellCompanyName);
 			byte[] htmlContent = Base64.decode(mModelInfo.content, Base64.DEFAULT);
 			Logger.i(TAG, "ContractContent = " + new String(htmlContent));
 			mWebView.loadDataWithBaseURL(null, new String(htmlContent), "text/html", "UTF-8", null);
@@ -202,7 +191,7 @@ public class ContractDetailFragment extends BasicFragment {
 	protected void updateDataStatus(DataStatus status) {
 		super.updateDataStatus(status);
 		if (getActivity() instanceof UfmContractInfoActivity) {
-			((UfmContractInfoActivity) getActivity()).updateDataStatus(status);
+			//((UfmContractInfoActivity) getActivity()).updateDataStatus(status);
 		}
 	}
 

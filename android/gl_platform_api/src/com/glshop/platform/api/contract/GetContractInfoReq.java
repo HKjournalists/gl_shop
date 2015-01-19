@@ -60,6 +60,10 @@ public class GetContractInfoReq extends BaseRequest<GetContractInfoResult> {
 			info.buyCompanyName = modelItem.getString("buyerName");
 			info.sellCompanyId = modelItem.getString("sellerid");
 			info.sellCompanyName = modelItem.getString("sellerName");
+			info.productName = modelItem.getString("productName");
+			info.productCode = modelItem.getString("productCode");
+			info.productSubCode = modelItem.getString("productType");
+			info.productSpecId = modelItem.getString("productId");
 			info.unitPrice = modelItem.getFloat("price");
 			info.tradeAmount = modelItem.getFloat("totalnum");
 			info.finalPayMoney = modelItem.getFloat("totalamount");

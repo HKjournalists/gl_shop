@@ -21,20 +21,24 @@ import com.glshop.net.logic.model.TipInfoModel;
 import com.glshop.net.logic.syscfg.mgr.SysCfgUtils;
 import com.glshop.net.ui.MainActivity;
 import com.glshop.net.ui.basic.BasicActivity;
-import com.glshop.net.ui.basic.view.AreaListView;
 import com.glshop.net.ui.basic.view.dialog.BaseDialog.IDialogCallback;
 import com.glshop.net.ui.basic.view.dialog.ConfirmDialog;
 import com.glshop.net.ui.basic.view.listitem.BuyTextItemView;
-import com.glshop.net.ui.myprofile.OtherProfileActivity;
+import com.glshop.net.ui.mycontract.CompanyEvaluationListActivity;
+import com.glshop.net.ui.mycontract.ContractInfoActivity;
 import com.glshop.net.ui.tips.OperatorTipsActivity;
 import com.glshop.net.utils.DateUtils;
+import com.glshop.net.utils.EnumUtil;
 import com.glshop.platform.api.DataConstants;
 import com.glshop.platform.api.DataConstants.BuyStatus;
 import com.glshop.platform.api.DataConstants.BuyType;
+import com.glshop.platform.api.DataConstants.ContractStatusTypeV2;
 import com.glshop.platform.api.DataConstants.DeliveryAddrType;
+import com.glshop.platform.api.DataConstants.ProductUnitType;
 import com.glshop.platform.api.buy.data.model.BuyInfoModel;
 import com.glshop.platform.api.profile.data.model.AddrInfoModel;
 import com.glshop.platform.api.profile.data.model.ImageInfoModel;
+import com.glshop.platform.api.syscfg.data.model.ProductPropInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.base.manager.MessageCenter;
 import com.glshop.platform.net.http.image.ImageLoaderManager;
@@ -62,23 +66,30 @@ public class BuyInfoActivity extends BasicActivity {
 
 	private TextView mTvTitle;
 	private TextView mTvBuyTitle;
-	private TextView mTvCreateTime;
+	//private TextView mTvCreateTime;
+	private TextView mTvBuyStatus;
 
+	// 货物信息
+	private BuyTextItemView mItemBuyType;
 	private BuyTextItemView mItemProductType;
+	private BuyTextItemView mItemProductCategory;
 	private BuyTextItemView mItemProductSpec;
 	private BuyTextItemView mItemColor;
 	private BuyTextItemView mItemArea;
 	private BuyTextItemView mItemSedimentPerc;
 	private BuyTextItemView mItemSedimentBlockPerc;
 	private BuyTextItemView mItemWaterPerc;
+	private BuyTextItemView mItemCrunchPerc;
+	private BuyTextItemView mItemNeedlePlatePerc;
 	private BuyTextItemView mItemAppearanceDensity;
 	private BuyTextItemView mItemStackingPerc;
 	private BuyTextItemView mItemSturdinessPerc;
 
+	// 货物单价及数量
 	private BuyTextItemView mItemUnitPrice;
-	private BuyTextItemView mItemAmountSingleArea;
-	private BuyTextItemView mItemAmountMoreArea;
+	private BuyTextItemView mItemAmount;
 
+	// 交易信息
 	private TextView mTvStartDate;
 	private TextView mTvEndDate;
 	private BuyTextItemView mItemTradeArea;
@@ -86,10 +97,14 @@ public class BuyInfoActivity extends BasicActivity {
 	private TextView mTvProductRemarks;
 	private TextView mTvBuyRemarks;
 
-	private TextView mTvCompanyName;
+	// 企业信息
+	private BuyTextItemView mItemCompanyName;
+	private BuyTextItemView mItemCompanyType;
+	private BuyTextItemView mItemCompanyAuthStatus;
+	private BuyTextItemView mItemCompanyDepositStatus;
 	private RatingBar mRbSatisfaction;
 	private RatingBar mRbCredit;
-	private TextView mTvTurnoverRate;
+	private BuyTextItemView mItemTurnoverRate;
 
 	// 卸货地址图片
 	private ImageView mIvItemAddrPic1;
@@ -104,9 +119,7 @@ public class BuyInfoActivity extends BasicActivity {
 	private View llAddrInfo;
 	private TextView mTvAddrDetail;
 	private BuyTextItemView mItemPortWaterDepth;
-	private BuyTextItemView mItemPortShipWaterDepth;
-
-	private AreaListView mAreaView;
+	private BuyTextItemView mItemPortShipTon;
 
 	private ConfirmDialog mConfirmDialog;
 
@@ -127,10 +140,12 @@ public class BuyInfoActivity extends BasicActivity {
 		viewType = ViewBuyInfoType.convert(getIntent().getIntExtra(GlobalAction.BuyAction.EXTRA_KEY_VIEW_BUY_INFO_TYPE, ViewBuyInfoType.FINDBUY.toValue()));
 		mTvTitle = getView(R.id.tv_commmon_title);
 		mTvBuyTitle = getView(R.id.tv_buy_info_title);
-		mTvCreateTime = getView(R.id.tv_pub_datetime);
-		mAreaView = getView(R.id.ll_area_view);
+		//mTvCreateTime = getView(R.id.tv_pub_datetime);
+		mTvBuyStatus = getView(R.id.tv_buy_info_status);
+		mItemBuyType = getView(R.id.ll_item_buy_type);
 		mItemProductType = getView(R.id.ll_item_product_type);
-		mItemProductSpec = getView(R.id.ll_item_product_spec);
+		mItemProductCategory = getView(R.id.ll_item_product_category);
+		mItemProductSpec = getView(R.id.ll_item_product_sepc);
 		mItemColor = getView(R.id.ll_item_product_color);
 		mItemArea = getView(R.id.ll_item_product_area);
 		mTvStartDate = getView(R.id.tv_trade_start_date);
@@ -140,14 +155,16 @@ public class BuyInfoActivity extends BasicActivity {
 		mTvProductRemarks = getView(R.id.tv_product_remarks_content);
 		mTvBuyRemarks = getView(R.id.tv_buy_remarks_content);
 
-		mItemAmountSingleArea = getView(R.id.ll_item_trade_amount_single_area);
-		mItemAmountMoreArea = getView(R.id.ll_item_trade_amount_more_area);
+		mItemAmount = getView(R.id.ll_item_trade_amount);
 		mItemUnitPrice = getView(R.id.ll_item_unit_price);
 
-		mTvCompanyName = getView(R.id.tv_company_name);
+		mItemCompanyName = getView(R.id.ll_item_company_name);
+		mItemCompanyType = getView(R.id.ll_item_company_type);
+		mItemCompanyAuthStatus = getView(R.id.ll_item_company_auth_status);
+		mItemCompanyDepositStatus = getView(R.id.ll_item_company_deposit_status);
 		mRbSatisfaction = getView(R.id.rb_satisfaction);
 		mRbCredit = getView(R.id.rb_credit);
-		mTvTurnoverRate = getView(R.id.tv_turnover_rate);
+		mItemTurnoverRate = getView(R.id.ll_item_turnover_rate);
 
 		mIvItemAddrPic1 = getView(R.id.iv_item_addr_pic_1);
 		mIvItemAddrPic2 = getView(R.id.iv_item_addr_pic_2);
@@ -159,20 +176,23 @@ public class BuyInfoActivity extends BasicActivity {
 		llAddrInfo = getView(R.id.ll_item_addr);
 		mTvAddrDetail = getView(R.id.tv_addr_detail);
 		mItemPortWaterDepth = getView(R.id.ll_item_port_water_depth);
-		mItemPortShipWaterDepth = getView(R.id.ll_item_port_shipping_water_depth);
+		mItemPortShipTon = getView(R.id.ll_item_shipping_ton);
 
 		mItemSedimentPerc = getView(R.id.ll_item_product_sediment_perc);
 		mItemSedimentBlockPerc = getView(R.id.ll_item_product_sediment_block_perc);
 		mItemWaterPerc = getView(R.id.ll_item_product_water_perc);
+		mItemCrunchPerc = getView(R.id.ll_item_product_crunch_perc);
+		mItemNeedlePlatePerc = getView(R.id.ll_item_product_needle_plate_perc);
 		mItemAppearanceDensity = getView(R.id.ll_item_product_appearance_density);
 		mItemStackingPerc = getView(R.id.ll_item_product_stacking_perc);
 		mItemSturdinessPerc = getView(R.id.ll_item_product_sturdiness_perc);
 
-		getView(R.id.ll_buy_company_profile).setOnClickListener(this);
+		getView(R.id.ll_view_company_evluations).setOnClickListener(this);
 		getView(R.id.btn_want_to_deal).setOnClickListener(this);
 		getView(R.id.btn_undo_pub).setOnClickListener(this);
 		getView(R.id.btn_modify_pub).setOnClickListener(this);
 		getView(R.id.btn_repub).setOnClickListener(this);
+		getView(R.id.btn_view_contract).setOnClickListener(this);
 		getView(R.id.iv_common_back).setOnClickListener(this);
 
 		getView(R.id.iv_item_addr_pic_1).setOnClickListener(this);
@@ -203,97 +223,70 @@ public class BuyInfoActivity extends BasicActivity {
 		mBuyLogic.getBuyInfo(pubBuyId);
 	}
 
+	@Override
+	protected void onReloadData() {
+		updateDataStatus(DataStatus.LOADING);
+		mBuyLogic.getBuyInfo(pubBuyId);
+	}
+
 	/**
 	 * 更新UI
 	 */
 	private void updateUI() {
 		updateBuyTitle();
+		updateBuyStatus();
 		if (mBuyInfo.buyType == BuyType.BUYER) {
+			mItemBuyType.setContentText(getString(R.string.publish_type_buy));
 			// 求购页面不显示实物照片信息
 			getView(R.id.ll_product_photo).setVisibility(View.GONE);
-			mItemAmountSingleArea.setContentText(String.valueOf(mBuyInfo.tradeAmount));
-			mItemUnitPrice.setContentText(String.valueOf(mBuyInfo.unitPrice));
+			getView(R.id.ll_item_devider_product_photo).setVisibility(View.GONE);
 		} else {
+			mItemBuyType.setContentText(getString(R.string.publish_type_sell));
 			// 出售页面显示实物照片信息、多地域价格信息
 			getView(R.id.ll_product_photo).setVisibility(View.VISIBLE);
-			getView(R.id.ll_single_area_list).setVisibility(mBuyInfo.isMoreArea ? View.GONE : View.VISIBLE);
-			getView(R.id.ll_more_area_list).setVisibility(mBuyInfo.isMoreArea ? View.VISIBLE : View.GONE);
-			if (mBuyInfo.isMoreArea) {
-				// 显示多地域信息
-				mAreaView.setData(mBuyInfo.areaInfoList);
-			} else {
-				// 显示单地域信息
-				mItemAmountSingleArea.setContentText(String.valueOf(mBuyInfo.tradeAmount));
-				mItemUnitPrice.setContentText(String.valueOf(mBuyInfo.unitPrice));
-			}
-
+			getView(R.id.ll_item_devider_product_photo).setVisibility(View.VISIBLE);
 			// 实物信息
 			updateProductImage();
 		}
 
-		// 货物规格信息
-		if (DataConstants.SysCfgCode.TYPE_PRODUCT_STONE.equals(mBuyInfo.productCode)) {
-			mItemProductType.setContentText(getString(R.string.product_type_stone));
+		// 显示货物信息
+		updateProductInfo();
+		// 显示规格属性
+		updateProductPropInfo();
+
+		// 显示数量及单价
+		mItemAmount.setContentText(String.valueOf(mBuyInfo.tradeAmount));
+		mItemUnitPrice.setContentText(String.valueOf(mBuyInfo.unitPrice));
+		// 显示单位
+		if (mBuyInfo.unitType == ProductUnitType.CUTE) {
+			mItemAmount.setSecondTitle(getString(R.string.unit_cube_v3));
 		} else {
-			mItemProductType.setContentText(getString(R.string.product_type_sand));
+			mItemAmount.setSecondTitle(getString(R.string.unit_ton_v3));
 		}
-
-		if (StringUtils.isNotEmpty(mBuyInfo.productName)) {
-			mItemProductSpec.setContentText(mBuyInfo.productName);
-		} else {
-			mItemProductSpec.setContentText(mBuyInfo.specName);
-		}
-		mItemColor.setContentText(mBuyInfo.productInfo.color);
-		mItemArea.setContentText(mBuyInfo.productInfo.area);
-
-		if (mBuyInfo.productInfo.sedimentPercentage != null) {
-			mItemSedimentPerc.setContentText(String.valueOf(mBuyInfo.productInfo.sedimentPercentage.mRealSize));
-		}
-
-		if (mBuyInfo.productInfo.sedimentBlockPercentage != null) {
-			mItemSedimentBlockPerc.setContentText(String.valueOf(mBuyInfo.productInfo.sedimentBlockPercentage.mRealSize));
-		}
-
-		if (mBuyInfo.productInfo.waterPercentage != null) {
-			mItemWaterPerc.setContentText(String.valueOf(mBuyInfo.productInfo.waterPercentage.mRealSize));
-		}
-
-		if (mBuyInfo.productInfo.appearanceDensity != null) {
-			mItemAppearanceDensity.setContentText(String.valueOf(mBuyInfo.productInfo.appearanceDensity.mRealSize));
-		}
-
-		if (mBuyInfo.productInfo.stackingPercentage != null) {
-			mItemStackingPerc.setContentText(String.valueOf(mBuyInfo.productInfo.stackingPercentage.mRealSize));
-		}
-
-		if (mBuyInfo.productInfo.sturdinessPercentage != null) {
-			mItemSturdinessPerc.setContentText(String.valueOf(mBuyInfo.productInfo.sturdinessPercentage.mRealSize));
-		}
-
-		mTvProductRemarks.setText(mBuyInfo.productInfo.remarks);
 
 		// 交易地域及时间信息
-		mTvCreateTime.setText(DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.CONTRACT_DATETIME_FORMAT_V2, mBuyInfo.tradePubDate));
-		mItemTradeArea.setContentText(SysCfgUtils.getAreaName(this, mBuyInfo.tradeArea));
+		//mTvCreateTime.setText(DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.CONTRACT_DATETIME_FORMAT_V2, mBuyInfo.tradePubDate));
+		mItemTradeArea.setContentText(mBuyInfo.tradeAreaName);
 		mTvStartDate.setText(DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.PUB_DATE_FORMAT, mBuyInfo.tradeBeginDate));
 		mTvEndDate.setText(DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.PUB_DATE_FORMAT, mBuyInfo.tradeEndDate));
 		if (mBuyInfo.deliveryAddrType == DeliveryAddrType.ME_DECIDE) {
 			mItemDischargeAddrType.setContentText(getString(R.string.discharge_addr_type_me_decide));
 			// 己方指定则显示卸货地址详情
 			llAddrInfo.setVisibility(View.VISIBLE);
+			getView(R.id.item_devider_discharge_addr).setVisibility(View.VISIBLE);
 			updateDischargeAddrInfo();
 		} else {
 			mItemDischargeAddrType.setContentText(getString(R.string.discharge_addr_type_another_decide));
 			llAddrInfo.setVisibility(View.GONE);
+			getView(R.id.item_devider_discharge_addr).setVisibility(View.GONE);
 		}
 
 		// 货物备注信息
-		if (StringUtils.isNotEmpty(mBuyInfo.productInfo.remarks)) {
-			mTvProductRemarks.setText(mBuyInfo.productInfo.remarks);
+		if (StringUtils.isNotEmpty(mBuyInfo.productRemarks)) {
+			mTvProductRemarks.setText(mBuyInfo.productRemarks);
 		} else {
 			mTvProductRemarks.setText(R.string.buy_no_remarks);
 		}
-
 		// 买卖备注信息
 		if (StringUtils.isNotEmpty(mBuyInfo.buyRemarks)) {
 			mTvBuyRemarks.setText(mBuyInfo.buyRemarks);
@@ -301,11 +294,8 @@ public class BuyInfoActivity extends BasicActivity {
 			mTvBuyRemarks.setText(R.string.buy_no_remarks);
 		}
 
-		// 企业信息
-		mTvCompanyName.setText(StringUtils.isNotEmpty(mBuyInfo.publisherCompany) ? mBuyInfo.publisherCompany : getString(R.string.default_company_name));
-		mTvTurnoverRate.setText(StringUtils.getPercent(mBuyInfo.publisherTurnoverRate));
-		mRbSatisfaction.setRating(mBuyInfo.publisherSatisfaction);
-		mRbCredit.setRating(mBuyInfo.publisherCredit);
+		// 显示企业信息
+		updateCompanyInfo();
 
 		// 更新按钮
 		updateActionBar();
@@ -321,36 +311,196 @@ public class BuyInfoActivity extends BasicActivity {
 		} else {
 			title.append(getString(R.string.sell));
 		}
-		if (DataConstants.SysCfgCode.TYPE_PRODUCT_STONE.equals(mBuyInfo.productCode)) {
+		if (DataConstants.SysCfgCode.TYPE_PRODUCT_STONE.equals(mBuyInfo.productTypeCode)) {
 			title.append(getString(R.string.product_type_stone));
 		} else {
 			title.append(getString(R.string.product_type_sand));
 		}
 		title.append(mBuyInfo.tradeAmount + getString(R.string.product_unit_ton_hint));
 		//mTvBuyTitle.setText(title.toString());
+
+		// 更新广告信息
+		if (viewType == ViewBuyInfoType.FINDBUY) {
+			getView(R.id.ll_buy_advert_info).setVisibility(View.VISIBLE);
+		} else {
+			getView(R.id.ll_buy_advert_info).setVisibility(View.GONE);
+		}
+	}
+
+	/**
+	 * 更新买卖状态信息
+	 */
+	private void updateBuyStatus() {
+		String statusTimestamp = DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.CONTRACT_DATETIME_FORMAT_V2, mBuyInfo.tradePubDate);
+		if (viewType == ViewBuyInfoType.FINDBUY) {
+			mTvBuyStatus.setText(String.format(getString(R.string.buy_status_valid), statusTimestamp));
+		} else {
+			switch (mBuyInfo.buyStatus) {
+			case VALID:
+			case INVALID_OTHER:
+			case INVALID_EMPTY_AMOUNT:
+				mTvBuyStatus.setText(String.format(getString(R.string.buy_status_valid), statusTimestamp));
+				break;
+			case INVALID_UNPASS_REVIEW:
+				statusTimestamp = DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.CONTRACT_DATETIME_FORMAT_V2, mBuyInfo.tradeUpdateDate);
+				mTvBuyStatus.setText(String.format(getString(R.string.buy_status_invalid_unpass_review), statusTimestamp));
+				break;
+			case INVALID_CREATED_CONTRACT:
+				if (mBuyInfo.contractStatus != null) {
+					switch (mBuyInfo.contractStatus) {
+					case DRAFT:
+					case DOING:
+					case PAUSE:
+						statusTimestamp = DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.CONTRACT_DATETIME_FORMAT_V2, mBuyInfo.tradeUpdateDate);
+						mTvBuyStatus.setText(String.format(getString(R.string.buy_status_invalid_contract_going), statusTimestamp));
+						break;
+					case FINISHED:
+						statusTimestamp = DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.CONTRACT_DATETIME_FORMAT_V2, mBuyInfo.tradeContractEndDate);
+						mTvBuyStatus.setText(String.format(getString(R.string.buy_status_invalid_contract_finished), statusTimestamp));
+						break;
+					}
+				} else {
+					mTvBuyStatus.setText(String.format(getString(R.string.buy_status_valid), statusTimestamp));
+				}
+				break;
+			case INVALID_CANCELED:
+				statusTimestamp = DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.CONTRACT_DATETIME_FORMAT_V2, mBuyInfo.tradeUpdateDate);
+				mTvBuyStatus.setText(String.format(getString(R.string.buy_status_invalid_contract_canceled), statusTimestamp));
+				break;
+			case INVALID_EXPIRE:
+				statusTimestamp = DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.CONTRACT_DATETIME_FORMAT_V2, mBuyInfo.tradeEndDate);
+				mTvBuyStatus.setText(String.format(getString(R.string.buy_status_invalid_expired), statusTimestamp));
+				break;
+			}
+		}
 	}
 
 	/**
 	 * 显示可操作按钮
 	 */
 	private void updateActionBar() {
+		getView(R.id.ll_company_profile).setVisibility(viewType == ViewBuyInfoType.MYBUY ? View.GONE : View.VISIBLE);
+
+		// 想交易
 		if (viewType == ViewBuyInfoType.FINDBUY) {
 			if (StringUtils.isNotEmpty(mBuyInfo.companyId) && mBuyInfo.companyId.equals(getCompanyId())) {
 				getView(R.id.btn_want_to_deal).setVisibility(View.GONE);
 			} else {
 				getView(R.id.btn_want_to_deal).setVisibility(View.VISIBLE);
 			}
+			if (mBuyInfo.isClicked) {
+				getView(R.id.btn_want_to_deal).setVisibility(View.GONE);
+			}
 		} else {
 			getView(R.id.btn_want_to_deal).setVisibility(View.GONE);
 		}
-		getView(R.id.btn_undo_pub).setVisibility(viewType == ViewBuyInfoType.MYBUY && mBuyInfo.buyStatus == BuyStatus.VALID ? View.VISIBLE : View.GONE);
-		getView(R.id.ll_buy_info_status).setVisibility(viewType == ViewBuyInfoType.MYBUY ? View.VISIBLE : View.GONE);
-		getView(R.id.ll_company_profile).setVisibility(viewType == ViewBuyInfoType.MYBUY ? View.GONE : View.VISIBLE);
-		getView(R.id.btn_modify_pub).setVisibility(viewType == ViewBuyInfoType.MYBUY && mBuyInfo.buyStatus == BuyStatus.VALID ? View.VISIBLE : View.GONE);
-		getView(R.id.btn_repub).setVisibility(viewType == ViewBuyInfoType.MYBUY && mBuyInfo.buyStatus != BuyStatus.VALID ? View.VISIBLE : View.GONE);
 
-		if (mBuyInfo.isClicked) {
-			getView(R.id.btn_want_to_deal).setVisibility(View.GONE);
+		// 取消发布
+		getView(R.id.btn_undo_pub).setVisibility(viewType == ViewBuyInfoType.MYBUY && mBuyInfo.buyStatus == BuyStatus.VALID ? View.VISIBLE : View.GONE);
+		// 修改发布
+		getView(R.id.btn_modify_pub).setVisibility(viewType == ViewBuyInfoType.MYBUY && mBuyInfo.buyStatus == BuyStatus.VALID ? View.VISIBLE : View.GONE);
+
+		// 重新发布
+		if (viewType == ViewBuyInfoType.MYBUY) {
+			if (mBuyInfo.buyStatus == BuyStatus.INVALID_EXPIRE || mBuyInfo.buyStatus == BuyStatus.INVALID_UNPASS_REVIEW || mBuyInfo.buyStatus == BuyStatus.INVALID_CANCELED) {
+				getView(R.id.btn_repub).setVisibility(View.VISIBLE);
+			} else if (mBuyInfo.buyStatus == BuyStatus.INVALID_CREATED_CONTRACT) {
+				if (mBuyInfo.contractStatus != null && mBuyInfo.contractStatus == ContractStatusTypeV2.FINISHED && StringUtils.isNotEmpty(mBuyInfo.contractId)) {
+					getView(R.id.btn_repub).setVisibility(View.VISIBLE);
+				} else {
+					getView(R.id.btn_repub).setVisibility(View.GONE);
+				}
+			} else {
+				getView(R.id.btn_repub).setVisibility(View.GONE);
+			}
+		} else {
+			getView(R.id.btn_repub).setVisibility(View.GONE);
+		}
+
+		// 查看合同
+		if (viewType == ViewBuyInfoType.MYBUY) {
+			if (mBuyInfo.buyStatus == BuyStatus.INVALID_CREATED_CONTRACT) {
+				if (mBuyInfo.contractStatus != null && StringUtils.isNotEmpty(mBuyInfo.contractId)) {
+					getView(R.id.btn_view_contract).setVisibility(View.VISIBLE);
+				} else {
+					getView(R.id.btn_view_contract).setVisibility(View.GONE);
+				}
+			} else {
+				getView(R.id.btn_view_contract).setVisibility(View.GONE);
+			}
+		} else {
+			getView(R.id.btn_view_contract).setVisibility(View.GONE);
+		}
+	}
+
+	/**
+	 * 显示货物信息
+	 */
+	private void updateProductInfo() {
+		if (mBuyInfo != null) {
+			if (mBuyInfo.productPropInfo != null) {
+				mItemProductType.setContentText(mBuyInfo.productTypeName);
+				if (mBuyInfo.productSepcInfo != null) {
+					if (DataConstants.SysCfgCode.TYPE_PRODUCT_STONE.equals(mBuyInfo.productTypeCode)) {
+						mItemProductCategory.setVisibility(View.GONE);
+						getView(R.id.ll_item_devider_categroy).setVisibility(View.GONE);
+						String size = SysCfgUtils.getSize(mBuyInfo.productSepcInfo);
+						mItemProductSpec.setContentText(mBuyInfo.productSepcInfo.mCategoryName + (StringUtils.isNotEmpty(size) ? size + "mm" : ""));
+					} else {
+						mItemProductCategory.setContentText(mBuyInfo.productSepcInfo.mCategoryName);
+						mItemProductSpec.setContentText(mBuyInfo.productSepcInfo.mSubCategoryName + SysCfgUtils.getSize(mBuyInfo.productSepcInfo) + "mm");
+					}
+				} else {
+					mItemProductCategory.setVisibility(View.GONE);
+					getView(R.id.ll_item_devider_categroy).setVisibility(View.GONE);
+					mItemProductSpec.setContentText(mBuyInfo.productSpecName);
+				}
+			}
+
+			mItemColor.setContentText(mBuyInfo.productColor);
+			mItemArea.setContentText(mBuyInfo.productArea);
+		}
+	}
+
+	/**
+	 * 显示规格属性
+	 */
+	private void updateProductPropInfo() {
+		if (DataConstants.SysCfgCode.TYPE_PRODUCT_SAND.equals(mBuyInfo.productTypeCode)) {
+			mItemWaterPerc.setVisibility(View.VISIBLE);
+			mItemCrunchPerc.setVisibility(View.GONE);
+			mItemNeedlePlatePerc.setVisibility(View.GONE);
+			getView(R.id.item_devider_water).setVisibility(View.VISIBLE);
+			getView(R.id.item_devider_crunch).setVisibility(View.GONE);
+			getView(R.id.item_devider_needle_plate).setVisibility(View.GONE);
+		} else {
+			mItemWaterPerc.setVisibility(View.GONE);
+			mItemCrunchPerc.setVisibility(View.VISIBLE);
+			mItemNeedlePlatePerc.setVisibility(View.VISIBLE);
+			getView(R.id.item_devider_water).setVisibility(View.GONE);
+			getView(R.id.item_devider_crunch).setVisibility(View.VISIBLE);
+			getView(R.id.item_devider_needle_plate).setVisibility(View.VISIBLE);
+		}
+
+		if (mBuyInfo != null && mBuyInfo.productPropInfo != null) {
+			initPropInfo(mItemSedimentPerc, mBuyInfo.productPropInfo.sedimentPercentage);
+			initPropInfo(mItemSedimentBlockPerc, mBuyInfo.productPropInfo.sedimentBlockPercentage);
+			initPropInfo(mItemWaterPerc, mBuyInfo.productPropInfo.waterPercentage);
+			initPropInfo(mItemCrunchPerc, mBuyInfo.productPropInfo.crunchPercentage);
+			initPropInfo(mItemNeedlePlatePerc, mBuyInfo.productPropInfo.needlePlatePercentage);
+			initPropInfo(mItemAppearanceDensity, mBuyInfo.productPropInfo.appearanceDensity);
+			initPropInfo(mItemStackingPerc, mBuyInfo.productPropInfo.stackingPercentage);
+			initPropInfo(mItemSturdinessPerc, mBuyInfo.productPropInfo.sturdinessPercentage);
+		}
+	}
+
+	private void initPropInfo(BuyTextItemView item, ProductPropInfoModel info) {
+		if (info != null) {
+			if (StringUtils.isNotEmpty(info.mRealSize)) {
+				item.setContentText(info.mRealSize);
+			} else {
+				item.setContentText(getString(R.string.data_no_input));
+			}
 		}
 	}
 
@@ -360,16 +510,19 @@ public class BuyInfoActivity extends BasicActivity {
 	private void updateDischargeAddrInfo() {
 		if (mBuyInfo != null && mBuyInfo.addrInfo != null) {
 			AddrInfoModel addrInfo = mBuyInfo.addrInfo;
-			mTvAddrDetail.setText(StringUtils.isNotEmpty(addrInfo.deliveryAddrDetail) ? addrInfo.deliveryAddrDetail : getString(R.string.data_empty));
+			if (StringUtils.isNEmpty(mBuyInfo.addrInfo.areaName) && StringUtils.isNEmpty(mBuyInfo.addrInfo.deliveryAddrDetail)) {
+				mTvAddrDetail.setText(getString(R.string.data_empty));
+			} else {
+				mTvAddrDetail.setText(mBuyInfo.addrInfo.areaName + mBuyInfo.addrInfo.deliveryAddrDetail);
+			}
 			mItemPortWaterDepth.setContentText(addrInfo.uploadPortWaterDepth != 0 ? String.valueOf(addrInfo.uploadPortWaterDepth) : getString(R.string.data_empty));
-			mItemPortShipWaterDepth.setContentText(addrInfo.uploadPortShippingWaterDepth != 0 ? String.valueOf(addrInfo.uploadPortShippingWaterDepth) : getString(R.string.data_empty));
+			mItemPortShipTon.setContentText(addrInfo.shippingTon != 0 ? String.valueOf(addrInfo.shippingTon) : getString(R.string.data_empty));
 
 			List<ImageInfoModel> imgUrl = addrInfo.addrImageList;
 			if (BeanUtils.isEmpty(imgUrl)) {
-				mIvItemAddrPic1.setVisibility(View.VISIBLE);
-				mIvItemAddrPic2.setVisibility(View.INVISIBLE);
-				mIvItemAddrPic3.setVisibility(View.INVISIBLE);
+				getView(R.id.ll_addr_pic).setVisibility(View.GONE);
 			} else {
+				getView(R.id.ll_addr_pic).setVisibility(View.VISIBLE);
 				int count = imgUrl.size();
 				if (count >= 1) {
 					mIvItemAddrPic1.setVisibility(View.VISIBLE);
@@ -398,9 +551,8 @@ public class BuyInfoActivity extends BasicActivity {
 		if (mBuyInfo != null) {
 			List<ImageInfoModel> imgUrl = mBuyInfo.productImgList;
 			if (BeanUtils.isEmpty(imgUrl)) {
-				mIvItemProductPic1.setVisibility(View.VISIBLE);
-				mIvItemProductPic2.setVisibility(View.INVISIBLE);
-				mIvItemProductPic3.setVisibility(View.INVISIBLE);
+				getView(R.id.ll_product_photo).setVisibility(View.GONE);
+				getView(R.id.ll_item_devider_product_photo).setVisibility(View.GONE);
 			} else {
 				int count = imgUrl.size();
 				if (count >= 1) {
@@ -423,10 +575,29 @@ public class BuyInfoActivity extends BasicActivity {
 		}
 	}
 
-	@Override
-	protected void onReloadData() {
-		updateDataStatus(DataStatus.LOADING);
-		mBuyLogic.getBuyInfo(pubBuyId);
+	/**
+	 * 显示企业信息
+	 */
+	private void updateCompanyInfo() {
+		//mItemCompanyName.setContentText(StringUtils.isNotEmpty(mBuyInfo.publisherCompany) ? mBuyInfo.publisherCompany : getString(R.string.default_company_name));
+		if (mBuyInfo.publisherProfileType != null) {
+			mItemCompanyType.setContentText(EnumUtil.parseProfileType(this, mBuyInfo.publisherProfileType));
+		} else {
+			mItemCompanyType.setContentText(getString(R.string.data_unknown));
+		}
+		if (mBuyInfo.publisherAuthStatus != null) {
+			mItemCompanyAuthStatus.setContentText(EnumUtil.parseAuthType(this, mBuyInfo.publisherAuthStatus));
+		} else {
+			mItemCompanyAuthStatus.setContentText(getString(R.string.data_unknown));
+		}
+		if (mBuyInfo.publisherDepositStatus != null) {
+			mItemCompanyDepositStatus.setContentText(EnumUtil.parseDepositStatusType(this, mBuyInfo.publisherDepositStatus));
+		} else {
+			mItemCompanyDepositStatus.setContentText(getString(R.string.data_unknown));
+		}
+		mItemTurnoverRate.setContentText(StringUtils.getPercent(mBuyInfo.publisherTurnoverRate));
+		mRbSatisfaction.setRating(mBuyInfo.publisherSatisfaction);
+		mRbCredit.setRating(mBuyInfo.publisherCredit);
 	}
 
 	@Override
@@ -520,8 +691,13 @@ public class BuyInfoActivity extends BasicActivity {
 	public void onClick(View v) {
 		Intent intent = null;
 		switch (v.getId()) {
-		case R.id.ll_buy_company_profile:
+		/*case R.id.ll_buy_company_profile:
 			intent = new Intent(this, OtherProfileActivity.class);
+			intent.putExtra(GlobalAction.ProfileAction.EXTRA_KEY_COMPANY_ID, mBuyInfo.companyId);
+			startActivity(intent);
+			break;*/
+		case R.id.ll_view_company_evluations:
+			intent = new Intent(this, CompanyEvaluationListActivity.class);
 			intent.putExtra(GlobalAction.ProfileAction.EXTRA_KEY_COMPANY_ID, mBuyInfo.companyId);
 			startActivity(intent);
 			break;
@@ -532,15 +708,20 @@ public class BuyInfoActivity extends BasicActivity {
 			showConfirmDialog();
 			break;
 		case R.id.btn_modify_pub:
-			intent = new Intent(this, PubBuyInfoActivity.class);
+			intent = new Intent(this, PubBuyInfoActivityV2.class);
 			intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_IS_MODIFY_BUY_INFO, true);
 			intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_MODIFY_BUY_INFO, getBuyInfo(false));
 			startActivity(intent);
 			break;
 		case R.id.btn_repub:
-			intent = new Intent(this, PubBuyInfoActivity.class);
+			intent = new Intent(this, PubBuyInfoActivityV2.class);
 			intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_IS_MODIFY_BUY_INFO, true);
 			intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_MODIFY_BUY_INFO, getBuyInfo(true));
+			startActivity(intent);
+			break;
+		case R.id.btn_view_contract:
+			intent = new Intent(this, ContractInfoActivity.class);
+			intent.putExtra(GlobalAction.ContractAction.EXTRA_KEY_CONTRACT_ID, mBuyInfo.contractId);
 			startActivity(intent);
 			break;
 		case R.id.iv_common_back:
@@ -611,12 +792,12 @@ public class BuyInfoActivity extends BasicActivity {
 		mConfirmDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				undoPub();
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});

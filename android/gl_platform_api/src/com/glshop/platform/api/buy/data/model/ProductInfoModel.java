@@ -30,16 +30,6 @@ public class ProductInfoModel implements Serializable, Cloneable {
 	public int specifications;
 
 	/**
-	 * 颜色
-	 */
-	public String color;
-
-	/**
-	 * 产地
-	 */
-	public String area;
-
-	/**
 	 * 含泥量（%）
 	 */
 	public ProductPropInfoModel sedimentPercentage;
@@ -79,11 +69,6 @@ public class ProductInfoModel implements Serializable, Cloneable {
 	 */
 	public ProductPropInfoModel sturdinessPercentage;
 
-	/**
-	 * 备注信息
-	 */
-	public String remarks;
-
 	@Override
 	public Object clone() {
 		ProductInfoModel o = null;
@@ -101,15 +86,12 @@ public class ProductInfoModel implements Serializable, Cloneable {
 		sb.append("ProductInfoModel[");
 		sb.append("type=" + type);
 		sb.append(", specifications=" + specifications);
-		sb.append(", color=" + color);
-		sb.append(", area=" + area);
 		sb.append(", sedimentPercentage=" + sedimentPercentage);
 		sb.append(", sedimentBlockPercentage=" + sedimentBlockPercentage);
 		sb.append(", waterPercentage=" + waterPercentage);
 		sb.append(", appearanceDensity=" + appearanceDensity);
 		sb.append(", stackingPercentage=" + stackingPercentage);
 		sb.append(", sturdinessPercentage=" + sturdinessPercentage);
-		sb.append(", remarks=" + remarks);
 		sb.append("]");
 		return sb.toString();
 	}

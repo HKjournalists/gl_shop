@@ -93,18 +93,6 @@
 
     <View style="@style/item_devider_line" />
 
-    <!-- 水深度 -->
-
-    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
-        style="@style/BuyTextItem.Middle"
-        glshop:itemContentColor="@color/gray"
-        glshop:itemSecondTitle="@string/product_unit_m"
-        glshop:itemTitle="@string/business_water_depth"
-        glshop:showItemClickIcon="false"
-        glshop:showItemIcon="false" />
-
-    <View style="@style/item_devider_line" />
-
     <!-- 卸货地港口水深度 -->
 
     <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
@@ -112,22 +100,22 @@
         style="@style/BuyTextItem.Middle"
         glshop:itemContent="0"
         glshop:itemContentColor="@color/blue"
-        glshop:itemSecondTitle="@string/product_unit_m"
+        glshop:itemSecondTitle="@string/unit_m_v3"
         glshop:itemTitle="@string/business_discharge_port_water_depth"
         glshop:showItemClickIcon="false"
         glshop:showItemIcon="false" />
 
     <View style="@style/item_devider_line" />
 
-    <!-- 实际船舶吃水深度 -->
+    <!-- 可停泊载重船吨位 -->
 
     <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
-        android:id="@+id/ll_item_port_shipping_water_depth"
+        android:id="@+id/ll_item_shipping_ton"
         style="@style/BuyTextItem.Bottom"
         glshop:itemContent="0"
         glshop:itemContentColor="@color/blue"
-        glshop:itemSecondTitle="@string/product_unit_m"
-        glshop:itemTitle="@string/business_discharge_port_shipping_water_depth"
+        glshop:itemSecondTitle="@string/unit_ton_v3"
+        glshop:itemTitle="@string/business_discharge_shipping_ton"
         glshop:showItemClickIcon="false"
         glshop:showItemIcon="false" />
 

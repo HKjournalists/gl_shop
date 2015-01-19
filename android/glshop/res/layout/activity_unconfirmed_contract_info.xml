@@ -7,16 +7,43 @@
 
     <include layout="@layout/activity_common_title" />
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+    <include layout="@layout/layout_load_data_status" />
 
-    <Button
-        android:id="@+id/btn_confirm_contract"
-        style="@style/button_orange"
-        android:layout_margin="@dimen/buy_item_padding"
-        android:text="立即确认" />
+    <LinearLayout
+        android:id="@+id/ll_ufm_contract_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- 待确认合同可操作按钮 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/buy_item_padding" >
+
+            <Button
+                android:id="@+id/btn_confirm_now"
+                style="@style/button_orange"
+                android:layout_width="0dp"
+                android:layout_marginRight="@dimen/buy_item_padding"
+                android:layout_weight="1"
+                android:text="立即确认" />
+
+            <Button
+                android:id="@+id/btn_cancel_confirm"
+                style="@style/button_blue"
+                android:layout_width="0dp"
+                android:layout_marginRight="@dimen/buy_item_padding"
+                android:layout_weight="1"
+                android:text="取消确认" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.glshop.platform.api.syscfg.data.model;
 
-import com.glshop.platform.api.buy.data.model.AreaPriceInfoModel;
+import java.util.List;
+
 import com.glshop.platform.net.base.ResultItem;
 
 /**
@@ -15,17 +16,28 @@ public class AreaInfoModel extends ResultItem implements Cloneable {
 
 	public String type;
 
+	public String id;
+
 	public String name;
 
 	public String code;
 
 	public String pCode;
 
+	public String orderNo;
+
+	public AreaInfoModel parent;
+
+	public List<AreaInfoModel> childList;
+
+	public boolean isSelectedForUI;
+	public boolean isSelectedForDB;
+
 	@Override
 	public Object clone() {
-		AreaPriceInfoModel o = null;
+		AreaInfoModel o = null;
 		try {
-			o = (AreaPriceInfoModel) super.clone();
+			o = (AreaInfoModel) super.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -33,15 +45,45 @@ public class AreaInfoModel extends ResultItem implements Cloneable {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false;
+		}
+
+		if (this == o) {
+			return true;
+		}
+
+		if (o instanceof AreaInfoModel) {
+			AreaInfoModel other = (AreaInfoModel) o;
+			if (this.code == null || other.code == null) {
+				return false;
+			} else {
+				return this.code.equals(other.code);
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
+
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("AreaInfoModel[");
 		sb.append("type=" + type);
+		sb.append(", id=" + id);
 		sb.append(", name=" + name);
 		sb.append(", code=" + code);
 		sb.append(", pCode=" + pCode);
+		sb.append(", orderNo=" + orderNo);
+		sb.append(", parent=" + (parent != null ? parent.name : null));
+		sb.append(", isSelectedForUI=" + isSelectedForUI);
+		sb.append(", isSelectedForDB=" + isSelectedForDB);
 		sb.append("]");
 		return sb.toString();
 	}
-
 }

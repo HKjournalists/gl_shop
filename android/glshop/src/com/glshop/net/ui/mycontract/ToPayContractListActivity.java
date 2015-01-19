@@ -20,7 +20,7 @@ import com.glshop.net.logic.cache.DataCenter.DataType;
 import com.glshop.net.logic.contract.IContractLogic;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.ui.basic.BasicActivity;
-import com.glshop.net.ui.basic.adapter.ToPayContractListAdapter;
+import com.glshop.net.ui.basic.adapter.contract.ToPayContractListAdapter;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
 import com.glshop.platform.api.contract.data.model.ToPayContractInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
@@ -138,9 +138,14 @@ public class ToPayContractListActivity extends BasicActivity implements OnItemCl
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Logger.e(TAG, "onItemClick & Position = " + (position - mLvToPayBuyList.getHeaderViewsCount()));
 		ToPayContractInfoModel contractInfo = mAdapter.getItem(position - mLvToPayBuyList.getHeaderViewsCount());
-		Intent intent = new Intent(this, ContractInfoActivity.class);
+		Intent intent = new Intent(this, ContractInfoActivityV2.class);
 		intent.putExtra(GlobalAction.ContractAction.EXTRA_KEY_CONTRACT_ID, contractInfo.contractId);
 		startActivity(intent);
+	}
+
+	@Override
+	protected int[] getDataType() {
+		return new int[] { DataType.TO_PAY_CONTRACT_LIST };
 	}
 
 	@Override

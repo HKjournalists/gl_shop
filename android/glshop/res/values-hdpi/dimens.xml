@@ -24,7 +24,7 @@
     <dimen name="display_bytype_window_width">160dp</dimen>
     <dimen name="buy_item_padding">10dp</dimen>
     <dimen name="buy_item_height">48dp</dimen>
-    <dimen name="buy_edit_item_width">136dp</dimen>
+    <dimen name="buy_edit_item_width">120dp</dimen>
 
     <!-- Title Bar -->
     <dimen name="titlebar_height">48dp</dimen>

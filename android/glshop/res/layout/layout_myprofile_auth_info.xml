@@ -60,7 +60,6 @@
             android:id="@+id/btn_view_auth_detail"
             style="@style/button_small_orange"
             android:layout_width="60dp"
-            android:layout_marginLeft="5dp"
             android:background="@drawable/selector_btn_auth"
             android:singleLine="true"
             android:text="查看"

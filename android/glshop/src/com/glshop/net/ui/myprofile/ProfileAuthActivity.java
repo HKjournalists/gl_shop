@@ -66,7 +66,7 @@ public class ProfileAuthActivity extends BasicActivity implements IMenuCallback 
 
 	private BuyTextItemView mItemAuthType;
 	private BuyTextItemView mItemPortWaterDepth;
-	private BuyTextItemView mItemPortShipWaterDepth;
+	private BuyTextItemView mItemPortShipTon;
 
 	private CheckedTextView mCkbTvAgreeProtocol;
 	private MenuDialog menuAuthType;
@@ -95,9 +95,6 @@ public class ProfileAuthActivity extends BasicActivity implements IMenuCallback 
 	private AddrInfoModel mSelectAddrInfo;
 	private CompanyIntroInfoModel mCompanyIntroInfo;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	private int mUploadedPicCount = 0;
 	//private ImageStatusInfo mAuthImgStatus = new ImageStatusInfo();
 	private ImageStatusInfo[] mImgStatusList = new ImageStatusInfo[4];
@@ -122,7 +119,7 @@ public class ProfileAuthActivity extends BasicActivity implements IMenuCallback 
 
 		mItemAuthType = getView(R.id.ll_item_auth_type);
 		mItemPortWaterDepth = getView(R.id.ll_item_port_water_depth);
-		mItemPortShipWaterDepth = getView(R.id.ll_item_port_shipping_water_depth);
+		mItemPortShipTon = getView(R.id.ll_item_shipping_ton);
 		mCkbTvAgreeProtocol = getView(R.id.chkTv_agree_protocol);
 		mEtCompanyIntro = getView(R.id.et_company_intro);
 
@@ -232,8 +229,7 @@ public class ProfileAuthActivity extends BasicActivity implements IMenuCallback 
 		if (mSelectAddrInfo != null) {
 			mTvAddrDetail.setText(StringUtils.isNotEmpty(mSelectAddrInfo.deliveryAddrDetail) ? mSelectAddrInfo.deliveryAddrDetail : getString(R.string.data_no_input));
 			mItemPortWaterDepth.setContentText(mSelectAddrInfo.uploadPortWaterDepth != 0 ? String.valueOf(mSelectAddrInfo.uploadPortWaterDepth) : getString(R.string.data_no_input));
-			mItemPortShipWaterDepth
-					.setContentText(mSelectAddrInfo.uploadPortShippingWaterDepth != 0 ? String.valueOf(mSelectAddrInfo.uploadPortShippingWaterDepth) : getString(R.string.data_no_input));
+			mItemPortShipTon.setContentText(mSelectAddrInfo.shippingTon != 0 ? String.valueOf(mSelectAddrInfo.shippingTon) : getString(R.string.data_no_input));
 
 			List<ImageInfoModel> imgUrl = mSelectAddrInfo.addrImageList;
 			if (BeanUtils.isEmpty(imgUrl)) {
@@ -373,7 +369,7 @@ public class ProfileAuthActivity extends BasicActivity implements IMenuCallback 
 			break;
 		case R.id.btn_edit_addr:
 			intent = new Intent(this, DischargeAddrSelectActivity.class);
-			startActivityForResult(intent, GlobalMessageType.ActivityReqCode.REQ_INPUT_DISCHARGE_ADDRESS);
+			startActivityForResult(intent, GlobalMessageType.ActivityReqCode.REQ_SELECT_DISCHARGE_ADDRESS);
 			break;
 		case R.id.ll_agree_protocol:
 			mCkbTvAgreeProtocol.toggle();
@@ -571,12 +567,12 @@ public class ProfileAuthActivity extends BasicActivity implements IMenuCallback 
 	}
 
 	@Override
-	public void onConfirm(Object obj) {
+	public void onConfirm(int type, Object obj) {
 
 	}
 
 	@Override
-	public void onCancel() {
+	public void onCancel(int type) {
 
 	}
 
@@ -636,7 +632,7 @@ public class ProfileAuthActivity extends BasicActivity implements IMenuCallback 
 				}
 			}
 			break;
-		case GlobalMessageType.ActivityReqCode.REQ_INPUT_DISCHARGE_ADDRESS:
+		case GlobalMessageType.ActivityReqCode.REQ_SELECT_DISCHARGE_ADDRESS:
 			if (resultCode == Activity.RESULT_OK) {
 				if (data != null) {
 					mSelectAddrInfo = (AddrInfoModel) data.getSerializableExtra(GlobalAction.ProfileAction.EXTRA_KEY_ADDR_INFO);

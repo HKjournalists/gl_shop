@@ -217,6 +217,11 @@ public class MessageListActivity extends BasicActivity implements OnItemClickLis
 	}
 
 	@Override
+	protected int[] getDataType() {
+		return new int[] { DataType.MESSAGE_LIST };
+	}
+
+	@Override
 	protected void initLogics() {
 		mMessageLogic = LogicFactory.getLogicByClass(IMessageLogic.class);
 	}

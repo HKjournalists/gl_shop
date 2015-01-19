@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <LinearLayout
+        android:id="@+id/ll_company_auth_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="6dp" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:gravity="center_vertical"
+                    android:text="用户身份: 船舶" />
+
+                <!-- 船舶名称 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_name"
+                    style="@style/BuyTextItem.Top"
+                    glshop:itemContent="船舶名称"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船舶名称" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船籍港 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_port"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="船籍港"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船籍港" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船舶登记号 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_no"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="船舶登记号"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船舶登记号" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船舶检验机构 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_check_org"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="船舶检验机构"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船舶检验机构" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船舶所有人 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_owner"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="船舶所有人"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船舶所有人" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船舶经营者 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_manager"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="船舶经营人"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船舶经营人" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船舶种类 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_type"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="船舶种类"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船舶种类" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船舶建成日期 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_create_date"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="船舶建成日期"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船舶建成日期" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 总吨位 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_total_amount"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="总吨位"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="总吨位(吨)" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 载重 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_load"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="载重"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="载重(吨)" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船长 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_length"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="船长"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船长(米)" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船宽 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_width"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="船宽 "
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船宽 (米)" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 型深 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_height"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="型深"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="型深(米)" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 满载吃水 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_total_water_height"
+                    style="@style/BuyTextItem.Middle"
+                    glshop:itemContent="满载吃水"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="满载吃水(米)" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 船体材料 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_ship_material"
+                    style="@style/BuyTextItem.Bottom"
+                    glshop:itemContent="钢质"
+                    glshop:itemContentColor="@color/gray"
+                    glshop:itemTitle="船体材料" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>

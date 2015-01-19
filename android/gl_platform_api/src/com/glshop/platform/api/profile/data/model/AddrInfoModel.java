@@ -25,6 +25,16 @@ public class AddrInfoModel extends ResultItem implements Cloneable {
 	public String companyId;
 
 	/**
+	 * 交易地域编码
+	 */
+	public String areaCode;
+
+	/**
+	 * 交易地域名称
+	 */
+	public String areaName;
+
+	/**
 	 * 交货详细地址信息
 	 */
 	public String deliveryAddrDetail;
@@ -43,6 +53,11 @@ public class AddrInfoModel extends ResultItem implements Cloneable {
 	 * 卸货个港口实际吃水深度
 	 */
 	public float uploadPortShippingWaterDepth;
+
+	/**
+	 * 可停泊载重船吨位
+	 */
+	public float shippingTon;
 
 	/**
 	 * 是否默认卸货地址
@@ -92,6 +107,8 @@ public class AddrInfoModel extends ResultItem implements Cloneable {
 		sb.append("AddrInfoModel[");
 		sb.append("addrId=" + addrId);
 		sb.append(", companyId=" + companyId);
+		sb.append(", areaCode=" + areaCode);
+		sb.append(", areaName=" + areaName);
 		sb.append(", deliveryAddrDetail=" + deliveryAddrDetail);
 		sb.append(", addrImageList=" + addrImageList);
 		sb.append(", uploadPortWaterDepth=" + uploadPortWaterDepth);

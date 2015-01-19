@@ -86,10 +86,10 @@ public class BuyAllTestCase extends BaseTestCase {
 			buyInfo.buyId = "000003114102014";
 			buyInfo.companyId = "CompanyInfoId000000811102014END";
 			buyInfo.buyType = BuyType.BUYER;
+			buyInfo.productColor = "黄色";
+			buyInfo.productArea = "上海";
 
 			ProductInfoModel productInfo = new ProductInfoModel();
-			productInfo.color = "黄色";
-			productInfo.area = "上海";
 
 			buyInfo.unitPrice = 66.6f;
 			buyInfo.tradeAmount = 100;
@@ -102,7 +102,7 @@ public class BuyAllTestCase extends BaseTestCase {
 
 			buyInfo.buyRemarks = "购买信息备注2";
 
-			buyInfo.productInfo = productInfo;
+			buyInfo.productPropInfo = productInfo;
 			req.buyInfo = buyInfo;
 		} else if (request instanceof UndoPubBuyInfoReq) { // 取消发布
 			UndoPubBuyInfoReq req = (UndoPubBuyInfoReq) request;
@@ -119,10 +119,10 @@ public class BuyAllTestCase extends BaseTestCase {
 		BuyInfoModel buyInfo = new BuyInfoModel();
 		buyInfo.companyId = "CompanyInfoId000000811102014END";
 		buyInfo.buyType = BuyType.BUYER;
+		buyInfo.productColor = "黄色";
+		buyInfo.productArea = "上海";
 
 		ProductInfoModel productInfo = new ProductInfoModel();
-		productInfo.color = "灰色";
-		productInfo.area = "深圳";
 
 		buyInfo.unitPrice = 66.6f;
 		buyInfo.tradeAmount = 100;
@@ -135,7 +135,7 @@ public class BuyAllTestCase extends BaseTestCase {
 
 		buyInfo.buyRemarks = "购买信息备注";
 
-		buyInfo.productInfo = productInfo;
+		buyInfo.productPropInfo = productInfo;
 
 		if (isMoreArea) {
 			buyInfo.isMoreArea = true;

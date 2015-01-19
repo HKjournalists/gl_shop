@@ -13,12 +13,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 
 import com.glshop.net.GLApplication;
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalConfig;
 import com.glshop.net.common.GlobalConstants.DataStatus;
 import com.glshop.net.common.GlobalErrorMessage;
+import com.glshop.net.logic.cache.DataCenter;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.upgrade.IUpgradeLogic;
 import com.glshop.net.logic.user.IUserLogic;
@@ -29,10 +31,12 @@ import com.glshop.net.ui.basic.view.dialog.SingleConfirmDialog;
 import com.glshop.net.ui.basic.view.dialog.UpgradeDialog;
 import com.glshop.net.ui.user.LoginActivity;
 import com.glshop.net.utils.NetworkUtil;
+import com.glshop.net.utils.ToastUtil;
 import com.glshop.platform.api.DataConstants;
 import com.glshop.platform.api.setting.data.model.UpgradeInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.base.ui.BaseFragmentActivity;
+import com.glshop.platform.utils.BeanUtils;
 import com.glshop.platform.utils.Logger;
 import com.glshop.platform.utils.StringUtils;
 
@@ -69,6 +73,9 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 
 	/** 升级提示对话框 */
 	protected UpgradeDialog mUpgradeTipsDialog;
+
+	/** 当前请求标识 */
+	protected String mInvoker = String.valueOf(System.currentTimeMillis());
 
 	protected IUpgradeLogic mUpgradeLogic;
 
@@ -236,8 +243,10 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 	protected void switchFragment(int containerId, Fragment show, String showTag, Fragment... hideList) {
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-		for (Fragment fragment : hideList) {
-			fragmentTransaction.hide(fragment);
+		if (BeanUtils.isNotEmpty(hideList)) {
+			for (Fragment fragment : hideList) {
+				fragmentTransaction.hide(fragment);
+			}
 		}
 
 		if (!show.isAdded()) {
@@ -284,6 +293,16 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 		return result;
 	}
 
+	/**
+	 * 焦点定位文本末尾
+	 * @param view
+	 */
+	protected void requestSelection(EditText view) {
+		if (view != null) {
+			view.setSelection(view.getText().toString().length());
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T extends View> T getView(int id) {
 		T result = (T) findViewById(id);
@@ -299,6 +318,16 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 			((GLApplication) getApplication()).removeActivty(this);
 		}
 		super.finish();
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		DataCenter.getInstance().cleanData(getDataType());
+	}
+
+	protected int[] getDataType() {
+		return new int[] {};
 	}
 
 	/**
@@ -397,12 +426,12 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 		mOfflineDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				gotoLogin();
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});
@@ -433,7 +462,7 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 		mUpgradeTipsDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				// test data
 				/*UpgradeInfoModel info = new UpgradeInfoModel();
 				info.url = "http://www.916816.com/glshop_test4_20141205_3.apk";
@@ -443,7 +472,7 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});
@@ -475,6 +504,18 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 				showToast(GlobalErrorMessage.getErrorMsg(this, info.errorCode, info.errorMsg));
 			}
 		}
+	}
+
+	@Override
+	protected void showToast(String msg) {
+		//super.showToast(msg);
+		ToastUtil.showDefaultToast(this, msg);
+	}
+
+	@Override
+	protected void showToast(int resId) {
+		//super.showToast(resId);
+		ToastUtil.showDefaultToast(this, resId);
 	}
 
 	@Override

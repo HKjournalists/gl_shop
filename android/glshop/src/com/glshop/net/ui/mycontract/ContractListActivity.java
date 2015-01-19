@@ -16,9 +16,12 @@ import com.glshop.net.common.GlobalAction;
 import com.glshop.net.common.GlobalConstants.TabStatus;
 import com.glshop.net.ui.MainActivity;
 import com.glshop.net.ui.basic.BasicFragmentActivity;
-import com.glshop.net.ui.basic.adapter.TabPagerAdapter;
-import com.glshop.net.ui.basic.adapter.TabPagerAdapter.TabInfo;
+import com.glshop.net.ui.basic.adapter.base.TabPagerAdapter;
+import com.glshop.net.ui.basic.adapter.base.TabPagerAdapter.TabInfo;
 import com.glshop.net.ui.basic.fragment.contract.ContractListFragment;
+import com.glshop.net.ui.basic.fragment.contract.list.EndedContractListFragment;
+import com.glshop.net.ui.basic.fragment.contract.list.OngoingContractListFragment;
+import com.glshop.net.ui.basic.fragment.contract.list.UfmContractListFragment;
 import com.glshop.net.ui.basic.view.TabIndicator;
 import com.glshop.platform.api.DataConstants.ContractType;
 import com.glshop.platform.utils.Logger;
@@ -42,9 +45,9 @@ public class ContractListActivity extends BasicFragmentActivity implements ViewP
 	private ViewPager mViewPager;
 	private TabPagerAdapter mPagerAdapter;
 
-	private ContractListFragment mFragmentUnconfirmed;
-	private ContractListFragment mFragmentOngoing;
-	private ContractListFragment mFragmentEnded;
+	private UfmContractListFragment mFragmentUnconfirmed;
+	private OngoingContractListFragment mFragmentOngoing;
+	private EndedContractListFragment mFragmentEnded;
 
 	private ContractType contractType = ContractType.UNCONFIRMED;
 
@@ -92,16 +95,13 @@ public class ContractListActivity extends BasicFragmentActivity implements ViewP
 		mFragmentEnded = getFragment(TAB_ENDED);
 
 		if (mFragmentUnconfirmed == null) {
-			mFragmentUnconfirmed = new ContractListFragment();
-			mFragmentUnconfirmed.setArguments(createFragmentArgs(ContractType.UNCONFIRMED));
+			mFragmentUnconfirmed = new UfmContractListFragment();
 		}
 		if (mFragmentOngoing == null) {
-			mFragmentOngoing = new ContractListFragment();
-			mFragmentOngoing.setArguments(createFragmentArgs(ContractType.ONGOING));
+			mFragmentOngoing = new OngoingContractListFragment();
 		}
 		if (mFragmentEnded == null) {
-			mFragmentEnded = new ContractListFragment();
-			mFragmentEnded.setArguments(createFragmentArgs(ContractType.ENDED));
+			mFragmentEnded = new EndedContractListFragment();
 		}
 
 		transaction.hide(mFragmentUnconfirmed);
@@ -122,12 +122,6 @@ public class ContractListActivity extends BasicFragmentActivity implements ViewP
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOffscreenPageLimit(1);
 		switchTab();
-	}
-
-	private Bundle createFragmentArgs(ContractType type) {
-		Bundle args = new Bundle();
-		args.putInt(GlobalAction.ContractAction.EXTRA_KEY_CONTRACT_TYPE, type.toValue());
-		return args;
 	}
 
 	@Override

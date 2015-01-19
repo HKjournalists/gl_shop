@@ -96,14 +96,14 @@ public class InputDialog extends BaseDialog {
 		case R.id.dialog_btn_confirm:
 			mBtnConfirm.setClickable(false);
 			if (callback != null) {
-				callback.onConfirm(mEtContent.getText().toString());
+				callback.onConfirm(mDialogType, mEtContent.getText().toString());
 			}
 			closeDialog();
 			break;
 		case R.id.dialog_btn_cancel:
 			mBtnCancel.setClickable(false);
 			if (callback != null) {
-				callback.onCancel();
+				callback.onCancel(mDialogType);
 			}
 			closeDialog();
 			break;

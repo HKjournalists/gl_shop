@@ -308,6 +308,18 @@ public interface GlobalMessageType {
 		/** 合同评价失败 */
 		int MSG_CONTRACT_EVALUATE_FAILED = BASE + 38;
 
+		/** 合同确认成功 */
+		int MSG_MULTI_COMFIRM_CONTRACT_SUCCESS = BASE + 39;
+
+		/** 合同确认失败 */
+		int MSG_MULTI_COMFIRM_CONTRACT_FAILED = BASE + 40;
+
+		/** 合同申请仲裁成功 */
+		int MSG_APPLY_ARBITARTE_SUCCESS = BASE + 41;
+
+		/** 合同申请仲裁失败 */
+		int MSG_APPLY_ARBITARTE_FAILED = BASE + 42;
+
 	}
 
 	/**
@@ -417,10 +429,10 @@ public interface GlobalMessageType {
 		int MSG_GET_OTHER_PROFILE_INFO_FAILED = BASE + 4;
 
 		/** 获取卸货地址列表成功 */
-		int MSG_GET_ADDR_LIST_SUCCESS = BASE + 5;
+		int MSG_GET_DISCHARGE_ADDR_LIST_SUCCESS = BASE + 5;
 
 		/** 获取卸货地址列表失败 */
-		int MSG_GET_ADDR_LIST_FAILED = BASE + 6;
+		int MSG_GET_DISCHARGE_ADDR_LIST_FAILED = BASE + 6;
 
 		/** 添加卸货地址成功 */
 		int MSG_ADD_ADDR_SUCCESS = BASE + 7;
@@ -473,6 +485,24 @@ public interface GlobalMessageType {
 		/** 刷新个人资料信息*/
 		int MSG_REFRESH_MY_PROFILE = BASE + 23;
 
+		/** 获取交易地域地址列表成功 */
+		int MSG_GET_TRADE_ADDR_LIST_SUCCESS = BASE + 24;
+
+		/** 获取交易地域地址列表失败 */
+		int MSG_GET_TRADE_ADDR_LIST_FAILED = BASE + 25;
+
+		/** 获取卸货地址详情成功 */
+		int MSG_GET_DISCHARGE_ADDR_INFO_SUCCESS = BASE + 26;
+
+		/** 获取卸货地址详情失败 */
+		int MSG_GET_DISCHARGE_ADDR_INFO_FAILED = BASE + 27;
+
+		/** 获取合同地址详情成功 */
+		int MSG_GET_CONTRACT_ADDR_INFO_SUCCESS = BASE + 28;
+
+		/** 获取合同地址详情失败 */
+		int MSG_GET_CONTRACT_ADDR_INFO_FAILED = BASE + 29;
+
 	}
 
 	/**
@@ -523,24 +553,6 @@ public interface GlobalMessageType {
 
 		int BASE = 0x80000000;
 
-		/** 获取升级信息成功 */
-		int MSG_GET_UPGRADE_INFO_SUCCESS = BASE + 1;
-
-		/** 获取升级信息失败 */
-		int MSG_GET_UPGRADE_INFO_FAILED = BASE + 2;
-
-		/** 获取系统参数信息成功 */
-		int MSG_GET_SYSCFG_INFO_SUCCESS = BASE + 3;
-
-		/** 获取系统参数信息失败 */
-		int MSG_GET_SYSCFG_INFO_FAILED = BASE + 4;
-
-		/** 获取本地系统参数信息成功 */
-		int MSG_GET_LOCAL_SYSCFG_INFO_SUCCESS = BASE + 5;
-
-		/** 获取本地系统参数列表信息成功 */
-		int MSG_GET_LOCAL_SYSCFG_LIST_SUCCESS = BASE + 6;
-
 	}
 
 	/**
@@ -550,20 +562,47 @@ public interface GlobalMessageType {
 
 		int BASE = 0x90000000;
 
+		/** 获取升级信息成功 */
+		int MSG_GET_UPGRADE_INFO_SUCCESS = BASE + 1;
+
+		/** 获取升级信息失败 */
+		int MSG_GET_UPGRADE_INFO_FAILED = BASE + 2;
+
 		/** 开始下载 */
-		int MSG_START_DOWNLOAD = BASE + 1;
+		int MSG_START_DOWNLOAD = BASE + 3;
 
 		/** 更新下载进度 */
-		int MSG_UPDATE_PROGRESS = BASE + 2;
+		int MSG_UPDATE_PROGRESS = BASE + 4;
 
 		/** 下载成功 */
-		int MSG_DOWNLOAD_SUCCESS = BASE + 3;
+		int MSG_DOWNLOAD_SUCCESS = BASE + 5;
 
 		/** 下载失败 */
-		int MSG_DOWNLOAD_FAILED = BASE + 4;
+		int MSG_DOWNLOAD_FAILED = BASE + 6;
 
 		/** 下载取消 */
-		int MSG_DOWNLOAD_CANCELED = BASE + 5;
+		int MSG_DOWNLOAD_CANCELED = BASE + 7;
+
+	}
+
+	/**
+	 * 系统同步配置模块消息类型
+	 */
+	public interface SysCfgMessageType {
+
+		int BASE = 0xA0000000;
+
+		/** 获取系统参数信息成功 */
+		int MSG_GET_SYSCFG_INFO_SUCCESS = BASE + 1;
+
+		/** 获取系统参数信息失败 */
+		int MSG_GET_SYSCFG_INFO_FAILED = BASE + 2;
+
+		/** 获取区域列表信息成功 */
+		int MSG_GET_AREA_ADDR_LIST_SUCCESS = BASE + 3;
+
+		/** 获取区域列表信息成功 */
+		int MSG_GET_AREA_ADDR_LIST_FAILED = BASE + 4;
 
 	}
 
@@ -572,7 +611,7 @@ public interface GlobalMessageType {
 	 */
 	public interface NetworkMessageType {
 
-		int BASE = 0xA0000000;
+		int BASE = 0xB0000000;
 
 		/** 已连接 */
 		int NET_STATUS_TYPE_CONNECTED = BASE + 1;
@@ -599,7 +638,7 @@ public interface GlobalMessageType {
 	 */
 	public interface MenuType {
 
-		int BASE = 0xB0000000;
+		int BASE = 0x1000;
 
 		/** 未知 */
 		int UNKNOWN = BASE + 1;
@@ -607,38 +646,47 @@ public interface GlobalMessageType {
 		/** 选择信息发布类型 */
 		int SELECT_BUY_TYPE = BASE + 2;
 
-		/** 选择货物类型 */
+		/** 选择货物信息类型 */
 		int SELECT_PRODUCT_TYPE = BASE + 3;
 
+		/** 选择货物分类 */
+		int SELECT_PRODUCT_CATEGORY = BASE + 4;
+
 		/** 选择货物规格 */
-		int SELECT_PRODUCT_SPEC = BASE + 4;
+		int SELECT_PRODUCT_SPEC = BASE + 5;
 
 		/** 选择卸货地址指定方式 */
-		int SELECT_DISCHARGE_ADDR_TYPE = BASE + 5;
+		int SELECT_DISCHARGE_ADDR_TYPE = BASE + 6;
 
 		/** 选择上传图片方式 */
-		int SELECT_UPLOAD_PIC_TYPE = BASE + 6;
+		int SELECT_UPLOAD_PIC_TYPE = BASE + 7;
 
 		/** 选择是否发布多地域 */
-		int SELECT_PUB_MORE_AREA_TYPE = BASE + 7;
+		int SELECT_PUB_MORE_AREA_TYPE = BASE + 8;
 
 		/** 选择交易地域 */
-		int SELECT_TRADE_AREA_TYPE = BASE + 8;
+		int SELECT_TRADE_AREA_TYPE = BASE + 9;
 
 		/** 选择交易时间 */
-		int SELECT_TRADE_DATE_TYPE = BASE + 9;
+		int SELECT_TRADE_DATE_TYPE = BASE + 10;
 
 		/** 选择货物种类 */
-		int SELECT_TRADE_PRODUCT_TYPE = BASE + 10;
+		int SELECT_TRADE_PRODUCT_TYPE = BASE + 11;
 
 		/** 选择认证身份类型 */
-		int SELECT_AUTH_TYPE = BASE + 11;
+		int SELECT_AUTH_TYPE = BASE + 12;
 
 		/** 选择银行列表 */
-		int SELECT_BANK = BASE + 12;
+		int SELECT_BANK = BASE + 13;
 
 		/** 选择港口 */
-		int SELECT_PORT = BASE + 13;
+		int SELECT_PORT = BASE + 14;
+
+		/** 选择找卖找卖排序类型 */
+		int SELECT_BUY_ORDER_TYPE = BASE + 15;
+
+		/** 选择我的供求过滤类型 */
+		int SELECT_MY_BUY_FILTER_TYPE = BASE + 16;
 
 	}
 
@@ -652,35 +700,41 @@ public interface GlobalMessageType {
 		/** 输入货物信息 */
 		int REQ_INPUT_PRODUCT_INFO = BASE + 1;
 
-		/** 输入卸货地址信息 */
-		int REQ_INPUT_DISCHARGE_ADDRESS = BASE + 2;
+		/** 选择交易地域信息 */
+		int REQ_SELECT_TRADE_ADDRESS = BASE + 2;
+
+		/** 选择卸货地址信息 */
+		int REQ_SELECT_DISCHARGE_ADDRESS = BASE + 3;
 
 		/** 卸货地址信息编辑 */
-		int REQ_EDIT_DISCHARGE_ADDRESS = BASE + 3;
+		int REQ_EDIT_DISCHARGE_ADDRESS = BASE + 4;
 
 		/** 获取图片 */
-		int REQ_GET_PHOTO = BASE + 4;
+		int REQ_GET_PHOTO = BASE + 5;
 
 		/** 拍照 */
-		int REQ_TAKE_PHOTO = BASE + 5;
+		int REQ_TAKE_PHOTO = BASE + 6;
 
 		/** 联系人信息编辑 */
-		int REQ_EDIT_CONTACT = BASE + 6;
+		int REQ_EDIT_CONTACT = BASE + 7;
 
 		/** 企业介绍信息编辑 */
-		int REQ_EDIT_COMPANY_INTRO = BASE + 7;
+		int REQ_EDIT_COMPANY_INTRO = BASE + 8;
 
 		/** 输入企业评价内容 */
-		int REQ_EDIT_EVALUATION_DESCRIPTION = BASE + 8;
+		int REQ_EDIT_EVALUATION_DESCRIPTION = BASE + 9;
 
 		/** 合同最终单价编辑 */
-		int REQ_EDIT_CONTRACT_FINAL_UNIT_PRICE = BASE + 9;
+		int REQ_EDIT_CONTRACT_FINAL_UNIT_PRICE = BASE + 10;
 
 		/** 收款人信息编辑 */
-		int REQ_EDIT_PAYEE_INFO = BASE + 10;
+		int REQ_EDIT_PAYEE_INFO = BASE + 11;
 
 		/** 查看系统消息 */
-		int REQ_VIEW_SYSTEM_MESSAGE = BASE + 11;
+		int REQ_VIEW_SYSTEM_MESSAGE = BASE + 12;
+
+		/** 选择找买找卖筛选条件 */
+		int REQ_EDIT_BUY_FILTER_INFO = BASE + 13;
 
 	}
 

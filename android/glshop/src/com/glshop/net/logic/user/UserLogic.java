@@ -287,7 +287,7 @@ public class UserLogic extends BasicLogic implements IUserLogic {
 					Message message = new Message();
 					message.obj = getOprRespInfo(result);
 					if (result.isSuccess()) {
-						//TODO 保存当前登录用户信息
+						// 保存当前登录用户信息
 						GlobalConfig.getInstance().saveLoginInfo(result.data);
 						message.what = UserMessageType.MSG_REFRESH_TOKEN_SUCCESS;
 					} else {

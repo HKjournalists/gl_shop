@@ -17,7 +17,7 @@ import com.glshop.net.logic.cache.DataCenter.DataType;
 import com.glshop.net.logic.contract.IContractLogic;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.ui.basic.BasicActivity;
-import com.glshop.net.ui.basic.adapter.EvaluationListAdapter;
+import com.glshop.net.ui.basic.adapter.profile.EvaluationListAdapter;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
 import com.glshop.net.ui.basic.view.PullRefreshListView.OnRefreshListener;
 import com.glshop.platform.base.manager.LogicFactory;
@@ -132,6 +132,11 @@ public class CompanyEvaluationListActivity extends BasicActivity {
 			finish();
 			break;
 		}
+	}
+
+	@Override
+	protected int[] getDataType() {
+		return new int[] { DataType.EVALUATION_LIST };
 	}
 
 	@Override

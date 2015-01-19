@@ -16,6 +16,7 @@ import com.glshop.net.logic.purse.IPurseLogic;
 import com.glshop.net.ui.basic.BasicActivity;
 import com.glshop.net.ui.basic.view.dialog.BaseDialog.IDialogCallback;
 import com.glshop.net.ui.basic.view.dialog.ConfirmDialog;
+import com.glshop.platform.api.DataConstants.PayeeStatus;
 import com.glshop.platform.api.purse.data.model.PayeeInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
 
@@ -66,6 +67,16 @@ public class PayeeInfoActivity extends BasicActivity {
 			((TextView) findViewById(R.id.tv_payee_bank)).setText(info.bankName);
 			((TextView) findViewById(R.id.tv_sub_bank)).setText(info.subBank);
 			((TextView) findViewById(R.id.tv_bank_card)).setText(info.card);
+
+			if (info.status == PayeeStatus.AUTHED) {
+				getView(R.id.btn_commmon_action).setVisibility(View.VISIBLE);
+				getView(R.id.btn_set_default_payee).setVisibility(info.isDefault ? View.GONE : View.VISIBLE);
+				getView(R.id.btn_delete_payee).setVisibility(View.VISIBLE);
+			} else {
+				getView(R.id.btn_commmon_action).setVisibility(View.GONE);
+				getView(R.id.btn_set_default_payee).setVisibility(View.GONE);
+				getView(R.id.btn_delete_payee).setVisibility(View.GONE);
+			}
 		} else {
 			showToast("收款人信息不能为空!");
 			finish();
@@ -163,12 +174,12 @@ public class PayeeInfoActivity extends BasicActivity {
 		mConfirmDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				doDeleteAction();
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});

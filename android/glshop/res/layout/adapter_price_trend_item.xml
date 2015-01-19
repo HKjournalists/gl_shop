@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8"
+        android:layout_weight="0.9"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingLeft="10dp" >
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:text="黄砂"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_product_spec_size"
@@ -26,59 +26,91 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:text="(1.5-3.0)"
-            android:textSize="13sp" />
+            android:textSize="12sp" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_product_today_price"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:singleLine="true"
-        android:text="66"
-        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="center" >
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/tv_product_today_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:singleLine="true"
+            android:text="66"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@color/green"
+            android:gravity="center|left" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical" >
 
         <TextView
             android:id="@+id/tv_product_oneweek_price"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
             android:singleLine="true"
             android:text="66"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
-        <ImageView
-            android:id="@+id/iv_one_week_trend"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_price_up" />
+            android:layout_weight="0.5"
+            android:gravity="center|left" >
+
+            <ImageView
+                android:id="@+id/iv_one_week_trend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_price_up" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:gravity="center" >
+        android:gravity="center_vertical" >
 
         <TextView
             android:id="@+id/tv_product_twoweek_price"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
             android:singleLine="true"
             android:text="66"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
-        <ImageView
-            android:id="@+id/iv_two_week_trend"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_price_down" />
+            android:layout_weight="0.5"
+            android:gravity="center|left" >
+
+            <ImageView
+                android:id="@+id/iv_two_week_trend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_price_down" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

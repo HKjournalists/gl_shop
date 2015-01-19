@@ -29,6 +29,11 @@
         <item name="android:checkMark">@drawable/selector_checkbox</item>
     </style>
 
+    <!-- 通用Orange背景CheckTextView -->
+    <style name="ckb_orange_textview" parent="ckb_textview">
+        <item name="android:checkMark">@drawable/selector_checkbox_orange</item>
+    </style>
+
     <!-- 通用对话框主题 -->
     <style name="dialog" mce_bogus="1" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
@@ -138,6 +143,12 @@
         <item name="android:layout_width">1px</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@drawable/devider_line_v</item>
+    </style>
+
+    <style name="item_devider_tab_line">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">#2871D5</item>
     </style>
 
     <style name="item_devider_view">
@@ -328,6 +339,18 @@
         <item name="android:background">@drawable/selector_btn_blue</item>
     </style>
 
+    <!-- 通用White Button背景 -->
+    <style name="button_white" parent="base_button">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/selector_btn_white</item>
+    </style>
+
+    <!-- 通用White Button2背景 -->
+    <style name="button_white2" parent="base_button">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/selector_btn_white2</item>
+    </style>
+
     <!-- 通用Small Button -->
     <style name="base_small_button">
         <item name="android:layout_width">wrap_content</item>
@@ -357,6 +380,18 @@
         <item name="android:background">@drawable/selector_btn_blue</item>
     </style>
 
+    <!-- 通用Small White Button背景 -->
+    <style name="button_small_white" parent="base_small_button">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/selector_btn_white</item>
+    </style>
+
+    <!-- 通用Small White Button2背景 -->
+    <style name="button_small_white2" parent="base_small_button">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/selector_btn_white2</item>
+    </style>
+
     <!-- 通用获取短信验证码Button背景 -->
     <style name="button_send_smscode" parent="button_small_blue">
         <item name="android:padding">0dp</item>
@@ -376,6 +411,11 @@
     <!-- 通用Left Radio Button背景 -->
     <style name="radio_button_left" parent="radio_button_base">
         <item name="android:background">@drawable/selector_tab_left</item>
+    </style>
+
+    <!-- 通用Middle Radio Button背景 -->
+    <style name="radio_button_middle" parent="radio_button_base">
+        <item name="android:background">@drawable/selector_tab_middle</item>
     </style>
 
     <!-- 通用Right Radio Button背景 -->

@@ -54,9 +54,6 @@ public class FindPwdSubmitActivity extends BasicActivity {
 
 	private String mAccount;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

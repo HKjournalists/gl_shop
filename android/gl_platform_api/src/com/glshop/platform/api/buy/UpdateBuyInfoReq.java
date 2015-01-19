@@ -48,19 +48,21 @@ public class UpdateBuyInfoReq extends BaseRequest<CommonResult> {
 			request.addParam("typeValue", buyInfo.buyType.toValue());
 			request.addParam("cid", buyInfo.companyId);
 
-			request.addParam("pid", buyInfo.specId);
-			request.addParam("pname", buyInfo.specName);
+			request.addParam("pid", buyInfo.productSpecId);
+			request.addParam("pname", buyInfo.productSpecName);
 			//request.addParam("ptype", "");
 			//request.addParam("psize", "");
-			request.addParam("pcolor", buyInfo.productInfo.color);
-			request.addParam("paddress", buyInfo.productInfo.area);
-			request.addParam("productPropertys", convertPropInfo2JSON(buyInfo.productInfo));
+			request.addParam("pcolor", buyInfo.productColor);
+			request.addParam("paddress", buyInfo.productArea);
+			request.addParam("productPropertys", convertPropInfo2JSON(buyInfo.productPropInfo));
+			request.addParam("premark", buyInfo.productRemarks);
+			request.addParam("remark", buyInfo.buyRemarks);
 
 			request.addParam("price", buyInfo.unitPrice);
 			request.addParam("totalnum", buyInfo.tradeAmount);
-			request.addParam("unit", "UNIT001");
+			request.addParam("unit", buyInfo.unitType.toValue());
 			request.addParam("moreareaValue", buyInfo.isMoreArea ? "2" : "1");
-			request.addParam("area", buyInfo.tradeArea);
+			request.addParam("area", buyInfo.tradeAreaCode);
 
 			// 设置多地域信息
 			if (buyInfo.isMoreArea) {
@@ -73,8 +75,8 @@ public class UpdateBuyInfoReq extends BaseRequest<CommonResult> {
 			}
 
 			request.addParam("starttime", buyInfo.tradeBeginDate);
-			request.addParam("limitime", buyInfo.tradeEndDate);
-			
+			request.addParam("endtime", buyInfo.tradeEndDate);
+
 			// 卸货地址指定方式
 			request.addParam("addresstypeValue", buyInfo.deliveryAddrType.toValue());
 
@@ -86,7 +88,6 @@ public class UpdateBuyInfoReq extends BaseRequest<CommonResult> {
 				}
 				request.addParam("productImgIds", imgId.toString());
 			}
-			request.addParam("remark", buyInfo.buyRemarks);
 		}
 	}
 

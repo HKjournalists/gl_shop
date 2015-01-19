@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.glshop.net.logic.model.MenuItemInfo;
+import com.glshop.platform.utils.StringUtils;
 
 /**
  * 菜单工具类
@@ -31,7 +32,17 @@ public class MenuUtil {
 
 			@Override
 			public int compare(MenuItemInfo info1, MenuItemInfo info2) {
-				return info1.orderNo.compareTo(info2.orderNo);
+				if (StringUtils.isNotEmpty(info1.orderNo) && StringUtils.isNotEmpty(info2.orderNo)) {
+					if (StringUtils.isDigital(info1.orderNo) && StringUtils.isDigital(info2.orderNo)) {
+						int lhs = Integer.parseInt(info1.orderNo);
+						int rhs = Integer.parseInt(info2.orderNo);
+						return lhs - rhs;
+					} else {
+						return info1.orderNo.compareTo(info2.orderNo);
+					}
+				} else {
+					return 0;
+				}
 			}
 
 		});

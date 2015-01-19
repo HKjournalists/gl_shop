@@ -21,7 +21,7 @@ import com.glshop.net.logic.cache.DataCenter.DataType;
 import com.glshop.net.logic.contract.IContractLogic;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.ui.basic.BasicFragment;
-import com.glshop.net.ui.basic.adapter.ContractListAdapter;
+import com.glshop.net.ui.basic.adapter.contract.UfmContractListAdapter;
 import com.glshop.net.ui.basic.timer.GlobalTimerMgr;
 import com.glshop.net.ui.basic.timer.GlobalTimerMgr.ITimerListener;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
@@ -46,7 +46,7 @@ public class ContractListFragment extends BasicFragment implements OnItemClickLi
 	private static final String TAG = "ContractListFragment";
 
 	private PullRefreshListView mLvContractList;
-	private ContractListAdapter mAdapter;
+	private UfmContractListAdapter mAdapter;
 	private ArrayList<ContractSummaryInfoModel> mInitData;
 	private boolean isRestored = false;
 
@@ -117,7 +117,7 @@ public class ContractListFragment extends BasicFragment implements OnItemClickLi
 	}
 
 	private void initData() {
-		mAdapter = new ContractListAdapter(mContext, mInitData, type);
+		mAdapter = new UfmContractListAdapter(mContext, mInitData);
 		mLvContractList.setAdapter(mAdapter);
 		if (!isRestored) {
 			updateDataStatus(DataStatus.LOADING);

@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
+import com.glshop.net.R;
 import com.glshop.net.logic.model.MenuItemInfo;
 import com.glshop.net.utils.MenuUtil;
 import com.glshop.platform.api.DataConstants;
@@ -45,6 +46,8 @@ import com.glshop.platform.utils.StringUtils;
  */
 public class SysCfgUtils {
 
+	private static final String TAG = "SysCfgUtils";
+
 	public static List<MenuItemInfo> getSandTopCategoryMenu(List<ProductCfgInfoModel> list) {
 		List<MenuItemInfo> menuList = new ArrayList<MenuItemInfo>();
 		if (BeanUtils.isNotEmpty(list)) {
@@ -60,6 +63,32 @@ public class SysCfgUtils {
 				}
 			}
 			menuList.addAll(menuSet);
+			MenuUtil.sortMenuList(menuList);
+		}
+		return menuList;
+	}
+
+	public static List<MenuItemInfo> getSandSubCategoryMenu(String topCategory, List<ProductCfgInfoModel> list) {
+		List<MenuItemInfo> menuList = new ArrayList<MenuItemInfo>();
+		if (StringUtils.isNotEmpty(topCategory) && BeanUtils.isNotEmpty(list)) {
+			for (ProductCfgInfoModel cfgInfo : list) {
+				if (DataConstants.SysCfgCode.TYPE_PRODUCT_SAND.equals(cfgInfo.mTypeCode) && topCategory.equals(cfgInfo.mCategoryCode)) {
+					MenuItemInfo rightMenuItem = new MenuItemInfo();
+					String size = "";
+					if (cfgInfo.mMinSize == 0 && cfgInfo.mMaxSize == 0) {
+						size = "";
+					} else if (cfgInfo.mMinSize != 0 && cfgInfo.mMaxSize == 0) {
+						size = "(>=" + cfgInfo.mMinSize + ")";
+					} else {
+						size = "(" + cfgInfo.mMinSize + "-" + cfgInfo.mMaxSize + ")";
+					}
+					rightMenuItem.menuText = cfgInfo.mSubCategoryName + size;
+					rightMenuItem.menuCode = cfgInfo.mSubCategoryCode;
+					rightMenuItem.menuID = cfgInfo.mSubCategoryId;
+					rightMenuItem.orderNo = cfgInfo.mSubCategoryOrder;
+					menuList.add(rightMenuItem);
+				}
+			}
 			MenuUtil.sortMenuList(menuList);
 		}
 		return menuList;
@@ -140,10 +169,6 @@ public class SysCfgUtils {
 		return menuList;
 	}
 
-	/*public static String getProductName(Context context) {
-		return null;
-	}*/
-
 	public static List<MenuItemInfo> getAreaMenu(Context context) {
 		List<MenuItemInfo> areaMenu = new ArrayList<MenuItemInfo>();
 		List<AreaInfoModel> areaList = SysCfgMgr.getIntance(context).loadAreaList();
@@ -203,9 +228,9 @@ public class SysCfgUtils {
 	public static ProductInfoModel getProductPropInfo(ProductType type, String specId, List<ProductCfgInfoModel> list) {
 		List<ProductPropInfoModel> propList = null;
 		if (BeanUtils.isNotEmpty(list)) {
-			Logger.i("", "SpecIdSize = " + list.size() + ", SpecId = " + specId);
+			//Logger.i("", "SpecIdSize = " + list.size() + ", SpecId = " + specId);
 			for (ProductCfgInfoModel info : list) {
-				Logger.e("", "SpecId = " + info.mSubCategoryId);
+				//Logger.e("", "SpecId = " + info.mSubCategoryId);
 				if (type == ProductType.SAND && info.mTypeCode.equals(DataConstants.SysCfgCode.TYPE_PRODUCT_SAND) && specId.equals(info.mSubCategoryId)) {
 					propList = info.mPropList;
 					break;
@@ -363,37 +388,6 @@ public class SysCfgUtils {
 	}
 
 	/**
-	 * 获取货物详细名称
-	 * @param context
-	 * @param categoryType 大类型
-	 * @param subCategoryType 小类型
-	 * @param pid 具体类型id
-	 * @return
-	 */
-	public static String getProductFullName(Context context, String type, String categoryType, String pid) {
-		String productName = "";
-		ProductCfgInfoModel info = getProductCfgInfo(context, type, categoryType, pid);
-		if (info != null) {
-			if (type.equals(DataConstants.SysCfgCode.TYPE_PRODUCT_SAND)) {
-				String size = getSize(info.mMaxSize, info.mMinSize);
-				if (StringUtils.isNotEmpty(size)) {
-					productName = info.mCategoryName + "/" + info.mSubCategoryName + size;
-				} else {
-					productName = info.mCategoryName;
-				}
-			} else if (type.equals(DataConstants.SysCfgCode.TYPE_PRODUCT_STONE)) {
-				String size = getSize(info.mMaxSize, info.mMinSize);
-				if (StringUtils.isNotEmpty(size)) {
-					productName = info.mCategoryName + size;
-				} else {
-					productName = info.mCategoryName;
-				}
-			}
-		}
-		return productName;
-	}
-
-	/**
 	 * 获取货物子规格详细名称
 	 * @param context
 	 * @param categoryType 大类型
@@ -435,27 +429,29 @@ public class SysCfgUtils {
 	}
 
 	/**
-	 * 获取货物简单名称
+	 * 获取货物全称，以.分隔。
 	 * @param context
 	 * @param categoryType 大类型
 	 * @param subCategoryType 小类型
 	 * @param pid 具体类型id
 	 * @return
 	 */
-	public static String getProductSimpleName(Context context, String type, String categoryType) {
+	public static String getProductFullName(Context context, String type, String categoryType, String pid) {
 		String productName = "";
-		if (type.equals(DataConstants.SysCfgCode.TYPE_PRODUCT_STONE)) {
-			return productName;
-		} else if (type.equals(DataConstants.SysCfgCode.TYPE_PRODUCT_SAND)) {
-			List<ProductCfgInfoModel> productList = SysCfgMgr.getIntance(context).loadProductList();
-			if (BeanUtils.isNotEmpty(productList)) {
-				for (ProductCfgInfoModel info : productList) {
-					if (type.equals(DataConstants.SysCfgCode.TYPE_PRODUCT_SAND)) {
-						if (StringUtils.isNotEmpty(categoryType) && categoryType.equals(info.mCategoryCode)) {
-							productName = info.mCategoryName/* + "/" + info.mSubCategoryName*/;
-							return productName;
-						}
-					}
+		ProductCfgInfoModel info = getProductCfgInfo(context, type, categoryType, pid);
+		if (info != null) {
+			String size = getSize(info.mMaxSize, info.mMinSize);
+			if (type.equals(DataConstants.SysCfgCode.TYPE_PRODUCT_SAND)) {
+				if (StringUtils.isNotEmpty(size)) {
+					productName = context.getString(R.string.product_type_sand) + "." + info.mCategoryName + "." + info.mSubCategoryName + size + "mm";
+				} else {
+					productName = context.getString(R.string.product_type_sand) + "." + info.mCategoryName + "." + info.mSubCategoryName;
+				}
+			} else if (type.equals(DataConstants.SysCfgCode.TYPE_PRODUCT_STONE)) {
+				if (StringUtils.isNotEmpty(size)) {
+					productName = context.getString(R.string.product_type_stone) + "." + info.mCategoryName + size + "mm";
+				} else {
+					productName = context.getString(R.string.product_type_stone) + "." + info.mCategoryName;
 				}
 			}
 		}
@@ -559,7 +555,7 @@ public class SysCfgUtils {
 				}
 			}
 
-			// sort sub category
+			// Sort Child Item List
 			Iterator<Entry<MenuItemInfo, List<ForecastPriceModel>>> it = groupMap.entrySet().iterator();
 			while (it.hasNext()) {
 				List<ForecastPriceModel> priceItemList = it.next().getValue();
@@ -568,7 +564,18 @@ public class SysCfgUtils {
 
 						@Override
 						public int compare(ForecastPriceModel info1, ForecastPriceModel info2) {
-							return info1.productInfo.mSubCategoryOrder.compareTo(info2.productInfo.mSubCategoryOrder);
+							if (info1.productInfo != null && info2.productInfo != null && StringUtils.isNotEmpty(info1.productInfo.mSubCategoryOrder)
+									&& StringUtils.isNotEmpty(info2.productInfo.mSubCategoryOrder)) {
+								if (StringUtils.isDigital(info1.productInfo.mSubCategoryOrder) && StringUtils.isDigital(info2.productInfo.mSubCategoryOrder)) {
+									int lhs = Integer.parseInt(info1.productInfo.mSubCategoryOrder);
+									int rhs = Integer.parseInt(info2.productInfo.mSubCategoryOrder);
+									return lhs - rhs;
+								} else {
+									return info1.productInfo.mSubCategoryOrder.compareTo(info2.productInfo.mSubCategoryOrder);
+								}
+							} else {
+								return 0;
+							}
 						}
 
 					});
@@ -609,7 +616,30 @@ public class SysCfgUtils {
 	public static void sortTodayPriceList(ProductType type, List<TodayPriceModel> priceList) {
 		if (BeanUtils.isNotEmpty(priceList)) {
 			if (type == ProductType.SAND) {
+				Collections.sort(priceList, new Comparator<TodayPriceModel>() {
 
+					@Override
+					public int compare(TodayPriceModel info1, TodayPriceModel info2) {
+						if (info1.productInfo != null && info2.productInfo != null && StringUtils.isNotEmpty(info1.productInfo.mCategoryOrder)
+								&& StringUtils.isNotEmpty(info2.productInfo.mCategoryOrder) && StringUtils.isNotEmpty(info1.productInfo.mSubCategoryOrder)
+								&& StringUtils.isNotEmpty(info2.productInfo.mSubCategoryOrder)) {
+							if (StringUtils.isDigital(info1.productInfo.mCategoryOrder) && StringUtils.isDigital(info2.productInfo.mCategoryOrder)
+									&& StringUtils.isDigital(info1.productInfo.mSubCategoryOrder) && StringUtils.isDigital(info2.productInfo.mSubCategoryOrder)) {
+								int topSort = Integer.parseInt(info1.productInfo.mCategoryOrder) - Integer.parseInt(info2.productInfo.mCategoryOrder);
+								int subSort = Integer.parseInt(info1.productInfo.mSubCategoryOrder) - Integer.parseInt(info2.productInfo.mSubCategoryOrder);
+								if (topSort == 0) {
+									return subSort;
+								} else {
+									return topSort;
+								}
+							} else {
+								return 0;
+							}
+						} else {
+							return 0;
+						}
+					}
+				});
 			} else if (type == ProductType.STONE) {
 				Collections.sort(priceList, new Comparator<TodayPriceModel>() {
 
@@ -617,7 +647,13 @@ public class SysCfgUtils {
 					public int compare(TodayPriceModel info1, TodayPriceModel info2) {
 						if (info1.productInfo != null && info2.productInfo != null && StringUtils.isNotEmpty(info1.productInfo.mCategoryOrder)
 								&& StringUtils.isNotEmpty(info2.productInfo.mCategoryOrder)) {
-							return info1.productInfo.mCategoryOrder.compareTo(info2.productInfo.mCategoryOrder);
+							if (StringUtils.isDigital(info1.productInfo.mCategoryOrder) && StringUtils.isDigital(info2.productInfo.mCategoryOrder)) {
+								int lhs = Integer.parseInt(info1.productInfo.mCategoryOrder);
+								int rhs = Integer.parseInt(info2.productInfo.mCategoryOrder);
+								return lhs - rhs;
+							} else {
+								return info1.productInfo.mCategoryOrder.compareTo(info2.productInfo.mCategoryOrder);
+							}
 						} else {
 							return 0;
 						}
@@ -636,7 +672,7 @@ public class SysCfgUtils {
 	public static void sortForecastPriceList(ProductType type, List<ForecastPriceModel> priceList) {
 		if (BeanUtils.isNotEmpty(priceList)) {
 			if (type == ProductType.SAND) {
-
+				// TODO
 			} else if (type == ProductType.STONE) {
 				Collections.sort(priceList, new Comparator<ForecastPriceModel>() {
 
@@ -644,7 +680,13 @@ public class SysCfgUtils {
 					public int compare(ForecastPriceModel info1, ForecastPriceModel info2) {
 						if (info1.productInfo != null && info2.productInfo != null && StringUtils.isNotEmpty(info1.productInfo.mCategoryOrder)
 								&& StringUtils.isNotEmpty(info2.productInfo.mCategoryOrder)) {
-							return info1.productInfo.mCategoryOrder.compareTo(info2.productInfo.mCategoryOrder);
+							if (StringUtils.isDigital(info1.productInfo.mCategoryOrder) && StringUtils.isDigital(info2.productInfo.mCategoryOrder)) {
+								int lhs = Integer.parseInt(info1.productInfo.mCategoryOrder);
+								int rhs = Integer.parseInt(info2.productInfo.mCategoryOrder);
+								return lhs - rhs;
+							} else {
+								return info1.productInfo.mCategoryOrder.compareTo(info2.productInfo.mCategoryOrder);
+							}
 						} else {
 							return 0;
 						}

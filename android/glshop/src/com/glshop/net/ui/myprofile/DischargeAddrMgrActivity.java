@@ -19,7 +19,7 @@ import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.profile.IProfileLogic;
 import com.glshop.net.ui.basic.BasicActivity;
-import com.glshop.net.ui.basic.adapter.AddrListAdapter;
+import com.glshop.net.ui.basic.adapter.profile.AddrListAdapter;
 import com.glshop.platform.api.profile.data.model.AddrInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.base.manager.MessageCenter;
@@ -83,10 +83,10 @@ public class DischargeAddrMgrActivity extends BasicActivity implements OnItemCli
 		super.handleStateMessage(message);
 		RespInfo respInfo = getRespInfo(message);
 		switch (message.what) {
-		case GlobalMessageType.ProfileMessageType.MSG_GET_ADDR_LIST_SUCCESS:
+		case GlobalMessageType.ProfileMessageType.MSG_GET_DISCHARGE_ADDR_LIST_SUCCESS:
 			onGetSuccess(respInfo);
 			break;
-		case GlobalMessageType.ProfileMessageType.MSG_GET_ADDR_LIST_FAILED:
+		case GlobalMessageType.ProfileMessageType.MSG_GET_DISCHARGE_ADDR_LIST_FAILED:
 			onGetFailed(respInfo);
 			break;
 		}

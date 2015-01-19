@@ -40,7 +40,7 @@
         android:layout_width="@dimen/buy_edit_item_width"
         android:layout_height="@dimen/common_edit_height"
         android:background="@drawable/bg_edit_normal"
-        android:hint="@string/input_message_hint"
+        android:hint="@string/data_to_input"
         android:singleLine="true" />
 
 </LinearLayout>

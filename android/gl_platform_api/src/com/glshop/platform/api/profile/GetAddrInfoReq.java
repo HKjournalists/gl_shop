@@ -48,9 +48,12 @@ public class GetAddrInfoReq extends BaseRequest<GetAddrInfoResult> {
 			ResultItem addrItem = items.get(0);
 			info.addrId = addrItem.getString("id");
 			info.companyId = addrItem.getString("cid");
+			info.areaCode = addrItem.getString("areacode");
+			info.areaName = addrItem.getString("areaFullName");
 			info.deliveryAddrDetail = addrItem.getString("address");
 			info.uploadPortWaterDepth = addrItem.getFloat("deep");
 			info.uploadPortShippingWaterDepth = addrItem.getFloat("realdeep");
+			info.shippingTon = addrItem.getFloat("shippington");
 			info.isDefaultAddr = "1".equals(addrItem.getString("status"));
 		}
 		result.data = info;

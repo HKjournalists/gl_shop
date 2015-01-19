@@ -33,9 +33,11 @@ public class AddAddrReq extends BaseRequest<CommonResult> {
 	@Override
 	protected void buildParams() {
 		request.addParam("cid", info.companyId);
+		request.addParam("areacode", info.areaCode);
 		request.addParam("address", info.deliveryAddrDetail);
 		request.addParam("deep", info.uploadPortWaterDepth);
-		request.addParam("realdeep", info.uploadPortShippingWaterDepth);
+		//request.addParam("realdeep", info.uploadPortShippingWaterDepth);
+		request.addParam("shippington", info.shippingTon);
 
 		if (info.addrImageList != null) {
 			StringBuffer imgId = new StringBuffer();
@@ -44,6 +46,8 @@ public class AddAddrReq extends BaseRequest<CommonResult> {
 			}
 			request.addParam("addressImgIds", imgId.toString());
 		}
+
+		request.addParam("status", info.isDefaultAddr ? "1" : "0");
 	}
 
 	@Override

@@ -206,12 +206,12 @@ public abstract class BaseContractInfoActivity extends BasicFragmentActivity {
 		mCancelDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				doCancelAction();
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});

@@ -24,6 +24,11 @@ public interface IProfileLogic extends ILogic {
 	void getAddrList(String companyId);
 
 	/**
+	 * 获取卸货地址详情
+	 */
+	void getAddrInfo(String addrId);
+
+	/**
 	 * 新增卸货地址
 	 * @param info
 	 */
@@ -78,21 +83,4 @@ public interface IProfileLogic extends ILogic {
 	 */
 	void submitAuthInfo(AuthInfoModel info);
 
-	// 获取我的资料基本信息
-
-	// 买/卖企业详情
-
-	// 首次提交 & 重新认证信息
-
-	// 查看认证详情
-
-	// 获取企业联系人列表
-
-	// 编辑企业联系人
-
-	// 获取卸货地址列表
-
-	// 编辑卸货地址
-
-	// 编辑企业介绍
 }

@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="企业信息" />
+            android:text="联系人信息" />
 
         <Button
             android:id="@+id/btn_edit_contact"

@@ -49,6 +49,7 @@ public class GetContractModelReq extends BaseRequest<GetContractModelResult> {
 		ContractModelInfo info = new ContractModelInfo();
 		if (modelItem != null) {
 			info.contractId = modelItem.getString("id");
+			info.buyId = modelItem.getString("fid");
 			info.contractType = ContractType.convert(modelItem.getInt("status|val"));
 			info.lifeCycle = ContractLifeCycle.convert(modelItem.getInt("lifecycle|val"));
 			info.statusType = ContractStatusType.convert(modelItem.getInt("otype|val"));

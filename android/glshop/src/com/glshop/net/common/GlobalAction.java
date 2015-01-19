@@ -65,7 +65,7 @@ public interface GlobalAction {
 		 * 用户注销
 		 */
 		public static final String EXTRA_IS_USER_LOGOUT = "extra_is_user_logout";
-		
+
 		/**
 		 * 跳转个人资料页面
 		 */
@@ -139,9 +139,24 @@ public interface GlobalAction {
 		public static final String EXTRA_KEY_PRODUCT_INFO = "extra_key_product_info";
 
 		/**
+		 * 交易地域编号
+		 */
+		public static final String EXTRA_KEY_TRADE_AREA_CODE = "extra_key_trade_area_code";
+
+		/**
+		 * 交易地域名称
+		 */
+		public static final String EXTRA_KEY_TRADE_AREA_NAME = "extra_key_trade_area_name";
+
+		/**
 		 * Fagment Layout ID
 		 */
 		public static final String EXTRA_KEY_FRAGMENT_LAYOUT_ID = "extra_key_fragment_layout_id";
+
+		/**
+		 * 买卖筛选信息
+		 */
+		public static final String EXTRA_KEY_BUY_FILTER_INFO = "extra_key_buy_filter_info";
 
 	}
 
@@ -184,6 +199,11 @@ public interface GlobalAction {
 		 * 合同信息
 		 */
 		public static final String EXTRA_KEY_CONTRACT_INFO = "extra_key_contract_info";
+		
+		/**
+		 * 合同模板信息
+		 */
+		public static final String EXTRA_KEY_CONTRACT_MODEL_INFO = "extra_key_contract_model_info";
 
 		/**
 		 * 账单结算信息
@@ -285,9 +305,19 @@ public interface GlobalAction {
 		public static final String EXTRA_KEY_ADDR_INFO = "extra_key_addr_info";
 
 		/**
+		 * 卸货地址ID信息
+		 */
+		public static final String EXTRA_KEY_ADDR_ID = "extra_key_addr_id";
+
+		/**
 		 * 企业介绍信息
 		 */
 		public static final String EXTRA_KEY_COMPANY_INTRO_INFO = "extra_key_company_intro_info";
+
+		/**
+		 * 用户认证信息详情
+		 */
+		public static final String EXTRA_KEY_USER_AUTH_INFO = "extra_key_user_auth_info";
 
 	}
 

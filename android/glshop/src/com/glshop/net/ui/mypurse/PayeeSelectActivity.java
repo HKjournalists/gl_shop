@@ -21,7 +21,7 @@ import com.glshop.net.logic.cache.DataCenter.DataType;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.purse.IPurseLogic;
 import com.glshop.net.ui.basic.BasicActivity;
-import com.glshop.net.ui.basic.adapter.PayeeListAdapter;
+import com.glshop.net.ui.basic.adapter.profile.PayeeListAdapter;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
 import com.glshop.platform.api.DataConstants.PayeeStatus;
 import com.glshop.platform.api.DataConstants.PurseType;
@@ -203,6 +203,11 @@ public class PayeeSelectActivity extends BasicActivity implements OnItemClickLis
 			mEmptyDataView.setVisibility(View.GONE);
 			mLoadErrorView.setVisibility(status == DataStatus.ERROR ? View.VISIBLE : View.GONE);
 		}
+	}
+
+	@Override
+	protected int[] getDataType() {
+		return new int[] { DataType.PAYEE_SELECT_LIST };
 	}
 
 	@Override

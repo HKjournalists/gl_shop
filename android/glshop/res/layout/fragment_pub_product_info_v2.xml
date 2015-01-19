@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <!-- 发布货物信息 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <ScrollView
+            android:id="@+id/ll_scroll_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:paddingTop="8dp" >
+
+                <!-- 选择发布类型 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_buy_type"
+                    style="@style/BuyTextItem.Action.Single"
+                    glshop:itemContent="选择"
+                    glshop:itemTitle="@string/publish_buy_type"
+                    glshop:showItemIcon="true" />
+
+                <View style="@style/item_devider_view" />
+
+                <!-- 货物信息 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_product_type"
+                    style="@style/BuyTextItem.Action.Top"
+                    glshop:itemContent="选择"
+                    glshop:itemTitle="货物信息"
+                    glshop:showItemIcon="true" />
+
+                <View style="@style/item_devider_line" />
+                <!-- 货物分类 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_product_category"
+                    style="@style/BuyTextItem.Action.Middle"
+                    glshop:itemContent="选择"
+                    glshop:itemTitle="分类"
+                    glshop:showItemIcon="true" />
+
+                <View
+                    android:id="@+id/item_devider_category"
+                    style="@style/item_devider_line" />
+                <!-- 货物规格 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_product_spec"
+                    style="@style/BuyTextItem.Action.Middle"
+                    glshop:itemContent="选择"
+                    glshop:itemTitle="规格"
+                    glshop:showItemIcon="true" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 货物详情规格 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+                    android:id="@+id/ll_item_product_spec_detail"
+                    style="@style/BuyTextItem.Action.Bottom"
+                    glshop:itemTitle="货物详细规格"
+                    glshop:showItemIcon="false" />
+
+                <View style="@style/item_devider_view" />
+
+                <!-- 货物颜色 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                    android:id="@+id/ll_item_product_color"
+                    style="@style/BuyTextItem.Top"
+                    glshop:itemTitle="@string/product_color"
+                    glshop:showItemIcon="true" />
+
+                <View style="@style/item_devider_line" />
+
+                <!-- 货物产地 -->
+
+                <com.glshop.net.ui.basic.view.listitem.BuyEditItemView
+                    android:id="@+id/ll_item_product_area"
+                    style="@style/BuyTextItem.Bottom"
+                    glshop:itemTitle="@string/product_area"
+                    glshop:showItemIcon="true" />
+
+                <!-- 实物照片 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_item_product_pic_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/selector_item_single"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding"
+                    android:visibility="gone" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:gravity="center_vertical" >
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/business_sell_real_product_message" />
+                    </LinearLayout>
+
+                    <View style="@style/item_devider_line" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="@string/business_sell_real_product_message_tips"
+                        android:textColor="@color/gray" />
+
+                    <!-- 实物照片上传 -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="center" >
+
+                        <ImageView
+                            android:id="@+id/iv_item_product_pic_1"
+                            android:layout_width="@dimen/image_thumbnail_width"
+                            android:layout_height="@dimen/image_thumbnail_heigh"
+                            android:background="@drawable/ic_upload_pic"
+                            android:contentDescription="@null" />
+
+                        <ImageView
+                            android:id="@+id/iv_item_product_pic_2"
+                            android:layout_width="@dimen/image_thumbnail_width"
+                            android:layout_height="@dimen/image_thumbnail_heigh"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginRight="6dp"
+                            android:background="@drawable/ic_upload_pic"
+                            android:contentDescription="@null" />
+
+                        <ImageView
+                            android:id="@+id/iv_item_product_pic_3"
+                            android:layout_width="@dimen/image_thumbnail_width"
+                            android:layout_height="@dimen/image_thumbnail_heigh"
+                            android:background="@drawable/ic_upload_pic"
+                            android:contentDescription="@null" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View style="@style/item_devider_view" />
+                <!-- 货物备注信息 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_item_single"
+                    android:orientation="vertical"
+                    android:padding="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:id="@+id/tv_buy_remarks_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/product_specifications_remarks" />
+
+                    <EditText
+                        android:id="@+id/et_item_product_remark"
+                        style="@style/edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_edit_normal"
+                        android:gravity="top"
+                        android:hint="@string/business_buy_remarks_hint" />
+                </LinearLayout>
+
+                <View style="@style/item_devider_view" />
+
+                <!-- 温馨提示 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_security_tips"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_security_tips"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginTop="6dp"
+                        android:text="温馨提示"
+                        android:textColor="#5EA265" />
+
+                    <TextView
+                        android:id="@+id/tv_pub_security_tips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/business_buyer_tips" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- Next Step -->
+
+    <Button
+        android:id="@+id/btn_pub_next"
+        style="@style/button_orange"
+        android:layout_margin="@dimen/buy_item_padding"
+        android:text="@string/next_step" />
+
+</LinearLayout>

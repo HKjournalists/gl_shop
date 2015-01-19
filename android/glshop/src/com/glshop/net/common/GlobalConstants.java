@@ -54,8 +54,8 @@ public final class GlobalConstants {
 
 		static {
 			if (DEBUG_MODE) {
-				SERVER_URL = "http://192.168.1.244:8080/gl_shop_http";
-				SERVER_URL_IMAGE = "http://192.168.1.244:8080/gl_shop_http";
+				SERVER_URL = "http://192.168.1.245:8080/gl_shop_http";
+				SERVER_URL_IMAGE = "http://192.168.1.245:8080/uploadFile";
 			} else {
 				//SERVER_URL = "http://121.40.91.147:8080/gl_shop_http";
 				//SERVER_URL_IMAGE = "http://121.40.91.147:8080/gl_shop_http";
@@ -203,6 +203,11 @@ public final class GlobalConstants {
 		 */
 		public static final String CUR_VERSION_CODE = "cur_version_code";
 
+		/**
+		 * 是否已导入本地省市区信息
+		 */
+		public static final String IS_IMPORTED_AREA_CFG = "is_imported_area_cfg";
+
 	}
 
 	/**
@@ -327,6 +332,44 @@ public final class GlobalConstants {
 	}
 
 	/**
+	 * 发布流程步骤枚举
+	 */
+	public enum PubBuyIndicatorType {
+
+		/**货物信息*/
+		PRODUCT,
+		/**交易信息**/
+		TRADE,
+		/**发布预览**/
+		PREVIEW;
+
+		public int toValue() {
+			if (this == PRODUCT) {
+				return 1;
+			} else if (this == TRADE) {
+				return 2;
+			} else if (this == PREVIEW) {
+				return 3;
+			} else {
+				return 1;
+			}
+		}
+
+		public static PubBuyIndicatorType convert(int type) {
+			if (type == 1) {
+				return PRODUCT;
+			} else if (type == 2) {
+				return TRADE;
+			} else if (type == 3) {
+				return PREVIEW;
+			} else {
+				return PRODUCT;
+			}
+		}
+
+	}
+
+	/**
 	 * 找买找卖筛选类型
 	 */
 	public enum BuyFilterType {
@@ -366,6 +409,38 @@ public final class GlobalConstants {
 
 	/**
 	 * 合同详情Tab状态
+	 */
+	public enum ContractInfoType {
+
+		/**合同待处理操作*/
+		OPERATION,
+		/**合同状态*/
+		STATUS;
+
+		public int toValue() {
+			if (this == OPERATION) {
+				return 0;
+			} else if (this == STATUS) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+
+		public static ContractInfoType convert(int status) {
+			if (status == 0) {
+				return OPERATION;
+			} else if (status == 1) {
+				return STATUS;
+			} else {
+				return OPERATION;
+			}
+		}
+
+	}
+
+	/**
+	 * 合同模板详情Tab状态
 	 */
 	public enum TabContractInfoStatus {
 

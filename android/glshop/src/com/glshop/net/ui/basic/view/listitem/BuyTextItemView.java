@@ -124,8 +124,28 @@ public class BuyTextItemView extends BaseItemView {
 	}
 
 	@Override
+	public void setTitle(String title) {
+		mTvItemTitle.setText(title);
+	}
+
+	@Override
+	public void setSecondTitle(String title) {
+		mTvItemSecondTitle.setText(title);
+	}
+
+	@Override
 	public void setContentText(String text) {
 		mTvItemContent.setText(text);
+	}
+
+	@Override
+	public void setContentHint(String text) {
+
+	}
+
+	@Override
+	public void setContentHintColor(int color) {
+
 	}
 
 	@Override
@@ -148,4 +168,5 @@ public class BuyTextItemView extends BaseItemView {
 	public void setActionIconVisible(boolean visibile) {
 		mIvItemClickIcon.setVisibility(visibile ? View.VISIBLE : View.GONE);
 	}
+
 }

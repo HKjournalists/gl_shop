@@ -14,7 +14,7 @@ import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.logic.buy.IBuyLogic;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.ui.basic.BasicFragment;
-import com.glshop.net.ui.basic.adapter.TodayPriceAdapter;
+import com.glshop.net.ui.basic.adapter.buy.TodayPriceAdapter;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
 import com.glshop.net.ui.basic.view.PullRefreshListView.OnRefreshListener;
 import com.glshop.platform.api.DataConstants.ProductType;
@@ -24,13 +24,14 @@ import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.utils.Logger;
 
 /**
- * @Description : 今日价格Fragment
+ * @Description : 今日价格Fragment(版本改版，已不再使用，暂保留)
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 深圳市国立数码动画有限公司
  * @author      : 叶跃丰
  * @version     : 1.0
  * Create Date  : 2014-8-11 下午3:04:53
  */
+@Deprecated
 public class TodayPriceFragment extends BasicFragment {
 
 	private static final String TAG = "TodayPriceFragment";

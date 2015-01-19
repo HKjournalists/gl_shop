@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -37,8 +38,29 @@ public final class ActivityUtil {
 	}
 
 	/**
+	 * 获取当前程序包名
+	 * @param context
+	 * @return
+	 */
+	public static String getPackageName(Context context, String defaultName) {
+		String pkgName = context.getPackageName();
+		PackageInfo info = null;
+		try {
+			info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+		} catch (NameNotFoundException e) {
+			Logger.e(TAG, "getPackageName error" + e.getMessage(), e);
+		}
+		if (info != null) {
+			pkgName = info.packageName;
+		}
+		if (StringUtils.isNEmpty(pkgName)) {
+			pkgName = defaultName;
+		}
+		return pkgName;
+	}
+
+	/**
 	 * 获取当前程序版本号
-	 * 
 	 * @param context
 	 * @return
 	 */
@@ -56,7 +78,6 @@ public final class ActivityUtil {
 
 	/**
 	 * 获取当前程序版本名称
-	 * 
 	 * @param context
 	 * @return
 	 */
@@ -75,7 +96,6 @@ public final class ActivityUtil {
 
 	/**
 	 * 隐藏键盘
-	 * 
 	 * @param activity
 	 */
 	public static void hideKeyboard(Activity activity) {
@@ -86,7 +106,6 @@ public final class ActivityUtil {
 
 	/**
 	 * 获取手机名
-	 * 
 	 * @param context
 	 * @return
 	 */
@@ -112,7 +131,6 @@ public final class ActivityUtil {
 
 	/***
 	 * 判断是否开启其他应用程序
-	 * 
 	 * @param context
 	 *            context
 	 * @param intent
@@ -134,8 +152,13 @@ public final class ActivityUtil {
 		return isOtherApp;
 	}
 
-	/** 判断应用是否是前台运行 */
-	public static boolean isReception(Context context) {
+	/**
+	 * 判断应用是否是前台运行
+	 * 注：经测试发现，有时会出现判断失误，故目前使用isForegroundV2。
+	 * @param context
+	 * @return
+	 */
+	public static boolean isForeground(Context context) {
 		try {
 			ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 			ComponentName topName = manager.getRunningTasks(1).get(0).topActivity;
@@ -146,6 +169,26 @@ public final class ActivityUtil {
 		} catch (Exception e) {
 		}
 		return false;
+	}
+
+	/**
+	 * 判断应用是否是前台运行
+	 * @param context
+	 * @return
+	 */
+	public static boolean isForegroundV2(Context context) {
+		ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+		for (RunningAppProcessInfo appProcess : appProcesses) {
+			if (appProcess.processName.equals(context.getPackageName())) {
+				if (appProcess.importance == RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		}
+		return true;
 	}
 
 	/**

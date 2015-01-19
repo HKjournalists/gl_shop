@@ -60,9 +60,6 @@ public class CompanyInfoEditActivity extends BasicActivity {
 
 	private ImageView mUploadImageView;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	private int mUploadedPicCount = 0;
 	private ImageStatusInfo[] mImgStatusList = new ImageStatusInfo[3];
 	private List<FileInfo> mFileList;

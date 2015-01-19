@@ -28,6 +28,7 @@ import com.glshop.net.ui.basic.view.dialog.ConfirmDialog;
 import com.glshop.net.ui.basic.view.listitem.BuyTextItemView;
 import com.glshop.net.ui.mypurse.PurseRechargeActivity;
 import com.glshop.net.ui.user.FindPwdActivity;
+import com.glshop.net.utils.EnumUtil;
 import com.glshop.platform.api.DataConstants.AuthStatusType;
 import com.glshop.platform.api.profile.data.model.AddrInfoModel;
 import com.glshop.platform.api.profile.data.model.AuthInfoModel;
@@ -80,7 +81,7 @@ public class MyProfileActivity extends BasicActivity {
 
 	private TextView mTvAddrDetail;
 	private BuyTextItemView mItemPortWaterDepth;
-	private BuyTextItemView mItemPortShipWaterDepth;
+	private BuyTextItemView mItemPortShipTon;
 
 	/** 注销用户确认对话框 */
 	private ConfirmDialog mExitConfirmDialog;
@@ -135,7 +136,7 @@ public class MyProfileActivity extends BasicActivity {
 		mTvCompanyIntro = getView(R.id.tv_company_intro);
 
 		mItemPortWaterDepth = getView(R.id.ll_item_port_water_depth);
-		mItemPortShipWaterDepth = getView(R.id.ll_item_port_shipping_water_depth);
+		mItemPortShipTon = getView(R.id.ll_item_shipping_ton);
 
 		mIvItemAddrPic1 = getView(R.id.iv_item_addr_pic_1);
 		mIvItemAddrPic2 = getView(R.id.iv_item_addr_pic_2);
@@ -199,20 +200,20 @@ public class MyProfileActivity extends BasicActivity {
 	private void updateAuthInfo() {
 		switch (info.authStatusType) {
 		case AUTHING:
-			mTvAuthStatus.setText("审核中");
+			mTvAuthStatus.setText(EnumUtil.parseAuthType(this, info.authStatusType));
 			mBtnDoAuth.setVisibility(View.GONE);
 			mBtnRepeatAuth.setVisibility(View.GONE);
 			mBtnViewAuth.setVisibility(View.GONE);
 			break;
 		case UN_AUTH:
 		case AUTH_FAILED:
-			mTvAuthStatus.setText("未认证");
+			mTvAuthStatus.setText(EnumUtil.parseAuthType(this, info.authStatusType));
 			mBtnDoAuth.setVisibility(View.VISIBLE);
 			mBtnRepeatAuth.setVisibility(View.GONE);
 			mBtnViewAuth.setVisibility(View.GONE);
 			break;
 		case AUTH_SUCCESS:
-			mTvAuthStatus.setText("已认证");
+			mTvAuthStatus.setText(EnumUtil.parseAuthType(this, info.authStatusType));
 			mBtnDoAuth.setVisibility(View.GONE);
 			mBtnRepeatAuth.setVisibility(View.GONE); // 已认证则屏蔽重新认证入口
 			mBtnViewAuth.setVisibility(View.VISIBLE);
@@ -254,16 +255,19 @@ public class MyProfileActivity extends BasicActivity {
 	private void updateDischargeAddrInfo() {
 		if (info != null) {
 			AddrInfoModel addr = info.defaultAddr;
-			mTvAddrDetail.setText(StringUtils.isNotEmpty(addr.deliveryAddrDetail) ? addr.deliveryAddrDetail : getString(R.string.data_empty));
+			if (StringUtils.isNEmpty(addr.areaName) && StringUtils.isNEmpty(addr.deliveryAddrDetail)) {
+				mTvAddrDetail.setText(getString(R.string.data_empty));
+			} else {
+				mTvAddrDetail.setText(addr.areaName + addr.deliveryAddrDetail);
+			}
 			mItemPortWaterDepth.setContentText(addr.uploadPortWaterDepth != 0 ? String.valueOf(addr.uploadPortWaterDepth) : getString(R.string.data_empty));
-			mItemPortShipWaterDepth.setContentText(addr.uploadPortShippingWaterDepth != 0 ? String.valueOf(addr.uploadPortShippingWaterDepth) : getString(R.string.data_empty));
+			mItemPortShipTon.setContentText(addr.shippingTon != 0 ? String.valueOf(addr.shippingTon) : getString(R.string.data_empty));
 
 			List<ImageInfoModel> imgUrl = addr.addrImageList;
 			if (BeanUtils.isEmpty(imgUrl)) {
-				mIvItemAddrPic1.setVisibility(View.VISIBLE);
-				mIvItemAddrPic2.setVisibility(View.INVISIBLE);
-				mIvItemAddrPic3.setVisibility(View.INVISIBLE);
+				getView(R.id.ll_addr_pic).setVisibility(View.GONE);
 			} else {
+				getView(R.id.ll_addr_pic).setVisibility(View.VISIBLE);
 				int count = imgUrl.size();
 				if (count >= 1) {
 					mIvItemAddrPic1.setVisibility(View.VISIBLE);
@@ -295,10 +299,9 @@ public class MyProfileActivity extends BasicActivity {
 
 			List<ImageInfoModel> imgUrl = intro.imgList;
 			if (BeanUtils.isEmpty(imgUrl)) {
-				mIvItemCompanyPic1.setVisibility(View.VISIBLE);
-				mIvItemCompanyPic2.setVisibility(View.INVISIBLE);
-				mIvItemCompanyPic3.setVisibility(View.INVISIBLE);
+				getView(R.id.ll_company_pic).setVisibility(View.GONE);
 			} else {
+				getView(R.id.ll_company_pic).setVisibility(View.VISIBLE);
 				int count = imgUrl.size();
 				if (count >= 1) {
 					mIvItemCompanyPic1.setVisibility(View.VISIBLE);
@@ -324,9 +327,9 @@ public class MyProfileActivity extends BasicActivity {
 	 * 更新管理按钮状态
 	 */
 	private void updateMgrButton() {
-		getView(R.id.btn_contact_mgr).setVisibility(info.authStatusType != AuthStatusType.UN_AUTH ? View.VISIBLE : View.INVISIBLE);
-		getView(R.id.btn_addr_mgr).setVisibility(info.authStatusType != AuthStatusType.UN_AUTH ? View.VISIBLE : View.INVISIBLE);
-		getView(R.id.btn_company_mgr).setVisibility(info.authStatusType != AuthStatusType.UN_AUTH ? View.VISIBLE : View.INVISIBLE);
+		getView(R.id.btn_contact_mgr).setVisibility(info.authStatusType == AuthStatusType.AUTH_SUCCESS ? View.VISIBLE : View.INVISIBLE);
+		getView(R.id.btn_addr_mgr).setVisibility(info.authStatusType == AuthStatusType.AUTH_SUCCESS ? View.VISIBLE : View.INVISIBLE);
+		getView(R.id.btn_company_mgr).setVisibility(info.authStatusType == AuthStatusType.AUTH_SUCCESS ? View.VISIBLE : View.INVISIBLE);
 	}
 
 	@Override
@@ -409,9 +412,22 @@ public class MyProfileActivity extends BasicActivity {
 			startActivity(intent);
 			break;
 		case R.id.btn_view_auth_detail:
-			/*intent = new Intent(this, AuthInfoActivity.class);
-			startActivity(intent);*/
-			browseImage(info.authImgInfo);
+			switch (info.profileType) {
+			case COMPANY:
+				intent = new Intent(this, CompanyAuthInfoActivity.class);
+				intent.putExtra(GlobalAction.ProfileAction.EXTRA_KEY_USER_AUTH_INFO, info.companyAuthInfo);
+				break;
+			case PEOPLE:
+				intent = new Intent(this, PersonalAuthInfoActivity.class);
+				intent.putExtra(GlobalAction.ProfileAction.EXTRA_KEY_USER_AUTH_INFO, info.personalAuthInfo);
+				break;
+			case SHIP:
+				intent = new Intent(this, ShipAuthInfoActivity.class);
+				intent.putExtra(GlobalAction.ProfileAction.EXTRA_KEY_USER_AUTH_INFO, info.shipAuthInfo);
+				break;
+			}
+			startActivity(intent);
+			//browseImage(info.authImgInfo);
 			break;
 		case R.id.btn_to_recharge:
 			intent = new Intent(this, PurseRechargeActivity.class);
@@ -423,7 +439,7 @@ public class MyProfileActivity extends BasicActivity {
 			break;
 		case R.id.btn_addr_mgr:
 			intent = new Intent(this, DischargeAddrMgrActivity.class);
-			startActivityForResult(intent, GlobalMessageType.ActivityReqCode.REQ_INPUT_DISCHARGE_ADDRESS);
+			startActivityForResult(intent, GlobalMessageType.ActivityReqCode.REQ_SELECT_DISCHARGE_ADDRESS);
 			break;
 		case R.id.btn_company_mgr:
 			intent = new Intent(this, CompanyInfoEditActivity.class);
@@ -506,13 +522,13 @@ public class MyProfileActivity extends BasicActivity {
 		mExitConfirmDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				showSubmitDialog(getString(R.string.do_request_ing));
 				mUserLogic.logout(GlobalConfig.getInstance().getUserAccount());
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});

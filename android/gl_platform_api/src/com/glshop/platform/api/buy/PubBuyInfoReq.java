@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.glshop.platform.api.DataConstants;
 import com.glshop.platform.api.DataConstants.BuyType;
 import com.glshop.platform.api.IReturnCallback;
 import com.glshop.platform.api.base.BaseRequest;
@@ -48,20 +49,21 @@ public class PubBuyInfoReq extends BaseRequest<CommonResult> {
 			request.addParam("typeValue", buyInfo.buyType.toValue());
 			request.addParam("cid", buyInfo.companyId);
 
-			request.addParam("pid", buyInfo.specId);
-			request.addParam("pname", buyInfo.specName);
+			request.addParam("pid", buyInfo.productSpecId);
+			request.addParam("pname", buyInfo.productSpecName);
 			//request.addParam("ptype", "");
 			//request.addParam("psize", "");
-			request.addParam("pcolor", buyInfo.productInfo.color);
-			request.addParam("paddress", buyInfo.productInfo.area);
-			request.addParam("productPropertys", convertPropInfo2JSON(buyInfo.productInfo));
-			request.addParam("premark", buyInfo.productInfo.remarks);
+			request.addParam("pcolor", buyInfo.productColor);
+			request.addParam("paddress", buyInfo.productArea);
+			request.addParam("productPropertys", convertPropInfo2JSON(buyInfo.productTypeCode, buyInfo.productPropInfo));
+			request.addParam("premark", buyInfo.productRemarks);
+			request.addParam("remark", buyInfo.buyRemarks);
 
 			request.addParam("price", buyInfo.unitPrice);
 			request.addParam("totalnum", buyInfo.tradeAmount);
-			request.addParam("unit", "UNIT001");
+			request.addParam("unit", buyInfo.unitType.toValue());
 			request.addParam("moreareaValue", buyInfo.isMoreArea ? "2" : "1");
-			request.addParam("area", buyInfo.tradeArea);
+			request.addParam("area", buyInfo.tradeAreaCode);
 
 			// 设置多地域信息
 			if (buyInfo.isMoreArea) {
@@ -74,7 +76,7 @@ public class PubBuyInfoReq extends BaseRequest<CommonResult> {
 			}
 
 			request.addParam("starttime", buyInfo.tradeBeginDate);
-			request.addParam("limitime", buyInfo.tradeEndDate);
+			request.addParam("endtime", buyInfo.tradeEndDate);
 
 			// 卸货地址指定方式
 			request.addParam("addresstypeValue", buyInfo.deliveryAddrType.toValue());
@@ -89,8 +91,6 @@ public class PubBuyInfoReq extends BaseRequest<CommonResult> {
 					request.addParam("productImgIds", imgId.toString());
 				}
 			}
-			
-			request.addParam("remark", buyInfo.buyRemarks);
 		}
 	}
 
@@ -112,13 +112,18 @@ public class PubBuyInfoReq extends BaseRequest<CommonResult> {
 		return array.toString();
 	}
 
-	private String convertPropInfo2JSON(ProductInfoModel info) {
+	private String convertPropInfo2JSON(String productType, ProductInfoModel info) {
 		String json = "";
 		if (info != null) {
 			JSONArray array = new JSONArray();
 			array.put(getPropJSONObject(info.sedimentPercentage));
 			array.put(getPropJSONObject(info.sedimentBlockPercentage));
-			//array.put(getPropJSONObject(info.waterPercentage));
+			if (DataConstants.SysCfgCode.TYPE_PRODUCT_SAND.equals(productType)) {
+				array.put(getPropJSONObject(info.waterPercentage));
+			} else if (DataConstants.SysCfgCode.TYPE_PRODUCT_STONE.equals(productType)) {
+				array.put(getPropJSONObject(info.crunchPercentage));
+				array.put(getPropJSONObject(info.needlePlatePercentage));
+			}
 			array.put(getPropJSONObject(info.appearanceDensity));
 			array.put(getPropJSONObject(info.stackingPercentage));
 			array.put(getPropJSONObject(info.sturdinessPercentage));
@@ -130,11 +135,13 @@ public class PubBuyInfoReq extends BaseRequest<CommonResult> {
 
 	private JSONObject getPropJSONObject(ProductPropInfoModel info) {
 		JSONObject object = new JSONObject();
-		try {
-			object.put("id", info.mPropId);
-			object.put("content", info.mRealSize);
-		} catch (JSONException e) {
-			e.printStackTrace();
+		if (info != null) {
+			try {
+				object.put("id", info.mPropId);
+				object.put("content", info.mRealSize);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 		return object;
 	}

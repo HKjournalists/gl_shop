@@ -5,18 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalAction;
+import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.common.GlobalMessageType.CommonMessageType;
 import com.glshop.net.common.GlobalMessageType.ProfileMessageType;
 import com.glshop.net.logic.model.ImageStatusInfo;
@@ -28,6 +31,7 @@ import com.glshop.net.ui.basic.BasicActivity;
 import com.glshop.net.ui.basic.view.dialog.BaseDialog.IDialogCallback;
 import com.glshop.net.ui.basic.view.dialog.ConfirmDialog;
 import com.glshop.net.ui.basic.view.listitem.BuyEditItemView;
+import com.glshop.net.ui.basic.view.listitem.BuyTextItemView;
 import com.glshop.net.utils.ActivityUtil;
 import com.glshop.platform.api.profile.data.model.AddrInfoModel;
 import com.glshop.platform.api.profile.data.model.ImageInfoModel;
@@ -52,10 +56,12 @@ public class DischargeAddrAddActivity extends BasicActivity {
 	private boolean isUpdateMode = false;
 
 	private Button mBtnSaveAddr;
+	private CheckedTextView mCkbTvSetDefault;
 
-	private EditText mEtDetaialAddr;
+	private EditText mEtDetailAddr;
+	private BuyTextItemView mItemTradeArea;
 	private BuyEditItemView mItemPortWaterDepth;
-	private BuyEditItemView mItemPortShipWaterDepth;
+	private BuyEditItemView mItemPortShipTon;
 
 	private ImageView mIvItemAddrPic1;
 	private ImageView mIvItemAddrPic2;
@@ -65,12 +71,12 @@ public class DischargeAddrAddActivity extends BasicActivity {
 
 	private ConfirmDialog mConfirmDialog;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	private int mUploadedPicCount = 0;
 	private ImageStatusInfo[] mImgStatusList = new ImageStatusInfo[3];
 	private List<FileInfo> mFileList;
+
+	protected String mTradeAreaCode;
+	protected String mTradeAreaName;
 
 	private IProfileLogic mProfileLogic;
 	private ITransferLogic mTransferLogic;
@@ -87,9 +93,11 @@ public class DischargeAddrAddActivity extends BasicActivity {
 		((TextView) getView(R.id.tv_commmon_title)).setText(R.string.my_discharge_address_add);
 
 		mBtnSaveAddr = getView(R.id.btn_commmon_action);
-		mEtDetaialAddr = getView(R.id.et_discharge_address);
+		mCkbTvSetDefault = getView(R.id.chkTv_set_default);
+		mItemTradeArea = getView(R.id.ll_item_trade_area);
+		mEtDetailAddr = getView(R.id.et_discharge_address);
 		mItemPortWaterDepth = getView(R.id.ll_item_port_water_depth);
-		mItemPortShipWaterDepth = getView(R.id.ll_item_port_shipping_water_depth);
+		mItemPortShipTon = getView(R.id.ll_item_shipping_ton);
 
 		mIvItemAddrPic1 = getView(R.id.iv_item_addr_pic_1);
 		mIvItemAddrPic2 = getView(R.id.iv_item_addr_pic_2);
@@ -99,10 +107,12 @@ public class DischargeAddrAddActivity extends BasicActivity {
 		mBtnSaveAddr.setText(R.string.save);
 		mBtnSaveAddr.setOnClickListener(this);
 
+		mItemTradeArea.setOnClickListener(this);
 		mIvItemAddrPic1.setOnClickListener(this);
 		mIvItemAddrPic2.setOnClickListener(this);
 		mIvItemAddrPic3.setOnClickListener(this);
 
+		getView(R.id.ll_item_set_default).setOnClickListener(this);
 		getView(R.id.btn_delete_addr).setOnClickListener(this);
 		getView(R.id.btn_set_default_addr).setOnClickListener(this);
 		getView(R.id.iv_common_back).setOnClickListener(this);
@@ -114,14 +124,26 @@ public class DischargeAddrAddActivity extends BasicActivity {
 		if (mAddrInfo != null) {
 			isUpdateMode = true;
 			((TextView) getView(R.id.tv_commmon_title)).setText(R.string.my_discharge_address_update);
-			mEtDetaialAddr.setText(mAddrInfo.deliveryAddrDetail);
+			mEtDetailAddr.setText(mAddrInfo.deliveryAddrDetail);
 			mItemPortWaterDepth.setContentText(String.valueOf(mAddrInfo.uploadPortWaterDepth));
-			mItemPortShipWaterDepth.setContentText(String.valueOf(mAddrInfo.uploadPortShippingWaterDepth));
+			mItemPortShipTon.setContentText(String.valueOf(mAddrInfo.shippingTon));
+
+			mItemPortShipTon.setBackgroundResource(R.drawable.selector_item_bottom);
+			getView(R.id.item_devider_set_default).setVisibility(View.GONE);
+			getView(R.id.ll_item_set_default).setVisibility(View.GONE);
 
 			getView(R.id.btn_delete_addr).setVisibility(View.VISIBLE);
-			getView(R.id.btn_set_default_addr).setVisibility(View.VISIBLE);
+			getView(R.id.btn_set_default_addr).setVisibility(mAddrInfo.isDefaultAddr ? View.GONE : View.VISIBLE);
+
+			mTradeAreaCode = mAddrInfo.areaCode;
+			if (StringUtils.isNotEmpty(mTradeAreaCode)) {
+				mItemTradeArea.setTitle(mAddrInfo.areaName);
+				mItemTradeArea.setContentText("");
+			}
 
 			updateImageData();
+
+			requestSelection(mEtDetailAddr);
 		}
 	}
 
@@ -300,9 +322,17 @@ public class DischargeAddrAddActivity extends BasicActivity {
 		case R.id.btn_delete_addr:
 			showConfirmDialog();
 			break;
+		case R.id.ll_item_set_default:
+			mCkbTvSetDefault.toggle();
+			break;
 		case R.id.btn_set_default_addr:
 			showSubmitDialog();
 			mProfileLogic.setDefaultAddrInfo(mAddrInfo.addrId);
+			break;
+		case R.id.ll_item_trade_area:
+			Intent intent = new Intent(this, AreaAddrSelectActivity.class);
+			intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_TRADE_AREA_CODE, mTradeAreaCode);
+			startActivityForResult(intent, GlobalMessageType.ActivityReqCode.REQ_SELECT_TRADE_ADDRESS);
 			break;
 		case R.id.iv_item_addr_pic_1:
 		case R.id.iv_item_addr_pic_2:
@@ -318,8 +348,7 @@ public class DischargeAddrAddActivity extends BasicActivity {
 	}
 
 	private void submitAddrInfo() {
-		String detailAddr = mEtDetaialAddr.getText().toString().trim();
-		if (StringUtils.isNotEmpty(detailAddr)) {
+		if (checkArgs()) {
 			if (needToUploadImage()) {
 				// 有图片更新，则先上传图片
 				uploadImage();
@@ -334,9 +363,24 @@ public class DischargeAddrAddActivity extends BasicActivity {
 				}
 				saveAddrInfo(ids);
 			}
-		} else {
-			showToast(R.string.error_empty_detail_addr);
 		}
+	}
+
+	private boolean checkArgs() {
+		if (StringUtils.isNEmpty(mTradeAreaCode)) {
+			showToast("请选择省市区地址!");
+			return false;
+		} else if (StringUtils.isNEmpty(mEtDetailAddr.getText().toString().trim())) {
+			showToast("请输入详细的卸货地址!");
+			return false;
+		} else if (StringUtils.isNEmpty(mItemPortWaterDepth.getContentText().trim())) {
+			showToast("请输入卸货地港口水深度!");
+			return false;
+		} else if (StringUtils.isNEmpty(mItemPortShipTon.getContentText().trim())) {
+			showToast("请输入可停泊载重船吨位!");
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -388,15 +432,22 @@ public class DischargeAddrAddActivity extends BasicActivity {
 			mAddrInfo = new AddrInfoModel();
 		}
 		mAddrInfo.companyId = getCompanyId();
-		mAddrInfo.deliveryAddrDetail = mEtDetaialAddr.getText().toString().trim();
+		mAddrInfo.areaCode = mTradeAreaCode;
+		mAddrInfo.deliveryAddrDetail = mEtDetailAddr.getText().toString().trim();
 		if (StringUtils.isNotEmpty(mItemPortWaterDepth.getContentText().trim())) {
 			mAddrInfo.uploadPortWaterDepth = Float.parseFloat(mItemPortWaterDepth.getContentText());
 		}
-		if (StringUtils.isNotEmpty(mItemPortShipWaterDepth.getContentText().trim())) {
-			mAddrInfo.uploadPortShippingWaterDepth = Float.parseFloat(mItemPortShipWaterDepth.getContentText());
+		if (StringUtils.isNotEmpty(mItemPortShipTon.getContentText().trim())) {
+			mAddrInfo.shippingTon = Float.parseFloat(mItemPortShipTon.getContentText());
 		}
 		// 添加图片ID
 		mAddrInfo.addrImageList = ImageInfoUtils.getImageInfo(ids);
+
+		// 设置为默认交易地址
+		if (StringUtils.isNEmpty(mAddrInfo.addrId)) {
+			mAddrInfo.isDefaultAddr = mCkbTvSetDefault.isChecked();
+		}
+
 		return mAddrInfo;
 	}
 
@@ -441,17 +492,37 @@ public class DischargeAddrAddActivity extends BasicActivity {
 		mConfirmDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				showSubmitDialog();
 				mProfileLogic.deleteAddrInfo(mAddrInfo.addrId);
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});
 		mConfirmDialog.show();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Logger.e(TAG, "onActivityResult: reqCode = " + requestCode + ", respCode = " + resultCode);
+		switch (requestCode) {
+		case GlobalMessageType.ActivityReqCode.REQ_SELECT_TRADE_ADDRESS:
+			if (resultCode == Activity.RESULT_OK) {
+				if (data != null) {
+					mTradeAreaCode = data.getStringExtra(GlobalAction.BuyAction.EXTRA_KEY_TRADE_AREA_CODE);
+					mTradeAreaName = data.getStringExtra(GlobalAction.BuyAction.EXTRA_KEY_TRADE_AREA_NAME);
+					if (StringUtils.isNotEmpty(mTradeAreaName)) {
+						mItemTradeArea.setTitle(mTradeAreaName);
+						mItemTradeArea.setContentText("");
+					}
+				}
+			}
+			break;
+		}
 	}
 
 	@Override

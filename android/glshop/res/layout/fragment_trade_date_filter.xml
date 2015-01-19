@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <View style="@style/item_devider_line" />
+    <!-- 所有时间 -->
+
+    <LinearLayout
+        android:id="@+id/ll_select_all_datetime"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:background="@color/white"
+        android:gravity="center_vertical" >
+
+        <LinearLayout
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:gravity="center" >
+
+            <CheckedTextView
+                android:id="@+id/chkTv_select_all"
+                style="@style/ckb_orange_textview"
+                android:checked="true" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="所有时间" />
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+
+    <View
+        style="@style/item_devider_line"
+        android:layout_marginTop="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp" >
+
+        <!-- 自定义时间 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical" >
+
+            <LinearLayout
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:gravity="center" >
+
+                <CheckedTextView
+                    android:id="@+id/chkTv_select_custom_datetime"
+                    style="@style/ckb_orange_textview" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="自定义时间" />
+        </LinearLayout>
+        <!-- 开始时间 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="48dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始时间:" />
+
+            <LinearLayout
+                android:id="@+id/ll_filter_start_datetime"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:paddingRight="12dp" >
+
+                <TextView
+                    android:id="@+id/tv_filter_start_datetime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="选择" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_more"
+                    android:contentDescription="@null"
+                    android:duplicateParentState="true" />
+            </LinearLayout>
+        </LinearLayout>
+        <!-- 至 -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginLeft="48dp"
+            android:text="-" />
+
+        <!-- 结束时间 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="48dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="结束时间:" />
+
+            <LinearLayout
+                android:id="@+id/ll_filter_end_datetime"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:paddingRight="12dp" >
+
+                <TextView
+                    android:id="@+id/tv_filter_end_datetime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="选择" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_more"
+                    android:contentDescription="@null"
+                    android:duplicateParentState="true" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+
+</LinearLayout>

@@ -98,26 +98,48 @@ public interface ISyscfgDao {
 	boolean deleteProductInfo(Context context);
 
 	/**
-	 * 查询所有地域信息
+	 * 查询所有港口信息
 	 * @param context
 	 * @return
 	 */
-	List<AreaInfoModel> queryAreaInfo(Context context);
+	List<AreaInfoModel> queryPortInfo(Context context);
 
 	/**
-	 * 插入地域信息
+	 * 插入港口信息
 	 * @param context
 	 * @param infoList
 	 * @return
 	 */
-	boolean insertAreaInfo(Context context, List<AreaInfoModel> infoList);
+	boolean insertPortInfo(Context context, List<AreaInfoModel> infoList);
 
 	/**
-	 * 删除所有地域信息
+	 * 删除所有港口信息
 	 * @param context
 	 * @return
 	 */
-	boolean deleteAreaInfo(Context context);
+	boolean deletePortInfo(Context context);
+
+	/**
+	 * 查询目前支持的省份列表信息
+	 * @param context
+	 * @return
+	 */
+	List<AreaInfoModel> querySupportProvinceList(Context context);
+
+	/**
+	 * 插入支持的省份列表信息
+	 * @param context
+	 * @param infoList
+	 * @return
+	 */
+	boolean insertSupportProvinceInfo(Context context, List<AreaInfoModel> infoList);
+
+	/**
+	 * 删除所有支持的省份列表信息
+	 * @param context
+	 * @return
+	 */
+	boolean deleteSupportProvinceInfo(Context context);
 
 	/**
 	 * 查询系统参数数据
@@ -140,5 +162,63 @@ public interface ISyscfgDao {
 	 * @return
 	 */
 	boolean deleteSysParamInfo(Context context);
+
+	/**
+	 * 插入地域配置信息
+	 * @param context
+	 * @param infoList
+	 * @return
+	 */
+	boolean insertAreaCfgInfo(Context context, List<AreaInfoModel> infoList);
+
+	/**
+	 * 查询所有地域配置信息
+	 * @param context
+	 * @return
+	 */
+	List<AreaInfoModel> queryAreaCfgInfo(Context context);
+
+	/**
+	 * 删除所有地域配置信息
+	 * @param context
+	 * @return
+	 */
+	boolean deleteAllAreaCfgInfo(Context context);
+
+	/**
+	 * 插入地域列表信息
+	 * @param context
+	 * @param infoList
+	 * @return
+	 */
+	boolean insertAreaInfo(Context context, List<AreaInfoModel> infoList);
+
+	/**
+	 * 查询所有地域信息
+	 * @param context
+	 * @return
+	 */
+	List<AreaInfoModel> queryAllAreaInfo(Context context);
+
+	/**
+	 * 查询地域父列表信息
+	 * @param context
+	 * @return
+	 */
+	List<AreaInfoModel> queryParentAreaInfo(Context context, String code);
+
+	/**
+	 * 查询地域子列表信息
+	 * @param context
+	 * @return
+	 */
+	List<AreaInfoModel> queryChildAreaInfo(Context context, String code);
+
+	/**
+	 * 删除所有地域信息
+	 * @param context
+	 * @return
+	 */
+	boolean deleteAllAreaInfo(Context context);
 
 }

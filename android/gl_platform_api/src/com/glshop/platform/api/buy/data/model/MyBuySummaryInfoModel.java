@@ -23,7 +23,7 @@ public class MyBuySummaryInfoModel extends BuySummaryInfoModel {
 	 * 是否多地域发布
 	 */
 	public boolean isMoreArea;
-	
+
 	/**
 	 * 多地域发布信息列表
 	 */
@@ -72,7 +72,8 @@ public class MyBuySummaryInfoModel extends BuySummaryInfoModel {
 		sb.append(", productSubCode=" + productSubCode);
 		sb.append(", unitPrice=" + unitPrice);
 		sb.append(", tradeAmount=" + tradeAmount);
-		sb.append(", tradeArea=" + tradeArea);
+		sb.append(", tradeAreaCode=" + tradeAreaCode);
+		sb.append(", tradeAreaName=" + tradeAreaName);
 		sb.append(", tradePubDate=" + tradePubDate);
 		sb.append(", tradeBeginDate=" + tradeBeginDate);
 		sb.append(", tradeEndDate=" + tradeEndDate);

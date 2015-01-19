@@ -91,7 +91,7 @@
         style="@style/BuyTextItem.Middle"
         glshop:itemContent="0"
         glshop:itemContentColor="@color/gray"
-        glshop:itemSecondTitle="@string/product_unit_m"
+        glshop:itemSecondTitle="@string/unit_m_v3"
         glshop:itemTitle="@string/business_discharge_port_water_depth"
         glshop:showItemClickIcon="false"
         glshop:showItemIcon="false" />
@@ -105,8 +105,8 @@
         style="@style/BuyTextItem.Bottom"
         glshop:itemContent="0"
         glshop:itemContentColor="@color/gray"
-        glshop:itemSecondTitle="@string/product_unit_m"
-        glshop:itemTitle="@string/business_discharge_port_shipping_water_depth"
+        glshop:itemSecondTitle="@string/product_unit_ton"
+        glshop:itemTitle="@string/business_discharge_shipping_ton"
         glshop:showItemClickIcon="false"
         glshop:showItemIcon="false" />
 

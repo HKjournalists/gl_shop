@@ -60,10 +60,10 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 					RespInfo respInfo = getOprRespInfo(result);
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-						message.what = GlobalMessageType.SettingMessageType.MSG_GET_UPGRADE_INFO_SUCCESS;
+						message.what = GlobalMessageType.UpgradeMessageType.MSG_GET_UPGRADE_INFO_SUCCESS;
 						respInfo.data = result.data;
 					} else {
-						message.what = GlobalMessageType.SettingMessageType.MSG_GET_UPGRADE_INFO_FAILED;
+						message.what = GlobalMessageType.UpgradeMessageType.MSG_GET_UPGRADE_INFO_FAILED;
 					}
 					sendMessage(message);
 				}
@@ -86,7 +86,7 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 			@Override
 			public void onResult(String filePath) {
 				stopTimer();
-				if (ActivityUtil.isReception(mcontext)) {
+				if (ActivityUtil.isForeground(mcontext)) {
 					// 若程序在前台，则直接提示安装。
 					notifyCancel();
 					installApk(mcontext, filePath);

@@ -1,10 +1,12 @@
 package com.glshop.platform.api.contract.data.model;
 
 import com.glshop.platform.api.DataConstants.BuyType;
+import com.glshop.platform.api.DataConstants.ContractDraftStatus;
 import com.glshop.platform.api.DataConstants.ContractLifeCycle;
 import com.glshop.platform.api.DataConstants.ContractOprType;
 import com.glshop.platform.api.DataConstants.ContractStatusType;
 import com.glshop.platform.api.DataConstants.ContractType;
+import com.glshop.platform.api.DataConstants.ProductUnitType;
 import com.glshop.platform.net.base.ResultItem;
 
 /**
@@ -23,9 +25,9 @@ public class ContractSummaryInfoModel extends ResultItem {
 	public String contractId;
 
 	/**
-	 * 货物名称
+	 * 合同询单编号
 	 */
-	public String productName;
+	public String buyId;
 
 	/**
 	 * 合同甲方ID(企业ID)
@@ -63,14 +65,54 @@ public class ContractSummaryInfoModel extends ResultItem {
 	public String amount;
 
 	/**
+	 * 合同单价
+	 */
+	public String unitPrice;
+
+	/**
+	 * 货物大类型编码
+	 */
+	public String productCode;
+
+	/**
+	 * 货物名称
+	 */
+	public String productName;
+
+	/**
+	 * 货物子类型编码
+	 */
+	public String productSubCode;
+
+	/**
+	 * 货物规格ID
+	 */
+	public String productSpecId;
+
+	/**
+	 * 单位类型
+	 */
+	public ProductUnitType unitType = ProductUnitType.TON;
+
+	/**
 	 * 合同成立时间
 	 */
 	public String createTime;
 
 	/**
-	 * 合同有效时间
+	 * 合同失效时间
 	 */
 	public String expireTime;
+
+	/**
+	 * 确认失效时间
+	 */
+	public String draftExpireTime;
+
+	/**
+	 * 付款失效时间
+	 */
+	public String payExpireTime;
 
 	/**
 	 * 合同更新时间
@@ -96,6 +138,16 @@ public class ContractSummaryInfoModel extends ResultItem {
 	 * 合同操作类型
 	 */
 	public ContractOprType oprType = ContractOprType.CONFRIM_CONTRACT;
+
+	/**
+	 * 买家合同起草状态
+	 */
+	public ContractDraftStatus buyerDraftStatus = ContractDraftStatus.NOTHING;
+
+	/**
+	 * 卖家合同起草状态
+	 */
+	public ContractDraftStatus sellerDraftStatus = ContractDraftStatus.NOTHING;
 
 	/**
 	 * 买家操作状态
@@ -147,7 +199,8 @@ public class ContractSummaryInfoModel extends ResultItem {
 		sb.append(", summary=" + summary);
 		sb.append(", amount=" + amount);
 		sb.append(", createTime=" + createTime);
-		sb.append(", expireTime=" + expireTime);
+		sb.append(", draftExpireTime=" + draftExpireTime);
+		sb.append(", payExpireTime=" + payExpireTime);
 		sb.append(", updateTime=" + updateTime);
 		sb.append(", statusType=" + statusType.toValue());
 		sb.append(", contractType=" + contractType.toValue());

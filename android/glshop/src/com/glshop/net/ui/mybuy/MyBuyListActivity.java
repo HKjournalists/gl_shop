@@ -4,11 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.glshop.net.R;
@@ -21,15 +23,17 @@ import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.logic.buy.IBuyLogic;
 import com.glshop.net.logic.cache.DataCenter;
 import com.glshop.net.logic.cache.DataCenter.DataType;
+import com.glshop.net.logic.model.MenuItemInfo;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.ui.MainActivity;
 import com.glshop.net.ui.basic.BasicActivity;
-import com.glshop.net.ui.basic.adapter.MyBuyListAdapter;
+import com.glshop.net.ui.basic.adapter.buy.MyBuyListAdapter;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
-import com.glshop.net.ui.basic.view.dialog.menu.PopupMenu;
-import com.glshop.net.ui.basic.view.dialog.menu.PopupMenu.IMenuCallback;
+import com.glshop.net.ui.basic.view.dialog.menu.BaseMenuDialog.IMenuCallback;
+import com.glshop.net.ui.basic.view.dialog.menu.MenuDialog;
 import com.glshop.net.ui.findbuy.BuyInfoActivity;
 import com.glshop.net.ui.findbuy.PubModeSelectActivity;
+import com.glshop.net.utils.MenuUtil;
 import com.glshop.platform.api.DataConstants.MyBuyFilterType;
 import com.glshop.platform.api.buy.data.model.MyBuySummaryInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
@@ -44,13 +48,14 @@ import com.glshop.platform.utils.Logger;
  * @version     : 1.0
  * Create Date  : 2014-7-17 下午5:01:00
  */
-public class MyBuyListActivity extends BasicActivity implements OnItemClickListener {
+public class MyBuyListActivity extends BasicActivity implements OnItemClickListener, IMenuCallback {
 
 	private static final String TAG = "MyBuyListActivity";
 
 	private PullRefreshListView mLvMyBuyList;
 	private MyBuyListAdapter mAdapter;
 	private View mDropdownMenu;
+	private MenuDialog menuBuyFilter;
 
 	private MyBuyFilterType mFilterType = MyBuyFilterType.ALL;
 
@@ -72,10 +77,17 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 
 		((TextView) findViewById(R.id.tv_commmon_title)).setText(R.string.my_buy);
 		getView(R.id.ll_dropdown_menu).setOnClickListener(this);
-		getView(R.id.btn_pub_message).setOnClickListener(this);
 		getView(R.id.iv_common_back).setOnClickListener(this);
 
 		mDropdownMenu = getView(R.id.ll_dropdown_menu);
+
+		Button btnPublish = getView(R.id.btn_commmon_action);
+		btnPublish.setVisibility(View.VISIBLE);
+		btnPublish.setText(R.string.publish_buy_message);
+		Drawable icon = getResources().getDrawable(R.drawable.ic_buy_pub);
+		icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+		btnPublish.setCompoundDrawables(icon, null, null, null);
+		btnPublish.setOnClickListener(this);
 
 		mLvMyBuyList = getView(R.id.lv_my_buy_list);
 		mLvMyBuyList.setIsRefreshable(true);
@@ -183,38 +195,13 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 		}
 	}
 
-	private void showDropdownMenu() {
-		List<String> menus = Arrays.asList(getResources().getStringArray(R.array.my_buy_filter_type));
-		mDropdownMenu.setEnabled(false);
-		mDropdownMenu.findViewById(R.id.iv_common_menu_icon).setBackgroundResource(R.drawable.ic_dropdown_menu_up);
-		PopupMenu menu = new PopupMenu(this, menus, menus.get(mFilterType.toValue()), mDropdownMenu.getWidth(), new IMenuCallback() {
-
-			@Override
-			public void onMenuItemClick(int index) {
-				Logger.e(TAG, "Click Menu index = " + index);
-				if (index != mFilterType.toValue()) {
-					mFilterType = MyBuyFilterType.convert(index);
-					onReloadData();
-				}
-			}
-
-			@Override
-			public void onDismiss() {
-				Logger.d(TAG, "onDismiss");
-				mDropdownMenu.findViewById(R.id.iv_common_menu_icon).setBackgroundResource(R.drawable.ic_dropdown_menu_down);
-				mDropdownMenu.setEnabled(true);
-			}
-		});
-		menu.showAsDropDown(mDropdownMenu);
-	}
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.ll_dropdown_menu:
-			showDropdownMenu();
+			showBuyFilterMenu();
 			break;
-		case R.id.btn_pub_message:
+		case R.id.btn_commmon_action:
 			pubBuyInfo();
 			break;
 		case R.id.iv_common_back:
@@ -225,6 +212,17 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 			}
 			break;
 		}
+	}
+
+	private void showBuyFilterMenu() {
+		closeDialog(menuBuyFilter);
+		List<MenuItemInfo> menus = MenuUtil.makeMenuList(Arrays.asList(getResources().getStringArray(R.array.my_buy_filter_type)));
+		mDropdownMenu.setEnabled(false);
+		mDropdownMenu.findViewById(R.id.iv_common_menu_icon).setBackgroundResource(R.drawable.ic_dropdown_menu_up);
+		menuBuyFilter = new MenuDialog(this, menus, this, true, menus.get(mFilterType.toValue()));
+		menuBuyFilter.setMenuType(GlobalMessageType.MenuType.SELECT_MY_BUY_FILTER_TYPE);
+		menuBuyFilter.setTitle(getString(R.string.menu_title_select_mybuy_filter));
+		menuBuyFilter.show();
 	}
 
 	private void pubBuyInfo() {
@@ -241,6 +239,34 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 		intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_BUY_ID, buyInfo.publishBuyId);
 		intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_VIEW_BUY_INFO_TYPE, ViewBuyInfoType.MYBUY.toValue());
 		startActivity(intent);
+	}
+
+	@Override
+	public void onMenuClick(int type, int position, Object obj) {
+		switch (type) {
+		case GlobalMessageType.MenuType.SELECT_MY_BUY_FILTER_TYPE:
+			Logger.e(TAG, "Click Menu index = " + position);
+			if (position != mFilterType.toValue()) {
+				mFilterType = MyBuyFilterType.convert(position);
+				onReloadData();
+			}
+			restoreFilterIcon();
+		}
+	}
+
+	@Override
+	public void onConfirm(int type, Object obj) {
+		restoreFilterIcon();
+	}
+
+	@Override
+	public void onCancel(int type) {
+		restoreFilterIcon();
+	}
+
+	private void restoreFilterIcon() {
+		mDropdownMenu.findViewById(R.id.iv_common_menu_icon).setBackgroundResource(R.drawable.ic_dropdown_menu_down);
+		mDropdownMenu.setEnabled(true);
 	}
 
 	@Override

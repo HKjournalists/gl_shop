@@ -72,6 +72,9 @@ public class DataConstants {
 		/** 系统参数类型编号 */
 		public static final String TYPE_SYSPARAM = "6";
 
+		/** 区域省份控制 */
+		public static final String TYPE_AREA_PROVINCE_CONTROL = "7";
+
 		/** 沙子类型编号 */
 		public static final String TYPE_PRODUCT_SAND = "G002";
 
@@ -110,6 +113,9 @@ public class DataConstants {
 
 		/** 市区类型编号 */
 		public static final String TYPE_AREA_DISTRICT = "district";
+
+		/** 默认地域顶级编码 */
+		public static final String AREA_TOP_CODE = "0";
 
 		/** 企业保证金编号 */
 		public static final String TYPE_BOND_ENTERPRISE = "BOND_ENTERPRISE";
@@ -239,17 +245,17 @@ public class DataConstants {
 
 		/**有效**/
 		VALID,
-		/**审核未通过**/
+		/**无效：审核未通过**/
 		INVALID_UNPASS_REVIEW,
-		/**用户取消**/
+		/**无效：已产生合同**/
 		INVALID_CREATED_CONTRACT,
-		/**过期**/
+		/**无效：库存为空**/
 		INVALID_EMPTY_AMOUNT,
-		/**过期**/
+		/**无效：过期**/
 		INVALID_EXPIRE,
-		/**过期**/
+		/**无效：用户取消**/
 		INVALID_CANCELED,
-		/**审核未通过**/
+		/**无效：其它**/
 		INVALID_OTHER;
 
 		public int toValue() {
@@ -317,6 +323,44 @@ public class DataConstants {
 				return SAND;
 			} else {
 				return STONE;
+			}
+		}
+
+	}
+
+	/**
+	 * 货物单位类型
+	 */
+	public enum ProductUnitType {
+
+		/**吨**/
+		TON,
+		/**立方**/
+		CUTE,
+		/**mm**/
+		MM;
+
+		public String toValue() {
+			if (this == TON) {
+				return "UNIT001";
+			} else if (this == CUTE) {
+				return "UNIT002";
+			} else if (this == MM) {
+				return "UNIT003";
+			} else {
+				return "UNIT001";
+			}
+		}
+
+		public static ProductUnitType convert(String type) {
+			if ("UNIT001".equals(type)) {
+				return TON;
+			} else if ("UNIT002".equals(type)) {
+				return CUTE;
+			} else if ("UNIT003".equals(type)) {
+				return MM;
+			} else {
+				return TON;
 			}
 		}
 
@@ -427,6 +471,88 @@ public class DataConstants {
 	}
 
 	/**
+	 * 合同起草状态
+	 */
+	public enum ContractDraftStatus {
+
+		/**无**/
+		NOTHING,
+		/**起草中**/
+		CANCELED,
+		/**已签约**/
+		CONFIRMED;
+
+		public int toValue() {
+			if (this == NOTHING) {
+				return 0;
+			} else if (this == CANCELED) {
+				return 1;
+			} else if (this == CONFIRMED) {
+				return 2;
+			} else {
+				return 0;
+			}
+		}
+
+		public static ContractDraftStatus convert(int type) {
+			if (type == 0) {
+				return NOTHING;
+			} else if (type == 1) {
+				return CANCELED;
+			} else if (type == 2) {
+				return CONFIRMED;
+			} else {
+				return NOTHING;
+			}
+		}
+
+	}
+
+	/**
+	 * 合同状态类型（目前暂用于在供求详情中判断合同状态）
+	 */
+	public enum ContractStatusTypeV2 {
+
+		/**起草**/
+		DRAFT,
+		/**进行**/
+		DOING,
+		/**暂停**/
+		PAUSE,
+		/**结束**/
+		FINISHED;
+
+		public int toValue() {
+			if (this == DRAFT) {
+				return 0;
+			} else if (this == DOING) {
+				return 1;
+			} else if (this == PAUSE) {
+				return 2;
+			} else if (this == FINISHED) {
+				return 3;
+			} else {
+				return 0;
+			}
+		}
+
+		public static ContractStatusTypeV2 convert(int type) {
+			if (type == 0) {
+				return DRAFT;
+			} else if (type == 1) {
+				return DOING;
+			} else if (type == 2) {
+				return PAUSE;
+			} else if (type == 3) {
+				return FINISHED;
+			} else {
+				return DRAFT;
+			}
+		}
+
+	}
+
+	/**
 	 * 合同生命周期
 	 */
 	public enum ContractLifeCycle {
@@ -491,8 +617,23 @@ public class DataConstants {
 		/** 终止结束 */
 		EXPIRATION_FINISHED,
 
-		/** 已经仲裁 */
-		ARBITRATION;
+		/** 仲裁中 */
+		ARBITRATING,
+
+		/** 货款确认中 */
+		CONFIRMING_GOODS_FUNDS,
+
+		/** 起草取消 */
+		DRAFTING_CANCEL,
+
+		/** 仲裁结束 */
+		ARBITRATED,
+
+		/** 买家未付款结束 */
+		BUYER_UNPAY_FINISHED,
+
+		/** 删除合同 */
+		DELETE_CONTRACT;
 
 		public int toValue() {
 			if (this == DRAFTING) {
@@ -535,8 +676,18 @@ public class DataConstants {
 				return 18;
 			} else if (this == EXPIRATION_FINISHED) {
 				return 19;
-			} else if (this == ARBITRATION) {
+			} else if (this == ARBITRATING) {
 				return 20;
+			} else if (this == CONFIRMING_GOODS_FUNDS) {
+				return 21;
+			} else if (this == DRAFTING_CANCEL) {
+				return 22;
+			} else if (this == ARBITRATED) {
+				return 23;
+			} else if (this == BUYER_UNPAY_FINISHED) {
+				return 24;
+			} else if (this == DELETE_CONTRACT) {
+				return 25;
 			} else {
 				return 0;
 			}
@@ -584,7 +735,17 @@ public class DataConstants {
 			} else if (type == 19) {
 				return EXPIRATION_FINISHED;
 			} else if (type == 20) {
-				return ARBITRATION;
+				return ARBITRATING;
+			} else if (type == 21) {
+				return CONFIRMING_GOODS_FUNDS;
+			} else if (type == 22) {
+				return DRAFTING_CANCEL;
+			} else if (type == 23) {
+				return ARBITRATED;
+			} else if (type == 24) {
+				return BUYER_UNPAY_FINISHED;
+			} else if (type == 25) {
+				return DELETE_CONTRACT;
 			} else {
 				return DRAFTING;
 			}
@@ -643,7 +804,31 @@ public class DataConstants {
 		CONTRACT_ESTIMATE,
 
 		/** 合同结束 */
-		CONTRACT_FINISHED;
+		CONTRACT_FINISHED,
+
+		/** 撮合合同 */
+		MAKE_CONTRACT,
+
+		/** 买家未付款合同结束 */
+		BUYER_UNPAY_FINISHED,
+
+		/** 取消合同 */
+		CANCEL_CONTRACT,
+
+		/** 移至已经结束合同 */
+		MOVE_TO_FINISHED_CONTRACT,
+
+		/** 货物与货款实际确认 */
+		FUNDS_GOODS_CONFIRM,
+
+		/** 货物与货款实际确认 */
+		AGREE_FUND_GOODS_CONFIRM,
+
+		/** 申请仲裁 */
+		APPLY_ARBITRATION,
+
+		/** 删除合同 */
+		DELETE_CONTRACT;
 
 		public int toValue() {
 			if (this == CONFRIM_CONTRACT) {
@@ -678,6 +863,22 @@ public class DataConstants {
 				return 14;
 			} else if (this == CONTRACT_FINISHED) {
 				return 15;
+			} else if (this == MAKE_CONTRACT) {
+				return 16;
+			} else if (this == BUYER_UNPAY_FINISHED) {
+				return 17;
+			} else if (this == CANCEL_CONTRACT) {
+				return 18;
+			} else if (this == MOVE_TO_FINISHED_CONTRACT) {
+				return 19;
+			} else if (this == FUNDS_GOODS_CONFIRM) {
+				return 20;
+			} else if (this == AGREE_FUND_GOODS_CONFIRM) {
+				return 21;
+			} else if (this == APPLY_ARBITRATION) {
+				return 22;
+			} else if (this == DELETE_CONTRACT) {
+				return 23;
 			} else {
 				return 0;
 			}
@@ -716,8 +917,100 @@ public class DataConstants {
 				return CONTRACT_ESTIMATE;
 			} else if (type == 15) {
 				return CONTRACT_FINISHED;
+			} else if (type == 16) {
+				return MAKE_CONTRACT;
+			} else if (type == 17) {
+				return BUYER_UNPAY_FINISHED;
+			} else if (type == 18) {
+				return CANCEL_CONTRACT;
+			} else if (type == 19) {
+				return MOVE_TO_FINISHED_CONTRACT;
+			} else if (type == 20) {
+				return FUNDS_GOODS_CONFIRM;
+			} else if (type == 21) {
+				return AGREE_FUND_GOODS_CONFIRM;
+			} else if (type == 22) {
+				return APPLY_ARBITRATION;
+			} else if (type == 23) {
+				return DELETE_CONTRACT;
 			} else {
 				return CONFRIM_CONTRACT;
+			}
+		}
+
+	}
+
+	/**
+	 * 合同取消类型
+	 */
+	public enum ContractCancelType {
+
+		/**取消合同**/
+		CANCEL,
+		/**移至已结束的合同**/
+		MOVE_TO_ENDED,
+		/**删除合同**/
+		DELETE;
+
+		public int toValue() {
+			if (this == CANCEL) {
+				return 18;
+			} else if (this == MOVE_TO_ENDED) {
+				return 19;
+			} else if (this == DELETE) {
+				return 23;
+			} else {
+				return 18;
+			}
+		}
+
+		public static ContractCancelType convert(int type) {
+			if (type == 18) {
+				return CANCEL;
+			} else if (type == 19) {
+				return MOVE_TO_ENDED;
+			} else if (type == 23) {
+				return DELETE;
+			} else {
+				return CANCEL;
+			}
+		}
+
+	}
+
+	/**
+	 * 合同确认类型
+	 */
+	public enum ContractConfirmType {
+
+		/**货款确认申请**/
+		PAYMENT_APPLY,
+		/**同意货款申请**/
+		PAYMENT_AGREE,
+		/**申请仲裁**/
+		PAYMENT_ARBITRATE;
+
+		public int toValue() {
+			if (this == PAYMENT_APPLY) {
+				return 20;
+			} else if (this == PAYMENT_AGREE) {
+				return 21;
+			} else if (this == PAYMENT_ARBITRATE) {
+				return 22;
+			} else {
+				return 20;
+			}
+		}
+
+		public static ContractConfirmType convert(int type) {
+			if (type == 20) {
+				return PAYMENT_APPLY;
+			} else if (type == 21) {
+				return PAYMENT_AGREE;
+			} else if (type == 22) {
+				return PAYMENT_ARBITRATE;
+			} else {
+				return PAYMENT_APPLY;
 			}
 		}
 
@@ -1038,6 +1331,38 @@ public class DataConstants {
 				return AUTHING;
 			} else {
 				return AUTH_FAILED;
+			}
+		}
+
+	}
+
+	/**
+	 * 性别类型
+	 */
+	public enum SexType {
+
+		/**女**/
+		FEMALE,
+		/**男**/
+		MALE;
+
+		public int toValue() {
+			if (this == FEMALE) {
+				return 0;
+			} else if (this == MALE) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+
+		public static SexType convert(int type) {
+			if (type == 0) {
+				return FEMALE;
+			} else if (type == 1) {
+				return MALE;
+			} else {
+				return FEMALE;
 			}
 		}
 

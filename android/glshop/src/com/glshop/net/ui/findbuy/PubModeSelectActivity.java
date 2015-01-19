@@ -48,7 +48,7 @@ public class PubModeSelectActivity extends BasicActivity {
 		case R.id.btn_pub_by_myself:
 			if (GlobalConfig.getInstance().isLogined()) {
 				if (/*GlobalConfig.getInstance().isDepositEnough()*/true) {
-					Intent pub = new Intent(this, PubBuyInfoActivity.class);
+					Intent pub = new Intent(this, PubBuyInfoActivityV2.class);
 					startActivity(pub);
 					finish();
 				} else {

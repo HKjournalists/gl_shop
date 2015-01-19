@@ -51,6 +51,8 @@ public class DBHelper extends SQLiteOpenHelper {
 		db.execSQL(DBConstants.TableSyscfgData.CREATE_TABLE_SQL);
 		db.execSQL(DBConstants.TableProductData.CREATE_TABLE_SQL);
 		db.execSQL(DBConstants.TableProductPropData.CREATE_TABLE_SQL);
+		db.execSQL(DBConstants.TableAreaCfg.CREATE_TABLE_SQL);
+		db.execSQL(DBConstants.TableAreaData.CREATE_TABLE_SQL);
 		db.execSQL(DBConstants.TableMessage.CREATE_TABLE_SQL);
 		db.execSQL(DBConstants.TablePay.CREATE_TABLE_SQL);
 	}

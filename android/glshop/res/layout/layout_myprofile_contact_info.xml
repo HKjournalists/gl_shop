@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="42dp"
+        android:layout_height="48dp"
         android:background="@drawable/bg_item_top"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/buy_item_padding"

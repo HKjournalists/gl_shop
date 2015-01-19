@@ -11,7 +11,7 @@ import com.glshop.net.ui.basic.BasicActivity;
 import com.glshop.net.ui.myprofile.ProfileAuthActivity;
 
 /**
- * @Description : 用户注册成功页面(已废弃，统一调用系统操作成功页面OperatorTipsActivity)
+ * @Description : 用户注册成功页面(已废弃(暂保留)，统一调用系统操作成功页面OperatorTipsActivity)
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 深圳市国立数码动画有限公司
  * @author      : 叶跃丰

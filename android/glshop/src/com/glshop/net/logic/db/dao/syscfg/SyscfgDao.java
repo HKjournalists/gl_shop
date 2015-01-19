@@ -12,6 +12,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.glshop.net.logic.db.DBConstants.TableAreaCfg;
+import com.glshop.net.logic.db.DBConstants.TableAreaData;
 import com.glshop.net.logic.db.DBConstants.TableProductData;
 import com.glshop.net.logic.db.DBConstants.TableProductPropData;
 import com.glshop.net.logic.db.DBConstants.TableSyscfgData;
@@ -293,7 +295,7 @@ public class SyscfgDao implements ISyscfgDao {
 	}
 
 	@Override
-	public List<AreaInfoModel> queryAreaInfo(Context context) {
+	public List<AreaInfoModel> queryPortInfo(Context context) {
 		List<AreaInfoModel> infoList = null;
 		String where = TableSyscfgData.Column.TYPE + " = ?";
 		String[] args = new String[] { DataConstants.SysCfgCode.TYPE_PORT_SECTION };
@@ -301,6 +303,147 @@ public class SyscfgDao implements ISyscfgDao {
 		Cursor cursor = null;
 		try {
 			cursor = DBManager.query(context, TableSyscfgData.TABLE_NAME, TableSyscfgData.ALL_COLUMNS, where, args, null, null, null);
+			if (cursor != null && cursor.getCount() > 0) {
+				infoList = new ArrayList<AreaInfoModel>();
+				for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+					infoList.add(convertCursor2PortInfo(cursor));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
+		}
+		return infoList;
+	}
+
+	@Override
+	public boolean insertPortInfo(Context context, List<AreaInfoModel> infoList) {
+		List<ContentValues> values = new ArrayList<ContentValues>();
+		for (AreaInfoModel info : infoList) {
+			values.add(convertPortInfo2CV(info));
+		}
+		boolean result = DBManager.bulkInsert(context, TableSyscfgData.TABLE_NAME, values);
+		for (ContentValues cv : values) {
+			cv.clear();
+		}
+		return result;
+	}
+
+	@Override
+	public boolean deletePortInfo(Context context) {
+		String where = TableSyscfgData.Column.TYPE + createWhereInArgs(Arrays.asList(DataConstants.SysCfgCode.TYPE_PORT_SECTION));
+		return DBManager.delete(context, TableSyscfgData.TABLE_NAME, where, null) != -1;
+	}
+
+	@Override
+	public List<AreaInfoModel> querySupportProvinceList(Context context) {
+		List<AreaInfoModel> infoList = null;
+		String where = TableSyscfgData.Column.TYPE + " = ?";
+		String[] args = new String[] { DataConstants.SysCfgCode.TYPE_AREA_PROVINCE_CONTROL };
+
+		Cursor cursor = null;
+		try {
+			cursor = DBManager.query(context, TableSyscfgData.TABLE_NAME, TableSyscfgData.ALL_COLUMNS, where, args, null, null, null);
+			if (cursor != null && cursor.getCount() > 0) {
+				infoList = new ArrayList<AreaInfoModel>();
+				for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+					infoList.add(convertCursor2ProvinceInfo(cursor));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
+		}
+		return infoList;
+	}
+
+	@Override
+	public boolean insertSupportProvinceInfo(Context context, List<AreaInfoModel> infoList) {
+		List<ContentValues> values = new ArrayList<ContentValues>();
+		for (AreaInfoModel info : infoList) {
+			values.add(convertProvinceInfo2CV(info));
+		}
+		boolean result = DBManager.bulkInsert(context, TableSyscfgData.TABLE_NAME, values);
+		for (ContentValues cv : values) {
+			cv.clear();
+		}
+		return result;
+	}
+
+	@Override
+	public boolean deleteSupportProvinceInfo(Context context) {
+		String where = TableSyscfgData.Column.TYPE + createWhereInArgs(Arrays.asList(DataConstants.SysCfgCode.TYPE_AREA_PROVINCE_CONTROL));
+		return DBManager.delete(context, TableSyscfgData.TABLE_NAME, where, null) != -1;
+	}
+
+	@Override
+	public boolean insertAreaCfgInfo(Context context, List<AreaInfoModel> infoList) {
+		List<ContentValues> values = new ArrayList<ContentValues>();
+		for (AreaInfoModel info : infoList) {
+			values.add(convertAreaCfgInfo2CV(info));
+		}
+		boolean result = DBManager.bulkInsert(context, TableAreaCfg.TABLE_NAME, values);
+		for (ContentValues cv : values) {
+			cv.clear();
+		}
+		return result;
+	}
+
+	@Override
+	public List<AreaInfoModel> queryAreaCfgInfo(Context context) {
+		List<AreaInfoModel> infoList = null;
+		Cursor cursor = null;
+		try {
+			cursor = DBManager.query(context, TableAreaCfg.TABLE_NAME, TableAreaCfg.ALL_COLUMNS, null, null, null, null, null);
+			if (cursor != null && cursor.getCount() > 0) {
+				infoList = new ArrayList<AreaInfoModel>();
+				for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+					infoList.add(convertCursor2AreaCfgInfo(cursor));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
+		}
+		return infoList;
+	}
+
+	@Override
+	public boolean deleteAllAreaCfgInfo(Context context) {
+		return DBManager.delete(context, TableAreaCfg.TABLE_NAME, null, null) != -1;
+	}
+
+	@Override
+	public boolean insertAreaInfo(Context context, List<AreaInfoModel> infoList) {
+		List<ContentValues> values = new ArrayList<ContentValues>();
+		for (AreaInfoModel info : infoList) {
+			values.add(convertAreaInfo2CV(info));
+		}
+		boolean result = DBManager.bulkInsert(context, TableAreaData.TABLE_NAME, values);
+		for (ContentValues cv : values) {
+			cv.clear();
+		}
+		return result;
+	}
+
+	@Override
+	public List<AreaInfoModel> queryAllAreaInfo(Context context) {
+		List<AreaInfoModel> infoList = null;
+		Cursor cursor = null;
+		try {
+			cursor = DBManager.query(context, TableAreaData.TABLE_NAME, TableAreaData.ALL_COLUMNS, null, null, null, null, null);
 			if (cursor != null && cursor.getCount() > 0) {
 				infoList = new ArrayList<AreaInfoModel>();
 				for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
@@ -319,22 +462,63 @@ public class SyscfgDao implements ISyscfgDao {
 	}
 
 	@Override
-	public boolean insertAreaInfo(Context context, List<AreaInfoModel> infoList) {
-		List<ContentValues> values = new ArrayList<ContentValues>();
-		for (AreaInfoModel info : infoList) {
-			values.add(convertAreaInfo2CV(info));
+	public List<AreaInfoModel> queryParentAreaInfo(Context context, String code) {
+		List<AreaInfoModel> infoList = new ArrayList<AreaInfoModel>();
+		queryParentAreaInfo(context, infoList, code);
+		return infoList;
+	}
+
+	private void queryParentAreaInfo(Context context, List<AreaInfoModel> list, String code) {
+		String where = TableAreaData.Column.CODE + " = ?";
+		String[] args = new String[] { code };
+		Cursor cursor = null;
+		try {
+			cursor = DBManager.query(context, TableAreaData.TABLE_NAME, TableAreaData.ALL_COLUMNS, where, args, null, null, null);
+			if (cursor != null && cursor.getCount() > 0) {
+				if (cursor.moveToFirst()) {
+					AreaInfoModel info = convertCursor2AreaInfo(cursor);
+					queryParentAreaInfo(context, list, info.pCode);
+					list.add(info);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
 		}
-		boolean result = DBManager.bulkInsert(context, TableSyscfgData.TABLE_NAME, values);
-		for (ContentValues cv : values) {
-			cv.clear();
-		}
-		return result;
 	}
 
 	@Override
-	public boolean deleteAreaInfo(Context context) {
-		String where = TableSyscfgData.Column.TYPE + createWhereInArgs(Arrays.asList(DataConstants.SysCfgCode.TYPE_PORT_SECTION));
-		return DBManager.delete(context, TableSyscfgData.TABLE_NAME, where, null) != -1;
+	public List<AreaInfoModel> queryChildAreaInfo(Context context, String code) {
+		List<AreaInfoModel> infoList = null;
+		String where = TableAreaData.Column.PCODE + " = ?";
+		String[] args = new String[] { code };
+		Cursor cursor = null;
+		try {
+			cursor = DBManager.query(context, TableAreaData.TABLE_NAME, TableAreaData.ALL_COLUMNS, where, args, null, null, null);
+			if (cursor != null && cursor.getCount() > 0) {
+				infoList = new ArrayList<AreaInfoModel>();
+				for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+					infoList.add(convertCursor2AreaInfo(cursor));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (cursor != null) {
+				cursor.close();
+				cursor = null;
+			}
+		}
+		return infoList;
+	}
+
+	@Override
+	public boolean deleteAllAreaInfo(Context context) {
+		return DBManager.delete(context, TableAreaData.TABLE_NAME, null, null) != -1;
 	}
 
 	/**
@@ -355,7 +539,7 @@ public class SyscfgDao implements ISyscfgDao {
 	 * @param info
 	 * @return
 	 */
-	private ContentValues convertAreaInfo2CV(AreaInfoModel info) {
+	private ContentValues convertPortInfo2CV(AreaInfoModel info) {
 		ContentValues values = new ContentValues();
 		values.put(TableSyscfgData.Column.TYPE, info.type);
 		values.put(TableSyscfgData.Column.CODE, info.code);
@@ -369,12 +553,96 @@ public class SyscfgDao implements ISyscfgDao {
 	 * @param cursor
 	 * @return
 	 */
-	private AreaInfoModel convertCursor2AreaInfo(Cursor cursor) {
+	private AreaInfoModel convertCursor2PortInfo(Cursor cursor) {
 		AreaInfoModel info = new AreaInfoModel();
 		info.type = cursor.getString(cursor.getColumnIndex(TableSyscfgData.Column.TYPE));
 		info.code = cursor.getString(cursor.getColumnIndex(TableSyscfgData.Column.CODE));
 		info.name = cursor.getString(cursor.getColumnIndex(TableSyscfgData.Column.VALUE));
 		info.pCode = cursor.getString(cursor.getColumnIndex(TableSyscfgData.Column.PCODE));
+		return info;
+	}
+
+	/**
+	 * 转换AreaInfoModel为ContentValues
+	 * @param info
+	 * @return
+	 */
+	private ContentValues convertProvinceInfo2CV(AreaInfoModel info) {
+		ContentValues values = new ContentValues();
+		values.put(TableSyscfgData.Column.TYPE, info.type);
+		values.put(TableSyscfgData.Column.CODE, info.code);
+		values.put(TableSyscfgData.Column.VALUE, info.name);
+		values.put(TableSyscfgData.Column.PCODE, info.pCode);
+		return values;
+	}
+
+	/**
+	 * 转换ContentValues为AreaInfoModel
+	 * @param cursor
+	 * @return
+	 */
+	private AreaInfoModel convertCursor2ProvinceInfo(Cursor cursor) {
+		AreaInfoModel info = new AreaInfoModel();
+		info.type = cursor.getString(cursor.getColumnIndex(TableSyscfgData.Column.TYPE));
+		info.code = cursor.getString(cursor.getColumnIndex(TableSyscfgData.Column.CODE));
+		info.name = cursor.getString(cursor.getColumnIndex(TableSyscfgData.Column.VALUE));
+		info.pCode = cursor.getString(cursor.getColumnIndex(TableSyscfgData.Column.PCODE));
+		return info;
+	}
+
+	/**
+	 * 转换AreaInfoModel为ContentValues
+	 * @param info
+	 * @return
+	 */
+	private ContentValues convertAreaCfgInfo2CV(AreaInfoModel info) {
+		ContentValues values = new ContentValues();
+		values.put(TableAreaData.Column.AREA_ID, info.id);
+		values.put(TableAreaData.Column.CODE, info.code);
+		values.put(TableAreaData.Column.NAME, info.name);
+		return values;
+	}
+
+	/**
+	 * 转换ContentValues为AreaInfoModel
+	 * @param cursor
+	 * @return
+	 */
+	private AreaInfoModel convertCursor2AreaCfgInfo(Cursor cursor) {
+		AreaInfoModel info = new AreaInfoModel();
+		info.id = cursor.getString(cursor.getColumnIndex(TableAreaData.Column.AREA_ID));
+		info.code = cursor.getString(cursor.getColumnIndex(TableAreaData.Column.CODE));
+		info.name = cursor.getString(cursor.getColumnIndex(TableAreaData.Column.NAME));
+		return info;
+	}
+
+	/**
+	 * 转换AreaInfoModel为ContentValues
+	 * @param info
+	 * @return
+	 */
+	private ContentValues convertAreaInfo2CV(AreaInfoModel info) {
+		ContentValues values = new ContentValues();
+		values.put(TableAreaData.Column.AREA_ID, info.id);
+		values.put(TableAreaData.Column.CODE, info.code);
+		values.put(TableAreaData.Column.NAME, info.name);
+		values.put(TableAreaData.Column.PCODE, info.pCode);
+		values.put(TableAreaData.Column.ORDER_NO, info.orderNo);
+		return values;
+	}
+
+	/**
+	 * 转换ContentValues为AreaInfoModel
+	 * @param cursor
+	 * @return
+	 */
+	private AreaInfoModel convertCursor2AreaInfo(Cursor cursor) {
+		AreaInfoModel info = new AreaInfoModel();
+		info.id = cursor.getString(cursor.getColumnIndex(TableAreaData.Column.AREA_ID));
+		info.code = cursor.getString(cursor.getColumnIndex(TableAreaData.Column.CODE));
+		info.name = cursor.getString(cursor.getColumnIndex(TableAreaData.Column.NAME));
+		info.pCode = cursor.getString(cursor.getColumnIndex(TableAreaData.Column.PCODE));
+		info.orderNo = cursor.getString(cursor.getColumnIndex(TableAreaData.Column.ORDER_NO));
 		return info;
 	}
 

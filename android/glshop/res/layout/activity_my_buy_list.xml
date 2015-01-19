@@ -7,47 +7,13 @@
 
     <include layout="@layout/activity_common_dropdown_menu_title" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp" >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_my_buy"
-            android:contentDescription="@null"
-            android:textSize="@dimen/sp20" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="2dp"
-            android:text="@string/my_buy"
-            android:textSize="@dimen/sp20" />
-
-        <Button
-            android:id="@+id/btn_pub_message"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/common_radio_btn_height"
-            android:background="@drawable/selector_btn_green"
-            android:drawableLeft="@drawable/ic_buy_pub"
-            android:drawablePadding="2dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:text="@string/publish_buy_message"
-            android:textColor="@color/white" />
-    </LinearLayout>
-
     <include layout="@layout/layout_load_data_status" />
 
     <com.glshop.net.ui.basic.view.PullRefreshListView
         android:id="@+id/lv_my_buy_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/buy_item_padding"
         android:cacheColorHint="@null"
         android:divider="@color/transparent"
         android:dividerHeight="0dp"

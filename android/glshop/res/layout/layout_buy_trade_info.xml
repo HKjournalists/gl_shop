@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 显示交易地域与日期、地址信息Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <!-- 交易数量及单价 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <!-- 交易数量 -->
+
+        <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+            android:id="@+id/ll_item_trade_amount"
+            style="@style/BuyTextItem.Top"
+            glshop:itemContent="0"
+            glshop:itemSecondTitle="@string/unit_ton_v3"
+            glshop:itemTitle="@string/business_product_purchases" />
+
+        <View style="@style/item_devider_line" />
+
+        <!-- 到港单价 -->
+
+        <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+            android:id="@+id/ll_item_unit_price"
+            style="@style/BuyTextItem.Bottom"
+            glshop:itemContent="0"
+            glshop:itemSecondTitle="@string/unit_rmb_v3"
+            glshop:itemTitle="@string/business_product_portprice" />
+    </LinearLayout>
+
+    <View style="@style/item_devider_view" />
+    <!-- 交货日期 -->
+
+    <LinearLayout
+        android:id="@+id/ll_trade_date_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buy_item_height"
+        android:background="@drawable/selector_item_top"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/buy_item_padding"
+        android:paddingRight="@dimen/buy_item_padding" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="交易日期范围" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:id="@+id/tv_trade_start_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2014.10.1"
+                android:textColor="@color/blue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:text="至" />
+
+            <TextView
+                android:id="@+id/btn_trade_end_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2014.11.1"
+                android:textColor="@color/blue" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+    <!-- 交易地域 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_trade_area_item"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="靖江港"
+        glshop:itemTitle="交易地域"
+        glshop:showItemClickIcon="false"
+        glshop:showItemIcon="false" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 交货地址指定方式 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_discharge_address_type"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="己方指定"
+        glshop:itemTitle="交货地址指定方式"
+        glshop:showItemClickIcon="false"
+        glshop:showItemIcon="false" />
+
+    <View style="@style/item_devider_line" />
+    <!-- 卸货地址信息 -->
+
+    <LinearLayout
+        android:id="@+id/ll_item_addr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_item_middle"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/buy_item_padding"
+            android:paddingRight="@dimen/buy_item_padding" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/business_discharge_address_detail" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line" />
+
+            <TextView
+                android:id="@+id/tv_addr_detail"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:text="@string/data_empty"
+                android:textColor="@color/blue" />
+
+            <LinearLayout
+                android:id="@+id/ll_addr_pic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center" >
+
+                <ImageView
+                    android:id="@+id/iv_item_addr_pic_1"
+                    android:layout_width="@dimen/image_thumbnail_width"
+                    android:layout_height="@dimen/image_thumbnail_heigh"
+                    android:background="@drawable/ic_default_pic"
+                    android:contentDescription="@null" />
+
+                <ImageView
+                    android:id="@+id/iv_item_addr_pic_2"
+                    android:layout_width="@dimen/image_thumbnail_width"
+                    android:layout_height="@dimen/image_thumbnail_heigh"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:background="@drawable/ic_default_pic"
+                    android:contentDescription="@null" />
+
+                <ImageView
+                    android:id="@+id/iv_item_addr_pic_3"
+                    android:layout_width="@dimen/image_thumbnail_width"
+                    android:layout_height="@dimen/image_thumbnail_heigh"
+                    android:background="@drawable/ic_default_pic"
+                    android:contentDescription="@null" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View style="@style/item_devider_line" />
+
+        <!-- 卸货地港口水深度 -->
+
+        <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+            android:id="@+id/ll_item_port_water_depth"
+            style="@style/BuyTextItem.Middle"
+            glshop:itemContent="0"
+            glshop:itemSecondTitle="@string/unit_m_v3"
+            glshop:itemTitle="@string/business_discharge_port_water_depth"
+            glshop:showItemClickIcon="false"
+            glshop:showItemIcon="false" />
+
+        <View style="@style/item_devider_line" />
+
+        <!-- 可停泊载重船吨位 -->
+
+        <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+            android:id="@+id/ll_item_shipping_ton"
+            style="@style/BuyTextItem.Middle"
+            glshop:itemContent="0"
+            glshop:itemSecondTitle="@string/unit_ton_v3"
+            glshop:itemTitle="@string/business_discharge_shipping_ton"
+            glshop:showItemClickIcon="false"
+            glshop:showItemIcon="false" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/item_devider_discharge_addr"
+        style="@style/item_devider_line" />
+    <!-- 交易备注信息 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_item_bottom"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/buy_item_padding"
+        android:paddingRight="@dimen/buy_item_padding" >
+
+        <TextView
+            android:id="@+id/tv_buy_remarks_title"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/buy_item_height"
+            android:gravity="center_vertical"
+            android:text="购买备注" />
+
+        <View style="@style/item_devider_line" />
+
+        <TextView
+            android:id="@+id/tv_buy_remarks_content"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/buy_item_height"
+            android:gravity="center_vertical"
+            android:text="购买备注详情"
+            android:textColor="@color/blue" />
+    </LinearLayout>
+
+</LinearLayout>

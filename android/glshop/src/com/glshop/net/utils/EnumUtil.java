@@ -1,7 +1,13 @@
 package com.glshop.net.utils;
 
+import android.content.Context;
+
+import com.glshop.net.R;
+import com.glshop.platform.api.DataConstants.AuthStatusType;
 import com.glshop.platform.api.DataConstants.DealOprType;
+import com.glshop.platform.api.DataConstants.DepositStatusType;
 import com.glshop.platform.api.DataConstants.PayType;
+import com.glshop.platform.api.DataConstants.ProfileType;
 
 /**
  * 枚举工具类
@@ -99,6 +105,69 @@ public class EnumUtil {
 			break;
 		case OFFLINE_PAY:
 			data = "线下付款";
+			break;
+		}
+		return data;
+	}
+
+	/**
+	 * 获取企业类型
+	 * @param type
+	 * @return
+	 */
+	public static String parseProfileType(Context context, ProfileType type) {
+		String data = "";
+		switch (type) {
+		case COMPANY:
+			data = context.getString(R.string.auth_type_company_v1);
+			break;
+		case SHIP:
+			data = context.getString(R.string.auth_type_ship_v1);
+			break;
+		case PEOPLE:
+			data = context.getString(R.string.auth_type_people_v1);
+			break;
+		}
+		return data;
+	}
+
+	/**
+	 * 获取认证状态类型
+	 * @param type
+	 * @return
+	 */
+	public static String parseAuthType(Context context, AuthStatusType type) {
+		String data = "";
+		switch (type) {
+		case UN_AUTH:
+			data = context.getString(R.string.auth_status_unauth);
+			break;
+		case AUTH_SUCCESS:
+			data = context.getString(R.string.auth_status_authed);
+			break;
+		case AUTHING:
+			data = context.getString(R.string.auth_status_authing);
+			break;
+		case AUTH_FAILED:
+			data = context.getString(R.string.auth_status_auth_failed);
+			break;
+		}
+		return data;
+	}
+
+	/**
+	 * 获取保证金状态类型
+	 * @param type
+	 * @return
+	 */
+	public static String parseDepositStatusType(Context context, DepositStatusType type) {
+		String data = "";
+		switch (type) {
+		case UN_RECHARGE:
+			data = context.getString(R.string.deposit_status_unrecharge);
+			break;
+		case RECHARGE_SUCCESS:
+			data = context.getString(R.string.deposit_status_recharged);
 			break;
 		}
 		return data;

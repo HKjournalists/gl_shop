@@ -13,6 +13,7 @@ import com.glshop.platform.api.IReturnCallback;
 import com.glshop.platform.api.base.CommonResult;
 import com.glshop.platform.api.profile.AddAddrReq;
 import com.glshop.platform.api.profile.DeleteAddrReq;
+import com.glshop.platform.api.profile.GetAddrInfoReq;
 import com.glshop.platform.api.profile.GetAddrListReq;
 import com.glshop.platform.api.profile.GetContactListReq;
 import com.glshop.platform.api.profile.GetMyProfileInfoReq;
@@ -22,6 +23,7 @@ import com.glshop.platform.api.profile.SubmitAuthInfoReq;
 import com.glshop.platform.api.profile.UpdateAddrReq;
 import com.glshop.platform.api.profile.UpdateCompanyIntroReq;
 import com.glshop.platform.api.profile.UpdateContactReq;
+import com.glshop.platform.api.profile.data.GetAddrInfoResult;
 import com.glshop.platform.api.profile.data.GetAddrListResult;
 import com.glshop.platform.api.profile.data.GetContactListResult;
 import com.glshop.platform.api.profile.data.GetMyProfileInfoResult;
@@ -76,16 +78,41 @@ public class ProfileLogic extends BasicLogic implements IProfileLogic {
 						result.datas = data;*/
 						//End add
 
-						message.what = GlobalMessageType.ProfileMessageType.MSG_GET_ADDR_LIST_SUCCESS;
+						message.what = GlobalMessageType.ProfileMessageType.MSG_GET_DISCHARGE_ADDR_LIST_SUCCESS;
 						respInfo.data = result.datas;
 					} else {
-						message.what = GlobalMessageType.ProfileMessageType.MSG_GET_ADDR_LIST_FAILED;
+						message.what = GlobalMessageType.ProfileMessageType.MSG_GET_DISCHARGE_ADDR_LIST_FAILED;
 					}
 					sendMessage(message);
 				}
 			}
 		});
 		req.companyId = companyId;
+		req.exec();
+	}
+
+	@Override
+	public void getAddrInfo(String addrId) {
+		GetAddrInfoReq req = new GetAddrInfoReq(this, new IReturnCallback<GetAddrInfoResult>() {
+
+			@Override
+			public void onReturn(Object invoker, ResponseEvent event, GetAddrInfoResult result) {
+				if (ResponseEvent.isFinish(event)) {
+					Logger.i(TAG, "GetAddrInfoResult = " + result.toString());
+					Message message = new Message();
+					RespInfo respInfo = getOprRespInfo(result);
+					message.obj = respInfo;
+					if (result.isSuccess()) {
+						message.what = GlobalMessageType.ProfileMessageType.MSG_GET_DISCHARGE_ADDR_INFO_SUCCESS;
+						respInfo.data = result.data;
+					} else {
+						message.what = GlobalMessageType.ProfileMessageType.MSG_GET_DISCHARGE_ADDR_INFO_FAILED;
+					}
+					sendMessage(message);
+				}
+			}
+		});
+		req.addrId = addrId;
 		req.exec();
 	}
 

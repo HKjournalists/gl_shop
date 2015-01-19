@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
+import android.widget.EditText;
 import android.widget.AbsListView.OnScrollListener;
 
 import com.glshop.net.R;
@@ -41,6 +42,7 @@ import com.glshop.net.utils.DateUtils;
 import com.glshop.net.utils.MenuUtil;
 import com.glshop.net.utils.NetworkUtil;
 import com.glshop.net.utils.SDCardUtils;
+import com.glshop.net.utils.ToastUtil;
 import com.glshop.platform.api.profile.data.model.ImageInfoModel;
 import com.glshop.platform.base.ui.BaseFragment;
 import com.glshop.platform.utils.FileUtils;
@@ -106,6 +108,9 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 
 	/** 提交请求对话框 */
 	protected CommonProgressDialog mSubmitDialog;
+
+	/** 当前请求标识 */
+	protected String mInvoker = String.valueOf(System.currentTimeMillis());
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -311,12 +316,12 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 		menuUploadPicType = new MenuDialog(mContext, menu, new IMenuCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 
@@ -483,6 +488,28 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 				showToast(GlobalErrorMessage.getErrorMsg(mContext, info.errorCode, info.errorMsg));
 			}
 		}
+	}
+
+	/**
+	 * 焦点定位文本末尾
+	 * @param view
+	 */
+	protected void requestSelection(EditText view) {
+		if (view != null) {
+			view.setSelection(view.getText().toString().length());
+		}
+	}
+
+	@Override
+	protected void showToast(String msg) {
+		//super.showToast(msg);
+		ToastUtil.showDefaultToast(mContext, msg);
+	}
+
+	@Override
+	protected void showToast(int resId) {
+		//super.showToast(resId);
+		ToastUtil.showDefaultToast(mContext, resId);
 	}
 
 	@SuppressWarnings("unchecked")

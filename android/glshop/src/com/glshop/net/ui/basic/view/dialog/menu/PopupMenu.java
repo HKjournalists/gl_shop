@@ -3,7 +3,6 @@ package com.glshop.net.ui.basic.view.dialog.menu;
 import java.util.List;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,7 +10,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
+import android.widget.PopupWindow.OnDismissListener;
 
 import com.glshop.net.R;
 
@@ -23,13 +22,12 @@ import com.glshop.net.R;
  * @version     : 1.0
  * Create Date  : 2014-7-21 下午6:03:33
  */
-public class PopupMenu extends PopupWindow implements OnItemClickListener, PopupWindow.OnDismissListener {
+public class PopupMenu extends PopupWindow implements OnItemClickListener, OnDismissListener {
 
 	private Context mContext;
 
 	private List<String> mMenuList;
-
-	private String mSelectedMenu;
+	private BaseAdapter mAdapter;
 
 	private ListView mLvMenu;
 
@@ -40,22 +38,21 @@ public class PopupMenu extends PopupWindow implements OnItemClickListener, Popup
 	/**
 	 * @param context
 	 */
-	public PopupMenu(Context context, List<String> menu, IMenuCallback callback) {
-		this(context, menu, null, 0, callback);
+	public PopupMenu(Context context, List<String> menu, BaseAdapter adapter, IMenuCallback callback) {
+		this(context, menu, 0, adapter, callback);
 	}
 
 	/**
 	 * @param context
 	 */
-	public PopupMenu(Context context, List<String> menu, String selectedMenu, int menuWidth, IMenuCallback callback) {
+	public PopupMenu(Context context, List<String> menu, int menuWidth, BaseAdapter adapter, IMenuCallback callback) {
 		super(context);
 		this.mContext = context;
 		this.mMenuList = menu;
-		this.mSelectedMenu = selectedMenu;
 		this.mMenuWidth = menuWidth;
+		this.mAdapter = adapter;
 		this.callback = callback;
-
-		initView();
+		this.initView();
 		initData();
 	}
 
@@ -78,56 +75,8 @@ public class PopupMenu extends PopupWindow implements OnItemClickListener, Popup
 
 	private void initData() {
 		if (mMenuList != null) {
-			mLvMenu.setAdapter(new MenuAdapter(mSelectedMenu));
+			mLvMenu.setAdapter(mAdapter);
 			mLvMenu.setOnItemClickListener(this);
-		}
-	}
-
-	public class MenuAdapter extends BaseAdapter {
-
-		private String selectedMenu;
-
-		public MenuAdapter(String selectedMenu) {
-			super();
-			this.selectedMenu = selectedMenu;
-		}
-
-		@Override
-		public int getCount() {
-			return mMenuList == null ? 0 : mMenuList.size();
-		}
-
-		@Override
-		public Object getItem(int position) {
-			return mMenuList == null ? null : mMenuList.get(position);
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return 0;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			if (convertView == null) {
-				convertView = View.inflate(mContext, R.layout.menu_list_item, null);
-			}
-
-			String menuText = (String) getItem(position);
-			TextView tv = (TextView) convertView.findViewById(R.id.tv_menu_item);
-			tv.setText(menuText);
-
-			View itemBg = convertView.findViewById(R.id.ll_menu_item);
-
-			if (position == 0) {
-				itemBg.setBackgroundResource(menuText.equals(selectedMenu) ? R.drawable.bg_item_top_press : R.drawable.selector_item_top);
-			} else if (position == getCount() - 1) {
-				itemBg.setBackgroundResource(menuText.equals(selectedMenu) ? R.drawable.bg_item_bottom_press : R.drawable.selector_item_bottom);
-			} else {
-				itemBg.setBackgroundResource(menuText.equals(selectedMenu) ? R.drawable.bg_item_middle_press : R.drawable.selector_item_middle);
-			}
-
-			return convertView;
 		}
 	}
 

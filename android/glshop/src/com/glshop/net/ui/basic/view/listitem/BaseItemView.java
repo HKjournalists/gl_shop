@@ -68,23 +68,39 @@ public abstract class BaseItemView extends LinearLayout implements OnClickListen
 	@Override
 	public void setBackgroundColor(int color) {
 		llContainer.setBackgroundColor(color);
+		setPadding();
 	}
 
 	@Override
 	public void setBackgroundDrawable(Drawable d) {
 		llContainer.setBackgroundDrawable(d);
+		setPadding();
 	}
 
 	@Override
 	public void setBackgroundResource(int resid) {
 		llContainer.setBackgroundResource(resid);
+		setPadding();
+	}
+
+	private void setPadding() {
+		int padding = getResources().getDimensionPixelSize(R.dimen.buy_item_padding);
+		llContainer.setPadding(padding, 0, padding, 0);
 	}
 
 	protected abstract void initView();
 
 	protected abstract void initData(AttributeSet attrs);
 
+	public abstract void setTitle(String title);
+
+	public abstract void setSecondTitle(String title);
+
 	public abstract void setContentText(String text);
+
+	public abstract void setContentHint(String text);
+
+	public abstract void setContentHintColor(int color);
 
 	public abstract String getContentText();
 

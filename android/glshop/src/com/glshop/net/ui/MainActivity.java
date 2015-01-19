@@ -120,10 +120,10 @@ public class MainActivity extends BasicActivity {
 		Logger.d(TAG, "handleStateMessage: what = " + message.what);
 		RespInfo respInfo = getRespInfo(message);
 		switch (message.what) {
-		case GlobalMessageType.SettingMessageType.MSG_GET_UPGRADE_INFO_SUCCESS:
+		case GlobalMessageType.UpgradeMessageType.MSG_GET_UPGRADE_INFO_SUCCESS:
 			onGetUpgradeSuccess(respInfo);
 			break;
-		case GlobalMessageType.SettingMessageType.MSG_GET_UPGRADE_INFO_FAILED:
+		case GlobalMessageType.UpgradeMessageType.MSG_GET_UPGRADE_INFO_FAILED:
 			// 暂不处理
 			break;
 		case UserMessageType.MSG_MODIFY_PASSWORD_SUCCESS: // 密码修改成功

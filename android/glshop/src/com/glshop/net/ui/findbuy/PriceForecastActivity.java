@@ -7,12 +7,16 @@ import java.util.Map;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalAction;
 import com.glshop.net.common.GlobalMessageType;
+import com.glshop.net.logic.cache.DataCenter.DataType;
 import com.glshop.net.logic.model.MenuItemInfo;
 import com.glshop.net.logic.syscfg.ISysCfgLogic;
 import com.glshop.net.ui.basic.BasicFragmentActivity;
@@ -55,6 +59,7 @@ public class PriceForecastActivity extends BasicFragmentActivity {
 
 	private MenuDialog menuPortList;
 	private TextView mTvItemPort;
+	private View mIvPortMenuIcon;
 
 	private String mAreaName = "";
 	private Map<String, String> mAreaMap = new HashMap<String, String>();
@@ -79,10 +84,11 @@ public class PriceForecastActivity extends BasicFragmentActivity {
 		mRdoBtnSand = getView(R.id.rdoBtn_product_sand);
 		mRdoBtnStone = getView(R.id.rdoBtn_product_stone);
 		mTvItemPort = getView(R.id.tv_port_item);
+		mIvPortMenuIcon = getView(R.id.iv_port_dropdown);
 	}
 
 	private void initData(Bundle savedState) {
-		List<AreaInfoModel> areaList = mSysCfgLogic.getLocalAreaList();
+		List<AreaInfoModel> areaList = mSysCfgLogic.getLocalPortList();
 		if (BeanUtils.isNotEmpty(areaList)) {
 			for (int i = 0; i < areaList.size(); i++) {
 				AreaInfoModel info = areaList.get(i);
@@ -182,27 +188,48 @@ public class PriceForecastActivity extends BasicFragmentActivity {
 
 	private void showPortListMenu() {
 		closeDialog(menuPortList);
-		getView(R.id.iv_port_dropdown).setBackgroundResource(R.drawable.ic_port_dropdown_selected);
+		Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate180);
+		rotateAnimation.setFillAfter(true);
+		final Animation reverseAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate_reverse180);
+		reverseAnimation.setFillAfter(true);
+		reverseAnimation.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				refreshData();
+			}
+		});
+
+		mIvPortMenuIcon.startAnimation(rotateAnimation);
+
 		//List<String> menu = Arrays.asList(getResources().getStringArray(R.array.port_type));
 		List<MenuItemInfo> menu = MenuUtil.makeMenuList(new ArrayList<String>(mAreaMap.keySet()));
 		menuPortList = new MenuDialog(this, menu, new IMenuCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
-				getView(R.id.iv_port_dropdown).setBackgroundResource(R.drawable.ic_port_dropdown);
+			public void onConfirm(int type, Object obj) {
+				mIvPortMenuIcon.startAnimation(reverseAnimation);
 			}
 
 			@Override
-			public void onCancel() {
-				getView(R.id.iv_port_dropdown).setBackgroundResource(R.drawable.ic_port_dropdown);
+			public void onCancel(int type) {
+				mIvPortMenuIcon.startAnimation(reverseAnimation);
 			}
 
 			@Override
 			public void onMenuClick(int type, int position, Object obj) {
-				getView(R.id.iv_port_dropdown).setBackgroundResource(R.drawable.ic_port_dropdown);
+				mIvPortMenuIcon.startAnimation(reverseAnimation);
 				mAreaName = ((MenuItemInfo) obj).menuText;
 				mTvItemPort.setText(mAreaName);
-				refreshData();
+				//refreshData();
 			}
 		}, true, new MenuItemInfo(mTvItemPort.getText().toString()));
 		menuPortList.setMenuType(GlobalMessageType.MenuType.SELECT_PORT);
@@ -225,6 +252,11 @@ public class PriceForecastActivity extends BasicFragmentActivity {
 	@Override
 	protected boolean needLogin() {
 		return false;
+	}
+
+	@Override
+	protected int[] getDataType() {
+		return new int[] { DataType.SAND_FORECAST_PRICE_LIST, DataType.STONE_FORECAST_PRICE_LIST };
 	}
 
 	@Override

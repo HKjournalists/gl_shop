@@ -49,17 +49,23 @@
         <item>@string/discharge_addr_type_another_decide</item>
     </string-array>
 
+    <!-- 单位类型 -->
+    <string-array name="unit_type">
+        <item>@string/unit_ton_v2</item>
+        <item>@string/unit_cube_v2</item>
+    </string-array>
+
     <!-- 上传图片方式 -->
     <string-array name="upload_pic_type">
         <item>从相册中上传</item>
         <item>拍照</item>
     </string-array>
 
-    <!-- 找买找卖过滤类型 -->
-    <string-array name="find_buy_filter_type">
-        <item>有效期排序</item>
-        <item>价格从高到低</item>
+    <!-- 找买找卖排序类型 -->
+    <string-array name="find_buy_order_type">
+        <item>默认排序</item>
         <item>价格从低到高</item>
+        <item>价格从高到低</item>
         <item>诚信度从高到低</item>
     </string-array>
 
@@ -85,9 +91,9 @@
 
     <!-- 认证身份类型 -->
     <string-array name="auth_type">
-        <item>@string/auth_type_people</item>
         <item>@string/auth_type_company</item>
         <item>@string/auth_type_ship</item>
+        <item>@string/auth_type_people</item>
     </string-array>
 
     <!-- 账户身份类型 -->

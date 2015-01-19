@@ -6,6 +6,7 @@ import java.util.Map;
 import android.content.Context;
 import android.os.Message;
 
+import com.glshop.net.R;
 import com.glshop.net.common.GlobalConstants.DataReqType;
 import com.glshop.net.common.GlobalMessageType.BuyMessageType;
 import com.glshop.net.logic.basic.BasicLogic;
@@ -34,8 +35,7 @@ import com.glshop.platform.api.buy.data.GetBuysResult;
 import com.glshop.platform.api.buy.data.GetMyBuysResult;
 import com.glshop.platform.api.buy.data.GetPriceForecastResult;
 import com.glshop.platform.api.buy.data.GetTodayPriceResult;
-import com.glshop.platform.api.buy.data.model.AreaPriceInfoModel;
-import com.glshop.platform.api.buy.data.model.BuyFilterInfoModel;
+import com.glshop.platform.api.buy.data.model.BuyFilterInfoModelV2;
 import com.glshop.platform.api.buy.data.model.BuyInfoModel;
 import com.glshop.platform.api.buy.data.model.BuySummaryInfoModel;
 import com.glshop.platform.api.buy.data.model.ForecastPriceModel;
@@ -165,7 +165,7 @@ public class BuyLogic extends BasicLogic implements IBuyLogic {
 	}
 
 	@Override
-	public void getBuys(BuyFilterInfoModel filterInfo, final BuyType type, int pageIndex, int pageSize, final DataReqType reqType) {
+	public void getBuys(BuyFilterInfoModelV2 filterInfo, final BuyType type, int pageIndex, int pageSize, final DataReqType reqType) {
 		GetBuysReq req = new GetBuysReq(this, new IReturnCallback<GetBuysResult>() {
 
 			@Override
@@ -178,32 +178,9 @@ public class BuyLogic extends BasicLogic implements IBuyLogic {
 					respInfo.intArg2 = type.toValue();
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-
-						//Add test data
-						/*List<BuySummaryInfoModel> data = new ArrayList<BuySummaryInfoModel>();
-						for (int i = 0; i < Common.PAGE_SIZE; i++) {
-							BuySummaryInfoModel info = new BuySummaryInfoModel();
-							if (type == BuyType.BUYER) {
-								info.unitPrice = 66.6f;
-								info.tradeAmount = 200.5f;
-							} else {
-								info.unitPrice = 88.8f;
-								info.tradeAmount = 300.5f;
-							}
-							info.publishBuyId = String.valueOf(10000 + i);
-							info.buyType = type;
-							info.tradeArea = "靖江港";
-							info.tradePubDate = "2014-10-10 01:02:03";
-							info.tradeBeginDate = "2014-10-11 00:00:00";
-							info.tradeEndDate = "2014-12-20 00:00:00";
-							data.add(info);
-						}
-						result.datas = data;*/
-						//End add
-
 						if (BeanUtils.isNotEmpty(result.datas)) {
 							for (BuySummaryInfoModel info : result.datas) {
-								String productName = SysCfgUtils.getProductSimpleName(mcontext, info.productCode, info.productSubCode);
+								String productName = SysCfgUtils.getProductFullName(mcontext, info.productCode, info.productSubCode, info.productSpecId);
 								if (StringUtils.isNotEmpty(productName)) {
 									info.productName = productName;
 								}
@@ -251,10 +228,12 @@ public class BuyLogic extends BasicLogic implements IBuyLogic {
 					message.obj = respInfo;
 					if (result.isSuccess()) {
 						BuyInfoModel info = result.data;
-						String productName = SysCfgUtils.getProductFullName(mcontext, info.productCode, info.productSubCode, info.specId);
-						if (StringUtils.isNotEmpty(productName)) {
-							info.productName = productName;
+						if (DataConstants.SysCfgCode.TYPE_PRODUCT_SAND.equals(info.productTypeCode)) {
+							info.productTypeName = mcontext.getString(R.string.product_type_sand);
+						} else if (DataConstants.SysCfgCode.TYPE_PRODUCT_STONE.equals(info.productTypeCode)) {
+							info.productTypeName = mcontext.getString(R.string.product_type_stone);
 						}
+						info.productSepcInfo = SysCfgUtils.getProductCfgInfo(mcontext, info.productTypeCode, info.productCategoryCode, info.productSpecId);
 						message.what = BuyMessageType.MSG_GET_BUY_INFO_SUCCESS;
 						respInfo.data = result.data;
 					} else {
@@ -281,51 +260,12 @@ public class BuyLogic extends BasicLogic implements IBuyLogic {
 					respInfo.intArg1 = reqType.toValue();
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-
-						//Add test data
-						/*List<MyBuySummaryInfoModel> data = new ArrayList<MyBuySummaryInfoModel>();
-						//for (int i = pageIndex; i < pageSize; i++) {
-						//for (int i = 0; i < 2; i++) {
-						for (int i = pageIndex * pageSize; i < ((pageIndex + 1) * pageSize); i++) {
-							MyBuySummaryInfoModel info = new MyBuySummaryInfoModel();
-							info.publishBuyId = String.valueOf(10000 + i);
-							info.buyType = BuyType.BUYER;
-							info.unitPrice = 88.8f;
-							info.tradeAmount = 300.6f + i;
-							info.tradeArea = "靖江港";
-							info.tradePubDate = "2014-10-10 01:02:03";
-							info.tradeBeginDate = "2014-10-11 00:00:00";
-							info.tradeEndDate = "2014-12-20 00:00:00";
-							info.interestedNumber = 60 + i;
-							data.add(info);
-						}
-						result.datas = data;*/
-						//End add
-
 						if (BeanUtils.isNotEmpty(result.datas)) {
 							for (MyBuySummaryInfoModel info : result.datas) {
-								String productName = SysCfgUtils.getProductSimpleName(mcontext, info.productCode, info.productSubCode);
+								String productName = SysCfgUtils.getProductFullName(mcontext, info.productCode, info.productSubCode, info.productSpecId);
 								if (StringUtils.isNotEmpty(productName)) {
 									info.productName = productName;
 								}
-
-								String areaName = "";
-								if (info.isMoreArea) {
-									List<AreaPriceInfoModel> areaList = info.areaInfoList;
-									if (BeanUtils.isNotEmpty(areaList)) {
-										if (areaList.size() > 1) {
-											for (int i = 0; i < areaList.size(); i++) {
-												areaName += (SysCfgUtils.getAreaName(mcontext, areaList.get(i).areaInfo.code) + (i != areaList.size() - 1 ? ", " : ""));
-											}
-										} else {
-											areaName = SysCfgUtils.getAreaName(mcontext, info.tradeArea);
-										}
-										info.unitPrice = areaList.get(0).unitPrice;
-									}
-								} else {
-									areaName = SysCfgUtils.getAreaName(mcontext, info.tradeArea);
-								}
-								info.tradeArea = areaName;
 							}
 						}
 

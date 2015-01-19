@@ -22,13 +22,13 @@ import com.glshop.net.logic.cache.DataCenter;
 import com.glshop.net.logic.cache.DataCenter.DataType;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.ui.basic.BasicFragment;
-import com.glshop.net.ui.basic.adapter.BuyListAdapter;
+import com.glshop.net.ui.basic.adapter.buy.BuyListAdapter;
 import com.glshop.net.ui.basic.timer.GlobalTimerMgr;
 import com.glshop.net.ui.basic.timer.GlobalTimerMgr.ITimerListener;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
 import com.glshop.net.ui.findbuy.BuyInfoActivity;
 import com.glshop.platform.api.DataConstants.BuyType;
-import com.glshop.platform.api.buy.data.model.BuyFilterInfoModel;
+import com.glshop.platform.api.buy.data.model.BuyFilterInfoModelV2;
 import com.glshop.platform.api.buy.data.model.BuySummaryInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.utils.BeanUtils;
@@ -46,12 +46,14 @@ public class BuyListFragment extends BasicFragment implements OnItemClickListene
 
 	private static final String TAG = "BuyListFragment";
 
+	private boolean isInited;
+
 	private PullRefreshListView mLvBuyList;
 	private BuyListAdapter mAdapter;
 	private ArrayList<BuySummaryInfoModel> mInitData;
 	private boolean isRestored = false;
 
-	private BuyFilterInfoModel mFilterInfo;
+	private BuyFilterInfoModelV2 mFilterInfo;
 
 	private BuyType type;
 
@@ -82,6 +84,7 @@ public class BuyListFragment extends BasicFragment implements OnItemClickListene
 		mRootView = inflater.inflate(R.layout.fragment_buy_list, container, false);
 		initView();
 		initData();
+		isInited = true;
 		return mRootView;
 	}
 
@@ -89,6 +92,7 @@ public class BuyListFragment extends BasicFragment implements OnItemClickListene
 	protected void initArgs() {
 		Bundle bundle = getArguments();
 		type = BuyType.convert(bundle.getInt(GlobalAction.BuyAction.EXTRA_KEY_BUY_INFO_TYPE));
+		mFilterInfo = (BuyFilterInfoModelV2) bundle.getSerializable(GlobalAction.BuyAction.EXTRA_KEY_BUY_FILTER_INFO);
 	}
 
 	@Override
@@ -133,6 +137,7 @@ public class BuyListFragment extends BasicFragment implements OnItemClickListene
 
 	@Override
 	public void onReloadData() {
+		pageIndex = 1;
 		updateDataStatus(DataStatus.LOADING);
 		mBuyLogic.getBuys(mFilterInfo, type, DEFAULT_INDEX, PAGE_SIZE, DataReqType.INIT);
 	}
@@ -254,8 +259,15 @@ public class BuyListFragment extends BasicFragment implements OnItemClickListene
 		}
 	}
 
-	public void setBuyFilterInfo(BuyFilterInfoModel info) {
-		mFilterInfo = info;
+	public void updateBuyFilterInfo(BuyFilterInfoModelV2 info) {
+		if (isAdded() && isInited) {
+			mFilterInfo = info;
+			onReloadData();
+		} else {
+			Bundle bundle = getArguments();
+			bundle.putSerializable(GlobalAction.BuyAction.EXTRA_KEY_BUY_FILTER_INFO, info);
+			setArguments(bundle);
+		}
 	}
 
 	@Override

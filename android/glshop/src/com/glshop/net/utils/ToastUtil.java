@@ -1,6 +1,7 @@
 package com.glshop.net.utils;
 
 import com.glshop.net.R;
+import com.glshop.platform.utils.Logger;
 
 import android.content.Context;
 import android.os.Handler;
@@ -21,6 +22,8 @@ import android.widget.Toast;
  * Create Date  : 2014-7-16 下午4:45:39
  */
 public class ToastUtil {
+
+	private static final String TAG = "ToastUtil";
 
 	/**默认ID*/
 	public static final int TOAST_ID_DEFAULT = 0;
@@ -71,7 +74,8 @@ public class ToastUtil {
 
 	private static void showToast(int toastId, String msg, boolean global) {
 		//添加一个逻辑，不是前台不提醒
-		if (!global && !ActivityUtil.isReception(sAppContext)) {
+		if (!global && !ActivityUtil.isForegroundV2(sAppContext)) {
+			Logger.e(TAG, "showToast & app is background");
 			return;
 		}
 		//两秒内，连续相同的msg不显示

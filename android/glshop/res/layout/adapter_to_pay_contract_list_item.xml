@@ -13,78 +13,7 @@
         android:background="@drawable/selector_item_single"
         android:orientation="vertical" >
 
-        <!-- 合同编号及剩余时间 -->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/buy_item_height"
-            android:paddingLeft="@dimen/buy_item_padding"
-            android:paddingRight="@dimen/buy_item_padding" >
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_contract_id" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:text="合同编号:"
-                    android:textColor="@color/gray"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_contract_id"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:singleLine="true"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/sp15" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/ic_contract_datetime" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:text="还剩:"
-                    android:textColor="@color/gray"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tv_contract_rest_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:singleLine="true"
-                    android:textColor="@color/gray"
-                    android:textSize="@dimen/sp15" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <View style="@style/item_devider_line" />
-
-        <!-- 合同标题及待付金额 -->
+        <!-- 交货时间 -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -93,78 +22,190 @@
             android:paddingLeft="@dimen/buy_item_padding"
             android:paddingRight="@dimen/buy_item_padding" >
 
-            <TextView
-                android:id="@+id/tv_contract_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_contract_amount"
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/blue"
-                android:textSize="16sp" />
+                android:background="@drawable/ic_contract_datetime" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="吨"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/buy_item_padding"
-            android:paddingLeft="@dimen/buy_item_padding"
-            android:paddingRight="@dimen/buy_item_padding" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="待付货款:"
+                android:layout_marginLeft="2dp"
+                android:text="货款支付期限还剩:"
                 android:textColor="@color/gray"
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tv_to_pay_money"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_pay_wait_time"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
+                android:layout_marginLeft="2dp"
                 android:singleLine="true"
-                android:textColor="@color/orange"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:singleLine="true"
-                android:text="元"
-                android:textSize="16sp" />
+                android:text="3天3小时30分"
+                android:textColor="@color/red"
+                android:textSize="@dimen/sp15" />
         </LinearLayout>
 
         <View style="@style/item_devider_line" />
 
-        <!-- 立即支付 -->
+        <!-- 货物信息 -->
 
-        <RelativeLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/buy_item_padding"
+            android:paddingLeft="@dimen/buy_item_padding"
+            android:paddingRight="@dimen/buy_item_padding"
+            android:paddingTop="@dimen/buy_item_padding" >
+
+            <!-- 买卖类型 -->
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/iv_buy_type_icon"
+                    style="@style/Ic_Buy_Bg"
+                    android:text="@string/buy" />
+
+                <Button
+                    android:id="@+id/iv_sell_type_icon"
+                    style="@style/Ic_Sell_Bg"
+                    android:text="@string/sell"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="5dp" >
+
+                <!-- 货物名称及规格 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/tv_buy_product_spec"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:singleLine="true"
+                        android:text="黄砂.河砂.特细砂(0.7-1.5)mm"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- 货物单价及数量 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp" >
+
+                    <!-- 单价 -->
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:id="@+id/tv_buy_unit_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:text="0"
+                            android:textColor="@color/red"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_price_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="元/吨"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- 数量 -->
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:id="@+id/tv_buy_amount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="right"
+                            android:singleLine="true"
+                            android:text="0"
+                            android:textColor="@color/blue"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_amount_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="吨"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <View style="@style/item_devider_line" />
+
+        <!-- 合同支付金额 -->
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/buy_item_height"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/buy_item_padding"
             android:paddingRight="@dimen/buy_item_padding" >
 
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingBottom="6dp"
+                android:paddingTop="6dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="待付货款:"
+                    android:textColor="@color/gray"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_to_pay_money"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="3dp"
+                    android:singleLine="true"
+                    android:text="999.9"
+                    android:textColor="@color/red"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="3dp"
+                    android:singleLine="true"
+                    android:text="@string/unit_rmb_v1"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
             <Button
                 android:id="@+id/btn_to_pay_now"
                 style="@style/button_small_orange"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
                 android:text="立即支付" />
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

@@ -464,7 +464,6 @@ public class PullRefreshListView extends ListView implements OnScrollListener {
                 R.string.activity_display_basic_time_format));
         String date = format.format(new Date());
         lastUpdatedTextView.setText(getContext().getString(R.string.activity_display_basic_refresh_last) + date);
-        //arrowImageView.setImageResource(R.drawable.refresh_cloud_ok);
         arrowImageView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.GONE);
         tipsTextview.setText(getContext().getString(R.string.activity_display_basic_refreshok));

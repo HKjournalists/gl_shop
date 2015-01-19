@@ -7,11 +7,15 @@ import android.os.Message;
 
 import com.glshop.net.common.GlobalConfig;
 import com.glshop.net.common.GlobalConstants.DataReqType;
+import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.common.GlobalMessageType.ContractMessageType;
 import com.glshop.net.logic.basic.BasicLogic;
 import com.glshop.net.logic.cache.DataCenter;
 import com.glshop.net.logic.cache.DataCenter.DataType;
 import com.glshop.net.logic.model.RespInfo;
+import com.glshop.net.logic.syscfg.mgr.SysCfgUtils;
+import com.glshop.platform.api.DataConstants.ContractCancelType;
+import com.glshop.platform.api.DataConstants.ContractConfirmType;
 import com.glshop.platform.api.DataConstants.ContractType;
 import com.glshop.platform.api.IReturnCallback;
 import com.glshop.platform.api.base.CommonResult;
@@ -33,6 +37,8 @@ import com.glshop.platform.api.contract.GetContractModelReq;
 import com.glshop.platform.api.contract.GetContractsReq;
 import com.glshop.platform.api.contract.GetOprHistoryReq;
 import com.glshop.platform.api.contract.GetToPayContractsReq;
+import com.glshop.platform.api.contract.MultiCancelContractReq;
+import com.glshop.platform.api.contract.MultiConfirmContractReq;
 import com.glshop.platform.api.contract.data.AgreeContractSignResult;
 import com.glshop.platform.api.contract.data.GetCompanyEvaListResult;
 import com.glshop.platform.api.contract.data.GetContractEvaListResult;
@@ -42,8 +48,12 @@ import com.glshop.platform.api.contract.data.GetContractsResult;
 import com.glshop.platform.api.contract.data.GetOprHistoryResult;
 import com.glshop.platform.api.contract.data.GetToPayContractsResult;
 import com.glshop.platform.api.contract.data.model.ContractInfoModel;
+import com.glshop.platform.api.contract.data.model.ContractSummaryInfoModel;
 import com.glshop.platform.api.contract.data.model.EvaluationInfoModel;
 import com.glshop.platform.api.contract.data.model.NegotiateInfoModel;
+import com.glshop.platform.api.contract.data.model.ToPayContractInfoModel;
+import com.glshop.platform.api.profile.GetContractAddrInfoReq;
+import com.glshop.platform.api.profile.data.GetAddrInfoResult;
 import com.glshop.platform.net.base.ProtocolType.ResponseEvent;
 import com.glshop.platform.utils.BeanUtils;
 import com.glshop.platform.utils.Logger;
@@ -80,29 +90,14 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					respInfo.intArg2 = type.toValue();
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-
-						//Add test data
-						/*List<ContractSummaryInfoModel> data = new ArrayList<ContractSummaryInfoModel>();
-						//for (int i = pageIndex; i < pageSize; i++) {
-						//for (int i = 0; i < 2; i++) {
-						for (int i = pageIndex * pageSize; i < ((pageIndex + 1) * pageSize); i++) {
-							ContractSummaryInfoModel info = new ContractSummaryInfoModel();
-							info.buyType = BuyType.BUYER;
-							info.summary = "出售给靖江商业公司黄砂";
-							info.amount = "500";
-							if (type == ContractType.UNCONFIRMED) {
-								info.contractId = String.valueOf(10000 + i);
-							} else if (type == ContractType.ONGOING) {
-								info.contractId = String.valueOf(20000 + i);
-							} else {
-								info.contractId = String.valueOf(30000 + i);
+						if (BeanUtils.isNotEmpty(result.datas)) {
+							for (ContractSummaryInfoModel info : result.datas) {
+								String productName = SysCfgUtils.getProductFullName(mcontext, info.productCode, info.productSubCode, info.productSpecId);
+								if (StringUtils.isNotEmpty(productName)) {
+									info.productName = productName;
+								}
 							}
-							info.createTime = "2014-10-10 01:02:03";
-							info.expireTime = "2014-12-20 00:00:00";
-							data.add(info);
 						}
-						result.datas = data;*/
-						//End add
 
 						message.what = ContractMessageType.MSG_GET_CONTRACTS_SUCCESS;
 						respInfo.data = result.datas == null ? 0 : result.datas.size();
@@ -151,6 +146,11 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					message.obj = respInfo;
 					if (result.isSuccess()) {
 						ContractInfoModel info = result.data;
+						String productName = SysCfgUtils.getProductFullName(mcontext, info.productCode, info.productSubCode, info.productSpecId);
+						if (StringUtils.isNotEmpty(productName)) {
+							result.data.productName = productName;
+						}
+
 						covertNegotiateInfo(info.firstNegotiateList);
 						covertNegotiateInfo(info.secondNegotiateList);
 						message.what = ContractMessageType.MSG_GET_CONTRACT_INFO_SUCCESS;
@@ -203,16 +203,6 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					RespInfo respInfo = getOprRespInfo(result);
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-
-						//Add test data
-						/*ContractModelInfoModel info = new ContractModelInfoModel();
-						info.contractId = "123456";
-						info.contractName = "购买黄砂1000吨";
-						info.firstPartyName = "某某某";
-						info.secondPartyName = "晋江***公司";
-						result.data = info;*/
-						//End add
-
 						message.what = ContractMessageType.MSG_GET_CONTRACT_MODEL_SUCCESS;
 						respInfo.data = result.data;
 					} else {
@@ -223,6 +213,31 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 			}
 		});
 		req.contractId = contractId;
+		req.exec();
+	}
+
+	@Override
+	public void getContractAddrInfo(String buyId) {
+		GetContractAddrInfoReq req = new GetContractAddrInfoReq(this, new IReturnCallback<GetAddrInfoResult>() {
+
+			@Override
+			public void onReturn(Object invoker, ResponseEvent event, GetAddrInfoResult result) {
+				if (ResponseEvent.isFinish(event)) {
+					Logger.i(TAG, "GetAddrInfoResult = " + result.toString());
+					Message message = new Message();
+					RespInfo respInfo = getOprRespInfo(result);
+					message.obj = respInfo;
+					if (result.isSuccess()) {
+						message.what = GlobalMessageType.ProfileMessageType.MSG_GET_CONTRACT_ADDR_INFO_SUCCESS;
+						respInfo.data = result.data;
+					} else {
+						message.what = GlobalMessageType.ProfileMessageType.MSG_GET_CONTRACT_ADDR_INFO_FAILED;
+					}
+					sendMessage(message);
+				}
+			}
+		});
+		req.buyId = buyId;
 		req.exec();
 	}
 
@@ -238,18 +253,6 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					RespInfo respInfo = getOprRespInfo(result);
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-
-						//Add test data
-						/*List<ContractOprInfoModel> data = new ArrayList<ContractOprInfoModel>();
-						for (int i = 0; i < 10; i++) {
-							ContractOprInfoModel info = new ContractOprInfoModel();
-							info.summary = "冻结保证金";
-							info.dateTime = "2014-10-10 01:02:03";
-							data.add(info);
-						}
-						result.datas = data;*/
-						//End add
-
 						message.what = ContractMessageType.MSG_GET_CONTRACT_OPR_HISTORY_SUCCESS;
 						respInfo.data = result.datas;
 					} else {
@@ -407,6 +410,32 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 	}
 
 	@Override
+	public void multiCancelContract(String contractId, final ContractCancelType type) {
+		MultiCancelContractReq req = new MultiCancelContractReq(this, new IReturnCallback<CommonResult>() {
+
+			@Override
+			public void onReturn(Object invoker, ResponseEvent event, CommonResult result) {
+				if (ResponseEvent.isFinish(event)) {
+					Logger.i(TAG, "MultiCancelContractResult = " + result.toString());
+					Message message = new Message();
+					RespInfo respInfo = getOprRespInfo(result);
+					respInfo.intArg1 = type.toValue();
+					message.obj = respInfo;
+					if (result.isSuccess()) {
+						message.what = ContractMessageType.MSG_CONTRACT_CANCEL_SUCCESS;
+					} else {
+						message.what = ContractMessageType.MSG_CONTRACT_CANCEL_FAILED;
+					}
+					sendMessage(message);
+				}
+			}
+		});
+		req.contractId = contractId;
+		req.cancelType = type;
+		req.exec();
+	}
+
+	@Override
 	public void agreeCancelContract(String contractId) {
 		AgreeCancelContractReq req = new AgreeCancelContractReq(this, new IReturnCallback<CommonResult>() {
 
@@ -499,6 +528,33 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 	}
 
 	@Override
+	public void multiConfirmContract(String contractId, final ContractConfirmType type, String disUnitPrice, String disAmount) {
+		MultiConfirmContractReq req = new MultiConfirmContractReq(this, new IReturnCallback<CommonResult>() {
+
+			@Override
+			public void onReturn(Object invoker, ResponseEvent event, CommonResult result) {
+				if (ResponseEvent.isFinish(event)) {
+					Logger.i(TAG, "ConfirmReceiptResult = " + result.toString());
+					Message message = new Message();
+					RespInfo respInfo = getOprRespInfo(result);
+					respInfo.intArg1 = type.toValue();
+					message.obj = respInfo;
+					if (result.isSuccess()) {
+						message.what = ContractMessageType.MSG_MULTI_COMFIRM_CONTRACT_SUCCESS;
+					} else {
+						message.what = ContractMessageType.MSG_MULTI_COMFIRM_CONTRACT_FAILED;
+					}
+					sendMessage(message);
+				}
+			}
+		});
+		req.contractId = contractId;
+		req.disUnitPrice = disUnitPrice;
+		req.disAmount = disAmount;
+		req.exec();
+	}
+
+	@Override
 	public void contractEvaluate(EvaluationInfoModel info) {
 		EvaluateContractReq req = new EvaluateContractReq(this, new IReturnCallback<CommonResult>() {
 
@@ -533,25 +589,14 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					RespInfo respInfo = getOprRespInfo(result);
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-
-						//Add test data
-						/*List<ToPayContractInfoModel> data = new ArrayList<ToPayContractInfoModel>();
-						for (int i = 0; i < 30; i++) {
-							ToPayContractInfoModel info = new ToPayContractInfoModel();
-							info.buyType = BuyType.BUYER;
-							info.summary = "出售给靖江商业公司黄砂";
-							info.amount = "500";
-							info.contractId = "123456";
-							info.createTime = "2014-10-10 01:02:03";
-							info.expireTime = "2014-12-20 00:00:00";
-							info.toPayMoney = "200,000,00";
-							data.add(info);
+						if (BeanUtils.isNotEmpty(result.datas)) {
+							for (ToPayContractInfoModel info : result.datas) {
+								String productName = SysCfgUtils.getProductFullName(mcontext, info.productCode, info.productSubCode, info.productSpecId);
+								if (StringUtils.isNotEmpty(productName)) {
+									info.productName = productName;
+								}
+							}
 						}
-						result.datas = data;*/
-						//End add
-
-						//message.arg2 = type.toValue();
-						//message.obj = result.datas;
 
 						message.what = ContractMessageType.MSG_GET_TO_PAY_CONTRACTS_SUCCESS;
 						respInfo.data = result.datas;
@@ -579,19 +624,6 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					RespInfo respInfo = getOprRespInfo(result);
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-
-						//Add test data
-						/*List<EvaluationInfoModel> data = new ArrayList<EvaluationInfoModel>();
-						for (int i = 0; i < 30; i++) {
-							EvaluationInfoModel info = new EvaluationInfoModel();
-							info.id = "123456";
-							info.content = "质量很好";
-							info.dateTime = "2014-10-10 01:02:03";
-							data.add(info);
-						}
-						result.datas = data;*/
-						//End add
-
 						message.what = ContractMessageType.MSG_GET_CONTRACTS_EVALUATION_SUCCESS;
 						respInfo.data = result.datas;
 					} else {
@@ -617,21 +649,6 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					RespInfo respInfo = getOprRespInfo(result);
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-
-						//Add test data
-						/*List<EvaluationInfoModel> data = new ArrayList<EvaluationInfoModel>();
-						for (int i = 0; i < 5; i++) {
-							EvaluationInfoModel info = new EvaluationInfoModel();
-							info.id = "123456";
-							info.user = "江苏靖江有限公司";
-							info.content = "货物质量不错，送货及时。货物质量不错，送货及时。货物质量不错，送货及时。";
-							info.dateTime = "2014-10-10 01:02:03";
-							info.isSingleLine = true;
-							data.add(info);
-						}
-						result.datas = data;*/
-						//End add
-
 						message.what = ContractMessageType.MSG_GET_COMPANY_EVALUATION_SUCCESS;
 						respInfo.data = result.datas;
 

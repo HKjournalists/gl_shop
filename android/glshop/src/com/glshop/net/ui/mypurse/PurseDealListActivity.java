@@ -22,6 +22,7 @@ import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.purse.IPurseLogic;
 import com.glshop.net.ui.basic.BasicActivity;
 import com.glshop.net.ui.basic.adapter.DealListAdapter;
+import com.glshop.net.ui.basic.adapter.menu.DropMenuAdapter;
 import com.glshop.net.ui.basic.view.PullRefreshListView;
 import com.glshop.net.ui.basic.view.dialog.menu.PopupMenu;
 import com.glshop.net.ui.basic.view.dialog.menu.PopupMenu.IMenuCallback;
@@ -201,7 +202,8 @@ public class PurseDealListActivity extends BasicActivity implements OnItemClickL
 		mDropdownMenu.setEnabled(false);
 		mDropdownMenu.findViewById(R.id.iv_common_menu_icon).setBackgroundResource(R.drawable.ic_dropdown_menu_up);
 		//Logger.e(TAG, "Menu Width = " + mDropdownMenu.getWidth());
-		PopupMenu menu = new PopupMenu(this, menus, menus.get(mFilterType.toValue() + 1), mDropdownMenu.getWidth(), new IMenuCallback() {
+		DropMenuAdapter adapter = new DropMenuAdapter(this, menus, menus.get(mFilterType.toValue() + 1));
+		PopupMenu menu = new PopupMenu(this, menus, mDropdownMenu.getWidth(), adapter, new IMenuCallback() {
 
 			@Override
 			public void onMenuItemClick(int index) {
@@ -220,6 +222,11 @@ public class PurseDealListActivity extends BasicActivity implements OnItemClickL
 			}
 		});
 		menu.showAsDropDown(mDropdownMenu);
+	}
+
+	@Override
+	protected int[] getDataType() {
+		return new int[] { DataType.PURSE_DEAL_LIST };
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 发布买卖信息企业信息资料Layout -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
     android:id="@+id/ll_company_profile"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,70 +10,65 @@
     <!-- 买卖企业信息 -->
 
     <LinearLayout
-        android:id="@+id/ll_buy_company_profile"
         android:layout_width="match_parent"
         android:layout_height="@dimen/buy_item_height"
-        android:background="@drawable/selector_item_top"
+        android:background="@drawable/bg_item_top_press"
         android:gravity="center_vertical"
         android:paddingLeft="@dimen/buy_item_padding"
         android:paddingRight="@dimen/buy_item_padding" >
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="买家信息" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="了解详情"
-            android:textColor="#5EA265" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_btn_more"
-            android:contentDescription="@null"
-            android:duplicateParentState="true" />
     </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 企业性质 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_company_type"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="企业"
+        glshop:itemContentColor="#FF6601"
+        glshop:itemTitle="企业性质" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 企业真实信息认证 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_company_auth_status"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="已认证"
+        glshop:itemContentColor="#FF6601"
+        glshop:itemTitle="企业真实信息认证" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 企业交易保证金状态 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_company_deposit_status"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="已缴纳"
+        glshop:itemContentColor="#FF6601"
+        glshop:itemTitle="企业交易保证金状态" />
 
     <View style="@style/item_devider_line" />
 
     <!-- 企业名称 -->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/buy_item_height"
-        android:background="@drawable/selector_item_middle"
-        android:gravity="center_vertical"
-        android:paddingLeft="@dimen/buy_item_padding"
-        android:paddingRight="@dimen/buy_item_padding" >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_company"
-            android:contentDescription="@null"
-            android:duplicateParentState="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:text="名称" />
-
-        <TextView
-            android:id="@+id/tv_company_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="靖江商业有限公司"
-            android:textColor="#FF6601" />
-    </LinearLayout>
-
-    <View style="@style/item_devider_line" />
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_company_name"
+        style="@style/BuyTextItem.Top"
+        android:visibility="gone"
+        glshop:itemContent="靖江商业有限公司"
+        glshop:itemContentColor="#FF6601"
+        glshop:itemIcon="@drawable/ic_company"
+        glshop:itemTitle="名称"
+        glshop:showItemIcon="true" />
 
     <!-- 交易满意度 -->
 
@@ -89,12 +85,12 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ic_satisfaction_per"
             android:contentDescription="@null"
-            android:duplicateParentState="true" />
+            android:duplicateParentState="true"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
             android:layout_weight="1"
             android:text="交易满意度" />
 
@@ -125,12 +121,12 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ic_sincerity_per"
             android:contentDescription="@null"
-            android:duplicateParentState="true" />
+            android:duplicateParentState="true"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
             android:layout_weight="1"
             android:text="交易诚信度" />
 
@@ -148,35 +144,32 @@
 
     <!-- 交易成功率 -->
 
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_turnover_rate"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="95%"
+        glshop:itemContentColor="#FF6601"
+        glshop:itemIcon="@drawable/ic_success_per"
+        glshop:itemTitle="交易成功率" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 查看企业评价列表 -->
+
     <LinearLayout
+        android:id="@+id/ll_view_company_evluations"
         android:layout_width="match_parent"
         android:layout_height="@dimen/buy_item_height"
         android:background="@drawable/selector_item_bottom"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:paddingLeft="@dimen/buy_item_padding"
         android:paddingRight="@dimen/buy_item_padding" >
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_success_per"
-            android:contentDescription="@null"
-            android:duplicateParentState="true" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="3dp"
-            android:text="交易成功率" />
-
-        <TextView
-            android:id="@+id/tv_turnover_rate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="95%"
-            android:textColor="#FF6601" />
+            android:text="查看对方的交易历史评价 >>"
+            android:textColor="@color/orange" />
     </LinearLayout>
 
 </LinearLayout>

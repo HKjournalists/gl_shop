@@ -8,14 +8,19 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
+import com.glshop.net.common.GlobalConstants;
+import com.glshop.net.logic.db.dao.syscfg.ISyscfgDao;
+import com.glshop.net.logic.db.dao.syscfg.SyscfgDao;
 import com.glshop.platform.api.syscfg.data.model.AreaInfoModel;
 import com.glshop.platform.api.syscfg.data.model.BankInfoModel;
 import com.glshop.platform.api.syscfg.data.model.ProductCfgInfoModel;
 import com.glshop.platform.api.syscfg.data.model.SysParamInfoModel;
 import com.glshop.platform.api.util.SyncCfgUtils;
+import com.glshop.platform.base.config.PlatformConfig;
 import com.glshop.platform.net.base.ResultItem;
 import com.glshop.platform.utils.BeanUtils;
 import com.glshop.platform.utils.FileUtils;
+import com.glshop.platform.utils.Logger;
 
 /**
  * @Description : 本地系统参数配置管理类
@@ -27,12 +32,15 @@ import com.glshop.platform.utils.FileUtils;
  */
 public class SysCfgLocalMgr {
 
+	private static final String TAG = "SysCfgLocalMgr";
+
 	private Context mContext;
 
 	private static SysCfgLocalMgr mInstance;
 
 	private static final String LOCAL_SYNC_PATH = "data/sync.data";
 	private static final String LOCAL_BANK_PATH = "data/bank.data";
+	private static final String LOCAL_AREA_PATH = "data/area.data";
 
 	/** 本地配置数据集 */
 	private ResultItem mLocaleSyncData;
@@ -40,8 +48,14 @@ public class SysCfgLocalMgr {
 	/** 本地银行配置数据集 */
 	private ResultItem mLocaleBankData;
 
+	/** 本地地域配置数据集 */
+	private ResultItem mLocaleAreaData;
+
 	/** 货物信息 */
 	private List<ProductCfgInfoModel> mProductList;
+
+	/** 港口信息 */
+	private List<AreaInfoModel> mPortList;
 
 	/** 地域信息 */
 	private List<AreaInfoModel> mAreaList;
@@ -51,6 +65,8 @@ public class SysCfgLocalMgr {
 
 	/** 系统参数列表信息 */
 	private List<SysParamInfoModel> mSysParamList;
+
+	private boolean isImportingAreaCfg = false;
 
 	private SysCfgLocalMgr(Context context) {
 		mContext = context;
@@ -88,6 +104,26 @@ public class SysCfgLocalMgr {
 	}
 
 	/**
+	 * 加载本地港口列表
+	 * @return
+	 */
+	public synchronized List<AreaInfoModel> loadPortList() {
+		List<AreaInfoModel> portList = null;
+		if (BeanUtils.isNotEmpty(mPortList)) {
+			portList = mPortList;
+		} else {
+			ResultItem areaItem = (ResultItem) mLocaleSyncData.get("data|riverSection");
+			if (areaItem != null) {
+				portList = SyncCfgUtils.parseSysPortData(areaItem, null);
+				if (BeanUtils.isNotEmpty(portList)) {
+					mPortList = portList;
+				}
+			}
+		}
+		return portList;
+	}
+
+	/**
 	 * 加载本地交易地域列表
 	 * @return
 	 */
@@ -96,13 +132,7 @@ public class SysCfgLocalMgr {
 		if (BeanUtils.isNotEmpty(mAreaList)) {
 			areaList = mAreaList;
 		} else {
-			ResultItem areaItem = (ResultItem) mLocaleSyncData.get("data|riverSection");
-			if (areaItem != null) {
-				areaList = SyncCfgUtils.parseSysAreaData(areaItem, null);
-				if (BeanUtils.isNotEmpty(areaList)) {
-					mAreaList = areaList;
-				}
-			}
+			//TODO
 		}
 		return areaList;
 	}
@@ -145,6 +175,39 @@ public class SysCfgLocalMgr {
 			}
 		}
 		return sysParamList;
+	}
+
+	public synchronized void importLocalAreaCfg() {
+		if (!isImportingAreaCfg) {
+			isImportingAreaCfg = true;
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					if (mLocaleAreaData == null) {
+						mLocaleAreaData = loadLocalData(LOCAL_AREA_PATH);
+					}
+					ResultItem areaItem = (ResultItem) mLocaleAreaData.get("data|area");
+					if (areaItem != null) {
+						List<AreaInfoModel> areaList = SyncCfgUtils.parseAreaData(areaItem);
+						if (BeanUtils.isNotEmpty(areaList)) {
+							ISyscfgDao sysCfgDao = SyscfgDao.getInstance(mContext);
+							//Step1. 先删除本地数据库中的地域信息
+							sysCfgDao.deleteAllAreaInfo(mContext);
+
+							//Step2. 重新导入新的地域列表
+							sysCfgDao.insertAreaInfo(mContext, areaList);
+							isImportingAreaCfg = false;
+
+							//Step3. 设置已导入标记
+							PlatformConfig.setValue(GlobalConstants.SPKey.IS_IMPORTED_AREA_CFG, true);
+						}
+					}
+					mLocaleAreaData = null;
+				}
+			}).start();
+		} else {
+			Logger.e(TAG, "importing, so ignore this request!");
+		}
 	}
 
 	/**

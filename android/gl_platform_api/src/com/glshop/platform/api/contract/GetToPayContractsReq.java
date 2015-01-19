@@ -46,6 +46,9 @@ public class GetToPayContractsReq extends BaseRequest<GetToPayContractsResult> {
 			info.lifeCycle = ContractLifeCycle.convert(contractItem.getInt("lifecycle|val"));
 			info.statusType = ContractStatusType.convert(contractItem.getInt("otype|val"));
 			info.productName = contractItem.getString("productName");
+			info.productCode = contractItem.getString("productCode");
+			info.productSubCode = contractItem.getString("productType");
+			info.productSpecId = contractItem.getString("productId");
 			info.buyType = BuyType.convert(contractItem.getInt("saleType|val"));
 			info.buyCompanyId = contractItem.getString("buyerid");
 			info.buyCompanyName = contractItem.getString("buyerName");
@@ -53,7 +56,9 @@ public class GetToPayContractsReq extends BaseRequest<GetToPayContractsResult> {
 			info.sellCompanyName = contractItem.getString("sellerName");
 			info.createTime = contractItem.getString("creatime");
 			info.expireTime = contractItem.getString("limittime");
+			info.payExpireTime = contractItem.getString("payGoodsLimitTime");
 			info.amount = contractItem.getString("totalnum");
+			info.unitPrice = contractItem.getString("price");
 			info.toPayMoney = contractItem.getString("totalamount");
 			itemList.add(info);
 		}

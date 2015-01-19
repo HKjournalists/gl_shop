@@ -31,6 +31,21 @@ public class MyProfileInfoModel extends ResultItem {
 	public ProfileType profileType;
 
 	/**
+	 * 企业认证信息详情
+	 */
+	public CompanyAuthInfoModel companyAuthInfo;
+
+	/**
+	 * 船舶认证信息详情
+	 */
+	public ShipAuthInfoModel shipAuthInfo;
+
+	/**
+	 * 个人认证信息详情
+	 */
+	public PersonalAuthInfoModel personalAuthInfo;
+
+	/**
 	 * 认证状态类型
 	 */
 	public AuthStatusType authStatusType = AuthStatusType.UN_AUTH;

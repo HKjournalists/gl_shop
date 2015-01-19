@@ -45,9 +45,6 @@ public class UserRegActivity extends BasicActivity {
 
 	private String mRegAccount;
 
-	/** 请求标识 */
-	private String mInvoker = String.valueOf(System.currentTimeMillis());
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -149,12 +146,12 @@ public class UserRegActivity extends BasicActivity {
 		mConfirmDialog.setCallback(new IDialogCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
+			public void onConfirm(int type, Object obj) {
 				getSmsVerfiyCode();
 			}
 
 			@Override
-			public void onCancel() {
+			public void onCancel(int type) {
 
 			}
 		});

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.glshop.net.R;
@@ -110,7 +111,8 @@ public class BuyEditItemView extends BaseItemView {
 		}
 
 		if (contentWidth > 0) {
-			mEtItemContent.setWidth(contentWidth);
+			LinearLayout.LayoutParams lp = (LayoutParams) mEtItemContent.getLayoutParams();
+			lp.width = contentWidth;
 		}
 
 		mIvItemIcon.setVisibility(isShowItemIcon ? View.VISIBLE : View.GONE);
@@ -123,8 +125,28 @@ public class BuyEditItemView extends BaseItemView {
 	}
 
 	@Override
+	public void setTitle(String title) {
+		mTvItemTitle.setText(title);
+	}
+
+	@Override
+	public void setSecondTitle(String title) {
+		mTvItemSecondTitle.setText(title);
+	}
+
+	@Override
 	public void setContentText(String text) {
 		mEtItemContent.setText(text);
+	}
+
+	@Override
+	public void setContentHint(String text) {
+		mEtItemContent.setHint(text);
+	}
+
+	@Override
+	public void setContentHintColor(int color) {
+		mEtItemContent.setHintTextColor(color);
 	}
 
 	@Override

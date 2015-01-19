@@ -6,6 +6,7 @@ import java.util.List;
 import com.glshop.platform.api.DataConstants.BuyStatus;
 import com.glshop.platform.api.DataConstants.BuyType;
 import com.glshop.platform.api.DataConstants.MyBuyFilterType;
+import com.glshop.platform.api.DataConstants.ProductUnitType;
 import com.glshop.platform.api.IReturnCallback;
 import com.glshop.platform.api.base.BaseRequest;
 import com.glshop.platform.api.buy.data.GetMyBuysResult;
@@ -79,17 +80,26 @@ public class GetMyBuysReq extends BaseRequest<GetMyBuysResult> {
 				info.productName = buyItem.getString("pname");
 				info.productCode = buyItem.getString("pcode");
 				info.productSubCode = buyItem.getString("ptype");
+				info.productSpecId = buyItem.getString("pid");
 
 				ResultItem typeItem = (ResultItem) buyItem.get("type");
 				if (typeItem != null) {
 					info.buyType = BuyType.convert(typeItem.getInt("val"));
 				}
 
+				// 单价及数量
 				info.unitPrice = buyItem.getFloat("price");
 				info.tradeAmount = buyItem.getFloat("totalnum");
+				// 单位
+				ResultItem unitTypeItem = (ResultItem) buyItem.get("unit");
+				if (unitTypeItem != null) {
+					info.unitType = ProductUnitType.convert(unitTypeItem.getString("val"));
+				}
+				info.tradePubDate = buyItem.getString("creatime");
 				info.tradeBeginDate = buyItem.getString("starttime");
-				info.tradeEndDate = buyItem.getString("limitime");
-				info.tradeArea = buyItem.getString("area");
+				info.tradeEndDate = buyItem.getString("endtime");
+				info.tradeAreaCode = buyItem.getString("area");
+				info.tradeAreaName = buyItem.getString("areaFullName");
 
 				ResultItem statusItem = (ResultItem) buyItem.get("status");
 				if (typeItem != null) {

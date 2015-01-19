@@ -29,13 +29,24 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical" >
 
+                    <!-- 信息发布标题 -->
+
+                    <TextView
+                        android:id="@+id/tv_buy_info_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="8dp"
+                        android:singleLine="true"
+                        android:text="出售黄砂1000吨"
+                        android:visibility="gone" />
+
                     <!-- 当前信息状态 -->
 
                     <LinearLayout
                         android:id="@+id/ll_buy_info_status"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:layout_marginTop="6dp"
                         android:background="@color/pink"
                         android:gravity="center_vertical" >
 
@@ -46,21 +57,11 @@
                             android:src="@drawable/ic_buy_info_status" />
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="6dp"
-                            android:singleLine="true"
-                            android:text="信息发布时间:"
-                            android:textColor="#FF0000" />
-
-                        <TextView
-                            android:id="@+id/tv_pub_datetime"
+                            android:id="@+id/tv_buy_info_status"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="6dp"
-                            android:singleLine="true"
-                            android:text="2014年12月12日12时12分"
-                            android:textColor="#FF0000" />
+                            android:text="当前已有X吨货物成为订单，目前还有Y吨货物继续发布." />
                     </LinearLayout>
 
                     <LinearLayout
@@ -71,92 +72,31 @@
                         android:paddingRight="6dp"
                         android:paddingTop="8dp" >
 
-                        <!-- 发布信息标题 -->
+                        <!-- 广告信息 -->
 
-                        <TextView
-                            android:id="@+id/tv_buy_info_title"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginTop="8dp"
-                            android:singleLine="true"
-                            android:text="出售黄砂1000吨"
-                            android:visibility="gone" />
+                        <include
+                            android:id="@+id/ll_buy_advert_info"
+                            layout="@layout/layout_buy_advert_info" />
 
-                        <include layout="@layout/layout_buy_advert_info" />
+                        <View style="@style/item_devider_view" />
 
                         <!-- 货物信息 -->
 
-                        <View style="@style/item_devider_view" />
-
-                        <include layout="@layout/layout_pub_product_info" />
-
-                        <!-- 交易数量及单价信息 -->
+                        <include layout="@layout/layout_buy_product_info" />
 
                         <View style="@style/item_devider_view" />
-
-                        <!-- 单地域 -->
-
-                        <include
-                            android:id="@+id/ll_single_area_list"
-                            layout="@layout/layout_pub_buy_amount_info" />
-
-                        <!-- 多地域 -->
-
-                        <include
-                            android:id="@+id/ll_more_area_list"
-                            layout="@layout/layout_pub_buy_more_area_amount_info"
-                            android:visibility="gone" />
 
                         <!-- 交易信息 -->
 
-                        <View style="@style/item_devider_view" />
-
-                        <include layout="@layout/layout_pub_trade_area_info" />
-
-                        <!-- 卸货地址信息 -->
+                        <include layout="@layout/layout_buy_trade_info" />
 
                         <View style="@style/item_devider_view" />
-
-                        <include layout="@layout/layout_pub_discharge_addr_info" />
-
-                        <!-- 买货实物信息 -->
-
-                        <View style="@style/item_devider_view" />
-
-                        <include layout="@layout/layout_pub_product_photo_info" />
-
-                        <!-- 交易备注信息 -->
-
-                        <View style="@style/item_devider_view" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="60dp"
-                            android:background="@drawable/selector_item_single"
-                            android:orientation="vertical"
-                            android:paddingLeft="@dimen/buy_item_padding"
-                            android:paddingRight="@dimen/buy_item_padding" >
-
-                            <TextView
-                                android:id="@+id/tv_buy_remarks_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="购买备注" />
-
-                            <TextView
-                                android:id="@+id/tv_buy_remarks_content"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="购买备注详情...."
-                                android:textColor="@color/blue" />
-                        </LinearLayout>
 
                         <!-- 买卖企业资料信息 -->
 
-                        <View style="@style/item_devider_view" />
-
                         <include layout="@layout/layout_buy_company_profile" />
+
+                        <View style="@style/item_devider_view" />
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>
@@ -170,6 +110,8 @@
             android:layout_height="wrap_content"
             android:gravity="center" >
 
+            <!-- 想交易 -->
+
             <Button
                 android:id="@+id/btn_want_to_deal"
                 style="@style/button_orange"
@@ -178,6 +120,7 @@
                 android:layout_weight="1"
                 android:text="@string/want_to_deal"
                 android:visibility="gone" />
+            <!-- 修改 -->
 
             <Button
                 android:id="@+id/btn_modify_pub"
@@ -187,6 +130,7 @@
                 android:layout_weight="1"
                 android:text="@string/modify_buy_info"
                 android:visibility="gone" />
+            <!-- 取消 -->
 
             <Button
                 android:id="@+id/btn_undo_pub"
@@ -196,9 +140,20 @@
                 android:layout_weight="1"
                 android:text="@string/undo_pub_buy_info"
                 android:visibility="gone" />
+            <!-- 重新发布 -->
 
             <Button
                 android:id="@+id/btn_repub"
+                style="@style/button_orange"
+                android:layout_width="0dp"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:text="@string/repub_buy_info"
+                android:visibility="gone" />
+            <!-- 查看合同 -->
+
+            <Button
+                android:id="@+id/btn_view_contract"
                 style="@style/button_orange"
                 android:layout_width="0dp"
                 android:layout_margin="6dp"

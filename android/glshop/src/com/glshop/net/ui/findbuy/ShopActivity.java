@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -47,6 +50,7 @@ import com.glshop.platform.api.syscfg.data.model.AreaInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.utils.BeanUtils;
 import com.glshop.platform.utils.Logger;
+import com.glshop.platform.utils.StringUtils;
 
 /**
  * @Description : 电商平台主页
@@ -81,6 +85,7 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 	private View mBtnMessage;
 	private View mBtnLogin;
 	private View mBtnSetting;
+	private View mIvPortMenuIcon;
 
 	private String mAreaName = "";
 	private Map<String, String> mAreaMap = new HashMap<String, String>();
@@ -125,6 +130,7 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 		mBtnSetting = getView(R.id.btn_setting);
 		mTvItemPort = getView(R.id.tv_port_item);
 		mTvMessage = getView(R.id.iv_unread_msg_num);
+		mIvPortMenuIcon = getView(R.id.iv_port_dropdown);
 
 		mLvSandTodayPrice = getView(R.id.ll_sand_today_price_list);
 		mLvStoneTodayPrice = getView(R.id.ll_stone_today_price_list);
@@ -151,7 +157,7 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 	}
 
 	private void initData(Bundle savedState) {
-		List<AreaInfoModel> areaList = mSysCfgLogic.getLocalAreaList();
+		List<AreaInfoModel> areaList = mSysCfgLogic.getLocalPortList();
 		if (BeanUtils.isNotEmpty(areaList)) {
 			for (int i = 0; i < areaList.size(); i++) {
 				AreaInfoModel info = areaList.get(i);
@@ -202,7 +208,7 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 
 		updateLoginStatus();
 
-		//refreshMessageStatus();
+		//refreshMessageStatus(); // 避免在更新token的时候调用，导致获取失败
 	}
 
 	/**
@@ -236,10 +242,16 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 	private void switchView() {
 		mLvSandTodayPrice.setVisibility(productType == ProductType.SAND ? View.VISIBLE : View.GONE);
 		mLvStoneTodayPrice.setVisibility(productType == ProductType.STONE ? View.VISIBLE : View.GONE);
-		if (productType == ProductType.SAND && !mLvSandTodayPrice.isLoaded()) {
-			mBuyLogic.getTodayPrice(productType, SysCfgCode.TYPE_PRODUCT_SAND, mAreaMap.get(mAreaName));
-		} else if (productType == ProductType.STONE && !mLvStoneTodayPrice.isLoaded()) {
-			mBuyLogic.getTodayPrice(productType, SysCfgCode.TYPE_PRODUCT_STONE, mAreaMap.get(mAreaName));
+		String areaCode = mAreaMap.get(mAreaName);
+		if (areaCode == null) {
+			areaCode = "";
+		}
+		if (productType == ProductType.SAND && (!mLvSandTodayPrice.isLoaded() || !areaCode.equals(mLvSandTodayPrice.getAreaCode()))) {
+			mLvSandTodayPrice.setAreaCode(areaCode);
+			mBuyLogic.getTodayPrice(productType, SysCfgCode.TYPE_PRODUCT_SAND, areaCode);
+		} else if (productType == ProductType.STONE && (!mLvStoneTodayPrice.isLoaded() || !areaCode.equals(mLvStoneTodayPrice.getAreaCode()))) {
+			mLvStoneTodayPrice.setAreaCode(areaCode);
+			mBuyLogic.getTodayPrice(productType, SysCfgCode.TYPE_PRODUCT_STONE, areaCode);
 		}
 	}
 
@@ -252,7 +264,7 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 	 * 刷新未读消息个数
 	 */
 	private void refreshMessageStatus() {
-		if (isLogined()) {
+		if (isLogined() && StringUtils.isNotEmpty(getCompanyId())) {
 			mMessageLogic.getUnreadedNumberFromServer(getCompanyId());
 		}
 	}
@@ -361,27 +373,48 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 
 	private void showPortListMenu() {
 		closeDialog(menuPortList);
-		getView(R.id.iv_port_dropdown).setBackgroundResource(R.drawable.ic_port_dropdown_selected);
+		Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate180);
+		rotateAnimation.setFillAfter(true);
+		final Animation reverseAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate_reverse180);
+		reverseAnimation.setFillAfter(true);
+		reverseAnimation.setAnimationListener(new AnimationListener() {
+
+			@Override
+			public void onAnimationStart(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				refreshData();
+			}
+		});
+
+		mIvPortMenuIcon.startAnimation(rotateAnimation);
+
 		//List<String> menu = Arrays.asList(getResources().getStringArray(R.array.port_type));
 		List<MenuItemInfo> menu = MenuUtil.makeMenuList(new ArrayList<String>(mAreaMap.keySet()));
 		menuPortList = new MenuDialog(this, menu, new IMenuCallback() {
 
 			@Override
-			public void onConfirm(Object obj) {
-				getView(R.id.iv_port_dropdown).setBackgroundResource(R.drawable.ic_port_dropdown);
+			public void onConfirm(int type, Object obj) {
+				mIvPortMenuIcon.startAnimation(reverseAnimation);
 			}
 
 			@Override
-			public void onCancel() {
-				getView(R.id.iv_port_dropdown).setBackgroundResource(R.drawable.ic_port_dropdown);
+			public void onCancel(int type) {
+				mIvPortMenuIcon.startAnimation(reverseAnimation);
 			}
 
 			@Override
 			public void onMenuClick(int type, int position, Object obj) {
-				getView(R.id.iv_port_dropdown).setBackgroundResource(R.drawable.ic_port_dropdown);
+				mIvPortMenuIcon.startAnimation(reverseAnimation);
 				mAreaName = ((MenuItemInfo) obj).menuText;
 				mTvItemPort.setText(mAreaName);
-				refreshData();
+				//refreshData();
 			}
 		}, true, new MenuItemInfo(mTvItemPort.getText().toString()));
 		menuPortList.setMenuType(GlobalMessageType.MenuType.SELECT_PORT);
