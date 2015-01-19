@@ -61,6 +61,52 @@ public interface ContractInfo extends IBaseEnum{
 	}
 	
 	/**
+	 * 功能描述:合同起草阶段买家和卖家的动作类型
+	 * @author Bill.Huang
+	 * <p>2015-01-12 上午10:21:14<p>
+	 * <p>修改历史 ：(修改人，修改时间，修改原因/内容)</p>
+	 */
+	public enum ContractDraftStageBuyerSellerDoType implements ContractInfo {
+		
+		NOTHING("0","无"),
+		
+		CANCEL("1","取消"),
+		
+		CONFIRM("2","确认");
+		
+		private String val;
+		
+		private String text;
+		
+		private ContractDraftStageBuyerSellerDoType(String value,String text){
+			this.val = value;
+			this.text = text;
+		}
+		
+		public String getVal(){return val;}
+		
+		public String getText(){return text;}
+		
+		public static ContractDraftStageBuyerSellerDoType enumOf(String value){
+			for (ContractDraftStageBuyerSellerDoType os : values()) {
+				if (StringUtils.equalsIgnoreCase(os.val, value)) {
+					return os;
+				}
+			}
+			return null;
+		}
+		
+		public static String getText(String value) {
+			ContractDraftStageBuyerSellerDoType ct = enumOf(value);
+			if(ct != null){
+				return ct.text;
+			}
+			return null;
+	    }
+		
+	}
+	
+	/**
 	 * 功能描述:合同生命周期
 	 * @author Bill.Huang
 	 * <p>2014-09-02 上午10:21:14<p>
@@ -128,8 +174,23 @@ public interface ContractInfo extends IBaseEnum{
 		/*"终止结束"*/
 		EXPIRATION_FINISHED("19","终止结束"),
 		
-		/*"已经仲裁"*/
-		ARBITRATION("20","已经仲裁");
+		/*"仲裁中"*/
+		ARBITRATING("20","仲裁中"),
+		
+		/*货款确认中*/
+		CONFIRMING_GOODS_FUNDS("21","货款确认中"),
+		
+		/*起草取消*/
+		DRAFTING_CANCEL("22","起草取消"),
+		
+		/*"仲裁结束"*/
+		ARBITRATED("23","仲裁结束"),
+		
+		/*"买家未付款结束"*/
+		BUYER_UNPAY_FINISHED("24","买家未付款结束"),
+		
+		/*删除合同*/
+		DELETE_CONTRACT("25","删除合同");
 		
 		private String val;
 		
@@ -178,7 +239,9 @@ public interface ContractInfo extends IBaseEnum{
 		/*"暂停"*/
 		PAUSE("2","暂停"),
 		/*"结束"*/
-		FINISHED("3","结束");
+		FINISHED("3","结束"),
+		/*"删除"*/
+		DELETION("4","删除");
 		
 		private String val;
 		
@@ -313,8 +376,8 @@ public interface ContractInfo extends IBaseEnum{
 		/*"撤销取消"*/
 		REPEAL_CANCEL("12","撤销取消"),
 		
-		/*"合同仲裁"*/
-		ARBITRATION_CONTRACT("13","合同仲裁"),
+		/*"合同仲裁处理"*/
+		ARBITRATION_CONTRACT("13","合同仲裁处理"),
 		
 		/*"合同结算"*/
 		CONTRACT_ESTIMATE("14","合同结算"),
@@ -323,7 +386,28 @@ public interface ContractInfo extends IBaseEnum{
 		CONTRACT_FINISHED("15","合同结束"),
 		
 		/*撮合合同*/
-		MAKE_CONTRACT("16","撮合合同");
+		MAKE_CONTRACT("16","撮合合同"),
+		
+		/*买家未付款合同结束*/
+		BUYER_UNPAY_FINISHED("17","买家未付款合同结束"),
+		
+		/*取消合同*/
+		CANCEL_CONTRACT("18","取消合同"),
+		
+		/*移至已经结束合同*/
+		MOVE_TO_FINISHED_CONTRACT("19","移至已经结束合同"),
+		
+		/*货物与货款实际确认*/
+		FUNDS_GOODS_CONFIRM("20","货物与货款实际确认"),
+		
+		/*货物与货款实际确认*/
+		AGREE_FUND_GOODS_CONFIRM("21","同意货物和货款实际确认"),
+		
+		/*申请仲裁*/
+		APPLY_ARBITRATION("22","申请仲裁"),
+		
+		/*删除合同*/
+		DELETE_CONTRACT("23","删除合同");
 		
 		private String val;
 		
@@ -373,7 +457,13 @@ public interface ContractInfo extends IBaseEnum{
 		SAMPLE_CHECK("0","抽样检查"),
 		
 		/*"全量验收"*/
-		FULL_TAKEOVER("1","全量验收");
+		FULL_TAKEOVER("1","全量验收"),
+		
+		/*"货款议价"*/
+		FUNDGOODS_DISPRICE("2","货款议价"),
+		
+		/*"仲裁议价"*/
+		ARBITRATION_DISPRICE("3","仲裁议价");
 		
 		private String val;
 		

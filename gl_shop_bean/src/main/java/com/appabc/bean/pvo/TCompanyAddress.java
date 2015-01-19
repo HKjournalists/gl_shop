@@ -22,6 +22,8 @@ public class TCompanyAddress extends BaseBean {
      * 地区编码（只存最后一级编码）
      */
     private String areacode;
+    
+    private String areaFullName; // 区域文字全称
 
     /**
      * 地址
@@ -52,6 +54,11 @@ public class TCompanyAddress extends BaseBean {
      * 实际吃水深度
      */
     private Float realdeep;
+    
+    /**
+     * 可泊船吨位
+     */
+    private Float shippington;
     
     private String addressImgIds; //  缺货地点图片ID，多个ID用逗号间隔
     
@@ -132,22 +139,28 @@ public class TCompanyAddress extends BaseBean {
 		this.addressImgIds = addressImgIds;
 	}
 
-	/**  
-	 * status  
-	 *  
-	 * @return  the status  
-	 * @since   1.0.0  
-	*/  
-	
 	public AddressStatus getStatus() {
 		return status;
 	}
-
-	/**  
-	 * @param status the status to set  
-	 */
+	
 	public void setStatus(AddressStatus status) {
 		this.status = status;
+	}
+
+	public Float getShippington() {
+		return shippington;
+	}
+
+	public void setShippington(Float shippington) {
+		this.shippington = shippington;
+	}
+
+	public String getAreaFullName() {
+		return areaFullName;
+	}
+
+	public void setAreaFullName(String areaFullName) {
+		this.areaFullName = areaFullName;
 	}
 
 }

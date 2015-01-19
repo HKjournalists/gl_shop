@@ -10,6 +10,9 @@ import java.util.List;
 import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
+import com.appabc.bean.pvo.TCompanyAuth;
+import com.appabc.bean.pvo.TCompanyPersonal;
+import com.appabc.bean.pvo.TCompanyShipping;
 import com.appabc.common.base.bean.BaseBean;
 
 /**
@@ -74,9 +77,13 @@ public class CompanyAllInfo extends BaseBean {
     
     private String areacode; // 卸货地址地区编码（最后一级编码）
     
+    private String addrAreaFullName; // 卸货地址地区全名
+    
     private Float deep; // 水深
     
     private Float realdeep; // 实际吃水深度
+    
+    private Float shippington; // 可泊船吨位
     
     private EvaluationInfoBean evaluationInfo; // 企业评价信息
     
@@ -85,6 +92,10 @@ public class CompanyAllInfo extends BaseBean {
     private List<ViewImgsBean> companyImgList = new ArrayList<ViewImgsBean>() ; // 企业相关照片
     private List<ViewImgsBean> authImgList = new ArrayList<ViewImgsBean>();// 认证图片信息
     private List<ViewImgsBean> addressImgList = new ArrayList<ViewImgsBean>();// 企业卸货地址图片
+    
+    private TCompanyAuth companyAuth; // 企业认证后的信息
+    private TCompanyShipping shippingAuth; // 船舶认证后的信息
+    private TCompanyPersonal personalAuth; // 个人认证后的信息
 
 	public List<ViewImgsBean> getCompanyImgList() {
 		return companyImgList;
@@ -155,6 +166,7 @@ public class CompanyAllInfo extends BaseBean {
 	}
 
 	public void setAuthstatus(CompanyAuthStatus authstatus) {
+		if(authstatus == null){ authstatus = CompanyAuthStatus.AUTH_STATUS_NO;}
 		this.authstatus = authstatus;
 	}
 
@@ -171,6 +183,7 @@ public class CompanyAllInfo extends BaseBean {
 	}
 
 	public void setBailstatus(CompanyBailStatus bailstatus) {
+		if(bailstatus == null) bailstatus = CompanyBailStatus.BAIL_STATUS_NO;
 		this.bailstatus = bailstatus;
 	}
 
@@ -236,6 +249,46 @@ public class CompanyAllInfo extends BaseBean {
 
 	public void setAuthimgid(String authimgid) {
 		this.authimgid = authimgid;
+	}
+
+	public TCompanyAuth getCompanyAuth() {
+		return companyAuth;
+	}
+
+	public void setCompanyAuth(TCompanyAuth companyAuth) {
+		this.companyAuth = companyAuth;
+	}
+
+	public TCompanyShipping getShippingAuth() {
+		return shippingAuth;
+	}
+
+	public void setShippingAuth(TCompanyShipping shippingAuth) {
+		this.shippingAuth = shippingAuth;
+	}
+
+	public TCompanyPersonal getPersonalAuth() {
+		return personalAuth;
+	}
+
+	public void setPersonalAuth(TCompanyPersonal personalAuth) {
+		this.personalAuth = personalAuth;
+	}
+
+	public String getAddrAreaFullName() {
+		return addrAreaFullName;
+	}
+
+	public void setAddrAreaFullName(String addrAreaFullName) {
+		this.addrAreaFullName = addrAreaFullName;
+	}
+
+	public Float getShippington() {
+		return shippington;
+	}
+
+	public void setShippington(Float shippington) {
+		this.shippington = shippington;
 	}
 
 }

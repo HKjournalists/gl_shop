@@ -1,7 +1,11 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.bo.ViewImgsBean;
 import com.appabc.common.base.bean.BaseBean;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TOrderAddress extends BaseBean {
     /**
@@ -48,6 +52,8 @@ public class TOrderAddress extends BaseBean {
      * 地区编码（只存最后一级编码）
      */
     private String areacode;
+    
+    private String areaFullName; // 区域文字全称
 
     /**
      * 地址
@@ -69,7 +75,17 @@ public class TOrderAddress extends BaseBean {
      */
     private Float deep;
     
+    /**
+     * 可泊船吨位
+     */
+    private Float shippington;
+    
     private String addressImgIds; //  缺货地点图片ID，多个ID用逗号间隔
+    
+    /**
+     * 用于显示的图片信息
+     */
+    private List<ViewImgsBean> vImgList = new ArrayList<ViewImgsBean>();
 
     public String getFid() {
         return fid;
@@ -174,4 +190,29 @@ public class TOrderAddress extends BaseBean {
 	public void setAddressImgIds(String addressImgIds) {
 		this.addressImgIds = addressImgIds;
 	}
+
+	public Float getShippington() {
+		return shippington;
+	}
+
+	public void setShippington(Float shippington) {
+		this.shippington = shippington;
+	}
+
+	public String getAreaFullName() {
+		return areaFullName;
+	}
+
+	public void setAreaFullName(String areaFullName) {
+		this.areaFullName = areaFullName;
+	}
+
+	public List<ViewImgsBean> getvImgList() {
+		return vImgList;
+	}
+
+	public void setvImgList(List<ViewImgsBean> vImgList) {
+		this.vImgList = vImgList;
+	}
+	
 }

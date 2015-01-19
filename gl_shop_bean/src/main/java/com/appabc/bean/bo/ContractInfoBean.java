@@ -1,7 +1,9 @@
 package com.appabc.bean.bo;
 
+import java.util.Date;
 import java.util.List;
 
+import com.appabc.bean.enums.ContractInfo.ContractOperateType;
 import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
 import com.appabc.bean.pvo.TOrderInfo;
 
@@ -28,9 +30,21 @@ public class ContractInfoBean extends TOrderInfo{
      */
 	private OrderTypeEnum saleType;
 	/**
-     * 产品类型
+     * 产品名称
      */
 	private String productName;
+	/**
+     * 产品ID
+     */
+	private String productId;
+	/**
+     * 产品CODE
+     */
+	private String productCode;
+	/**
+     * 产品类型
+     */
+	private String productType;
 	/**
      * 卖家名称
      */
@@ -48,6 +62,38 @@ public class ContractInfoBean extends TOrderInfo{
      */
 	private Object sellerStatus;
 	/**
+     * 买家起草状态
+     */
+	private Object buyerDraftStatus;
+	/**
+     * 卖家起草状态
+     */
+	private Object sellerDraftStatus;
+	/**
+     * 起草确认期限
+     */
+	private Date draftLimitTime;
+	/**
+     * 买家付款期限
+     */
+	private Date payGoodsLimitTime;
+	/**
+     * 卖家同意最终确认期限
+     */
+	private Date agreeFinalEstimeLimitTime;
+	/**
+	 * 当前生命周期的操作人
+	 * */
+	private String operator;
+	/**
+	 * 当前生命周期的操作时间
+	 * */
+	private Date operationTime;
+	/**
+	 * 当前生命周期的操作类型
+	 * */
+	private ContractOperateType operateType;
+	/**
      * 第一次议价记录(抽样验收)
      */
 	private List<?> sampleCheckDisPriceList;
@@ -55,6 +101,18 @@ public class ContractInfoBean extends TOrderInfo{
      * 第二次议价记录(全量检查)
      */
 	private List<?> fullTakeoverDisPriceList;
+	/**
+	 * 第三次议价记录(货款议价)
+	 * */
+	private List<?> fundGoodsDisPriceList;
+	/**
+	 * 第四次议价记录(仲裁议价)
+	 * */
+	private List<?> arbitrationDisPriceList;
+	/**
+     * 合同结算清单
+     */
+	private List<?> finalEstimateList;
 	
 	/**  
 	 * sampleCheckDisPriceList  
@@ -198,6 +256,258 @@ public class ContractInfoBean extends TOrderInfo{
 	 */
 	public void setSaleType(OrderTypeEnum saleType) {
 		this.saleType = saleType;
+	}
+
+	/**  
+	 * finalEstimateList  
+	 *  
+	 * @return  the finalEstimateList  
+	 * @since   1.0.0  
+	*/  
+	
+	public List<?> getFinalEstimateList() {
+		return finalEstimateList;
+	}
+
+	/**  
+	 * @param finalEstimateList the finalEstimateList to set  
+	 */
+	public void setFinalEstimateList(List<?> finalEstimateList) {
+		this.finalEstimateList = finalEstimateList;
+	}
+
+	/**  
+	 * productType  
+	 *  
+	 * @return  the productType  
+	 * @since   1.0.0  
+	*/  
+	
+	public String getProductType() {
+		return productType;
+	}
+
+	/**  
+	 * @param productType the productType to set  
+	 */
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+
+	/**  
+	 * productCode  
+	 *  
+	 * @return  the productCode  
+	 * @since   1.0.0  
+	*/  
+	
+	public String getProductCode() {
+		return productCode;
+	}
+
+	/**  
+	 * @param productCode the productCode to set  
+	 */
+	public void setProductCode(String productCode) {
+		this.productCode = productCode;
+	}
+
+	/**  
+	 * productId  
+	 *  
+	 * @return  the productId  
+	 * @since   1.0.0  
+	*/  
+	
+	public String getProductId() {
+		return productId;
+	}
+
+	/**  
+	 * @param productId the productId to set  
+	 */
+	public void setProductId(String productId) {
+		this.productId = productId;
+	}
+
+	/**  
+	 * fundGoodsDisPriceList  
+	 *  
+	 * @return  the fundGoodsDisPriceList  
+	 * @since   1.0.0  
+	*/  
+	
+	public List<?> getFundGoodsDisPriceList() {
+		return fundGoodsDisPriceList;
+	}
+
+	/**  
+	 * @param fundGoodsDisPriceList the fundGoodsDisPriceList to set  
+	 */
+	public void setFundGoodsDisPriceList(List<?> fundGoodsDisPriceList) {
+		this.fundGoodsDisPriceList = fundGoodsDisPriceList;
+	}
+
+	/**  
+	 * arbitrationDisPriceList  
+	 *  
+	 * @return  the arbitrationDisPriceList  
+	 * @since   1.0.0  
+	*/  
+	
+	public List<?> getArbitrationDisPriceList() {
+		return arbitrationDisPriceList;
+	}
+
+	/**  
+	 * @param arbitrationDisPriceList the arbitrationDisPriceList to set  
+	 */
+	public void setArbitrationDisPriceList(List<?> arbitrationDisPriceList) {
+		this.arbitrationDisPriceList = arbitrationDisPriceList;
+	}
+
+	/**  
+	 * draftLimitTime  
+	 *  
+	 * @return  the draftLimitTime  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getDraftLimitTime() {
+		return draftLimitTime;
+	}
+
+	/**  
+	 * @param draftLimitTime the draftLimitTime to set  
+	 */
+	public void setDraftLimitTime(Date draftLimitTime) {
+		this.draftLimitTime = draftLimitTime;
+	}
+
+	/**  
+	 * payGoodsLimitTime  
+	 *  
+	 * @return  the payGoodsLimitTime  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getPayGoodsLimitTime() {
+		return payGoodsLimitTime;
+	}
+
+	/**  
+	 * @param payGoodsLimitTime the payGoodsLimitTime to set  
+	 */
+	public void setPayGoodsLimitTime(Date payGoodsLimitTime) {
+		this.payGoodsLimitTime = payGoodsLimitTime;
+	}
+
+	/**  
+	 * buyerDraftStatus  
+	 *  
+	 * @return  the buyerDraftStatus  
+	 * @since   1.0.0  
+	*/  
+	
+	public Object getBuyerDraftStatus() {
+		return buyerDraftStatus;
+	}
+
+	/**  
+	 * @param buyerDraftStatus the buyerDraftStatus to set  
+	 */
+	public void setBuyerDraftStatus(Object buyerDraftStatus) {
+		this.buyerDraftStatus = buyerDraftStatus;
+	}
+
+	/**  
+	 * sellerDraftStatus  
+	 *  
+	 * @return  the sellerDraftStatus  
+	 * @since   1.0.0  
+	*/  
+	
+	public Object getSellerDraftStatus() {
+		return sellerDraftStatus;
+	}
+
+	/**  
+	 * @param sellerDraftStatus the sellerDraftStatus to set  
+	 */
+	public void setSellerDraftStatus(Object sellerDraftStatus) {
+		this.sellerDraftStatus = sellerDraftStatus;
+	}
+
+	/**  
+	 * operator  
+	 *  
+	 * @return  the operator  
+	 * @since   1.0.0  
+	*/  
+	
+	public String getOperator() {
+		return operator;
+	}
+
+	/**  
+	 * @param operator the operator to set  
+	 */
+	public void setOperator(String operator) {
+		this.operator = operator;
+	}
+
+	/**  
+	 * operationTime  
+	 *  
+	 * @return  the operationTime  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getOperationTime() {
+		return operationTime;
+	}
+
+	/**  
+	 * @param operationTime the operationTime to set  
+	 */
+	public void setOperationTime(Date operationTime) {
+		this.operationTime = operationTime;
+	}
+
+	/**  
+	 * operateType  
+	 *  
+	 * @return  the operateType  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractOperateType getOperateType() {
+		return operateType;
+	}
+
+	/**  
+	 * @param operateType the operateType to set  
+	 */
+	public void setOperateType(ContractOperateType operateType) {
+		this.operateType = operateType;
+	}
+
+	/**  
+	 * agreeFinalEstimeLimitTime  
+	 *  
+	 * @return  the agreeFinalEstimeLimitTime  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getAgreeFinalEstimeLimitTime() {
+		return agreeFinalEstimeLimitTime;
+	}
+
+	/**  
+	 * @param agreeFinalEstimeLimitTime the agreeFinalEstimeLimitTime to set  
+	 */
+	public void setAgreeFinalEstimeLimitTime(Date agreeFinalEstimeLimitTime) {
+		this.agreeFinalEstimeLimitTime = agreeFinalEstimeLimitTime;
 	}
 
 }

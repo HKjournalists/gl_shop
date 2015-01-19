@@ -72,7 +72,7 @@ public interface OrderFindInfo extends IBaseEnum{
 	}
 	
 	/**
-	 * @Description : 合同大状态
+	 * @Description : 询单大状态
 	 * @Copyright   : GL. All Rights Reserved
 	 * @Company     : 江苏国立网络技术有限公司
 	 * @author      : 杨跃红
@@ -160,9 +160,9 @@ public interface OrderFindInfo extends IBaseEnum{
 		 */
 		ORDER_STATUS_CANCEL(5,"无效，已取消"),
 		/**
-		 * 无效，已删除，预留
+		 * 无效，已删除
 		 */
-		ORDER_STATUS_DELETE(6,"无效，已删除，预留");
+		ORDER_STATUS_DELETE(6,"无效，已删除");
 		
 		
 		private int val;
@@ -211,13 +211,13 @@ public interface OrderFindInfo extends IBaseEnum{
 	public enum OrderAddressTypeEnum implements OrderFindInfo {
 		
 		/**
-		 * 买家
+		 * 己方指定
 		 */
-		ORDER_ADDRESS_TYPE_BUY(1,"买家"),
+		ORDER_ADDRESS_TYPE_OWN(1,"己方指定"),
 		/**
-		 * 卖家
+		 * 对方指定
 		 */
-		ORDER_ADDRESS_TYPE_SELL(2,"卖家");
+		ORDER_ADDRESS_TYPE_OTHER(2,"对方指定");
 		
 		private int val;
 		private String text;
@@ -263,8 +263,14 @@ public interface OrderFindInfo extends IBaseEnum{
 	 */
 	public enum OrderMoreAreaEnum implements OrderFindInfo {
 		
-		ORDER_MORE_AREA_NO("1","单地发布"), // 单地发布
-		ORDER_MORE_AREA_YES("2","多地发布"); // 多地发布
+		/**
+		 * 单地发布
+		 */
+		ORDER_MORE_AREA_NO("1","单地发布"),
+		/**
+		 * 多地发布
+		 */
+		ORDER_MORE_AREA_YES("2","多地发布");
 		
 		private String val;
 		

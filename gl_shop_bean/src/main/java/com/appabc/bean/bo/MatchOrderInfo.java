@@ -1,5 +1,6 @@
 package com.appabc.bean.bo;
 
+import com.appabc.bean.pvo.TOrderFind;
 import com.appabc.common.base.bean.BaseBean;
 
 /**
@@ -25,6 +26,11 @@ public class MatchOrderInfo extends BaseBean {
 	 * 询单ID
 	 * */
 	private String fid;
+	
+	/**
+	 * 询单信息
+	 * */
+	private TOrderFind orderFind;
 	
 	/**
 	 * 撮合的用户的CID
@@ -133,6 +139,24 @@ public class MatchOrderInfo extends BaseBean {
 	 */
 	public void setOperator(String operator) {
 		this.operator = operator;
+	}
+
+	/**  
+	 * orderFind  
+	 *  
+	 * @return  the orderFind  
+	 * @since   1.0.0  
+	*/  
+	
+	public TOrderFind getOrderFind() {
+		return orderFind;
+	}
+
+	/**  
+	 * @param orderFind the orderFind to set  
+	 */
+	public void setOrderFind(TOrderFind orderFind) {
+		this.orderFind = orderFind;
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.enums.AuthRecordInfo.AuthRecordType;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.common.base.bean.BaseBean;
 
 public class TAuthRecord extends BaseBean {
@@ -66,6 +67,16 @@ public class TAuthRecord extends BaseBean {
      * 提款人ID
      */
     private String abid;
+
+    private String cname; // 企业名称
+    
+    private CompanyType ctype; // 企业类型（区分企业、船舶、个人）
+    
+    private String username; // 帐号登录名
+    
+    private Date regtime; // 帐号注册时间
+    
+    private String carduser; // 持卡人姓名
 
     public String getCid() {
         return cid;
@@ -139,40 +150,60 @@ public class TAuthRecord extends BaseBean {
 		this.abid = abid;
 	}
 
-	/**  
-	 * authstatus  
-	 *  
-	 * @return  the authstatus  
-	 * @since   1.0.0  
-	 */
-	
 	public AuthRecordStatus getAuthstatus() {
 		return authstatus;
 	}
 
-	/**  
-	 * @param authstatus the authstatus to set  
-	 */
 	public void setAuthstatus(AuthRecordStatus authstatus) {
 		this.authstatus = authstatus;
 	}
 
-	/**  
-	 * type  
-	 *  
-	 * @return  the type  
-	 * @since   1.0.0  
-	 */
-	
 	public AuthRecordType getType() {
 		return type;
 	}
 
-	/**  
-	 * @param type the type to set  
-	 */
 	public void setType(AuthRecordType type) {
 		this.type = type;
+	}
+
+	public String getCname() {
+		return cname;
+	}
+
+	public void setCname(String cname) {
+		this.cname = cname;
+	}
+
+	public CompanyType getCtype() {
+		return ctype;
+	}
+
+	public void setCtype(CompanyType ctype) {
+		this.ctype = ctype;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public Date getRegtime() {
+		return regtime;
+	}
+
+	public void setRegtime(Date regtime) {
+		this.regtime = regtime;
+	}
+
+	public String getCarduser() {
+		return carduser;
+	}
+
+	public void setCarduser(String carduser) {
+		this.carduser = carduser;
 	}
     
 }

@@ -50,6 +50,10 @@ public interface SyncInfo extends IBaseEnum{
 		 */
 		SYNC_TYPE_SYS_PARAM(6,"系统配置参数"), 
 		/**
+		 * 区域省份控制
+		 */
+		SYNC_AREA_PROVINCE_CONTROL(7,"区域省份控制"), 
+		/**
 		 * 其它
 		 */
 		SYNC_TYPE_OTHER(10,"其它");

@@ -1,5 +1,6 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.enums.UserInfo.ClientTypeEnum;
@@ -84,6 +85,10 @@ public class TUser extends BaseBean {
      * 保证金缴纳状态（是否缴纳足额）
      */
     private CompanyBailStatus bailstatus;
+    /**
+     * 认证状态(是否认证)
+     */
+    private CompanyAuthStatus authstatus;
 
     public String getCid() {
         return cid;
@@ -227,6 +232,14 @@ public class TUser extends BaseBean {
 
 	public void setOrderfindTotal(int orderfindTotal) {
 		this.orderfindTotal = orderfindTotal;
+	}
+
+	public CompanyAuthStatus getAuthstatus() {
+		return authstatus;
+	}
+
+	public void setAuthstatus(CompanyAuthStatus authstatus) {
+		this.authstatus = authstatus;
 	}
 	
     

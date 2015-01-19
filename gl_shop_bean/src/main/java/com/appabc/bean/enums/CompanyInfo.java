@@ -280,5 +280,61 @@ public interface CompanyInfo extends IBaseEnum{
 	    }
 		
 	}
+	
+	/**
+	 * @Description : 公司卸货地址状态
+	 * @Copyright   : GL. All Rights Reserved
+	 * @Company     : 江苏国立网络技术有限公司
+	 * @author      : 杨跃红
+	 * @version     : 1.0
+	 * Create Date  : 2014年9月28日 下午6:11:40
+	 */
+	public enum PersonalAuthSex implements CompanyInfo {
+		
+		/**
+		 * 女，Female
+		 */
+		PERSONAL_SEX_F(0,"女"),
+		/**
+		 * 男，Male
+		 */
+		PERSONAL_SEX_M(1,"男");
+		
+		
+		private int val;
+		
+		private String text;
+		
+		private PersonalAuthSex(int val,String text){
+			this.val = val;
+			this.text = text;
+		}
+		
+		public int getVal() {
+			return val;
+		}
+		
+		public String getText() {
+			return text;
+		}
+		
+		public static PersonalAuthSex enumOf(int value){
+			for (PersonalAuthSex os : values()) {
+				if (os.val == value) {
+					return os;
+				}
+			}
+			return null;
+		}
+		
+		public static String getText(int value) {
+			PersonalAuthSex as = enumOf(value);
+			if(as != null){
+				return as.text;
+			}
+			return null;
+		}
+		
+	}
 
 }

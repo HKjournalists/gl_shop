@@ -42,6 +42,11 @@ public class SyncInfoBean extends BaseBean{
 	 * 系统配置参数
 	 */  
 	private SyncDataBean  sysParam;
+	
+	/**  
+	 * 可用省份CODE
+	 */  
+	private SyncDataBean  areaProvinceControl;
 
 	public SyncDataBean getGoods() {
 		return goods;
@@ -89,6 +94,14 @@ public class SyncInfoBean extends BaseBean{
 
 	public void setSysParam(SyncDataBean sysParam) {
 		this.sysParam = sysParam;
+	}
+
+	public SyncDataBean getAreaProvinceControl() {
+		return areaProvinceControl;
+	}
+
+	public void setAreaProvinceControl(SyncDataBean areaProvinceControl) {
+		this.areaProvinceControl = areaProvinceControl;
 	}
 
 }

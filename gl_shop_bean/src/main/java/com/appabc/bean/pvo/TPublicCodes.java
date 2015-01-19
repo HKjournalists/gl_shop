@@ -32,8 +32,21 @@ public class TPublicCodes extends BaseBean {
      * 序号
      */
     private Integer orderno;
+    
+    /**
+     * 隐藏(0显示，1隐藏)
+     */
+    private Integer ishidden;
 
-    public Integer getOrderno() {
+    public Integer getIshidden() {
+		return ishidden;
+	}
+
+	public void setIshidden(Integer ishidden) {
+		this.ishidden = ishidden;
+	}
+
+	public Integer getOrderno() {
 		return orderno;
 	}
 

@@ -1,7 +1,9 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.CompanyInfo.PersonalAuthSex;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TCompanyPersonal extends BaseBean {
 	private static final long serialVersionUID = -7606908628185735146L;
@@ -20,7 +22,7 @@ public class TCompanyPersonal extends BaseBean {
     /**
      * 姓别
      */
-    private Integer sex;
+    private PersonalAuthSex sex;
 
     /**
      * 身份证
@@ -46,6 +48,27 @@ public class TCompanyPersonal extends BaseBean {
      * 备注
      */
     private String remark;
+    
+    /**
+     * 出生日期
+     */
+    private Date birthday;
+    
+    /**
+     * 签发机关
+     */
+    private String issuingauth;
+    
+    /**
+     * 有效期限-开始时间
+     */
+    private Date effstarttime;
+    
+    /**
+     * 有效期限-结束时间
+     */
+    private Date effendtime;
+
 
     public Integer getAuthid() {
         return authid;
@@ -63,15 +86,15 @@ public class TCompanyPersonal extends BaseBean {
         this.cpname = cpname == null ? null : cpname.trim();
     }
 
-    public Integer getSex() {
-        return sex;
-    }
+    public PersonalAuthSex getSex() {
+		return sex;
+	}
 
-    public void setSex(Integer sex) {
-        this.sex = sex;
-    }
+	public void setSex(PersonalAuthSex sex) {
+		this.sex = sex;
+	}
 
-    public String getIdentification() {
+	public String getIdentification() {
         return identification;
     }
 
@@ -110,4 +133,37 @@ public class TCompanyPersonal extends BaseBean {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getIssuingauth() {
+		return issuingauth;
+	}
+
+	public void setIssuingauth(String issuingauth) {
+		this.issuingauth = issuingauth;
+	}
+
+	public Date getEffstarttime() {
+		return effstarttime;
+	}
+
+	public void setEffstarttime(Date effstarttime) {
+		this.effstarttime = effstarttime;
+	}
+
+	public Date getEffendtime() {
+		return effendtime;
+	}
+
+	public void setEffendtime(Date effendtime) {
+		this.effendtime = effendtime;
+	}
+    
 }

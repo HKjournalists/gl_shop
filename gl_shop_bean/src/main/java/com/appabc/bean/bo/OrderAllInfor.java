@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
+import com.appabc.bean.enums.ContractInfo.ContractStatus;
 import com.appabc.bean.enums.OrderFindInfo.OrderAddressTypeEnum;
 import com.appabc.bean.enums.ProductInfo.UnitEnum;
 import com.appabc.bean.pvo.TOrderProductProperty;
@@ -25,8 +29,6 @@ public class OrderAllInfor extends BaseBean {
 	private static final long serialVersionUID = -8954640684427560438L;
 	
 	private String fid; // 询单ID,使用的是basebean id ，这里没用到
-	private String cid; // 企业ID
-	private String cname; // 企业名称
 	private String title; // 标题
 	private Integer type;// 类型:0买/1卖
 	private Float price;// 单价
@@ -35,14 +37,15 @@ public class OrderAllInfor extends BaseBean {
 	private Date creatime;//创建时间
 	private Date updatetime;//更新时间
 	private Date starttime;//有效开始时间
-	private Date endtime;//询单结束时间
+	private Date endtime;//有效结束时间
 	private String morearea;//是否多地发布,1单地，2多地
 	private Date limitime;//到期时间
 	private String area;// 地区
+	private String areaFullName;// 地区全名称（顶级到）
 	private String remark; // 询单备注
 	private Integer matchingnum;// 撮合合同次数
 	
-	private Integer opiid;//交易中的商品属性ID
+	private Integer opiid;//交易中的商品ID
 	private String pname;//商品名
 	private String pcode; // 商品类型
 	private String pid; // 配置表中的商品ID
@@ -51,6 +54,8 @@ public class OrderAllInfor extends BaseBean {
 	private String paddress;//商品产地
 	private UnitEnum unit;//数量单位(吨、立方)
 	private String premark;//商品备注
+	private String pTypeName; //商品种类名称
+	
 	private Integer status; // 询单状态
 	private OrderAddressTypeEnum addresstype; //卸货地址指定方
 	private TOrderProductProperty psize; // 商品规格 
@@ -61,12 +66,24 @@ public class OrderAllInfor extends BaseBean {
 	/****卸货地址 信息*****/
 	private String address; // 卸货地址
     private String areacode; // 卸货地址地区编码（最后一级编码）
+    private String addrAreaFullName; // 卸货地址地区全名
     private Float deep; // 水深
     private Float realdeep; // 实际吃水深度
+    private Float shippington; // 可泊船吨位
     private List<ViewImgsBean> addressImgList = new ArrayList<ViewImgsBean>();// 企业卸货地址图片
     private List<ViewImgsBean> productImgList = new ArrayList<ViewImgsBean>();// 货物照片
     private int isApply; // 是否申请过(1已申请，0未申请)
-	
+    private String contractid; // 合同ID（该询单生成的合同ID）
+    private ContractStatus contractStatus; // 合同状态
+    private Date contractendtime; // 合同结束时间
+    
+    /***企业信息*************/
+    private String cid; // 企业ID
+	private String cname; // 企业名称
+    private CompanyType ctype;//企业类型
+    private CompanyAuthStatus authstatus; // 认证状态(是否认证)
+    private CompanyBailStatus bailstatus; // 保证金缴纳状态（是否缴纳足额）
+    
 	public String getFid() {
 		return fid;
 	}
@@ -385,6 +402,87 @@ public class OrderAllInfor extends BaseBean {
 
 	public void setIsApply(int isApply) {
 		this.isApply = isApply;
+	}
+
+	public String getpTypeName() {
+		return pTypeName;
+	}
+
+	public void setpTypeName(String pTypeName) {
+		this.pTypeName = pTypeName;
+	}
+
+	public String getContractid() {
+		return contractid;
+	}
+
+	public void setContractid(String contractid) {
+		this.contractid = contractid;
+	}
+
+	public ContractStatus getContractStatus() {
+		return contractStatus;
+	}
+
+	public void setContractStatus(ContractStatus contractStatus) {
+		this.contractStatus = contractStatus;
+	}
+
+	public String getAreaFullName() {
+		return areaFullName;
+	}
+
+	public void setAreaFullName(String areaFullName) {
+		this.areaFullName = areaFullName;
+	}
+
+	public String getAddrAreaFullName() {
+		return addrAreaFullName;
+	}
+
+	public void setAddrAreaFullName(String addrAreaFullName) {
+		this.addrAreaFullName = addrAreaFullName;
+	}
+
+	public CompanyType getCtype() {
+		return ctype;
+	}
+
+	public void setCtype(CompanyType ctype) {
+		this.ctype = ctype;
+	}
+
+	public CompanyAuthStatus getAuthstatus() {
+		return authstatus;
+	}
+
+	public void setAuthstatus(CompanyAuthStatus authstatus) {
+		this.authstatus = authstatus;
+	}
+
+	public CompanyBailStatus getBailstatus() {
+		return bailstatus;
+	}
+
+	public void setBailstatus(CompanyBailStatus bailstatus) {
+		this.bailstatus = bailstatus;
+	}
+
+	public Float getShippington() {
+		return shippington;
+	}
+
+	public void setShippington(Float shippington) {
+		this.shippington = shippington;
+	}
+
+
+	public Date getContractendtime() {
+		return contractendtime;
+	}
+
+	public void setContractendtime(Date contractendtime) {
+		this.contractendtime = contractendtime;
 	}
 
 }

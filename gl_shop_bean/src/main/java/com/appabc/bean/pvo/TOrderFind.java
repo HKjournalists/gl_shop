@@ -11,6 +11,7 @@ import com.appabc.bean.enums.OrderFindInfo.OrderMoreAreaEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderOverallStatusEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderStatusEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
+import com.appabc.bean.enums.ProductInfo.UnitEnum;
 import com.appabc.common.base.bean.BaseBean;
 
 /**
@@ -128,14 +129,20 @@ public class TOrderFind extends BaseBean implements Cloneable{
     private OrderOverallStatusEnum overallstatus;
     
     /**
+     * 合同ID
+     */
+    private String contractid;
+    
+    /**
      * 撮合合同次数
      */
     private Integer matchingnum; 
     
     private String pname; //产品名称
     private String pcode; //商品类型（大类）
+    private String pid; // 商品ID
     private String ptype; //产品种类（二级分类CODE）
-    private String unit; // 单位
+    private UnitEnum unit; // 单位
     /**
      * 多地域发布信息，内容为JSON格式，包含地域和单价
      * 例：[{\"price\":\"12\",\"area\":\"A_003\"},{\"price\":\"14\",\"area\":\"A_006\"}]
@@ -144,6 +151,8 @@ public class TOrderFind extends BaseBean implements Cloneable{
     private List<MoreAreaInfos> moreAreaList = new ArrayList<MoreAreaInfos>(); // 我的供求列表页面的多地域信息
     
     private MatchingBean matchingBean; // 询单自动匹配列表
+    private String areaFullName;// 地区全名称（顶级到）
+	private Float credit; //企业诚信度
     
     public MatchingBean getMatchingBean() {
 		return matchingBean;
@@ -177,11 +186,11 @@ public class TOrderFind extends BaseBean implements Cloneable{
 		this.ptype = ptype;
 	}
 
-	public String getUnit() {
+	public UnitEnum getUnit() {
 		return unit;
 	}
 
-	public void setUnit(String unit) {
+	public void setUnit(UnitEnum unit) {
 		this.unit = unit;
 	}
 
@@ -367,6 +376,38 @@ public class TOrderFind extends BaseBean implements Cloneable{
 
 	public void setMatchingnum(Integer matchingnum) {
 		this.matchingnum = matchingnum;
+	}
+
+	public String getPid() {
+		return pid;
+	}
+
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+
+	public String getAreaFullName() {
+		return areaFullName;
+	}
+
+	public void setAreaFullName(String areaFullName) {
+		this.areaFullName = areaFullName;
+	}
+
+	public String getContractid() {
+		return contractid;
+	}
+
+	public void setContractid(String contractid) {
+		this.contractid = contractid;
+	}
+
+	public Float getCredit() {
+		return credit;
+	}
+
+	public void setCredit(Float credit) {
+		this.credit = credit;
 	}
 
 

@@ -53,6 +53,11 @@ public class TCompanyAuth extends BaseBean {
      * 更新时间
      */
     private Date updatedate;
+    
+    /**
+     * 注册号
+     */
+    private String regno;
 
     public Integer getAuthid() {
         return authid;
@@ -125,4 +130,13 @@ public class TCompanyAuth extends BaseBean {
     public void setUpdatedate(Date updatedate) {
         this.updatedate = updatedate;
     }
+
+	public String getRegno() {
+		return regno;
+	}
+
+	public void setRegno(String regno) {
+		this.regno = regno;
+	}
+    
 }
