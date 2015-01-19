@@ -9,6 +9,9 @@
 #ifndef Glshop_Product_h
 #define Glshop_Product_h
 
+#define SynacObject [SynacInstance sharedInstance]
+#define UserObject [UserInstance sharedInstance]
+
 #define TopProductSend @"黄砂"
 #define TopProductStone @"石子"
 

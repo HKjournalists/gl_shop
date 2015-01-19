@@ -14,10 +14,17 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        
         _productNameLabel = [UILabel labelWithTitle:@"黄砂0"];
-        _productNameLabel.frame = CGRectMake(10, 0, (SCREEN_WIDTH-20)/4, self.contentView.vheight);
+        _productNameLabel.frame = CGRectMake(8, 3, (SCREEN_WIDTH-20)/4, 22-5/2);
         _productNameLabel.font = [UIFont systemFontOfSize:13.f];
         [self.contentView addSubview:_productNameLabel];
+        
+        _sizeLabel = [UILabel labelWithTitle:@"(1.1-1.8)"];
+        _sizeLabel.frame = CGRectMake(2, _productNameLabel.vbottom-3, _productNameLabel.vwidth, 20);
+        _sizeLabel.font = _productNameLabel.font;
+        [self.contentView addSubview:_sizeLabel];
         
         float gap = -20;
         if (iPhone6) {
@@ -68,15 +75,54 @@
     _weekModel = weekModel;
     
     _productNameLabel.text = _weekModel.pname;
-    _todayPriceLabel.text = [_weekModel.todayPrice stringValue];
-    _oneWeekLabel.text = [_weekModel.basePrice1 stringValue];
-    _twoWeekLabel.text = [_weekModel.basePrice2 stringValue];
+    _todayPriceLabel.text = [NSString stringWithFormat:@"%.2f",[_weekModel.todayPrice floatValue]];
+    _oneWeekLabel.text = [NSString stringWithFormat:@"%.2f",[_weekModel.basePrice1 floatValue]];
+    _twoWeekLabel.text = [NSString stringWithFormat:@"%.2f",[_weekModel.basePrice2 floatValue]];
     
-    NSString *image1Name = [_weekModel.basePrice1 floatValue]/[_weekModel.todayPrice floatValue] > 1 ? @"index_icon_arrow_on" : @"index_icon_arrow_down_hongse";
+    float oneFloat = [_weekModel.basePrice1 floatValue]/[_weekModel.todayPrice floatValue];
+    float twoFloat = [_weekModel.basePrice2 floatValue]/[_weekModel.todayPrice floatValue];
+    
+    NSString *image1Name = oneFloat > 1 ? @"index_icon_arrow_on" : @"index_icon_arrow_down_hongse";
     _indicteOne.image = [UIImage imageNamed:image1Name];
     
-    NSString *image2Name = [_weekModel.basePrice2 floatValue]/[_weekModel.todayPrice floatValue] > 1 ? @"index_icon_arrow_on" : @"index_icon_arrow_down_hongse";
+    NSString *image2Name = twoFloat > 1 ? @"index_icon_arrow_on" : @"index_icon_arrow_down_hongse";
     _indicteTwo.image = [UIImage imageNamed:image2Name];
+
+    if (oneFloat == 1 || isnan(oneFloat)) {
+        _indicteOne.image = nil;
+    }
+    
+    if (twoFloat == 1 || isnan(twoFloat)) {
+        _indicteTwo.image = nil;
+    }
+    
+    if ([_weekModel.basePrice1 floatValue]/[_weekModel.todayPrice floatValue] > 1) {
+        _oneWeekLabel.textColor = ColorWithHex(@"36a830");
+    }else if ([_weekModel.basePrice1 floatValue]/[_weekModel.todayPrice floatValue] < 1){
+        _oneWeekLabel.textColor = ColorWithHex(@"f10000");
+    }else {
+        _oneWeekLabel.textColor = [UIColor blackColor];
+    }
+    
+    if ([_weekModel.basePrice2 floatValue]/[_weekModel.todayPrice floatValue] < 1 ) {
+        _twoWeekLabel.textColor = ColorWithHex(@"f10000");
+    }else if ([_weekModel.basePrice2 floatValue]/[_weekModel.todayPrice floatValue] > 1){
+        _twoWeekLabel.textColor = ColorWithHex(@"36a830");
+    }else {
+        _twoWeekLabel.textColor = [UIColor blackColor];
+    }
+    
+    NSString *subProNameStr;
+    if (_weekModel.ptype.length > 0) { // 黄砂
+        
+        GoodChildModel *model = [[SynacInstance sharedInstance] goodsChildModlelFor:_weekModel.ptype deepId:_weekModel.pid];
+        subProNameStr = [NSString stringWithFormat:@"(%@-%@)",model.sizeModel.minv,model.sizeModel.maxv];
+    }else { // 石子
+        GoodChildModel *model = [[SynacInstance sharedInstance] goodsChildStone:_weekModel.pid];
+        subProNameStr = [NSString stringWithFormat:@"(%@-%@)",model.sizeModel.minv,model.sizeModel.maxv];
+    }
+    
+    _sizeLabel.text = subProNameStr;
 }
 
 @end

@@ -25,14 +25,24 @@ typedef void (^ASISuccedDataConflictBlock)(ASIHTTPRequest *request,id responseDa
 /**
  *@brief 请求服务器失败
  */
-typedef void (^ASIRequestFiledBlock)();
+typedef void (^ASIRequestFiledBlock)(ASIHTTPRequest *request);
 
 @interface BaseViewController : UIViewController 
 
 @property (nonatomic, copy) RequestSuccedBlock requestSuccedBlock;
 @property (nonatomic, copy) RequestFiledBlock  requestFiledBlock;
+
+/**
+ *@brief 网络请求成功时候的回调
+ */
 @property (nonatomic, copy) ASIRequestSuccedBlock asiRequestSuccedBlock;
+/**
+ *@brief 网络请求失败时的回调
+ */
 @property (nonatomic, copy) ASIRequestFiledBlock  asiRequestFiledBlock;
+/**
+ *@brief 网络请求成功，但是数据错误时候的回调
+ */
 @property (nonatomic, copy) ASISuccedDataConflictBlock asiDataConflictBlock;
 
 /**
@@ -40,7 +50,14 @@ typedef void (^ASIRequestFiledBlock)();
  */
 @property (nonatomic, strong) NSMutableArray *requestArray; // 请求对象
 
+/**
+ *@brief 加载失败或数据为空显示此视图
+ *@discussion 点击failView会触发requestNet方法，已重新请求网络
+ */
 @property (nonatomic, strong) UIView *failView; // 加载失败，显示此图
+/**
+ *@brief 默认为NO,如果为YES，在网络请求失败时将添加提示视图，提示加载数据失败
+ */
 @property (nonatomic, assign) BOOL shouldShowFailView;
 
 /**
@@ -52,9 +69,17 @@ typedef void (^ASIRequestFiledBlock)();
 #pragma mark - Override
 - (void)initDatas;
 - (void)loadSubViews;
+
 - (void)requestNet;
 - (void)cancleRequest;
-- (void)handleRequestFailed;
+
+- (void)hideViewsWhenNoData;
+- (void)showViewsWhenDataComing;
+
+- (void)handleNetData:(id)responseData;
+- (void)handleRequestFailed:(ASIHTTPRequest *)req;
+- (void)requestSuccessButNoData;
+
 - (UIView *)failViewWithFrame:(CGRect)frame empty:(BOOL)isEmpty;
 
 #pragma mark - Net

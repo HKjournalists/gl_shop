@@ -12,7 +12,7 @@
 #import "RegisterViewController.h"
 #import "OpenUDID.h"
 #import "UserModel.h"
-
+#import "AuthViewController.h"
 
 #import "CompanyAuthViewController.h"
 
@@ -122,10 +122,10 @@
                 HUDString:@"正在登入..."
                   success:^(MKNetworkOperation *operation) {
                       
-                      NSArray *dicArray = [operation.responseJSON objectForKey:@"DATA"];
+                      NSArray *dicArray = [operation.responseJSON objectForKey:ServiceDataKey];
                       [self _loginSuccess:dicArray];
     } error:^(MKNetworkOperation *operation, NSError *error) {
-        NSLog(@"%@",error);
+        HUD(@"登录失败");
     }];
 //    [self.navigationController pushViewController:[[CompanyAuthViewController alloc] init] animated:YES];
 
@@ -148,7 +148,6 @@
 - (void)_loginSuccess:(NSArray *)datas {
     // 发送通知，用户已登入
     [[NSNotificationCenter defaultCenter] postNotificationName:kUserDidLoginNotification object:nil];
-    
     // 保存用户信息
     NSDictionary *dic = [NSDictionary dictionary];
     if (datas.count > 0)
@@ -167,7 +166,13 @@
     }
     
     // 登录成功，返回主页面
-    [self.navigationController popViewControllerAnimated:YES];
+    if (!_skipToAuth) {
+        HUD(@"登录成功");
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        AuthViewController *vc = [[AuthViewController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
+    }
 }
 
 @end

@@ -16,5 +16,6 @@
 - (void)show;
 - (void)showWithTip:(NSString *)tipTitle;
 - (void)hideLoading;
+- (void)showWithTip:(NSString *)tipTitle Yoffset:(CGFloat)yoffset;
 
 @end

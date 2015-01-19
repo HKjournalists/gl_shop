@@ -76,13 +76,16 @@
     
     
     // 获取验证码按钮
-    btnVerifCode = [UIButton buttonWithTip:@"获取验证码" target:self selector:@selector(getCode:)];
+//    btnVerifCode = [UIButton buttonWithTip:@"获取验证码" target:self selector:@selector(getCode:)];
+    btnVerifCode = [UIFactory createBtn:@"Buy_sell_publish" bTitle:@"获取验证码" bframe:CGRectZero];
+    [btnVerifCode addTarget:self action:@selector(getCode:) forControlEvents:UIControlEventTouchUpInside];
     btnVerifCode.frame = CGRectMake(_codeTextfield.vright+15, _codeTextfield.vtop+6, 100, 30);
-    [btnVerifCode setBackgroundColor:ColorWithHex(@"#3d4245")];
+    [btnVerifCode setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [btnVerifCode setTitleColor:ColorWithHex(@"#3b70d4") forState:UIControlStateDisabled];
     [self.view addSubview:btnVerifCode];
     
     UILabel *oldLabel = [UILabel labelWithTitle:@"请输入旧密码"];
+    oldLabel.textColor = smsLabel.textColor;
     oldLabel.frame = CGRectMake(smsLabel.vleft, backgroundView.vbottom+15, 200, smsLabel.vheight);
     UIImageView *textFieldBG = [[UIImageView alloc] initWithFrame:CGRectMake(0, oldLabel.vbottom, self.view.vwidth, 44)];
     textFieldBG.image = [UIImage imageNamed:@"白色列表一条"];
@@ -93,10 +96,10 @@
         [self.view addSubview:textFieldBG];
         
         _oldPWTextField = [UITextField textFieldWithPlaceHodler:@"请输入手机号码" withDelegate:self];
-        _oldPWTextField.frame = CGRectMake(0, 0, textFieldBG.vwidth, textFieldBG.vheight);
+        _oldPWTextField.frame = CGRectMake(_codeTextfield.vleft, textFieldBG.vtop, textFieldBG.vwidth, textFieldBG.vheight);
         _oldPWTextField.keyboardType = UIKeyboardTypeNumberPad;
         _oldPWTextField.returnKeyType = UIReturnKeyDone;
-        [textFieldBG addSubview:_oldPWTextField];
+        [self.view addSubview:_oldPWTextField];
     }
     
     UILabel *tip = [UILabel labelWithTitle:@"请设置登入密码"];
@@ -118,11 +121,13 @@
     // 密码输入框
     _pwTextField = [UITextField textFieldWithPlaceHodler:@"请输入密码" withDelegate:self];
     _pwTextField.frame = CGRectMake(tip.vleft, tip.vbottom+10, SCREEN_WIDTH-10, 30);
+    _pwTextField.secureTextEntry = YES;
     [self.view addSubview:_pwTextField];
     
     // 密码确认框
     _rePwTextField = [UITextField textFieldWithPlaceHodler:@"请再次输入密码" withDelegate:self];
     _rePwTextField.frame = CGRectMake(tip.vleft, _pwTextField.vbottom+10, _pwTextField.vwidth, _pwTextField.vheight);
+    _rePwTextField.secureTextEntry = YES;
     [self.view addSubview:_rePwTextField];
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(smsLabel.vleft, backgroundView1.vbottom+18, 5, 5)];
@@ -244,7 +249,6 @@
         }else{
             NSString *strTime = [NSString stringWithFormat:@"%ds后重发",timeout];
             dispatch_async(dispatch_get_main_queue(), ^{
-                [btnVerifCode setBackgroundColor:ColorWithHex(@"#3d4245")];
                 btnVerifCode.enabled=YES;
                 [btnVerifCode setTitle:strTime forState:UIControlStateNormal];
                 btnVerifCode.enabled=NO;

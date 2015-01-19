@@ -9,6 +9,7 @@
 #import "RegisterViewController.h"
 #import "HLCheckbox.h"
 #import "SettingPasswordViewController.h"
+#import "IQKeyboardManager.h"
 
 @interface RegisterViewController () <UITextFieldDelegate>
 
@@ -25,6 +26,18 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:NO];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -69,7 +82,7 @@
     _nextBtn.backgroundColor = CJBtnColor;
     [self.view addSubview:_nextBtn];
     
-    __weak typeof(self) weakSelf = self;
+    __block typeof(self) weakSelf = self;
     _box.tapBlock = ^(BOOL selected) {
         if (weakSelf.phoneTextfield.text.length > 0) {
             

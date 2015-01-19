@@ -9,10 +9,18 @@
 #import "UnLoadDetailViewController.h"
 #import "AddressPublicModel.h"
 #import "UIButton+WebCache.h"
+#import "REPlaceholderTextView.h"
+#import "HLCheckbox.h"
+#import "PlaceSelect.h"
+#import "PhotoUploadView.h"
 
-@interface UnLoadDetailViewController () <UITableViewDataSource,UITableViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIActionSheetDelegate>
+@interface UnLoadDetailViewController () <UITableViewDataSource,UITableViewDelegate,UITextViewDelegate, PlaceDidSelect,UploadImageDelete,UITextFieldDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) HLCheckbox *box;
+@property (nonatomic, strong) UILabel *agreeLabel;
+@property (nonatomic, strong) PlaceSelect *place;
+@property (nonatomic, strong) PhotoUploadView *photoView;
 
 @end
 
@@ -21,6 +29,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+}
+
+- (void)initDatas {
+    if (!_editorAddress) {
+        self.title = @"新增交易地址";
+        _addressModel = [[AddressPublicModel alloc] init];
+    }
+    
+    _place = [[PlaceSelect alloc] init];
+    _place.delegate = self;
+    
+    if (!_editorAddress) {
+        _photoView = [[PhotoUploadView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
+        _photoView.delegate = self;
+        _addressModel = [[AddressPublicModel alloc] init];
+    }
+
 }
 
 - (void)loadSubViews {
@@ -34,13 +59,27 @@
     [self.view addSubview:_tableView];
 }
 
+#pragma mark - Setter
+- (void)setAddressModel:(AddressPublicModel *)addressModel {
+    _addressModel = addressModel;
+    _photoView = [[PhotoUploadView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
+    _photoView.delegate = self;
+    NSMutableArray *temp = [NSMutableArray array];
+    if (_addressModel.addressImgModels.count) { // 如果卸货地址有图片，需要展示
+        for (AddressImgModel *model in _addressModel.addressImgModels) {
+            [temp addObject:model.thumbnailSmall];
+        }
+        _photoView.imageUrlArray = [NSArray arrayWithArray:temp];
+    }
+}
+
 #pragma mark - UITableView DataSource/Delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return section == 0 ? 5 : 1;
+    return section == 0 ? 6 : 1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -58,45 +97,26 @@
         switch (indexPath.row) {
             case 0:
             {
-                cell.textLabel.text = @"所在地区";
+                cell.textLabel.text =  _addressModel.areaFullName ? _addressModel.areaFullName : @"省、市、区";
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                cell.detailTextLabel.text = _addressModel.address;
+                
             }
                 break;
             case 1:
             {
-                cell.textLabel.text = @"详细交易地址";
-                UITextField *textField = [UITextField textFieldWithPlaceHodler:@"填写" withDelegate:self];
-                textField.frame = CGRectMake(140, 22-15, 150, 30);
-                textField.textAlignment = NSTextAlignmentRight;
-                [cell.contentView addSubview:textField];
+                REPlaceholderTextView *textView = [[REPlaceholderTextView alloc] initWithFrame:CGRectMake(45, 0, cell.vwidth-30, 44)];
+                textView.placeholder = @"请输入详细的交易地址";
+                textView.font = [UIFont systemFontOfSize:14.f];
+                textView.delegate = self;
+                textView.text = _addressModel.address;
+                [cell.contentView addSubview:textView];
             }
                 break;
             case 2:
             {
                 cell.imageView.image = nil;
-                for (int i = 0; i < 3; i++) {
-                    AddressImgModel *model;
-                    if (_addressModel.addressImgModels.count > i) {
-                        model = _addressModel.addressImgModels[i];
-                    }
-                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    UIButton *imageBtn = [UIButton buttonWithTip:nil target:self selector:@selector(chosePhoto:)];
-                    imageBtn.frame = CGRectMake(15+i*(260/3+15), 10, 260/3, 80);
-                    imageBtn.tag = 100+i;
-                    if (i == 0) {
-                      [imageBtn setImage:[UIImage imageNamed:@"address_photo"] forState:UIControlStateNormal];
-                    }else if (i == 1) {
-                        [imageBtn setImage:[UIImage imageNamed:@"address_photo_add"] forState:UIControlStateNormal];
-                    }else if (i == 2 ){
-                        [imageBtn setImage:[UIImage imageNamed:@"address_photo_add"] forState:UIControlStateNormal];
-                    }
-
-                    if (model.thumbnailSmall) {
-                        [imageBtn sd_setImageWithURL:[NSURL URLWithString:model.thumbnailSmall] forState:UIControlStateNormal];
-                    }
-                    
-                    [cell addSubview:imageBtn];
+                if (!_photoView.superview) {
+                    [cell addSubview:_photoView];
                 }
 
             }
@@ -106,9 +126,11 @@
                 cell.textLabel.text = @"卸货码头水深度(单位:米)";
                 UITextField *textField = [UITextField textFieldWithPlaceHodler:@"填写" withDelegate:self];
                 textField.frame = CGRectMake(140, 22-15, 150, 30);
+                textField.tag = 2013;
+                textField.keyboardType = UIKeyboardTypeDecimalPad;
                 textField.textAlignment = NSTextAlignmentRight;
                 [cell.contentView addSubview:textField];
-                textField.text = [_addressModel.realdeep stringValue];
+                textField.text = [_addressModel.deep stringValue];
             }
                 break;
             case 4:
@@ -117,18 +139,30 @@
                 UITextField *textField = [UITextField textFieldWithPlaceHodler:@"填写" withDelegate:self];
                 textField.frame = CGRectMake(140, 22-15, 150, 30);
                 textField.textAlignment = NSTextAlignmentRight;
+                textField.keyboardType = UIKeyboardTypeDecimalPad;
+                textField.tag = 2014;
                 [cell.contentView addSubview:textField];
-                textField.text = [_addressModel.deep stringValue];
+                textField.text = [_addressModel.shippington stringValue];
+            }
+                break;
+                
+                case 5:
+            {
+                _box = [[HLCheckbox alloc] initWithBoxImage:[UIImage imageNamed:@"check_unselected"] selectImage:[UIImage imageNamed:@"check_selected"]];
+                _box.frame = CGRectMake(15, cell.vheight/2-10, 20, 20);
+                [cell.contentView addSubview:_box];
+                
+                self.agreeLabel = [UILabel labelWithTitle:@"设置为默认的交易地址"];
+                _agreeLabel.font = [UIFont systemFontOfSize:14.5f];
+                _agreeLabel.frame = CGRectMake(_box.vright+2, _box.vtop, 200, _box.vheight);
+                [cell.contentView addSubview:_agreeLabel];
+ 
             }
                 break;
                 
             default:
                 break;
         }
-    }else {
-        cell.imageView.image = nil;
-        cell.textLabel.textColor = [UIColor redColor];
-        cell.textLabel.text = @"删除地址";
     }
     
     return cell;
@@ -139,7 +173,7 @@
     
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            
+            [_place showPlaceSelectView];
         }
     }
 }
@@ -147,7 +181,7 @@
 #define sectionHigh 10
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return sectionHigh;
+    return 60;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -157,7 +191,17 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, sectionHigh)];
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 60)];
+    
+    UIButton *btn = [UIButton buttonWithTip:@"删除该交易地址" target:self selector:@selector(deleteAddress)];
+    btn.frame = CGRectMake(SCREEN_WIDTH/2-75, 30-35/2, 150, 35);
+    UIImage *image = [UIImage imageNamed:@"attestation_icon"];
+    image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(20, 20, 20, 20) resizingMode:UIImageResizingModeStretch];
+    [btn setBackgroundImage:image forState:UIControlStateNormal];
+    if (_editorAddress) {
+        [view addSubview:btn];
+    }
+    
     return view;
 }
 
@@ -172,81 +216,171 @@
  *@brief 保存编辑
  */
 - (void)doneAction {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_addressModel.id,@"id",_addressModel.address,@"address", nil];
-    [self requestWithURL:bModifyUnloadAddress params:params HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
+    
+    if (!_addressModel.areacode.length) {
+        HUD(@"请选择省市区");
+        return;
+    }
+    
+    if (!_addressModel.address.length) {
+        HUD(@"请填写详细地址");
+        return;
+    }
+    
+    if (!_addressModel.deep) {
+        HUD(@"请填写卸货码头水深度");
+        return;
+    }
+    
+    if (!_addressModel.shippington) {
+        HUD(@"请填写载重吨位");
+        return;
+    }
+    
+    NSString *tip = _editorAddress ? @"正在修改..." : @"正在添加...";
+    [self showHUD:tip isDim:NO Yoffset:0];
+    if (_photoView.imageArray.count > 0) { // 新添地址附带图片时，先上传图片
+        [_photoView uploadImage];
+    }else {
+        if (_editorAddress) {
+            [self editorAddresses:nil];
+        }else {
+            [self addAddress:nil];
+        }
+    }
+}
+
+/**
+ *@brief 将交易地址加到服务器
+ */
+- (void)addAddress:(NSString *)imgId {
+    UserInstance *userInstance = [UserInstance sharedInstance];
+    NSString *cid = userInstance.user.cid;
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_addressModel.address,@"address",cid,@"cid",_addressModel.deep,@"deep",_addressModel.shippington,@"shippington",_addressModel.areacode,@"areacode", nil];
+    if (imgId) {
+        [params addString:imgId forKey:@"addressImgIds"];
+    }
+    [self requestWithURL:bAddUnloadAddress params:params HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
         kASIResultLog;
-    } failedBlock:^{
+        [self handleRequestSuccess];
         
+
+    } failedBlock:^ (ASIHTTPRequest *req){
+        [self showTip:@"添加地址失败，请稍后尝试！"];
+    }];
+}
+
+- (void)handleRequestSuccess {
+    if (_box.isSelected) {
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_addressModel.id,@"id", nil];
+        [self requestWithURL:bSetDefaultUnloadAddress params:params HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
+            NSString *tip = _editorAddress ? @"修改交易地址成功。" : @"添加交易地址成功。";
+            HUD(tip);
+            [[NSNotificationCenter defaultCenter] postNotificationName:kRefrushAddressListNotification object:nil];
+            [self.navigationController popViewControllerAnimated:YES];            
+        } failedBlock:^ (ASIHTTPRequest *req){
+            NSString *tip = _editorAddress ? @"修改交易地址失败，请稍后尝试。" : @"添加交易地址失败，请稍后尝试。";
+            HUD(tip);
+        }];
+    }else {
+        NSString *tip = _editorAddress ? @"修改交易地址成功。" : @"添加交易地址成功。";
+        HUD(tip);
+        [[NSNotificationCenter defaultCenter] postNotificationName:kRefrushAddressListNotification object:nil];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+/**
+ *@brief 编辑卸货地址
+ */
+- (void)editorAddresses:(NSString *)imgId {
+    
+//    UserInstance *userInstance = [UserInstance sharedInstance];
+//    NSString *cid = userInstance.user.cid;
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_addressModel.address,@"address",_addressModel.id,@"id",_addressModel.deep,@"deep",_addressModel.shippington,@"shippington",_addressModel.areacode,@"areacode", nil];
+
+    if (imgId) {
+        [params addString:imgId forKey:@"addressImgIds"];
+    }
+    [self requestWithURL:bModifyUnloadAddress
+                  params:params
+              HTTPMethod:kHttpPostMethod
+           completeBlock:^(ASIHTTPRequest *request, id responseData) {
+               [self handleRequestSuccess];
+    } failedBlock:^(ASIHTTPRequest *req){
+        [self showTip:@"编辑地址失败，请稍后尝试！"];
     }];
 }
 
 /**
- *@brief 选择实物图片
+ *@brief 点击删除交易地址
  */
-static long photoTag = 0;
-- (void)chosePhoto:(UIButton *)btn {
-    UIActionSheet *choosePhotoActionSheet;
-    photoTag = btn.tag-100;
+- (void)deleteAddress {
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_addressModel.id,@"id", nil];
+    [self requestWithURL:bDeleUnloadAddress
+                  params:params
+              HTTPMethod:kHttpPostMethod
+           completeBlock:^(ASIHTTPRequest *request, id responseData) {
+               HUD(@"删除成功！");
+               [[NSNotificationCenter defaultCenter] postNotificationName:kRefrushAddressListNotification object:nil];
+               [self.navigationController popViewControllerAnimated:YES];
+           } failedBlock:^(ASIHTTPRequest *req){
+               [self showTip:@"删除地址失败，请稍后尝试！"];
+           }];
+}
+
+#pragma mark - PlaceDidSelect Delegate
+- (void)placeDidSelect:(NSString *)place theAreaCode:(NSString *)areaCode{
+    _addressModel.areacode = areaCode;
+    _addressModel.areaFullName = place;
+    [_tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:0];
+}
+
+#pragma mark - UITextView Delegate
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    _addressModel.address = textView.text;
+}
+
+#pragma mark - 
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if (!textField.text.length) {
+        return;
+    }
     
-    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        choosePhotoActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"选择头像图片", @"")
-                                                             delegate:self
-                                                    cancelButtonTitle:@"取消"
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:@"拍照", @"从相册获取", nil];
-    } else {
-        choosePhotoActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"选择照片", @"")
-                                                             delegate:self
-                                                    cancelButtonTitle:NSLocalizedString(@"cancel", @"")
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:NSLocalizedString(@"take_photo_from_library", @""), nil];
+    float deep = [textField.text floatValue];
+    
+    if (textField.tag == 2013) {
+        _addressModel.deep = [NSNumber numberWithFloat:deep];
     }
-    choosePhotoActionSheet.tag = 5000;
-    [choosePhotoActionSheet showInView:[UIApplication sharedApplication].keyWindow];
+    
+    if (textField.tag == 2014) {
+        _addressModel.shippington = [NSNumber numberWithFloat:deep];
+    }
 }
 
-#pragma mark - UIImagePickerControllerDelegate
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    NSLog(@"##%@",info);
-    [self dismissViewControllerAnimated:YES completion:^{
-        UIImage *image = info[@"UIImagePickerControllerEditedImage"];
-        UIButton *btn = (UIButton *)[self.view viewWithTag:100+photoTag];
-        [btn setImage:image forState:UIControlStateNormal];
 
-    }];
+#pragma mark - UploadImageDelete
+- (void)uploadImageSuccess:(NSString *)imgsId uploadView:(PhotoUploadView *)uploadView{
+    if (_editorAddress) {
+        [self editorAddresses:imgsId];
+    }else {
+        [self addAddress:imgsId];
+    }
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (actionSheet.tag == 5000) {
-        NSUInteger sourceType = 0;
-        if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-            switch (buttonIndex) {
-                case 0:
-                    sourceType = UIImagePickerControllerSourceTypeCamera;
-                    break;
-                case 1:
-                    sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                    break;
-                case 2:
-                    return;
-            }
-        } else {
-            if (buttonIndex == 1) {
-                return;
-            } else {
-                sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-            }
-        }
-        
-        UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
-        imagePickerController.delegate = self;
-        imagePickerController.allowsEditing = YES;
-        imagePickerController.sourceType = sourceType;
-        [self presentViewController:imagePickerController animated:YES completion:nil];
-        
+- (void)uploadImageFaile:(PhotoUploadView *)uploadView{
+    if (_editorAddress) {
+        [self editorAddresses:nil];
+    }else {
+        [self addAddress:nil];
     }
 
+}
+
+- (void)pickerImageDidReplace {
+    if (_editorAddress) {
+        
+    }
 }
 
 @end

@@ -12,10 +12,14 @@
 
 @property (nonatomic, copy) NSString *username;
 @property (nonatomic, copy) NSString *cid; // 企业id
+@property (nonatomic, copy) NSString *cname;
 @property (nonatomic, copy) NSString *phone;
 @property (nonatomic, copy) NSString *password;
 @property (nonatomic, copy) NSString *clienttype;
 @property (nonatomic, copy) NSString *userToken;
 @property (nonatomic, copy) NSString *clientid;
+@property (nonatomic, strong) NSDictionary *ctype;
+@property (nonatomic, strong) NSDictionary *authstatus;
+@property (nonatomic, strong) NSDictionary *bailstatus;
 
 @end

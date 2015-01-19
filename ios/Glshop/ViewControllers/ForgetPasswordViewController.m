@@ -10,6 +10,7 @@
 #import "SettingPasswordViewController.h"
 #import "OpenUDID.h"
 #import "NetEngine.h"
+#import "IQKeyboardManager.h"
 #import "WPHotspotLabel.h"
 #import "WPAttributedStyleAction.h"
 #import "NSString+WPAttributedMarkup.h"
@@ -31,8 +32,15 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
+    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:YES];
     [MKNetworkEngine cancelOperationsContainingURLString:bImageCodeCheckPath];
     [MKNetworkEngine cancelOperationsContainingURLString:bImageCodePath];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    [[IQKeyboardManager sharedManager] setEnableAutoToolbar:NO];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -123,6 +131,11 @@
         return;
     }
     
+    if (!_codeField.text.length) {
+        HUD(@"请输入验证码");
+        return;
+    }
+    
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[OpenUDID value] forKey:@"deviceId"];
     [params setObject:_codeField.text forKey:@"imgCode"];
     [self requestWithURL:bImageCodeCheckPath params:params HTTPMethod:kHttpGetMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
@@ -131,7 +144,7 @@
         vc.phone = _userNameField.text;
         vc.operation = ForgetSetPassword;
         [self.navigationController pushViewController:vc animated:YES];
-    } failedBlock:^{
+    } failedBlock:^(ASIHTTPRequest *req){
         
     }];
     

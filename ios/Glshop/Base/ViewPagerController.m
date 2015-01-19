@@ -103,11 +103,13 @@
         bezierPath = [UIBezierPath bezierPath];
         
         // Draw the indicator
-        [bezierPath moveToPoint:CGPointMake(0.0, CGRectGetHeight(rect) - 1.0)];
+        [bezierPath moveToPoint:CGPointMake(0, CGRectGetHeight(rect) - 1.0)];
         [bezierPath addLineToPoint:CGPointMake(CGRectGetWidth(rect), CGRectGetHeight(rect) - 1.0)];
         [bezierPath setLineWidth:5.0];
         [self.indicatorColor setStroke];
         [bezierPath stroke];
+        
+//        self.backgroundColor = self.indicatorColor;
     }
 }
 @end
@@ -322,6 +324,9 @@
     activeTabView = [self tabViewAtIndex:self.activeTabIndex];
     activeTabView.selected = NO;
     
+    UILabel *unSelectlabel = (UILabel *)activeTabView.subviews.firstObject;
+    unSelectlabel.textColor = [UIColor blackColor];
+    
     // Set to-be-active tab selected
     activeTabView = [self tabViewAtIndex:activeTabIndex];
     activeTabView.selected = YES;
@@ -333,6 +338,9 @@
     // Position the tab in center if centerCurrentTab option is provided as YES
     UIView *tabView = [self tabViewAtIndex:self.activeTabIndex];
     CGRect frame = tabView.frame;
+    
+    UILabel *label = (UILabel *)tabView.subviews.firstObject;
+    label.textColor = [UIColor orangeColor];
     
     if ([self.centerCurrentTab boolValue]) {
         

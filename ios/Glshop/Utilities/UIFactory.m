@@ -34,4 +34,31 @@
     return imageview;
 }
 
++ (UILabel *)createUnitLabel:(NSString *)text withFont:(UIFont *)font unitType:(UnitTextType)type {
+    NSString *unittext;
+    if (type == unint_yuan) {
+        unittext = @"(单位:元)";
+    }else if (type == unint_dun) {
+        unittext = @"(单位:吨)";
+    }
+    UILabel *unitlabel = [UILabel labelWithTitle:unittext];
+    unitlabel.font = [UIFont systemFontOfSize:14.5];
+    unitlabel.textColor = [UIColor grayColor];
+    CGSize size = [Utilits labelSizeCalculte:font labelText:text];
+    unitlabel.frame = CGRectMake(size.width+15, 0, 100, kCellDefaultHeight-3);
+    return unitlabel;
+}
+
++ (UIButton *)createBtn:(NSString *)imageName bTitle:(NSString *)title bframe:(CGRect)frame {
+    UIImage *image = [UIImage imageNamed:imageName];
+    image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10) resizingMode:UIImageResizingModeStretch];
+    
+    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [btn setBackgroundImage:image forState:UIControlStateNormal];
+    [btn setTitle:title forState:UIControlStateNormal];
+    btn.frame = frame;
+    
+    return btn;
+}
+
 @end

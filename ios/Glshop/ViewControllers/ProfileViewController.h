@@ -7,7 +7,13 @@
 //
 
 #import "BaseViewController.h"
+#import "CopyRightModel.h"
 
 @interface ProfileViewController : BaseViewController
+
+/**
+ *@brief 企业信息
+ */
+@property (nonatomic, strong) CopyRightModel *cModel;
 
 @end

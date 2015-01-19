@@ -7,7 +7,10 @@
 //
 
 #import "BaseViewController.h"
+#import "MyPurseInfoModel.h"
 
 @interface MypurseViewController : BaseViewController
+
+@property (nonatomic, strong, readonly) MyPurseInfoModel *currentPurse;
 
 @end

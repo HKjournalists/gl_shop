@@ -18,7 +18,7 @@
                              @"goodsName":@"name",
                              @"goodsPcode":@"pcode",
                              @"goodsVal":@"val",
-                             @"orderNumber":@"orderno",
+                             @"orderNo":@"orderno",
                              };
     return mapAtt;
 }

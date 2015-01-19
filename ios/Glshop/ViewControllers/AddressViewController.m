@@ -8,27 +8,24 @@
 
 #import "AddressViewController.h"
 #import "PublicGuideView.h"
-#import "PublicOtherInfoModel.h"
-#import "KGModal.h"
 #import "UnloadAddressViewController.h"
 #import "REPlaceholderTextView.h"
 #import "CompanyAuthViewController.h"
 #import "IndicateSubView.h"
-#import "JGActionSheet.h"
 #import "PreViewPublicViewController.h"
 #import "HJActionSheet.h"
+#import "PlaceSelect.h"
 
 static NSString *commonStr = @"选择";
 
-@interface AddressViewController () <UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UITextViewDelegate>
+@interface AddressViewController () <UITableViewDataSource,UITableViewDelegate,UIActionSheetDelegate,UITextFieldDelegate,UITextViewDelegate,PlaceDidSelect>
 
 @property (nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSMutableArray *datas;
 @property (nonatomic, strong) NSArray *sections;
 @property (nonatomic, strong) UIDatePicker *datePicker;
 @property (nonatomic, strong) IndicateSubView *listView; // 下拉选择单位
-@property (nonatomic, strong) JGActionSheet *actionShet;
 @property (nonatomic, strong) HJActionSheet *hjSheet;
+@property (nonatomic, strong) PlaceSelect *place;
 
 @property (nonatomic, strong) UITextField *sellAmountTextField;
 @property (nonatomic, strong) UITextField *unitPriceTextField;
@@ -44,8 +41,24 @@ static NSString *commonStr = @"选择";
 
 #pragma mark - Override
 - (void)initDatas {
-    
+    self.title = @"交易信息";
     _sections = @[@1,@2,@1,@2,@2,@1];
+    
+    if ([_publicModel.type integerValue] == BussinessTypeSell) {
+        
+        if ([_publicModel.addresstype[@"text"] isEqualToString:@"卖家"]) {
+            _sections = @[@1,@2,@1,@2,@2,@1];
+        }else {
+            _sections = @[@1,@2,@1,@1,@2,@1];
+        }
+    }else {
+        
+        if ([_publicModel.addresstype[@"text"] isEqualToString:@"买家"]) {
+            _sections = @[@1,@2,@1,@2,@2,@1];
+        }else {
+            _sections = @[@1,@2,@1,@1,@2,@1];
+        }
+    }
     
 }
 
@@ -54,6 +67,9 @@ static NSString *commonStr = @"选择";
     PublicGuideView *guideView = [[PublicGuideView alloc] initWithFrame:CGRectMake(0, 0, self.view.vwidth, 60) stepIndex:2];
     [self.view addSubview:guideView];
     
+    _place = [[PlaceSelect alloc] init];
+    _place.delegate = self;
+    
     _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _tableView.vtop = guideView.vbottom;
     _tableView.vheight -= kTopBarHeight+50+guideView.vheight;
@@ -61,10 +77,8 @@ static NSString *commonStr = @"选择";
     _tableView.delegate   = self;
     [self.view addSubview:_tableView];
     
-    UIButton *nexBtn = [UIButton buttonWithTip:@"下一步" target:self selector:@selector(nextOption:)];
-    nexBtn.backgroundColor = CJBtnColor;
-    nexBtn.layer.cornerRadius = 3.f;
-    nexBtn.frame = CGRectMake(10, self.tableView.vbottom+5, self.view.vwidth-20, 40);
+    UIButton *nexBtn = [UIFactory createBtn:BlueButtonImageName bTitle:@"下一步" bframe:CGRectMake(10, self.tableView.vbottom+5, self.view.vwidth-20, 40)];
+    [nexBtn addTarget:self action:@selector(nextOption:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:nexBtn];
     
 }
@@ -73,12 +87,21 @@ static NSString *commonStr = @"选择";
 - (IndicateSubView *)listView {
     if (!_listView) {
         _listView = [[IndicateSubView alloc] initWithFrame:CGRectMake(96, 10, 90, 24)];
-        _listView.currentSelect = [_publicModel.unit  isEqual: MathUnitTon] ? 0 : 1;
+        if (_publicModel.unit) {
+            DLog(@"%@",_publicModel.unit[@"val"]);
+            _listView.currentSelect = [_publicModel.unit[DataValueKey]  isEqualToString: MathUnitTon] ? 0 : 1;
+        }else {
+            _listView.currentSelect = 0;
+        }
         _listView.dataSource = @[@"单位:吨",@"单位:立方"];
         _listView.weakViewController = self;
-        __weak typeof(self) weakSelf = self;
+        __block typeof(self) weakSelf = self;
         _listView.selectBlock = ^(NSInteger index) {
-            weakSelf.publicModel.unit = index == 0 ? MathUnitTon : MathUnitCube;
+            if (index == 0) {
+                weakSelf.publicModel.unit = [NSDictionary dictionaryWithObjectsAndKeys:MathUnitTon,DataValueKey,@"吨",DataTextKey, nil];
+            }else {
+                weakSelf.publicModel.unit = [NSDictionary dictionaryWithObjectsAndKeys:MathUnitCube,DataValueKey,@"立方",DataTextKey, nil];
+            }
         };
         _listView.borderColor = [UIColor lightGrayColor];
     }
@@ -107,6 +130,7 @@ static NSString *commonStr = @"选择";
         _sellAmountTextField = [UITextField textFieldWithPlaceHodler:@"填写" withDelegate:self];
         _sellAmountTextField.frame = CGRectMake(_listView.vright, 22-15, 130, 30);
         _sellAmountTextField.textAlignment = NSTextAlignmentRight;
+        _sellAmountTextField.keyboardType = UIKeyboardTypeDecimalPad;
         _sellAmountTextField.delegate = self;
         _sellAmountTextField.text = [_publicModel.totalnum stringValue];
         [cell.contentView addSubview:_sellAmountTextField];
@@ -117,30 +141,31 @@ static NSString *commonStr = @"选择";
         if (indexPath.row == 0) {
             cell.textLabel.text = @"交易日期范围";
             NSString *startStr = _publicModel.starttime;
-            NSString *targetStr = startStr.length > 0 ? startStr : section_Value;
+            NSString *targetStr = startStr.length > 10 ? [startStr substringToIndex:10] : section_Value;
             UIButton *startBtn = [UIButton buttonWithTip:targetStr target:self selector:@selector(selectTime:)];
             startBtn.tag = 100*indexPath.section+1;
-            startBtn.frame = CGRectMake(147, 6, 70, 30);
+            startBtn.frame = CGRectMake(147, 6, 80, 30);
             [startBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
             startBtn.titleLabel.font = [UIFont systemFontOfSize:13.f];
             [cell addSubview:startBtn];
             
             UILabel *contact = [UILabel labelWithTitle:@"至"];
-            contact.frame = CGRectMake(startBtn.vright+5, 0, 15, cell.vheight);
+            contact.frame = CGRectMake(startBtn.vright, 0, 15, cell.vheight);
             [cell addSubview:contact];
             
-            NSString *endStr = _publicModel.limitime;
-            NSString *endTStr = endStr.length > 0 ? endStr : section_Value;
+            NSString *endStr = _publicModel.endtime;
+            NSString *endTStr = endStr.length > 10 ? [endStr substringToIndex:10] : section_Value;
             UIButton *endBtn = [UIButton buttonWithTip:endTStr target:self selector:@selector(selectTime:)];
             endBtn.tag = 100*indexPath.section+2;
             [endBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-            endBtn.frame = CGRectMake(contact.vright+10, startBtn.vtop, startBtn.vwidth, startBtn.vheight);
+            endBtn.frame = CGRectMake(contact.vright+2, startBtn.vtop, startBtn.vwidth, startBtn.vheight);
             endBtn.titleLabel.font = [UIFont systemFontOfSize:13.f];
             [cell addSubview:endBtn];
         }else {
             cell.textLabel.text = @"交易地域";
-            cell.detailTextLabel.text = _publicModel.publicOtherInfoModel.bussinessPlace;
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:14.f];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.detailTextLabel.text = _publicModel.areaFullName;
         }
         
     }//-----------------------------------------------------------------------------------------------------------
@@ -149,6 +174,7 @@ static NSString *commonStr = @"选择";
         cell.textLabel.text = @"到港单价（单位:元)";
         _unitPriceTextField = [UITextField textFieldWithPlaceHodler:@"填写" withDelegate:self];
         _unitPriceTextField.frame = CGRectMake(100, 22-15, 210, 30);
+        _unitPriceTextField.keyboardType = UIKeyboardTypeDecimalPad;
         _unitPriceTextField.textAlignment = NSTextAlignmentRight;
         if (_publicModel.price) {
             _unitPriceTextField.text = [NSString stringWithFormat:@"%@", _publicModel.price];
@@ -161,17 +187,34 @@ static NSString *commonStr = @"选择";
     else if (indexPath.section == 3) {
         if (indexPath.row == 0) {
             cell.textLabel.text = @"卸货地点指定方式";
-            NSNumber *number = [_publicModel.addressType objectForKey:@"val"];
-            if (_publicModel.addressType.count == 0) {
+            if (_publicModel.addresstype.count == 0) {
                 cell.detailTextLabel.text = section_Value;
+            }else if ([_publicModel.type integerValue] == BussinessTypeSell) {
+                if ([_publicModel.addresstype[@"text"] isEqualToString:@"卖家"]) {
+                    cell.detailTextLabel.text = @"己方指定";
+                    _publicModel.isOwen = YES;
+                }else {
+                    cell.detailTextLabel.text = @"对方指定";
+                    _publicModel.isOwen = NO;
+                }
             }else {
-                cell.detailTextLabel.text = [number integerValue] == 2 ? @"对方指定" : @"己方指定";
+                if ([_publicModel.addresstype[@"text"] isEqualToString:@"买家"]) {
+                    cell.detailTextLabel.text = @"己方指定";
+                    _publicModel.isOwen = YES;
+                }else {
+                    cell.detailTextLabel.text = @"对方指定";
+                    _publicModel.isOwen = NO;
+                }
             }
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }else {
             cell.imageView.image = nil;
             cell.textLabel.text = @"详细交易地址";
-            cell.detailTextLabel.text = _publicModel.addressModel.address;
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:13.f];
+            cell.detailTextLabel.numberOfLines = 2;
+            if (_publicModel.areaFullName.length && _publicModel.address) {
+                cell.detailTextLabel.text = FommatString(_publicModel.areaFullName, _publicModel.address);
+            }
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
         
@@ -199,29 +242,6 @@ static NSString *commonStr = @"选择";
         [cell addSubview:[self tipView]];
     }
     return cell;
-}
-
-/**
- *@brief 创建警告图
- */
-- (UIView *)tipView {
-    float height = [_publicModel.type integerValue] == 2 ? 100 : 60;
-    
-    UIView *tipView = [UIFactory createPromptViewframe:CGRectMake(10, 10, self.view.vwidth-20, height) tipTitle:nil];
-    UILabel *label1 = [UILabel labelWithTitle:@"1、*号为必填项；"];
-    label1.font = [UIFont systemFontOfSize:14.f];
-    label1.frame = CGRectMake(10, 30, 280, 20);
-    [tipView addSubview:label1];
-    
-    if ([_publicModel.type integerValue] == 2) {
-        UILabel *label2 = [UILabel labelWithTitle:@"2、本平台提供真实高效的交易，成交后平台将收取您的交易手续费。"];
-        label2.font = label1.font;
-        label2.frame = CGRectMake(10, label1.vbottom, 280, 40);
-        label2.numberOfLines = 2;
-        [tipView addSubview:label2];
-    }
-    
-    return tipView;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -270,19 +290,7 @@ static NSString *commonStr = @"选择";
         case 1:
         {
             if (indexPath.row == 1) { // 选择河段
-//                UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"选择交易段" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:nil, nil];
-//                for (NSString *name in [[SynacInstance sharedInstance] riverSectionsNames]) {
-//                    [sheet addButtonWithTitle:name];
-//                }
-//                sheet.tag = indexPath.section*100+3;
-//                [sheet showInView:self.view];
-                
-                JGActionSheetSection *sheet = [JGActionSheetSection sectionWithTitle:@"选择交易地域" message:nil contentView:[self contryPlace]];
-                _actionShet = [JGActionSheet actionSheetWithSections:@[sheet]];
-                _actionShet.outsidePressBlock = ^(JGActionSheet *sheet){
-                    [sheet dismissAnimated:YES];
-                };
-                [_actionShet showInView:self.view animated:YES];
+                [_place showPlaceSelectView];
             }
             
         }
@@ -320,9 +328,19 @@ static NSString *commonStr = @"选择";
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (fmodf(actionSheet.tag, 100) == 5) {
         if (buttonIndex == 0) {
-            _publicModel.addressType = [NSDictionary dictionaryWithObjectsAndKeys:@1,@"val",@"买家",@"text", nil];
+            if ([_publicModel.type integerValue] == BussinessTypeSell) {
+                _publicModel.addresstype = [NSDictionary dictionaryWithObjectsAndKeys:@2,@"val",@"卖家",@"text", nil];
+            }else {
+                _publicModel.addresstype = [NSDictionary dictionaryWithObjectsAndKeys:@1,@"val",@"买家",@"text", nil];
+            }
+            _sections = @[@1,@2,@1,@2,@2,@1];
         }else if (buttonIndex == 1) {
-            _publicModel.addressType = [NSDictionary dictionaryWithObjectsAndKeys:@2,@"val",@"卖家",@"text", nil];
+            if ([_publicModel.type integerValue] == BussinessTypeSell) {
+                _publicModel.addresstype = [NSDictionary dictionaryWithObjectsAndKeys:@1,@"val",@"买家",@"text", nil];
+            }else {
+                _publicModel.addresstype = [NSDictionary dictionaryWithObjectsAndKeys:@2,@"val",@"卖家",@"text", nil];
+            }
+            _sections = @[@1,@2,@1,@1,@2,@1];
         }
         [_tableView reloadData];
     }
@@ -349,74 +367,68 @@ static NSString *commonStr = @"选择";
 }
 
 /**
- *@brief 省市区
+ *@brief 创建警告图
  */
-- (UIView *)contryPlace {
-    UIView * contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH-20, 260)];
-    contentView.backgroundColor = [UIColor whiteColor];
+- (UIView *)tipView {
+    float height = [_publicModel.type integerValue] == 2 ? 100 : 60;
     
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSString *plistPath = [bundle pathForResource:@"area" ofType:@"plist"];
-    areaDic = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
+    UIView *tipView = [UIFactory createPromptViewframe:CGRectMake(10, 10, self.view.vwidth-20, height) tipTitle:nil];
+    UILabel *label1 = [UILabel labelWithTitle:@"1、*号为必填项；"];
+    label1.font = [UIFont systemFontOfSize:14.f];
+    label1.frame = CGRectMake(10, 30, 280, 20);
+    [tipView addSubview:label1];
     
-    NSArray *components = [areaDic allKeys];
-    NSArray *sortedArray = [components sortedArrayUsingComparator: ^(id obj1, id obj2) {
-        
-        if ([obj1 integerValue] > [obj2 integerValue]) {
-            return (NSComparisonResult)NSOrderedDescending;
-        }
-        
-        if ([obj1 integerValue] < [obj2 integerValue]) {
-            return (NSComparisonResult)NSOrderedAscending;
-        }
-        return (NSComparisonResult)NSOrderedSame;
-    }];
-    
-    NSMutableArray *provinceTmp = [[NSMutableArray alloc] init];
-    for (int i=0; i<[sortedArray count]; i++) {
-        NSString *index = [sortedArray objectAtIndex:i];
-        NSArray *tmp = [[areaDic objectForKey: index] allKeys];
-        [provinceTmp addObject: [tmp objectAtIndex:0]];
+    if ([_publicModel.type integerValue] == 2) {
+        UILabel *label2 = [UILabel labelWithTitle:@"2、本平台提供真实高效的交易，成交后平台将收取您的交易手续费。"];
+        label2.font = label1.font;
+        label2.frame = CGRectMake(10, label1.vbottom, 280, 40);
+        label2.numberOfLines = 2;
+        [tipView addSubview:label2];
     }
     
-    province = [[NSArray alloc] initWithArray: provinceTmp];
-    
-    NSString *index = [sortedArray objectAtIndex:0];
-    NSString *selected = [province objectAtIndex:0];
-    NSDictionary *dic = [NSDictionary dictionaryWithDictionary: [[areaDic objectForKey:index]objectForKey:selected]];
-    
-    NSArray *cityArray = [dic allKeys];
-    NSDictionary *cityDic = [NSDictionary dictionaryWithDictionary: [dic objectForKey: [cityArray objectAtIndex:0]]];
-    city = [[NSArray alloc] initWithArray: [cityDic allKeys]];
-    
-    
-    NSString *selectedCity = [city objectAtIndex: 0];
-    district = [[NSArray alloc] initWithArray: [cityDic objectForKey: selectedCity]];
-    
-    
-    
-    picker = [[UIPickerView alloc] initWithFrame: CGRectMake(0, 20, 320, 240)];
-    picker.dataSource = self;
-    picker.delegate = self;
-    picker.showsSelectionIndicator = YES;
-    [picker selectRow: 0 inComponent: 0 animated: YES];
-    [self.view addSubview: picker];
-    
-    selectedProvince = [province objectAtIndex: 0];
-    
-    [contentView addSubview:picker];
-    
-    return contentView;
+    return tipView;
 }
+
 
 #pragma mark - UIActions
 /**
  *@brief 跳转到发布页面
  */
 - (void)nextOption:(UIButton *)button {
+//    if (![self authPublicData]) {
+//        return;
+//    }
+    
     PreViewPublicViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"PreViewPublicViewControllerId"];
     vc.publicModel = _publicModel;
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+/**
+ *@brief 验证信息
+ */
+- (BOOL)authPublicData {
+    if (!_publicModel.totalnum) {
+        HUD(@"请填写销售量");
+        return NO;
+    }
+    
+    if (!_publicModel.starttime || !_publicModel.endtime) {
+        HUD(@"请选择交易时间范围");
+        return NO;
+    }
+    
+    if (!_publicModel.price) {
+        HUD(@"请填写到港单价");
+        return NO;
+    }
+    
+    if (!_publicModel.addresstype) {
+        HUD(@"请选择交易地点指定方式");
+        return NO;
+    }
+    
+    return YES;
 }
 
 /**
@@ -424,6 +436,10 @@ static NSString *commonStr = @"选择";
  *@discussion 开始时间按钮的tag = indexPath.section*100+1 开始时间按钮的tag = indexPath.section*100+2。根据tag来找到button和model
  */
 - (void)selectTime:(UIButton *)button {
+    [_sellAmountTextField resignFirstResponder];
+    [_unitPriceTextField resignFirstResponder];
+    
+    
     NSString *title = @"选择交易时间";
     UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 245)];
     bgView.backgroundColor = [UIColor whiteColor];
@@ -445,15 +461,15 @@ static NSString *commonStr = @"选择";
     headerView.backgroundColor = RGB(200, 200, 200, 1);
     [bgView addSubview:headerView];
     
-    UIButton *sure = [UIButton buttonWithTip:@"确定" target:self selector:@selector(sureDate:)];
-    sure.frame = CGRectMake(bgView.vwidth-120-10, 5, 120, 30);
+//    UIButton *sure = [UIButton buttonWithTip:@"确定" target:self selector:@selector(sureDate:)];
+    UIButton *sure = [UIFactory createBtn:@"登录-未触及状态" bTitle:@"完成" bframe:CGRectMake(headerView.vwidth-70-10, 5, 70, 30)];
+    [sure addTarget:self action:@selector(sureDate:) forControlEvents:UIControlEventTouchUpInside];
     sure.tag = button.tag+1000;
-    [sure setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [headerView addSubview:sure];
     
     UIButton *cancel = [UIButton buttonWithTip:@"取消" target:self selector:@selector(cancelSelectDate:)];
-    cancel.frame = CGRectMake(10, sure.vtop, 120, 30);
-    [cancel setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    cancel.frame = CGRectMake(0, sure.vtop, 80, 30);
+    [cancel setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
     [headerView addSubview:cancel];
     
     _hjSheet = [[HJActionSheet alloc] initWithTitle:nil contentView:bgView];
@@ -473,7 +489,7 @@ static NSString *commonStr = @"选择";
     if (fmodf(tag, 100) == 1) {
         _publicModel.starttime = dateModelStr;
     }else {
-        _publicModel.limitime = dateModelStr;
+        _publicModel.endtime = dateModelStr;
     }
     
     [_hjSheet hideSheet];
@@ -497,151 +513,13 @@ static NSString *commonStr = @"选择";
     _publicModel.remark = textView.text;
 }
 
-#pragma mark - UIPickerView DataSource
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return 3;
+#pragma mark - placeDidSelect Delegate
+- (void)placeDidSelect:(NSString *)place theAreaCode:(NSString *)areaCode{
+    _publicModel.areaFullName = place;
+    _publicModel.areaCode = areaCode;
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:1 inSection:1];
+    [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
-
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
-{
-    if (component == PROVINCE_COMPONENT) {
-        return [province count];
-    }
-    else if (component == CITY_COMPONENT) {
-        return [city count];
-    }
-    else {
-        return [district count];
-    }
-}
-
-
-#pragma mark- Picker Delegate Methods
-
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
-{
-    if (component == PROVINCE_COMPONENT) {
-        return [province objectAtIndex: row];
-    }
-    else if (component == CITY_COMPONENT) {
-        return [city objectAtIndex: row];
-    }
-    else {
-        return [district objectAtIndex: row];
-    }
-}
-
-
-- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
-{
-    if (component == PROVINCE_COMPONENT) {
-        selectedProvince = [province objectAtIndex: row];
-        NSDictionary *tmp = [NSDictionary dictionaryWithDictionary: [areaDic objectForKey: [NSString stringWithFormat:@"%ld", (long)row]]];
-        NSDictionary *dic = [NSDictionary dictionaryWithDictionary: [tmp objectForKey: selectedProvince]];
-        NSArray *cityArray = [dic allKeys];
-        NSArray *sortedArray = [cityArray sortedArrayUsingComparator: ^(id obj1, id obj2) {
-            
-            if ([obj1 integerValue] > [obj2 integerValue]) {
-                return (NSComparisonResult)NSOrderedDescending;//递减
-            }
-            
-            if ([obj1 integerValue] < [obj2 integerValue]) {
-                return (NSComparisonResult)NSOrderedAscending;//上升
-            }
-            return (NSComparisonResult)NSOrderedSame;
-        }];
-        
-        NSMutableArray *array = [[NSMutableArray alloc] init];
-        for (int i=0; i<[sortedArray count]; i++) {
-            NSString *index = [sortedArray objectAtIndex:i];
-            NSArray *temp = [[dic objectForKey: index] allKeys];
-            [array addObject: [temp objectAtIndex:0]];
-        }
-        
-
-        city = [[NSArray alloc] initWithArray: array];
-
-
-        NSDictionary *cityDic = [dic objectForKey: [sortedArray objectAtIndex: 0]];
-        district = [[NSArray alloc] initWithArray: [cityDic objectForKey: [city objectAtIndex: 0]]];
-        [picker selectRow: 0 inComponent: CITY_COMPONENT animated: YES];
-        [picker selectRow: 0 inComponent: DISTRICT_COMPONENT animated: YES];
-        [picker reloadComponent: CITY_COMPONENT];
-        [picker reloadComponent: DISTRICT_COMPONENT];
-        
-    }
-    else if (component == CITY_COMPONENT) {
-        NSString *provinceIndex = [NSString stringWithFormat: @"%lu", (unsigned long)[province indexOfObject: selectedProvince]];
-        NSDictionary *tmp = [NSDictionary dictionaryWithDictionary: [areaDic objectForKey: provinceIndex]];
-        NSDictionary *dic = [NSDictionary dictionaryWithDictionary: [tmp objectForKey: selectedProvince]];
-        NSArray *dicKeyArray = [dic allKeys];
-        NSArray *sortedArray = [dicKeyArray sortedArrayUsingComparator: ^(id obj1, id obj2) {
-            
-            if ([obj1 integerValue] > [obj2 integerValue]) {
-                return (NSComparisonResult)NSOrderedDescending;
-            }
-            
-            if ([obj1 integerValue] < [obj2 integerValue]) {
-                return (NSComparisonResult)NSOrderedAscending;
-            }
-            return (NSComparisonResult)NSOrderedSame;
-        }];
-        
-        NSDictionary *cityDic = [NSDictionary dictionaryWithDictionary: [dic objectForKey: [sortedArray objectAtIndex: row]]];
-        NSArray *cityKeyArray = [cityDic allKeys];
-        
-        district = [[NSArray alloc] initWithArray: [cityDic objectForKey: [cityKeyArray objectAtIndex:0]]];
-        [picker selectRow: 0 inComponent: DISTRICT_COMPONENT animated: YES];
-        [picker reloadComponent: DISTRICT_COMPONENT];
-    }
-    
-}
-
-
-- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component
-{
-    if (component == PROVINCE_COMPONENT) {
-        return 80;
-    }
-    else if (component == CITY_COMPONENT) {
-        return 100;
-    }
-    else {
-        return 115;
-    }
-}
-
-- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
-{
-    UILabel *myView = nil;
-    UIFont *font = [UIFont systemFontOfSize:15.f];
-    
-    if (component == PROVINCE_COMPONENT) {
-        myView = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 78, 30)];
-        myView.textAlignment = NSTextAlignmentCenter;
-        myView.text = [province objectAtIndex:row];
-        myView.font = font;
-        myView.backgroundColor = [UIColor clearColor];
-    }
-    else if (component == CITY_COMPONENT) {
-        myView = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 95, 30)];
-        myView.textAlignment = NSTextAlignmentCenter;
-        myView.text = [city objectAtIndex:row];
-        myView.font = font;
-        myView.backgroundColor = [UIColor clearColor];
-    }
-    else {
-        myView = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 110, 30)];
-        myView.textAlignment = NSTextAlignmentCenter;
-        myView.text = [district objectAtIndex:row];
-        myView.font = font;
-        myView.backgroundColor = [UIColor clearColor];
-    }
-    
-    return myView;
-}
-
 
 @end
 

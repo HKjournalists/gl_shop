@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "NetEngine.h"
+#import "AreaInstance.h"
 
 
 @interface AppDelegate ()
@@ -33,6 +34,8 @@
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     
     [[SynacInstance sharedInstance] synacData];
+    
+    [[AreaInstance sharedInstance] synacData];
     
     return YES;
 }

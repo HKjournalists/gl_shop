@@ -34,5 +34,17 @@
     return NO;
 }
 
+- (UserType)userType {
+    NSInteger t = [_user.ctype[DataValueKey] integerValue];
+    if (t == 0) {
+        return user_company;
+    }else if (t == 1) {
+        return user_ship;
+    }else if (t == 2) {
+        return user_personal;
+    }
+    return NSNotFound;
+}
+
 
 @end

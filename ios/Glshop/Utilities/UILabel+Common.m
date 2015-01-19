@@ -15,6 +15,7 @@
     UILabel *label = [[UILabel alloc] init];
     label.textAlignment = NSTextAlignmentLeft;
     label.backgroundColor = [UIColor clearColor];
+    label.font = [UIFont systemFontOfSize:16.f];
     label.textColor = [UIColor blackColor];
     return label;
 }

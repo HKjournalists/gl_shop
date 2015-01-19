@@ -31,8 +31,8 @@ static NSString *listResueIdentify = @"listCell";
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(cancelPresent)];
     self.navigationItem.leftBarButtonItem = item;
     
-    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
-    self.navigationItem.rightBarButtonItem = rightItem;
+//    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
+//    self.navigationItem.rightBarButtonItem = rightItem;
 
     
     _listView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
@@ -63,7 +63,7 @@ static NSString *listResueIdentify = @"listCell";
         name = _publicModel.pid;
         _lastSeleced = [[synac stoneSubType] indexOfObject: [synac goodsChildStone:_publicModel.pid]];
     }
-    if ([name isEqualToString:UnKnow]) {
+    if ([name isEqualToString:UnKnow] || _lastSeleced == NSNotFound) {
         _lastSeleced = 0;
     }
     self.title = controllerTitle;
@@ -111,8 +111,8 @@ static NSString *listResueIdentify = @"listCell";
                 }
                 _publicModel.pid = model.goodChildId;
                 
-                DLog(@"%@",[[[SynacInstance sharedInstance] goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid].propreDicArray JSONString]);
-                _publicModel.productPropertys = [[[SynacInstance sharedInstance] goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid].propreDicArray JSONString];
+//                DLog(@"%@",[[SynacObject goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid].propreDicArray JSONString]);
+//                _publicModel.productPropertys = [[SynacObject goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid].propreDicArray JSONString];
             
             }
                 break;
@@ -124,7 +124,7 @@ static NSString *listResueIdentify = @"listCell";
                 }
                 _publicModel.pid = model.goodChildId;
                 
-                _publicModel.productPropertys = [[[SynacInstance sharedInstance] goodsChildStone:_publicModel.pid].propreDicArray JSONString];
+//                _publicModel.productPropertys = [[[SynacInstance sharedInstance] goodsChildStone:_publicModel.pid].propreDicArray JSONString];
             }
                 break;
             default:
@@ -188,13 +188,14 @@ static NSString *listResueIdentify = @"listCell";
         GoodChildModel *model = self.datas[indexPath.row];
         _publicModel.pid = model.goodChildId;
     }else if (_productType == sendsSubType) {
-        GoodsModel *model = self.datas[indexPath.row];
-        _publicModel.pid = model.goodsId;
+
     }else {
         NSArray *source = [[SynacInstance sharedInstance] sendsGroundSonProductType:_ptype];
         GoodChildModel *model = source[indexPath.row];
         _publicModel.pid = model.goodChildId;
     }
+    
+    [self doneAction];
     
     _lastSeleced = indexPath.row;
 }

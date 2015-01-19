@@ -23,7 +23,7 @@
 @property (nonatomic, strong) NSArray *goodsChildArray;    // 商品子类
 @property (nonatomic, strong) NSArray *stoneSubType;       // 石子下属小类
 @property (nonatomic, strong) NSArray *stoneSubTypeName;    // 石子下属小类名称
-@property (nonatomic, strong) NSArray *sendSubType;       // 黄砂下属小类
+@property (nonatomic, strong) NSArray *sendSubType;       // 黄砂2级子类
 @property (nonatomic, strong) NSArray *sendSubTypeName;    // 黄砂下属小类名称
 @property (nonatomic, strong) NSArray *sendsDicArray;      // key:ptype value:@[goodchildModel1,goodchildModel2]
 

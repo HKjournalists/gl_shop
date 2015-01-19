@@ -10,17 +10,21 @@
 
 @interface OrderModel : WXBaseModel
 
+@property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *area;
 @property (nonatomic, copy) NSString *cid;
 @property (nonatomic, copy) NSString *id;
-@property (nonatomic, copy) NSString *limitime;
+//@property (nonatomic, copy) NSString *limitime;
+@property (nonatomic, copy) NSString *endtime;
 @property (nonatomic, copy) NSString *pname;
 @property (nonatomic, strong) NSNumber *price;
 @property (nonatomic, copy) NSString *ptype;
+@property (nonatomic, copy) NSString *pid;
 @property (nonatomic, copy) NSString *starttime;
 @property (nonatomic, strong) NSDictionary *status;
 @property (nonatomic, strong) NSNumber *totalnum;
 @property (nonatomic, strong) NSDictionary *type;
 @property (nonatomic, copy) NSString *unit;
+@property (nonatomic, copy) NSString *areaFullName;
 
 @end

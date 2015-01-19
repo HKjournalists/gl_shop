@@ -20,6 +20,26 @@
     return [self predicateMatchWithString:mobileNumber regex:regex];
 }
 
++ (CGSize)labelSizeCalculte:(UIFont *)font labelText:(NSString *)text {
+    UILabel *label = [[UILabel alloc] init];
+    label.font = font;
+    label.text = text;
+    [label sizeToFit];
+    
+    return label.frame.size;
+}
+
++ (id)findDesignatedViewController:(NSString *)vcClassName
+                             currentViewController:(UIViewController *)currentVC {
+    
+    for (UIViewController *vc in currentVC.navigationController.viewControllers) {
+        if ([vc isKindOfClass:NSClassFromString(vcClassName)]) {
+            return vc;
+        }
+    }
+    return nil;
+}
+
 +(BOOL)isValidateEmail:(NSString *)email {
     
     NSString *emailRegex = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
@@ -65,9 +85,15 @@
     
     NSMutableString *signString = [NSMutableString stringWithString:k_APPID];
     for (NSString *key in sortArray) {
-        NSString *tempStr = [NSString stringWithFormat:@"%@%@",key,params[key]];
+        id noSpaceStr = params[key];
+        NSString *trimmedString;
+        if ([noSpaceStr isKindOfClass:[NSString class]]) {
+           trimmedString  = [noSpaceStr stringByTrimmingCharactersInSet:
+                                       [NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        }
+        id obj = trimmedString.length ? trimmedString : noSpaceStr;
+        NSString *tempStr = [NSString stringWithFormat:@"%@%@",key,obj];
         [signString appendString:tempStr];
-        
     }
     
     NSString *md5Str = [signString md5];

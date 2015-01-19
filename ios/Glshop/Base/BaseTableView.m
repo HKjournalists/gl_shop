@@ -28,7 +28,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    cell.textLabel.text = self.dataArray[indexPath.row];
     return cell;
 }
 
@@ -43,7 +42,7 @@
     self.delegate = self;
     
     // 加载尾部视图
-    _moreButton = [UIButton buttonWithType:UIButtonTypeCustom];// 取得所有权，否则自动释放池管理
+    _moreButton = [UIButton buttonWithType:UIButtonTypeCustom];
     _moreButton.backgroundColor = [UIColor clearColor];
     _moreButton.frame = CGRectMake(0, 0, SCREEN_WIDTH, 40);// 高度可以bu设定
     _moreButton.titleLabel.font = [UIFont systemFontOfSize:16.0f];
@@ -131,7 +130,7 @@
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:.3];
     //	[scrollView setContentInset:UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f)];
-    self.contentInset = UIEdgeInsetsMake(0.f, 0.0f, -40, 0.0f);
+    self.contentInset = UIEdgeInsetsMake(-40.f, 0.0f, 0, 0.0f);
     [UIView commitAnimations];
     
 //    [self setState:EGOOPullRefreshNormal];

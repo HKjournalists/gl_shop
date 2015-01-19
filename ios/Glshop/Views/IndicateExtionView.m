@@ -50,7 +50,7 @@
     [self addSubview:_tapBtn];
     
     _indicateImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-    _indicateImageView.image = [UIImage imageNamed:@"Buy_sell_icon"];
+    _indicateImageView.image = [UIImage imageNamed:@"supply-and-demand_icon_on"];
     [self addSubview:_indicateImageView];
     
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -157,7 +157,7 @@
     
     [_tapBtn setFrame:CGRectMake(0, 0, self.vwidth, self.vheight)];
     
-    [_indicateImageView setFrame:CGRectMake(_tapBtn.vright-35, self.vheight/2-10/2, 15, 10)];
+    [_indicateImageView setFrame:CGRectMake(_tapBtn.vright-33, self.vheight/2-10/2, 18, 10)];
     
     CGRect rect = [self convertRect:_tapBtn.frame toView:self.superview];
     if (!_isShowList) {

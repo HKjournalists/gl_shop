@@ -47,8 +47,7 @@
 - (UIView *)viewPager:(ViewPagerController *)viewPager viewForTabAtIndex:(NSUInteger)index {
     NSArray *titles = @[@"进行中合同",@"已取消合同",@"已结束合同",];
     UILabel *label = [UILabel new];
-    label.backgroundColor = [UIColor clearColor];
-    label.font = [UIFont systemFontOfSize:12.0];
+    label.font = [UIFont boldSystemFontOfSize:15.0];
     label.text = titles[index];
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = [UIColor blackColor];
@@ -108,6 +107,10 @@
         default:
             return color;
     }
+}
+
+- (void)viewPager:(ViewPagerController *)viewPager didChangeTabToIndex:(NSUInteger)index {
+    
 }
 
 

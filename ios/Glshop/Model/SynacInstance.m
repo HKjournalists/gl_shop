@@ -37,7 +37,7 @@
 }
 
 - (void)synacData:(id)json {
-    NSDictionary *responseDic = [json objectForKey:@"DATA"];
+    NSDictionary *responseDic = [json objectForKey:ServiceDataKey];
     // 河段
     NSArray *sectionsArray = [[responseDic objectForKey:@"riverSection"] objectForKey:@"data"];
     NSMutableArray *sectionstemp = [NSMutableArray array];
@@ -106,7 +106,7 @@
         return [p1.goodOrderno compare:p2.goodOrderno];
     }];
     NSArray *sortedSendArray = [sendTemp sortedArrayUsingComparator:^NSComparisonResult(GoodsModel *p1, GoodsModel *p2){
-        return [p1.orderNumber compare:p2.orderNumber];
+        return [p1.orderNo compare:p2.orderNo];
     }];
     
     // 石子子类
@@ -191,7 +191,7 @@
     }
     
     NSArray *sortedArray = [temp sortedArrayUsingComparator:^NSComparisonResult(GoodsModel *p1, GoodsModel *p2){
-        return [p1.orderNumber compare:p2.orderNumber];
+        return [p1.orderNo compare:p2.orderNo];
     }];
     
     if (temp.count <= 0) {
@@ -246,7 +246,7 @@
 }
 
 /**
- *@brief 根据pid找到指定商品，针对黄砂
+ *@brief 根据ptype、pid找到指定商品，针对黄砂
  */
 - (GoodChildModel *)goodsChildModlelFor:(NSString*)ptype deepId:(NSString *)pid {
     NSArray *childs = [self sendsGroundSonProductType:ptype];
@@ -312,7 +312,7 @@
     for (GoodChildModel *model in sortedArray) {
         NSString *max = [model.sizeModel.maxv stringValue];
         NSString *min = [model.sizeModel.minv stringValue];
-        NSString *str = [NSString stringWithFormat:@"%@(%@-%@)",model.goodChildPname,min,max];
+        NSString *str = [NSString stringWithFormat:@"%@(%@-%@)mm",model.goodChildPname,min,max];
         [nameTemp addObject:str];
     }
     

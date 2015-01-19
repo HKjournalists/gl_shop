@@ -12,5 +12,6 @@
 @interface UnLoadDetailViewController : BaseViewController
 
 @property (nonatomic, strong) AddressPublicModel *addressModel;
+@property (nonatomic, assign) BOOL editorAddress;
 
 @end

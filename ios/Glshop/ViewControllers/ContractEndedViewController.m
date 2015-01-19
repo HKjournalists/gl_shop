@@ -17,6 +17,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(50, 100, 200, 200)];
+    UIImage *img = [UIImage imageNamed:@"wallet_beijing"];
+    img = [img resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10) resizingMode:UIImageResizingModeStretch];
+    imgView.image = img;
+    [self.view addSubview:imgView];
 }
 
 - (void)didReceiveMemoryWarning {

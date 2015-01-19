@@ -28,13 +28,13 @@
     tipLabel.font = [UIFont boldSystemFontOfSize:18.f];
     [self.view addSubview:tipLabel];
     
-    UIButton *btnPhone = [UIButton buttonWithTip:@"致电平台客服" target:self selector:nil];
-    btnPhone.frame = CGRectMake(10, tipLabel.vbottom+30, self.view.vwidth-20, 40);
+    UIButton *btnPhone = [UIFactory createBtn:@"登录-未触及状态" bTitle:@"致电平台客服" bframe:CGRectMake(10, tipLabel.vbottom+30, self.view.vwidth-20, 40)];
+    [btnPhone addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
     btnPhone.backgroundColor = [UIColor orangeColor];
     [self.view addSubview:btnPhone];
     
-    UIButton *btnPublic = [UIButton buttonWithTip:@"自己手动发布信息" target:self selector:@selector(publicInfo:)];
-    btnPublic.frame = CGRectMake(btnPhone.vleft, btnPhone.vbottom+20, btnPhone.vwidth, btnPhone.vheight);
+    UIButton *btnPublic = [UIFactory createBtn:@"注册-正常状态" bTitle:@"自己手动发布信息" bframe:CGRectMake(btnPhone.vleft, btnPhone.vbottom+20, btnPhone.vwidth, btnPhone.vheight)];
+    [btnPublic addTarget:self action:@selector(publicInfo:) forControlEvents:UIControlEventTouchUpInside];
     btnPublic.backgroundColor = CJBtnColor;
     [self.view addSubview:btnPublic];
 }

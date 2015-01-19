@@ -20,11 +20,42 @@ static NSString *section21_key = @"货物产地";
 
 #define UnKnow @"unknow"
 
+typedef NS_ENUM(NSInteger, PublicInfoType) {
+    /**
+     *@brief 发布新信息
+     */
+    public_New,
+    /**
+     *@brief 修改发布信息
+     */
+    public_Modify,
+    /**
+     *@brief 重新发布信息
+     */
+    public_Reset,
+};
+
 @interface CompanyAuthViewController : BaseViewController
 
 @property (nonatomic, strong) NSArray *sectionsArray;
-@property (nonatomic, strong,readonly) UITableView *tableView;
 
-@property (nonatomic, strong) PublicInfoModel *publicModel;  // 发布信息模型
+@property (nonatomic, strong,readonly) UITableView *tableView;
+@property (nonatomic, assign) PublicInfoType publicInfoType;
+
+/**
+ *@brief 是否是编辑发布信息。YES:修改发布信息 NO:填写发布信息
+ */
+//@property (nonatomic, assign) BOOL isEditor;
+
+/**
+ *@brief 是否是重新发布。
+ *@discussion 重新发布不带id 
+ */
+//@property (nonatomic, assign) BOOL isRePublic;
+
+/**
+ *@brief 发布信息所有数据都在publicModel
+ */
+@property (nonatomic, strong) PublicInfoModel *publicModel; 
 
 @end

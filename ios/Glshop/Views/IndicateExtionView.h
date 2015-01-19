@@ -31,6 +31,7 @@ typedef void(^SelectRowAction)(NSInteger index);
 @property (nonatomic, assign) ListDirction dir;
 @property (nonatomic, weak) UIViewController *weakViewController;
 @property (nonatomic, strong) UIColor *borderColor;
+@property (readonly) NSInteger selectRow;
 
 - (id)initWithFrame:(CGRect)frame title:(NSString *)titleStr;
 

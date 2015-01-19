@@ -8,7 +8,7 @@
 
 #import "RegisterSuccessViewController.h"
 #import "CompanyAuthViewController.h"
-//#import "LoginViewController.h"
+#import "LoginViewController.h"
 
 @interface RegisterSuccessViewController ()
 
@@ -87,8 +87,9 @@
 }
 
 - (void)skipAuthCopyRight {
-    CompanyAuthViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"CompanyAuthViewControllerId"];
-    [self.navigationController pushViewController:vc animated:YES];
+    LoginViewController *vc = [self loginvc];
+    vc.skipToAuth = YES;
+    [self.navigationController popToViewController:vc animated:YES];
 }
 
 - (void)skipToLogin {
@@ -98,6 +99,16 @@
 
 - (void)turnToMain {
     [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+#pragma mark - mark Private 
+- (LoginViewController *)loginvc {
+    for (UIViewController *vc in self.navigationController.viewControllers) {
+        if ([vc isKindOfClass:[LoginViewController class]]) {
+            return (LoginViewController *)vc;;
+        }
+    }
+    return nil;
 }
 
 @end

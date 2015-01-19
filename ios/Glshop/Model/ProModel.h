@@ -8,17 +8,28 @@
 
 #import "WXBaseModel.h"
 
-@interface ProModel : WXBaseModel
+//@"proCode":@"code",
+//@"proid":@"id",
+//@"proPid":@"pid",
+//@"proname":@"name",
+//@"proTypes":@"types",
+//@"proMaxv":@"maxv",
+//@"proMinv":@"minv",
+//@"proContent":@"content",
+//@"orderno":@"orderno",
+//@"proStatus":@"status"
 
-@property (nonatomic, copy) NSString *code;
-@property (nonatomic, copy) NSString *id;
-@property (nonatomic, copy) NSString *pid;
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, copy) NSString *types;
-@property (nonatomic, strong) NSNumber *maxv;
-@property (nonatomic, strong) NSNumber *minv;
-@property (nonatomic, copy) NSString *content;
+@interface ProModel : WXBaseModel <NSMutableCopying>
+
+@property (nonatomic, copy) NSString *proCode;
+@property (nonatomic, copy) NSString *proid;
+@property (nonatomic, copy) NSString *proPid;
+@property (nonatomic, copy) NSString *pname;
+@property (nonatomic, copy) NSString *proTypes;
+@property (nonatomic, strong) NSNumber *proMaxv;
+@property (nonatomic, strong) NSNumber *proMinv;
+@property (nonatomic, copy) NSString *proContent;
 @property (nonatomic, strong) NSNumber *orderno;
-@property (nonatomic, strong) NSDictionary *status;
+@property (nonatomic, strong) NSDictionary *proStatus;
 
 @end

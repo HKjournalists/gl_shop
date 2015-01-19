@@ -29,7 +29,8 @@
         _productNameLabel.frame = CGRectMake(0, _priceLabel.vbottom+3, self.vwidth, 20);
         [self.contentView addSubview:_productNameLabel];
         
-        _subProductNameLabel = [UILabel labelWithTitle:@"特细砂(1.3-2.2)"];
+
+        _subProductNameLabel = [UILabel labelWithTitle:@"error"];
         _subProductNameLabel.font = [UIFont systemFontOfSize:11.f];
         _subProductNameLabel.textAlignment = NSTextAlignmentCenter;
         _subProductNameLabel.textColor = [UIColor grayColor];
@@ -48,8 +49,24 @@
 - (void)setTodayModel:(ProductTodayModel *)todayModel {
     _todayModel = todayModel;
     
-    _productNameLabel.text = todayModel.pname;
-    _priceLabel.text = [todayModel.todayPrice stringValue];
+    _priceLabel.text = [NSString stringWithFormat:@"%.2f",[todayModel.todayPrice floatValue]];
+    
+    NSString *subProNameStr;
+    if (_todayModel.ptype.length > 0) { // 黄砂
+        
+        GoodsModel *gmodel = [[SynacInstance sharedInstance] goodsModelForPtype:_todayModel.ptype];
+        _productNameLabel.text = gmodel.goodsName;
+        
+        GoodChildModel *model = [[SynacInstance sharedInstance] goodsChildModlelFor:_todayModel.ptype deepId:_todayModel.pid];
+        subProNameStr = [NSString stringWithFormat:@"%@(%@-%@)",_todayModel.pname,model.sizeModel.minv,model.sizeModel.maxv];
+    }else { // 石子
+        GoodChildModel *model = [[SynacInstance sharedInstance] goodsChildStone:_todayModel.pid];
+        subProNameStr = [NSString stringWithFormat:@"(%@-%@)",model.sizeModel.minv,model.sizeModel.maxv];
+        _productNameLabel.text = todayModel.pname;
+    }
+    _subProductNameLabel.text = subProNameStr;
+    
+    
 
 }
 

@@ -10,6 +10,7 @@
 #import "NetEngine.h"
 #import "LoginViewController.h"
 #import "OpenUDID.h"
+#import "IQKeyboardManager.h"
 #import "ImagePlayerView.h"
 #import "ButtonWithTitleAndImage.h"
 #import "ItemListView.h"
@@ -21,8 +22,8 @@
 #import "ProfileViewController.h"
 #import "ProductTodayModel.h"
 #import "ForcastViewController.h"
-#import "AreaModel.h"
 #import "CompanyAuthViewController.h"
+#import "BrowseViewController.h"
 
 @interface MainViewController () <ImagePlayerViewDelegate,UIActionSheetDelegate>
 
@@ -44,6 +45,8 @@ Strong UIView *failedView;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLoginNotification:) name:kUserDidLoginNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userLogoutNotification:) name:kUserDidLogoutNotification object:nil];
+    
+//    [[IQKeyboardManager sharedManager] setShouldResignOnTouchOutside:YES];
     
 //    [self syncData];
     
@@ -129,7 +132,7 @@ Strong UIView *failedView;
     [_choseBtn addTarget:self action:@selector(choseRegion:) forControlEvents:UIControlEventTouchUpInside];
     [_choseBtn setTitle:model.riverSectionName forState:UIControlStateNormal];
     [_choseBtn setTitleColor:ColorWithHex(@"#646464") forState:UIControlStateNormal];
-    _choseBtn.layer.borderColor = [UIColor blackColor].CGColor;
+    _choseBtn.layer.borderColor = [UIColor lightGrayColor].CGColor;
     _choseBtn.layer.cornerRadius = 3.f;
     _choseBtn.layer.borderWidth = 1;
     [_middleView addSubview:_choseBtn];
@@ -196,7 +199,7 @@ Strong UIView *failedView;
  *@brief 自动登录
  */
 - (void)autoLogin {
-
+    
     NSString *udid = [OpenUDID value];
     NSString *password = [[NSUserDefaults standardUserDefaults] objectForKey:kUserPasswordkey];
     NSString *userName = [[NSUserDefaults standardUserDefaults] objectForKey:kUserNamekey];
@@ -209,11 +212,11 @@ Strong UIView *failedView;
                   needHeader:NO
                completeBlock:^(ASIHTTPRequest *request, id responseData) {
                    
-            NSArray *dicArray = [responseData objectForKey:@"DATA"];
+            NSArray *dicArray = [responseData objectForKey:ServiceDataKey];
             [self _loginSuccess:dicArray];
         } dataConflictBlock:^(ASIHTTPRequest *request, id responseData) {
             [self _setupRightNavationItem];
-        } failedBlock:^{
+        } failedBlock:^(ASIHTTPRequest *req){
             [self _setupRightNavationItem];
         }];
     }else {
@@ -316,7 +319,7 @@ static int selectFlag = 0;
     [self requestWithURL:bProductTodayInfo params:params HTTPMethod:kHttpGetMethod shouldCache:YES completeBlock:^(ASIHTTPRequest *request, id responseData) {
         [_itemListView hideLoading];
 //        kASIResultLog;
-        NSArray *datas = [responseData objectForKey:@"DATA"];
+        NSArray *datas = [responseData objectForKey:ServiceDataKey];
         NSMutableArray *temp = [NSMutableArray array];
         for (NSDictionary *dic in datas)
         {
@@ -327,11 +330,11 @@ static int selectFlag = 0;
         [_itemListView.collectionView setContentOffset:CGPointZero animated:YES];
         [_itemListView.collectionView reloadData];
         if (temp.count == 0) {
-            [self handleRequestFailed:ShowDataEmptyStr];
+            [self handleRequestFaileds:ShowDataEmptyStr];
         }
-    } failedBlock:^{
+    } failedBlock:^ (ASIHTTPRequest *req){
         [self.itemListView hideLoading];
-        [self handleRequestFailed:ShowNetErrorStr];
+        [self handleRequestFaileds:ShowNetErrorStr];
     }];
 }
 
@@ -357,7 +360,7 @@ static int selectFlag = 0;
 /**
  *@brief 获取今日价格列表失败
  */
-- (void)handleRequestFailed:(NSString *)tip {
+- (void)handleRequestFaileds:(NSString *)tip {
     if (!_failedView) {
         _failedView = [[UIView alloc] initWithFrame:self.itemListView.bounds];
         UILabel *label = [UILabel labelWithTitle:tip];
@@ -410,6 +413,12 @@ static int selectFlag = 0;
 
 - (void)skip:(UIButton *)btn {
     NSInteger itemTag = btn.tag;
+    
+//    if (![[UserInstance sharedInstance] login] && itemTag != 200) {
+//        HUD(@"您还没有登录");
+//        return;
+//    }
+    
     switch (itemTag) {
         case 200:
         {
@@ -444,10 +453,10 @@ static int selectFlag = 0;
             
         case 203:
         {
-//            MypurseViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"MypurseViewControllerId"];
-//            [self.navigationController pushViewController:vc animated:YES];
-            CompanyAuthViewController *vc = [[CompanyAuthViewController alloc] init];
+            MypurseViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"MypurseViewControllerId"];
             [self.navigationController pushViewController:vc animated:YES];
+//            CompanyAuthViewController *vc = [[CompanyAuthViewController alloc] init];
+//            [self.navigationController pushViewController:vc animated:YES];
 
         }
             break;
@@ -471,7 +480,7 @@ static int selectFlag = 0;
 }
 
 - (void)userLogoutNotification:(NSNotification *)notification {
-    
+    [self performSelectorOnMainThread:@selector(_setupRightNavationItem) withObject:nil waitUntilDone:NO];
 }
 
 #pragma mark - ImagePlayerView Delegate
@@ -484,7 +493,7 @@ static int selectFlag = 0;
 {
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"index_banner%ld",index+1]];
+        imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"index_banner%d",index+1]];
     });
     
 }
@@ -539,7 +548,7 @@ static int selectFlag = 0;
 //        
 //        [request.responseData writeToFile:pathFile options:NSDataWritingAtomic error:nil];
         
-    } failedBlock:^{
+    } failedBlock:^ (ASIHTTPRequest *req){
         
     }];
 }

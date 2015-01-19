@@ -8,11 +8,13 @@
 
 #import "BaseViewController.h"
 #import "PublicInfoModel.h"
+#import "CompanyAuthViewController.h"
 
 @interface DetailStandardViewController : BaseViewController
 
 @property (nonatomic, copy) NSString *productName;
 @property (nonatomic, copy) NSString *ptype;
 @property (nonatomic, weak) PublicInfoModel *publicModel;
+@property (nonatomic, assign) PublicInfoType type;
 
 @end

@@ -14,8 +14,13 @@ static NSString *cellIdentify = @"forcastTableCell";
 @implementation ForcastTableView
 
 #pragma mark -
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return self.dataArray.count;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    NSDictionary *dataDic = self.dataArray[section];
+    return [dataDic.allValues.firstObject count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -23,15 +28,33 @@ static NSString *cellIdentify = @"forcastTableCell";
     if (!cell) {
         cell = [[WeekForcastTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentify];
     }
-    cell.weekModel = self.dataArray[indexPath.row];
+    NSDictionary *dic = self.dataArray[indexPath.section];
+    NSArray *dataArray = dic.allValues.firstObject;
+    cell.weekModel = dataArray[indexPath.row];
     
-    if (indexPath.row%2 == 1) {
-        cell.backgroundColor = RGB(247, 247, 247, 1);
-    }else {
-        cell.backgroundColor = [UIColor whiteColor];
-    }
+//    if (indexPath.row%2 == 1) {
+//        cell.backgroundColor = RGB(247, 247, 247, 1);
+//    }else {
+//        cell.backgroundColor = [UIColor whiteColor];
+//    }
     
     return cell;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    NSDictionary *dic = self.dataArray[section];
+    return dic.allKeys.firstObject;
+}
+
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
+    
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

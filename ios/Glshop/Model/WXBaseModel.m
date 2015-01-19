@@ -101,6 +101,7 @@
 		}
 	}
 }
+
 // 解归档网络对象
 - (id)initWithCoder:(NSCoder *)decoder{
 	if( self = [super init] ){

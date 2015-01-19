@@ -11,13 +11,12 @@
 #import "UIImageView+WebCache.h"
 #import "ASINetworkQueue.h"
 #import "AddressImgModel.h"
+#import "CompanyAuthViewController.h"
 
-@interface PreViewPublicViewController () <UITableViewDataSource,UITableViewDelegate>
+@interface PreViewPublicViewController () <UITableViewDataSource,UITableViewDelegate,UploadImageDelete>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *sections;
-@property (nonatomic, strong) ASINetworkQueue *netQueue;
-@property (nonatomic, strong) NSArray *imgIdArray;
 
 @end
 
@@ -31,11 +30,12 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
-    [_netQueue cancelAllOperations];
+    _publicModel.photoUploadView.delegate = nil;
+    [_publicModel.photoUploadView.netQueue cancelAllOperations];
 }
 
 - (void)initDatas {
-    if (_publicModel.addressType.count == 0) {
+    if (_publicModel.addresstype.count == 0) {
 //        _publicModel
     }
 }
@@ -51,10 +51,8 @@
     _tableView.delegate   = self;
     [self.view addSubview:_tableView];
     
-    UIButton *nexBtn = [UIButton buttonWithTip:@"立即发布" target:self selector:@selector(publicInfo:)];
-    nexBtn.backgroundColor = CJBtnColor;
-    nexBtn.layer.cornerRadius = 3.f;
-    nexBtn.frame = CGRectMake(10, self.tableView.vbottom+5, self.view.vwidth-20, 40);
+    UIButton *nexBtn = [UIFactory createBtn:@"注册-正常状态" bTitle:@"立即发布" bframe:CGRectMake(10, self.tableView.vbottom+5, self.view.vwidth-20, 40)];
+    [nexBtn addTarget:self action:@selector(publicInfo:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:nexBtn];
 }
 
@@ -62,19 +60,59 @@
 - (void)setPublicModel:(PublicInfoModel *)publicModel {
     _publicModel = publicModel;
     
-    if ([_publicModel.pcode isEqualToString:TopProductSendPcode]) {
-        if ([_publicModel.type integerValue] == BussinessTypeSell) {
-            _sections = @[@1,@3,@2,@6,@2,@1,@2,@2,@5,@2,@2];
+    if ([_publicModel.pcode isEqualToString:TopProductSendPcode]) { // 黄砂
+        GoodChildModel *child = [SynacObject goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid];
+        NSNumber *proCount = [NSNumber numberWithInteger:child.propretyArray.count];
+        if ([_publicModel.type integerValue] == BussinessTypeSell && _publicModel.photoUploadView.imageArray.count) {
+            _publicModel.photoUploadView.delegate = self;
+            _sections = @[@{@0:@1},@{@1:@3},@{@2:@2},@{@3:proCount},@{@4:@2},@{@5:@1},@{@6:@2},@{@7:@2},@{@8:@5},@{@9:@2},@{@10:@2},];
         }else {
-            _sections = @[@1,@3,@2,@6,@2,@1,@2,@2,@5,@2,];
+            _sections = @[@{@0:@1},@{@1:@3},@{@2:@2},@{@3:proCount},@{@4:@2},@{@5:@1},@{@6:@2},@{@7:@2},@{@8:@5},@{@10:@2},];
         }
-    }else {
-        if ([_publicModel.type integerValue] == BussinessTypeSell) {
-            _sections = @[@1,@2,@2,@6,@2,@1,@2,@2,@5,@2,@2];
+        
+    }else { // 石子
+        GoodChildModel *child = [SynacObject goodsChildStone:_publicModel.pid];
+        NSNumber *proCount = [NSNumber numberWithInteger:child.propretyArray.count];
+        if ([_publicModel.type integerValue] == BussinessTypeSell && _publicModel.photoUploadView.imageArray.count) {
+            _publicModel.photoUploadView.delegate = self;            
+            _sections = @[@{@0:@1},@{@1:@2},@{@2:@2},@{@3:proCount},@{@4:@2},@{@5:@1},@{@6:@2},@{@7:@2},@{@8:@5},@{@9:@2},@{@10:@2},];
         }else {
-            _sections = @[@1,@2,@2,@6,@2,@1,@2,@2,@5,@2,];
+            _sections = @[@{@0:@1},@{@1:@2},@{@2:@2},@{@3:proCount},@{@4:@2},@{@5:@1},@{@6:@2},@{@7:@2},@{@8:@5},@{@10:@2},];
         }
     }
+    
+    if (!_publicModel.premark.length) { // 如果没有商品备注
+        NSMutableArray *array = [NSMutableArray arrayWithArray:_sections];
+        [array removeObjectAtIndex:4];
+        _sections = [NSArray arrayWithArray:array];
+    }
+    
+    if (!_publicModel.remark.length) {  // 如果没有交易备注
+        NSMutableArray *array = [NSMutableArray arrayWithArray:_sections];
+        [array removeLastObject];
+        _sections = [NSArray arrayWithArray:array];
+    }
+    
+    if (_publicModel.isOwen) {
+        if (!_publicModel.addressImgModels.count) { // 如果卸货地址没有图片
+            NSDictionary *dics = @{@8:@5};
+            NSInteger index = [_sections indexOfObject:dics];
+            NSMutableArray *array = [NSMutableArray arrayWithArray:_sections];
+            [array replaceObjectAtIndex:index withObject:@{@8:@4}];
+            _sections = [NSArray arrayWithArray:array];
+        }
+    }else {
+        NSDictionary *dics = @{@8:@5};
+        NSInteger index = [_sections indexOfObject:dics];
+        NSMutableArray *array = [NSMutableArray arrayWithArray:_sections];
+        if (index != NSNotFound) {
+            [array removeObjectAtIndex:index];
+        }
+        _sections = [NSArray arrayWithArray:array];
+    }
+
+    
+
 }
 
 #pragma mark - UITableView DataSource/Delegate
@@ -83,16 +121,22 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [_sections[section] integerValue];
+//    return [_sections[section] integerValue];
+    NSDictionary *dic = _sections[section];
+    return [dic.allValues.firstObject integerValue];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    cell.textLabel.textColor = [UIColor lightGrayColor];
-    cell.detailTextLabel.textColor = [UIColor blackColor];
+
+      UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.textLabel.textColor = [UIColor lightGrayColor];
+        cell.detailTextLabel.textColor = [UIColor blackColor];
     SynacInstance *synac = [SynacInstance sharedInstance];
-    switch (indexPath.section) {
+    
+    NSDictionary *dic = _sections[indexPath.section];
+    NSInteger type = [dic.allKeys.firstObject integerValue];
+    switch (type) {
         case 0:
         {
             cell.textLabel.text = @"发布信息类型";
@@ -118,7 +162,7 @@
             }else {
                 cell.textLabel.text = @"规格";
                 GoodChildModel *model = [synac goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid];
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@(%@-%@)",model.sizeModel.name,model.sizeModel.minv,model.sizeModel.maxv];
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%@(%@-%@)mm",model.sizeModel.name,model.sizeModel.minv,model.sizeModel.maxv];
             }
         }
             break;
@@ -135,17 +179,25 @@
             break;
         case 3:
         {
-            SynacInstance *synac = [SynacInstance sharedInstance];
-            NSArray *titles = @[@"含泥量(%)",@"泥块含量(%)",@"含水率(%)",@"表观密度(kg/m)",@"堆积密度(kg/m)",@"坚固性指标(%)",];
-            cell.textLabel.text = titles[indexPath.row];
+            NSArray *proArray;
             if ([_publicModel.pcode isEqualToString:TopProductSendPcode]) {
-                NSArray *moelels = [synac goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid].propretyArray;
-                ProModel *model = moelels[indexPath.row];
-                cell.detailTextLabel.text = model.content;
+                GoodChildModel *model = [SynacObject goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid];
+                proArray = model.propretyArray;
             }else {
-                NSArray *moelels = [synac goodsChildStone:_publicModel.pid].propretyArray;
-                ProModel *model = moelels[indexPath.row];
-                cell.detailTextLabel.text = model.content;
+                GoodChildModel *model = [SynacObject goodsChildStone:_publicModel.pid];
+                proArray = model.propretyArray;
+            }
+            ProModel *promodel;
+            if (_publicModel.proList.count > indexPath.row) {
+                promodel = _publicModel.proList[indexPath.row];
+            }else if (proArray.count > indexPath.row) {
+                promodel = proArray[indexPath.row];
+            }
+            cell.textLabel.text = [promodel.pname stringByAppendingString:@"(%)"];
+            if (_publicModel.isSetDetailStand) { // 如果填写了详细规格就展示
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%.2f",[promodel.proContent floatValue]];
+            }else { // 如果没填写详细规格就显示未填写
+                cell.detailTextLabel.text = @"未填写";
             }
         }
             break;
@@ -153,13 +205,18 @@
         {
             if (indexPath.row == 0) {
                 cell.textLabel.text = @"货物备注";
-                cell.detailTextLabel.text = _publicModel.premark;
+            }else {
+                UILabel *label = [UILabel labelWithTitle:_publicModel.premark];
+                label.frame = CGRectMake(15, 10, cell.vwidth-25, 0);
+                label.numberOfLines = 0;
+                [label sizeToFit];
+                [cell.contentView addSubview:label];
             }
         }
             break;
         case 5:
         {
-            cell.textLabel.text = @"购买量(单位:吨)";
+            cell.textLabel.text = [_publicModel.unit[@"val"] isEqualToString:MathUnitTon] ? @"购买量(单位:吨)" : @"购买量(单位:立方)";
             cell.detailTextLabel.text = [_publicModel.totalnum stringValue];
         }
             break;
@@ -168,7 +225,7 @@
             if (indexPath.row == 0) {
                 cell.textLabel.text = @"交易日期范围";
                 UIFont *font = [UIFont systemFontOfSize:13.f];
-                UILabel *label = [UILabel labelWithTitle:_publicModel.starttime];
+                UILabel *label = [UILabel labelWithTitle:[_publicModel.starttime substringToIndex:10]];
                 label.frame = CGRectMake(150, 0, 80, 44);
                 label.font = font;
                 [cell addSubview:label];
@@ -179,13 +236,13 @@
                 label1.textColor = [UIColor lightGrayColor];
                 [cell addSubview:label1];
                 
-                UILabel *label2 = [UILabel labelWithTitle:_publicModel.limitime];
+                UILabel *label2 = [UILabel labelWithTitle:[_publicModel.endtime substringToIndex:10 ]];
                 label2.frame = CGRectMake(label1.vright, 0, label.vwidth, 44);
                 label2.font = font;
                 [cell addSubview:label2];
             }else {
                 cell.textLabel.text = @"交易地域";
-                cell.detailTextLabel.text = _publicModel.publicOtherInfoModel.bussinessPlace;
+                cell.detailTextLabel.text = _publicModel.areaFullName;
             }
         }
             break;
@@ -193,10 +250,10 @@
         {
             if (indexPath.row == 0) {
                 cell.textLabel.text = @"到港单价:(单位:元)";
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%.2f",_publicModel.publicOtherInfoModel.unitPrice];
+                cell.detailTextLabel.text = [_publicModel.price stringValue];
             }else {
                 cell.textLabel.text = @"卸货地点指定方式";
-                NSInteger type = [[_publicModel.addressType objectForKey:@"val"] integerValue];
+                NSInteger type = [[_publicModel.addresstype objectForKey:@"val"] integerValue];
                 NSString *s;
                 if (type == 1) {
                     s = @"买方指定";
@@ -212,61 +269,65 @@
             if (indexPath.row == 0) {
                 cell.textLabel.text = @"详细交易地址";
             }else if (indexPath.row == 1) {
-                cell.textLabel.text = _publicModel.addressModel.address;
+                cell.textLabel.textColor = [UIColor blackColor];
+                cell.textLabel.text = FommatString(_publicModel.areaFullName, _publicModel.address);
             }else if (indexPath.row == 2) {
-                int j = 0;
-                for (AddressImgModel *model in _publicModel.addressModel.addressImgModels) {
-                    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(15+j*(260/3+15), 10, 260/3, 80)];
-                    [imgView sd_setImageWithURL:[NSURL URLWithString:model.thumbnailSmall] placeholderImage:nil];
-                    j++;
-                    [cell addSubview:imgView];
+                if (_publicModel.addressImgModels.count) {
+                    int j = 0;
+                    for (AddressImgModel *model in _publicModel.addressImgModels) {
+                        UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(15+j*(260/3+15), 10, 260/3, 80)];
+                        [imgView sd_setImageWithURL:[NSURL URLWithString:model.thumbnailSmall] placeholderImage:nil];
+                        j++;
+                        [cell addSubview:imgView];
+                    }
+                }else {
+                    cell.textLabel.text = @"卸货码头水深度(单位:米)";
+                    cell.detailTextLabel.text = [_publicModel.deep stringValue];
                 }
+              
             }else if (indexPath.row == 3) {
-                cell.textLabel.text = @"卸货码头水深度(单位:米)";
-                cell.detailTextLabel.text = [_publicModel.addressModel.realdeep stringValue];
+                if (_publicModel.addressImgModels) {
+                    cell.textLabel.text = @"卸货码头水深度(单位:米)";
+                    cell.detailTextLabel.text = [_publicModel.deep stringValue];
+                }else {
+                    cell.textLabel.text = @"可停泊载重船吨位(单位:米)";
+                    cell.detailTextLabel.text = [_publicModel.shippington stringValue];
+                }
+                
             }else if (indexPath.row == 4) {
                 cell.textLabel.text = @"可停泊载重船吨位(单位:米)";
-                cell.detailTextLabel.text = [_publicModel.addressModel.deep stringValue];
+                cell.detailTextLabel.text = [_publicModel.shippington stringValue];
             }
         }
             break;
         case 9:
         {
-            if ([_publicModel.type integerValue] == BussinessTypeSell) {
+            
                 if (indexPath.row == 0) {
                     cell.textLabel.text = @"实物照片";
                 }else {
-                    for (int i = 0; i < 3; i++) {
-                        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    int j = 0;
+                    for (UIImage *image in _publicModel.photoUploadView.imageArray) {
                         UIButton *imageBtn = [UIButton buttonWithTip:nil target:self selector:nil];
-                        imageBtn.frame = CGRectMake(15+i*(260/3+15), 10, 260/3, 80);
-                        imageBtn.tag = indexPath.section*100+i;
-                        if (i == 0 && fmod(imageBtn.tag, indexPath.section*100) == 0) {
-                            UIImage *image = _publicModel.image1 ? _publicModel.image1 : [UIImage imageNamed:@"address_photo"];
-                            [imageBtn setImage:image forState:UIControlStateNormal];
-                        }else if (i == 1 && fmod(imageBtn.tag, indexPath.section*100) == 1) {
-                            UIImage *image = _publicModel.image2 ? _publicModel.image2 : [UIImage imageNamed:@"address_photo_add"];
-                            [imageBtn setImage:image forState:UIControlStateNormal];
-                        }else if (i == 2 && fmod(imageBtn.tag, indexPath.section*100) == 2){
-                            UIImage *image = _publicModel.image3 ? _publicModel.image3 : [UIImage imageNamed:@"address_photo_add"];
-                            [imageBtn setImage:image forState:UIControlStateNormal];
-                        }
-                        
+                        imageBtn.frame = CGRectMake(15+j*(260/3+15), 10, 260/3, 80);
+                        [imageBtn setImage:image forState:UIControlStateNormal];
                         [cell addSubview:imageBtn];
+                        j++;
                     }
-
                 }
-            }else {
-                if (indexPath.row == 0) {
-                    cell.textLabel.text = [_publicModel.type integerValue] == BussinessTypeSell ? @"销售备注" : @"购买备注";
-                }
-            }
         }
             break;
         case 10:
         {
             if (indexPath.row == 0) {
                 cell.textLabel.text = [_publicModel.type integerValue] == BussinessTypeSell ? @"销售备注" : @"购买备注";
+            }else {
+                UILabel *label = [UILabel labelWithTitle:_publicModel.remark];
+                label.frame = CGRectMake(15, 10, cell.vwidth-25, 0);
+                label.numberOfLines = 0;
+                [label sizeToFit];
+                [cell.contentView addSubview:label];
             }
         }
             break;
@@ -276,16 +337,42 @@
     return cell;
 }
 
+/**
+ *@brief 计算文本高度
+ */
+- (float)heightOfLabelSize:(NSString *)text {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, self.tableView.vwidth-25, 0)];
+    label.numberOfLines = 0;
+    label.text = text;
+    [label sizeToFit];
+    return label.vheight+35;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 8) {
+    NSDictionary *dic = _sections[indexPath.section];
+    NSInteger type = [dic.allKeys.firstObject integerValue];
+    
+    if (type == 4) { // 货物备注
+        if (indexPath.row == 1) {
+            return [self heightOfLabelSize:_publicModel.premark];
+        }
+    }
+    
+    if (type == 8 && [dic.allValues.firstObject integerValue] == 5) {
         if (indexPath.row == 2) {
             return 100;
         }
     }
     
-    if (indexPath.section == 9 && [_publicModel.type integerValue] == BussinessTypeSell) {
+    if (type == 9) {
         if (indexPath.row == 1) {
             return 100;
+        }
+    }
+    
+    if (type == 10) {
+        if (indexPath.row == 1) {
+            return [self heightOfLabelSize:_publicModel.remark];
         }
     }
 
@@ -316,6 +403,19 @@
 }
 
 #pragma mark - Private 
+
+- (CompanyAuthViewController *)publicInfoVC {
+    for (UIViewController *vc in self.navigationController.viewControllers) {
+        if ([vc isKindOfClass:[CompanyAuthViewController class]]) {
+            return (CompanyAuthViewController *)vc;
+        }
+    }
+    return nil;
+}
+
+/**
+ *@brief 生成发布信息参数
+ */
 - (NSMutableDictionary *)createPostDictionary {
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
 
@@ -328,18 +428,21 @@
     [params addString:cid forKey:@"cid"];
     
     // 卸货地址指定方式
-    NSNumber *number = [_publicModel.addressType objectForKey:@"val"];
+    NSNumber *number = [_publicModel.addresstype objectForKey:@"val"];
     [params addNumber:number forKey:@"addresstypeValue"];
 
     // 单价
     [params addNumber:_publicModel.price forKey:@"price"];
+    
+    // 发布地域
+    [params addString:_publicModel.areaCode forKey:@"areacode"];
     
     // 总量
     [params addNumber:_publicModel.totalnum forKey:@"totalnum"];
     
     // 交易范围
     [params addString:_publicModel.starttime forKey:@"starttime"];
-    [params addString:_publicModel.limitime forKey:@"limitime"];
+    [params addString:_publicModel.endtime forKey:@"endtime"];
     
     // 是否多地域
     [params setObject:@1 forKey:@"moreareaValue"];
@@ -359,10 +462,12 @@
     [params addString:_publicModel.paddress forKey:@"paddress"];
     
     // 单位
-    [params addString:_publicModel.unit forKey:@"unit"];
+    [params addString:_publicModel.unit[@"val"] forKey:@"unit"];
     
     // 属性jsonString
-    [params addString:_publicModel.productPropertys forKey:@"productPropertys"];
+    if (_publicModel.isSetDetailStand) {
+        [params addString:_publicModel.productPropertys forKey:@"productPropertys"];
+    }
     
     // 产品备注
     if (_publicModel.premark) {
@@ -383,49 +488,11 @@
  */
 - (void)publicInfo:(UIButton *)button {
     
-    if (_publicModel.entryImages.count > 0 && [_publicModel.type integerValue] == BussinessTypeSell) { // 如果有实物图片，需要先上传实物图片
-        [self showHUD:@"正在发布..." isDim:NO Yoffset:0];
-        _netQueue = [ASINetworkQueue queue];
-        NSMutableArray *tempIdArray = [NSMutableArray array];
-        int i = 0;
-        for (UIImage *image in _publicModel.entryImages) {
-            NSData *data = UIImageJPEGRepresentation(image, 1);
-            NSString *name = [NSString stringWithFormat:@"entityImg%d.jpeg",i];
-            NSString *filePath = [[NSString documentsPath] stringByAppendingPathComponent:name];
-            [data writeToFile:filePath atomically:YES];
-            ASIFormDataRequest *request = [self uploadImgWithURL:bfileupload
-                                                      HTTPMethod:kHttpPostMethod
-                                                   completeBlock:^(ASIHTTPRequest *request, id responseData) {
-                               
-                NSArray *array = [responseData objectForKey:ServiceDataKey];
-                if (array.count > 0) {
-                    NSDictionary *dic = array.firstObject;
-                    [tempIdArray addObject:dic[@"id"]];
-                }else{
-                    return;
-                }
-                if (i == _publicModel.entryImages.count-1) { // 最有最后一次图片上传成功，才进行发布信息
-                    [self hideHUD];
-                    NSString *parmStr = [tempIdArray componentsJoinedByString:@","];
-                    NSMutableDictionary *params = [self createPostDictionary];
-                    [params addString:parmStr forKey:@"productImgIds"];
-                    [self public:params];
-                }
-                
-            } failedBlock:^{
-                [self hideHUD];
-                if (i == _publicModel.entryImages.count-1) { // 只有最后一次的图片上传失败，才进行发布消息
-                    [self public:nil];
-                }
-            } ];
-            [request addData:data withFileName:filePath andContentType:@"image/jpeg" forKey:@"file"];
-            [_netQueue addOperation:request];
-            i++;
-        }
-        [_netQueue setMaxConcurrentOperationCount:1];
-        [_netQueue go];
-
+    if (_publicModel.photoUploadView.imageArray.count > 0) { // 如果有实物图片，需要先上传实物图片
+        [self showHUD:@"正在发布..." isDim:YES Yoffset:0];
+        [_publicModel.photoUploadView uploadImage];
     }else {
+        [self hideHUD];
         [self public:nil];
     }
     
@@ -437,11 +504,30 @@
 - (void)public:(NSMutableDictionary *)params {
     [self showHUD:@"正在发布..." isDim:NO Yoffset:0];
     NSMutableDictionary *param = params ? params : [self createPostDictionary];
-    [self requestWithURL:bPublishOrderInfo params:param HTTPMethod:kHttpPostMethod shouldCache:NO needHeader:YES completeBlock:^(ASIHTTPRequest *request, id responseData) {
+    CompanyAuthViewController *vc = [self publicInfoVC];
+    NSString *serPath = vc.publicInfoType == public_Modify ? bModifyMyProduct : bPublishOrderInfo;
+    if (vc.publicInfoType == public_Modify) {
+        [param addString:_publicModel.id forKey:@"id"];
+    }
+    [self requestWithURL:serPath params:param HTTPMethod:kHttpPostMethod shouldCache:NO needHeader:YES completeBlock:^(ASIHTTPRequest *request, id responseData) {
         [self showTip:@"发布成功！"];
-    } failedBlock:^{
-
+    } failedBlock:^(ASIHTTPRequest *req){
+        HUD(kNetError);
     }];
+}
+
+#pragma mark - UploadImage Delegate
+- (void)uploadImageSuccess:(NSString *)imgsId uploadView:(PhotoUploadView *)uploadView{
+    [self hideHUD];
+    NSMutableDictionary *params = [self createPostDictionary];
+    [params addString:imgsId forKey:@"productImgIds"];
+    [self public:params];
+}
+
+- (void)uploadImageFaile:(PhotoUploadView *)uploadView {
+    [self hideHUD];
+    [self public:nil];
+    
 }
 
 @end

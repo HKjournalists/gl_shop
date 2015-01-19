@@ -15,6 +15,6 @@
 @property (nonatomic, copy) NSString *goodsName;
 @property (nonatomic, copy) NSString *goodsPcode;
 @property (nonatomic, copy) NSString *goodsVal;
-@property (nonatomic, strong) NSNumber *orderNumber;
+@property (nonatomic, strong) NSNumber *orderNo;
 
 @end

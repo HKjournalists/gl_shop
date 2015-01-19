@@ -36,7 +36,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIRequiresPersistentWiFi</key>
-	<true/>
 </dict>
 </plist>

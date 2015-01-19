@@ -69,7 +69,7 @@
  */
 - (void)_setup {
     self.automaticallyAdjustsScrollViewInsets=NO;
-    self.edgesForExtendedLayout=UIEventSubtypeNone;
+    self.edgesForExtendedLayout= UIRectEdgeNone;
     self.view.backgroundColor = ColorWithHex(@"#EDEDED");
     self.requestArray = [NSMutableArray array];
     
@@ -89,7 +89,7 @@
         [_failView addGestureRecognizer:tap];
         
         NSString *imageName = isEmpty ? EmptyDataImage : RequestNetErrorImage;
-        UIImageView *indicateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_failView.vwidth/2-40, _failView.vheight/2-40, 80, 80)];
+        UIImageView *indicateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_failView.vwidth/2-40, _failView.vheight/2-40-35/2-20, 80, 80)];
         indicateImageView.userInteractionEnabled = YES;
         indicateImageView.image = [UIImage imageNamed:imageName];
         [_failView addSubview:indicateImageView];
@@ -115,13 +115,25 @@
 }
 
 - (void)requestNet {
-    
+    [self.view showWithTip:nil Yoffset:kTopBarHeight];
 }
 
 - (void)cancleRequest {
     for (ASIHTTPRequest *request in self.requestArray) {
         [request cancel];
     }
+}
+
+- (void)handleNetData:(id)responseData {
+    
+}
+
+- (void)hideViewsWhenNoData {
+
+}
+
+- (void)showViewsWhenDataComing {
+
 }
 
 - (void)backRootVC:(UIButton *)btn {
@@ -219,7 +231,7 @@
     
     UserInstance *userInstance = [UserInstance sharedInstance];
     NSString *token = userInstance.user.userToken;
-    if (isNeedHeader && token) {
+    if (token) {
         [request addRequestHeader:@"USER_TOKEN" value:token];
     }
     
@@ -241,7 +253,7 @@
     
     // 设置请求完成的block
     __block ASIFormDataRequest *req = request;
-    __weak typeof(self) weakSelf = self;
+    __block typeof(self) weakSelf = self;
     [request setCompletionBlock:^{
         id result = [NSJSONSerialization JSONObjectWithData:req.responseData options:NSJSONReadingMutableContainers error:nil];
         [weakSelf handleSucclessRequest:result successBlock:successBlock asiRequest:req dataConflictBlock:dataConflictBlock];
@@ -250,8 +262,8 @@
     
     [request setFailedBlock:^{
         if (failedBlock != nil) {
-            [self handleRequestFailed];
-            failedBlock();
+            [weakSelf handleRequestFailed:req];
+            failedBlock(req);
         }
     }];
     
@@ -332,7 +344,7 @@
     
     // 设置请求完成的block
     __block ASIFormDataRequest *req = request;
-    //    __weak typeof(self) weakSelf = self;
+    __weak typeof(self) weakSelf = self;
     [request setCompletionBlock:^{
         id result = [NSJSONSerialization JSONObjectWithData:req.responseData options:NSJSONReadingMutableContainers error:nil];
         if (successBlock) {
@@ -343,8 +355,8 @@
     
     [request setFailedBlock:^{
         if (failedBlock != nil) {
-            [self handleRequestFailed];
-            failedBlock();
+            [weakSelf handleRequestFailed:req];
+            failedBlock(req);
         }
     }];
     
@@ -367,14 +379,19 @@
     if (self.failView.superview) {
         [self.failView removeFromSuperview];
     }
+    [self commandHandle:req];
     
     NSDictionary *resultDic = (NSDictionary *)result;
-    if (![resultDic isKindOfClass:[NSDictionary class]]) return;
+    
+    if (![resultDic isKindOfClass:[NSDictionary class]]) {
+        DLog(@"获取的数据异常");
+        return;
+    }
     BOOL flag = [resultDic[@"RESULT"] boolValue];
     if (flag) {
         successBlock(req,result);
+        [self showViewsWhenDataComing];
     }else {
-        [self hideHUD];
         NSString *message = resultDic[@"MESSAGE"];
         [self showTip:message];
         if (conflictBlock) {
@@ -386,10 +403,31 @@
 /**
  *@brief 请求网络失败，可以重载
  */
-- (void)handleRequestFailed {
-    [self hideHUD];
+- (void)handleRequestFailed:(ASIHTTPRequest *)req {
+    [self commandHandle:req];
     if (self.shouldShowFailView && !self.failView.superview) {
         [self.view addSubview:[self failViewWithFrame:self.view.bounds empty:NO]];
+    }
+}
+
+/**
+ *@brief 隐藏HUD、将req清除
+ */
+- (void)commandHandle:(ASIHTTPRequest *)req {
+    [self.view hideLoading];
+    [self hideHUD];
+    if ([self.requestArray containsObject:req]) {
+        [self.requestArray removeObject:req];
+    }
+}
+
+/**
+ *@brief 请求成功，数据为空
+ *@discussion 默认显示一张图片和一行文字，提示用户没有数据
+ */
+- (void)requestSuccessButNoData {
+    if (self.shouldShowFailView && !self.failView.superview) {
+        [self.view addSubview:[self failViewWithFrame:self.view.bounds empty:YES]];
     }
 }
 

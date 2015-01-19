@@ -9,10 +9,9 @@
 #ifndef Glshop_Business_h
 #define Glshop_Business_h
 
-//#define kBaseUrl @"192.168.1.244:8080/gl_shop_http"
-#define kBaseUrl @"www.916816.com/gl_shop_http"
-//#define kBaseUrl @"192.168.1.223:8080/gl_shop_http"
-//#define kBaseUrl @".....com"
+//#define kBaseUrl @"www.916816.com/gl_shop_http" // 外网
+
+#define kBaseUrl @"192.168.1.223:8080/gl_shop_http" // 内网
 
 #define kHttpGetMethod @"GET"
 #define kHttpPostMethod @"POST"
@@ -32,11 +31,11 @@
 #pragma mark - 企业
 #define bUserBaseInfoPath   @"copn/getCompanyInfo" // 查询用户注册基本信息 // get
 #define bCompanyAuthPath    @"copn/authApply"       // 企业认证申请接口 //get/post
-#define bCompanyAuthInfoPath @"copn/getCompanyInfo" // 企业认证资料查看接口 // get
+#define bCompanyAuthInfoPath @"copn/getMyCompanyInfo" // 企业认证资料查看接口 // get
 #define bUpdateCompanyInfoPath @"copn/updateIntroduction" // 更新企业介绍接口 // post
-#define bCompanyContactListPath @"copn/contact/getList"     // 获取企业联系人列表 // get/post
+#define bCompanyContactListPath @"copn/contact/getList"     // 获取企业联系人列表 // get
 #define bViewSingleCompanyContactPath @"copn/contact/getinfo" // 查看单个企业联系人详情 // get/post
-#define bAddCompanyContactPath @"copn/contact/add"            // 添加企业联系人 // get/post
+//#define bAddCompanyContactPath @"copn/contact/add"            // 添加企业联系人 // get/post  
 #define bSaveContactPath @"copn/contact/save"               // 保存企业联系人  //get/post
 #define bDeleteContactPath @"copn/contact/mdy"              // 删除企业联系人  // get/post
 #define bGetUnloadAddressList @"copn/address/getList"       // 3.1.18.	获取企业卸货地址列表接口
@@ -73,6 +72,13 @@
 #define bgetPayRecordDetail               @"purse/getPayRecordDetail"           // 查询货款交易流水详细信息 //get/post
 #define bgetContractDetailInfo               @"contract/getContractDetailInfo"  // 查询货款流水相关订单详细信息。//get/post
 #define bdepositToGuaranty                      @"purse/depositToGuaranty"
+
+#define bAccetpAuthApply                @"copn/accept/authApply"  // 添加收款人
+#define bcopnacceptgetList              @"copn/accept/getList"  // 获取企业收款人列表信息
+#define bcopnacceptgetInfo              @"copn/accept/getInfo"  // 获取企业收款人详细信息
+#define bcopnacceptdel                  @"copn/accept/del"      // 删除企业收款人信息
+#define bcopnacceptsetDefault         @"copn/accept/setDefault"  // 将企业收款人设置为默认信息
+#define bcopnacceptmdy                @"copn/accept/mdy"      // 修改企业收款人后将会重新认证
 
 #define bextractCashRequest                      @"purse/extractCashRequest"        // 用户线上提款申请，客户核实并打款给用户。//post
 #define baddAcceptBank                      @"purse/addAcceptBank"                  // 新增收款人信息。//post

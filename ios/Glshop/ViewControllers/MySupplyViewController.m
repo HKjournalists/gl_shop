@@ -11,7 +11,9 @@
 #import "OrderModel.h"
 #import "IndicateExtionView.h"
 #import "PublicInfoViewController.h"
-
+#import "PublicInfoModel.h"
+#import "CompanyAuthViewController.h"
+#import "BrowseViewController.h"
 
 #define kHeaderViewHeight 40
 
@@ -30,6 +32,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
    
+    self.shouldShowFailView = YES;
     [self requestNet];
 }
 
@@ -47,9 +50,9 @@
 
 #pragma mark - UI
 - (void)loadSubViews {
-    _indicateView = [[IndicateExtionView alloc] initWithFrame:CGRectMake(self.view.vwidth/2-80, 20, 160, 44) title:@"我的供求"];
+    _indicateView = [[IndicateExtionView alloc] initWithFrame:CGRectMake(self.view.vwidth/2-80, 20, 140, 44) title:@"我的供求"];
     _indicateView.dir = listDown;
-    __weak typeof(self) weakSelf = self;
+    __block typeof(self) weakSelf = self;
     _indicateView.selectBlock = ^(NSInteger index) {
         if (index == 0) {
             weakSelf.supplyAllTableView.hidden = NO;
@@ -64,33 +67,24 @@
             weakSelf.supplyBuyTableView.hidden = YES;
             weakSelf.supplyAllTableView.hidden = YES;
         }
-        [weakSelf refrush:nil];
+        [weakSelf requestNet];
     };
     _indicateView.weakViewController = self.navigationController;
     [self.navigationController.view addSubview:_indicateView];
     _indicateView.dataSource = @[@"全部",@"我的供",@"我的求",];
     
-    // 头部视图
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 5, self.view.vwidth, kHeaderViewHeight)];
-    headerView.backgroundColor = [UIColor clearColor];
-    [self.view addSubview:headerView];
-    
-    UIButton *supplyBtn = [UIButton buttonWithTip:@"我的供求" target:self selector:@selector(publicInfo:)];
-    [supplyBtn setImage:[UIImage imageNamed:@"supply-and-demand_icon"] forState:UIControlStateNormal];
-    supplyBtn.frame = CGRectMake(15, 5, 100, 30);
-
-    [supplyBtn setTitleColor:ColorWithHex(@"#646464") forState:UIControlStateNormal];
-    [headerView addSubview:supplyBtn];
-    
-    UIButton *publicMessageBtn = [UIButton buttonWithTip:@"发布信息" target:self selector:@selector(publicInfo:)];
-    [publicMessageBtn setImage:[UIImage imageNamed:@"Buy_sell_icon_publish"] forState:UIControlStateNormal];
-    publicMessageBtn.frame = CGRectMake(SCREEN_WIDTH-100-15, 5, 100, 30);
-    [publicMessageBtn setBackgroundImage:[UIImage imageNamed:@"Buy_sell_publish"] forState:UIControlStateNormal];
-    [publicMessageBtn setTitleColor:ColorWithHex(@"#646464") forState:UIControlStateNormal];
-    [headerView addSubview:publicMessageBtn];
+    // 发布信息按钮
+    UIButton *filterBtn = [UIButton buttonWithTip:@"发布信息" target:self selector:nil];
+    [filterBtn setImage:[UIImage imageNamed:@"Buy_sell_icon_bi"] forState:UIControlStateNormal];
+    [filterBtn setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+    filterBtn.titleLabel.font = [UIFont systemFontOfSize:13.f];
+    [filterBtn addTarget:self action:@selector(publicInfo:) forControlEvents:UIControlEventTouchUpInside];
+    filterBtn.frame = CGRectMake(0, 0, 70, 54);
+    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithCustomView:filterBtn];
+    self.navigationItem.rightBarButtonItem = rightItem;
     
     // 我的供求全部列表
-    _supplyAllTableView = [[SupplyTableView alloc] initWithFrame:CGRectMake(0, headerView.vbottom, self.view.vwidth, self.view.vheight-headerView.vheight-kTopBarHeight) style:UITableViewStyleGrouped];
+    _supplyAllTableView = [[SupplyTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.vwidth, self.view.vheight-kTopBarHeight) style:UITableViewStyleGrouped];
     [_supplyAllTableView.refreshControl addTarget:self action:@selector(refrush:) forControlEvents:
      UIControlEventValueChanged];
     _supplyAllTableView.backgroundColor = self.view.backgroundColor;
@@ -100,7 +94,7 @@
     [_supplyAllTableView.refreshControl beginRefreshing];
     
     // 我的求列表
-    _supplyBuyTableView = [[SupplyTableView alloc] initWithFrame:CGRectMake(0, headerView.vbottom, self.view.vwidth, self.view.vheight-headerView.vheight-kTopBarHeight) style:UITableViewStyleGrouped];
+    _supplyBuyTableView = [[SupplyTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.vwidth, self.view.vheight-kTopBarHeight) style:UITableViewStyleGrouped];
     [_supplyBuyTableView.refreshControl addTarget:self action:@selector(refrush:) forControlEvents:
      UIControlEventValueChanged];
     _supplyBuyTableView.backgroundColor = self.view.backgroundColor;
@@ -109,7 +103,7 @@
     [self.view addSubview:_supplyBuyTableView];
 
     // 我的供列表
-    _supplySellTableView = [[SupplyTableView alloc] initWithFrame:CGRectMake(0, headerView.vbottom, self.view.vwidth, self.view.vheight-headerView.vheight-kTopBarHeight) style:UITableViewStyleGrouped];
+    _supplySellTableView = [[SupplyTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.vwidth, self.view.vheight-kTopBarHeight) style:UITableViewStyleGrouped];
     [_supplySellTableView.refreshControl addTarget:self action:@selector(refrush:) forControlEvents:
      UIControlEventValueChanged];
     _supplySellTableView.hidden = YES;
@@ -121,6 +115,7 @@
 
 #pragma mark - Net
 - (void)requestNet {
+    [super requestNet];
     [self refrush:nil];
 }
 
@@ -136,6 +131,15 @@
     }
     
     BOOL isloadMore = currentTableView.pageIndex > 1 ? YES : NO;
+    if (!isloadMore && currentTableView.dataArray.count <= 0) {
+        useCache = NO;
+    }
+    
+    if (refreshControl && currentTableView.dataArray.count > 0 ) {
+        self.shouldShowFailView = NO;
+    }else {
+        self.shouldShowFailView = YES;
+    }
     
     UserInstance *userInstance = [UserInstance sharedInstance];
     NSString *cid = userInstance.user.cid;
@@ -146,14 +150,19 @@
         [params addInteger:2 forKey:@"type"];
     }
     [self requestWithURL:bGetMyList params:params HTTPMethod:kHttpGetMethod shouldCache:useCache needHeader:YES completeBlock:^(ASIHTTPRequest *request, id responseData) {
-
+        kASIResultLog;
         [currentTableView.refreshControl endRefreshing];
-        NSArray *datas = [[responseData objectForKey:@"DATA"] objectForKey:@"result"];
+        NSArray *datas = [[responseData objectForKey:ServiceDataKey] objectForKey:@"result"];
         NSMutableArray *temp = [NSMutableArray array];
         for (NSDictionary *dic in datas) {
             OrderModel *model = [[OrderModel alloc] initWithDataDic:dic];
             [temp addObject:model];
         }
+        
+        if (!isloadMore && temp.count <= 0) {
+            [self requestSuccessButNoData];
+        }
+        
         if (temp.count < 5) {
             currentTableView.isMore = NO;
         }else {
@@ -167,8 +176,12 @@
         }
         [currentTableView reloadData];
         
-    } failedBlock:^{
+    } failedBlock:^ (ASIHTTPRequest *req){
         [currentTableView.refreshControl endRefreshing];
+        if (isloadMore || refreshControl) {
+            HUD(kNetError);
+        }
+        self.shouldShowFailView = YES;
     }];
 }
 
@@ -190,29 +203,23 @@
 - (void)publicInfo:(UIButton *)button {
     PublicInfoViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"PublicInfoViewControllerId"];
     [self.navigationController pushViewController:vc animated:YES];
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc]
-                                             initWithTitle:@"返回"
-                                             style:UIBarButtonItemStylePlain
-                                             target:self
-                                             action:nil];
 }
 
 #pragma mark - UITableViewEventDelegate 
 - (void)pullUp:(BaseTableView *)tableView {
     tableView.pageIndex++;
     [self refrush:nil];
+    self.shouldShowFailView = NO;
 }
 
 - (void)tableView:(BaseTableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     OrderModel *model = [self currentTableView].dataArray[indexPath.section];
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:model.id forKey:@"fid"];
-    
-    [self requestWithURL:bOrderInfo params:params HTTPMethod:kHttpGetMethod shouldCache:NO needHeader:YES completeBlock:^(ASIHTTPRequest *request, id responseData) {
-        kASIResultLog;
-        
-    } failedBlock:^{
-        DLog(@"faile");
-    }];
+    NSInteger orderStatus = [model.status[DataValueKey] integerValue];
+    BrowseViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"BrowseViewControllerId"];
+    vc.title = @"供求详细";
+    vc.orderStatus = orderStatus;
+    vc.orderId = model.id;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 @end

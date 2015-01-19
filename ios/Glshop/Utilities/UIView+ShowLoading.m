@@ -26,8 +26,12 @@ static NSString * const kXHloadingViewKey = @"kXHloadingViewKey";
 }
 
 - (void)showWithTip:(NSString *)tipTitle {
+    [self showWithTip:tipTitle Yoffset:0];
+}
+
+- (void)showWithTip:(NSString *)tipTitle Yoffset:(CGFloat)yoffset {
     if (!self.loadingView) {
-        self.loadingView = [[LoadingView alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.frame)/2-60, CGRectGetHeight(self.frame)/2-10, 120, 20)];
+        self.loadingView = [[LoadingView alloc] initWithFrame:CGRectMake(CGRectGetWidth(self.frame)/2-60, CGRectGetHeight(self.frame)/2-10-yoffset, 120, 20)];
     }
     self.loadingView.tipTitle = tipTitle;
     [self addSubview:self.loadingView];

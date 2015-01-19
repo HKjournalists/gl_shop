@@ -12,6 +12,7 @@
 
 @property (nonatomic, copy) NSString *pname;
 @property (nonatomic, copy) NSString *ptype;
+@property (nonatomic, copy) NSString *pid;
 @property (nonatomic, strong) NSNumber *todayPrice;
 @property (nonatomic, strong) NSNumber *basePrice1;
 @property (nonatomic, strong) NSNumber *basePrice2;

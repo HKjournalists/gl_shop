@@ -13,6 +13,7 @@
 {
 @private
     UILabel *_productNameLabel;
+    UILabel *_sizeLabel;
     UILabel *_todayPriceLabel;
     UILabel *_oneWeekLabel;
     UILabel *_twoWeekLabel;

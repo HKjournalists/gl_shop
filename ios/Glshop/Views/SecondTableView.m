@@ -25,13 +25,24 @@ static NSString *cellIdentify = @"forcastTableCell";
     }
     cell.weekModel = self.dataArray[indexPath.row];
     
-    if (indexPath.row%2 == 1) {
-        cell.backgroundColor = RGB(247, 247, 247, 1);
-    }else {
-        cell.backgroundColor = [UIColor whiteColor];
-    }
+//    if (indexPath.row%2 == 1) {
+//        cell.backgroundColor = RGB(247, 247, 247, 1);
+//    }else {
+//        cell.backgroundColor = [UIColor whiteColor];
+//    }
     
     return cell;
+}
+
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        [cell setSeparatorInset:UIEdgeInsetsZero];
+    }
+    
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

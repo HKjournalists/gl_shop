@@ -16,6 +16,17 @@
 + (UIColor *) colorWithHexString: (NSString *)color;
 
 /**
+ *@brief 在导航控制器的堆栈中，查找到指定的视图控制器
+ */
++ (id)findDesignatedViewController:(NSString *)vcClassName
+             currentViewController:(UIViewController *)currentVC;
+
+/**
+ *@brief 根据文本，计算label的size
+ */
++ (CGSize)labelSizeCalculte:(UIFont *)font labelText:(NSString *)text;
+
+/**
  *@brief 将date格式化为字符串
  *@param date 目标时间
  *@param formate 目标格式

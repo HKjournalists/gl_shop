@@ -7,15 +7,15 @@
 //
 
 #import "DetailStandardViewController.h"
-#import "CompanyAuthViewController.h"
 #import "JSONKit.h"
 
 static NSString *listDetailResueIdentify = @"detailstandardCell";
 
-@interface DetailStandardViewController () <UITableViewDataSource,UITableViewDelegate>
+@interface DetailStandardViewController () <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *datas;
+@property (nonatomic, strong) NSMutableArray *dicArray;
 @property (nonatomic, strong) NSMutableArray *textFields;
 
 @end
@@ -51,13 +51,28 @@ static NSString *listDetailResueIdentify = @"detailstandardCell";
 - (void)setPublicModel:(PublicInfoModel *)publicModel {
     _publicModel = publicModel;
     SynacInstance *synac = [SynacInstance sharedInstance];
-    if ([_publicModel.ptype isEqualToString:UnKnow] ) {  // 石子的详细规格
+    if ([_publicModel.ptype isEqualToString:UnKnow] || !_publicModel.ptype) {  // 石子的详细规格
         self.datas = [synac goodsChildStone:_publicModel.pid].propretyArray;
-        _publicModel.productPropertys = [[synac goodsChildStone:_publicModel.pid].propreDicArray JSONString];
     }else { // 黄砂的详细规格
         self.datas = [synac goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid].propretyArray;
-        _publicModel.productPropertys = [[synac goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid].propreDicArray JSONString];
     }
+    
+    if (_publicModel.proList) {
+        self.datas = _publicModel.proList;
+    }
+    
+    // 拷贝数据
+    NSMutableArray *temp = [NSMutableArray array];
+    for (ProModel *model in _datas) {
+        ProModel *modelCopy = [model mutableCopy];
+        [temp addObject:modelCopy];
+    }
+    _publicModel.proList = [NSArray arrayWithArray:temp];
+    
+    if (!_publicModel.productDicArray) {
+        _publicModel.productDicArray = [NSMutableArray array];
+    }
+    
 }
 
 #pragma mark - UIActions
@@ -77,7 +92,6 @@ static NSString *listDetailResueIdentify = @"detailstandardCell";
     for (UITextField *field in _textFields) {
         [temp addObject:field.text];
     }
-    _publicModel.detailstandards = [NSArray arrayWithArray:temp];
     
     SynacInstance *synac = [SynacInstance sharedInstance];
     int i = 0;
@@ -98,11 +112,12 @@ static NSString *listDetailResueIdentify = @"detailstandardCell";
             i++;
         }
     }
-    if ([_publicModel.pid isEqualToString:UnKnow]) {
+    if ([_publicModel.ptype isEqualToString:UnKnow]) {
         _publicModel.productPropertys = [temp1 JSONString];
     }else {
         _publicModel.productPropertys = [temp2 JSONString];
     }
+    _publicModel.isSetDetailStand = YES;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -115,15 +130,15 @@ static NSString *listDetailResueIdentify = @"detailstandardCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:listDetailResueIdentify];
 
     if (!cell) {
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:listDetailResueIdentify];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
         UITextField *field = [UITextField textFieldWithPlaceHodler:@"填写" withDelegate:self];
         field.frame = CGRectMake(cell.vwidth-155, 44/2.0-35/2.0, 150, 35);
         field.textAlignment = NSTextAlignmentRight;
         field.tag = 100 + indexPath.row;
         field.clearButtonMode = UITextFieldViewModeNever;
-        field.keyboardType = UIKeyboardTypeNumberPad;
+        field.keyboardType = UIKeyboardTypeDecimalPad;
         [cell.contentView addSubview:field];
         
         if (![_textFields containsObject:field]) {
@@ -133,14 +148,37 @@ static NSString *listDetailResueIdentify = @"detailstandardCell";
     
     UITextField *field = (UITextField *)[cell viewWithTag:indexPath.row+100];
     ProModel *model  = _datas[indexPath.row];
-    cell.textLabel.text = [model.name stringByAppendingString:@"(%)"];
-    field.text = model.content;
+    cell.textLabel.text = [model.pname stringByAppendingString:@"(%)"];
+    
+    if (self.type != public_New) {
+        
+        field.text = model.proContent;
+    }
     
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if (textField.text.length == 0) {
+        return;
+    }
+    
+    NSString *regex = @"^[0-9]+([.]{0}|[.]{1}[0-9]+)$";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", regex];
+    if ([predicate evaluateWithObject:textField.text] == NO) {
+        HUD(@"输入的字符非法");
+        textField.text = nil;
+        return;
+    }
+    
+    
+    NSInteger index = textField.tag - 100;
+    ProModel *model;
+    if (_datas.count > index) {
+        model = _publicModel.proList[index];
+    }
+    model.proContent = textField.text;
+    
 }
 
 
