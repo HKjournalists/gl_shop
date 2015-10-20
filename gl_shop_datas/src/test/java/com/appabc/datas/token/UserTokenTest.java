@@ -34,9 +34,13 @@ public class UserTokenTest extends AbstractDatasTest{
 //		delUserToken();
 //		testGetTokenByUser();
 	}
+	
+	// b7843af55ba83801f7af9ee1f70f8f5f
+	// 8bdd5afc7d279f926097b52c73ebfb96
+	// 411a16976b5021fb1d4e6c347c2af446
 
 	public void delUserToken(){
-		this.userTokenManager.delUserTokenByUser("测试企业");
+		this.userTokenManager.delUserInfoByUser("测试企业");
 	}
 	
 	public void testSave(){
@@ -44,16 +48,28 @@ public class UserTokenTest extends AbstractDatasTest{
 		user.setId("u0001");
 		user.setUsername("zhangsan110");
 
-		this.userTokenManager.saveUserToken(user, new TCompanyInfo());
+		UserInfoBean ui = this.userTokenManager.saveUserToken(user, new TCompanyInfo());
+		for (int i = 0; i < ui.getTokenList().size(); i++) {
+			System.out.println(ui.getTokenList().get(i).getToken());
+		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void testGetTokenByUser(){
-		System.out.println(this.userTokenManager.getBeanByUsername("zhangsan110"));
+		UserInfoBean ui = this.userTokenManager.getBeanByUsername("15811822330");
+		for (int i = 0; i < ui.getTokenList().size(); i++) {
+			System.out.println(ui.getTokenList().get(i).getToken());
+			System.out.println(ui.getTokenList().get(i).getExpTime().toLocaleString());
+		}
 	}
 
 	public void testGetUserByToken(){
-		System.out.println(this.userTokenManager.getBeanByToken("b7ac56228255c7909e96bd6e7f413870"));
-		System.out.println(this.userTokenManager.isExists("f163f9fdce8fbe7e8166694c2683e801"));
+		UserInfoBean ui = this.userTokenManager.getBeanByToken("dc4b0ce51a4b681efd92da4f26de87ce");
+		for (int i = 0; i < ui.getTokenList().size(); i++) {
+			System.out.println(ui.getTokenList().get(i).getToken());
+		}
+		System.out.println(ui.getUserName());
+//		System.out.println(this.userTokenManager.isExists("411a16976b5021fb1d4e6c347c2af446").getText());
 	}
 	
 	public void updateUserToken(){
@@ -61,7 +77,7 @@ public class UserTokenTest extends AbstractDatasTest{
 		UserInfoBean ut = this.userTokenManager.getBeanByUsername("zhangsan110");
 		ut.setCname("测试企业");
 		
-		this.userTokenManager.updateUserToken(ut);
+		this.userTokenManager.updateUserInfo(ut);
 	}
 
 }

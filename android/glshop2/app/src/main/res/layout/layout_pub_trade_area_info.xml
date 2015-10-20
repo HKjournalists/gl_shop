@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 显示交易地域与日期Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <!-- 交易地域 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_trade_area_item"
+        style="@style/BuyTextItem.Top"
+        glshop:itemContent="靖江港"
+        glshop:itemTitle="交易港口"
+        glshop:showItemClickIcon="false"
+        glshop:showItemIcon="false" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 交货日期 -->
+
+    <LinearLayout
+        android:id="@+id/ll_trade_date_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buy_item_height"
+        android:background="@drawable/selector_item_middle"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/buy_item_padding"
+        android:paddingRight="@dimen/buy_item_padding" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="交易日期范围" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:id="@+id/tv_trade_start_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2014.10.1"
+                android:textColor="@color/blue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:text="至" />
+
+            <TextView
+                android:id="@+id/btn_trade_end_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2014.11.1"
+                android:textColor="@color/blue" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 交货地址指定方式 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_discharge_address_type"
+        style="@style/BuyTextItem.Bottom"
+        glshop:itemContent="己方指定"
+        glshop:itemTitle="交货地址指定方式"
+        glshop:showItemClickIcon="false"
+        glshop:showItemIcon="false" />
+
+</LinearLayout>

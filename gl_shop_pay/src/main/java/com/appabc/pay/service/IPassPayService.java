@@ -7,6 +7,7 @@
 package com.appabc.pay.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.appabc.bean.enums.PurseInfo.ExtractStatus;
 import com.appabc.bean.enums.PurseInfo.PayDirection;
@@ -17,6 +18,7 @@ import com.appabc.pay.bean.OInfo;
 import com.appabc.pay.bean.TAcceptBank;
 import com.appabc.pay.bean.TOfflinePay;
 import com.appabc.pay.bean.TPassbookDraw;
+import com.appabc.pay.bean.TPassbookDrawEx;
 import com.appabc.pay.bean.TPassbookInfo;
 import com.appabc.pay.bean.TPassbookPay;
 import com.appabc.pay.exception.ServiceException;
@@ -83,6 +85,26 @@ public interface IPassPayService {
 	QueryContext<TAcceptBank> getAcceptBankList(QueryContext<TAcceptBank> qContext);
 	
 	/**  
+	 * unionPaybackNotifyBusinessResp (银联在线支付充值回调)  
+	 * @param oid ; valideData
+	 * @author Bill huang 
+	 * @return boolean  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	void unionPaybackNotifyBusinessResp(String oid,Map<String, String> valideData);
+	
+	/**  
+	 * reportToUnionPayTradeResult (手机端上报)  
+	 * @param oid  
+	 * @author Bill huang 
+	 * @return boolean  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	void reportToUnionPayTradeResult(String oid) throws ServiceException;
+	
+	/**  
 	 * depositAccountOnline (线上充值(保证金和货款))  
 	 * @param cid:type:balance:payNo  
 	 * @author Bill huang 
@@ -90,7 +112,7 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	boolean depositAccountOnline(String cid,PurseType type,float balance,String payNo);
+	boolean depositAccountOnline(String cid,PurseType type,double balance,String payNo);
 	
 	/**  
 	 * depositAccountOfflineRequest (线下充值(保证金和货款)申请)  
@@ -110,7 +132,7 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	boolean depositAccountOffline(String cid,PurseType type,float balance,String payNo);
+	boolean depositAccountOffline(String cid,PurseType type,double balance,String payNo);
 	
 	/**  
 	 * payAccountOfflineRequest (线下付款申请)  
@@ -130,7 +152,27 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	boolean depositThirdOrgRecord(String cid,PurseType type,float balance,String payNo);
+	boolean depositThirdOrgRecord(String cid,PurseType type,double balance,String payNo);
+	
+	/**  
+	 * getPayRecordListWithOid (获取合同的结算清单列表)  
+	 * @param cid, type, oid, payDirection
+	 * @author Bill huang 
+	 * @return List<TPassbookPay>  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	List<TPassbookPay> getPayRecordListWithOid(String cid,PurseType type,String oid,PayDirection payDirection);
+	
+	/**  
+	 * getPayList (获取支付清单列表)  
+	 * @param cid, oid, pType, tType, direction
+	 * @author Bill huang 
+	 * @return List<TPassbookPay>  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	List<TPassbookPay> getPayListWithParams(String cid,PurseType pType,String oid,TradeType tType,PayDirection direction);
 	
 	/**  
 	 * payRecordList (流水信息列表查询)  
@@ -190,11 +232,14 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	TPassbookDraw extractCashRequest(String cid,PurseType type,Float balance,String acceptId);
+	TPassbookDraw extractCashRequest(String cid,PurseType type,Double balance,String acceptId);
 	
 	/**  
 	 * extractCashAudit (提现审批接口)  
-	 * @param tid:result:reson:cid  
+	 * @param tid: 提取记录的ID
+	 * @param result: 审核的结果 true or false
+	 * @param reson: 审核的原因
+	 * @param cid:  审核人的cid
 	 * @author Bill huang 
 	 * @return boolean  
 	 * @exception   
@@ -204,7 +249,7 @@ public interface IPassPayService {
 	
 	/**  
 	 * extractCashDeduct (提现扣款接口)  
-	 * @param tid  
+	 * @param tid: 提取记录的ID 
 	 * @author Bill huang 
 	 * @return boolean  
 	 * @exception   
@@ -243,6 +288,16 @@ public interface IPassPayService {
 	QueryContext<TPassbookDraw> extractCashRequestList(QueryContext<TPassbookDraw> qContext);
 	
 	/**  
+	 * extractCashRequestListEx (查询提现申请记录,支持分页查询和参数查询)  
+	 * @param QueryContext<TPassbookDrawEx>  
+	 * @author Bill huang 
+	 * @return QueryContext<TPassbookDrawEx>  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	QueryContext<TPassbookDrawEx> extractCashRequestListEx(QueryContext<TPassbookDrawEx> qContext);
+	
+	/**  
 	 * depositToGuaranty (货款充值保证金)  
 	 * @param cid:balance  
 	 * @author Bill huang 
@@ -250,7 +305,7 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	boolean depositToGuaranty(String cid,Float balance);
+	boolean depositToGuaranty(String cid,Double balance);
 	
 	/**  
 	 * transferAccounts (账户付款,转账接口)  
@@ -260,7 +315,27 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	boolean transferAccounts(String sourPassId,String destPassId,Float balance,PurseType type);
+	boolean transferAccounts(String sourPassId,String destPassId,Double balance,PurseType type);
+	
+	/**  
+	 * transferAccounts (账户付款,转账接口)  
+	 * @param sourPassId:destPassId:balance:type:oid  
+	 * @author Bill huang 
+	 * @return boolean  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	boolean transferAccounts(String sourPassId,String destPassId,double balance,TradeType tradeType,String oid);
+	
+	/**  
+	 * transferAccounts (账户付款,转账接口)  
+	 * @param sourPassId:destPassId:sType:dType:balance:oid  
+	 * @author Bill huang 
+	 * @return boolean  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	boolean transferAccounts(String sourPassId,String destPassId,TradeType sType,TradeType dType,double balance,String oid);
 	
 	/**  
 	 * transferAccounts (账户付款,转账接口)  
@@ -270,7 +345,7 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	boolean transferAccounts(String sourPassId,String destPassId,Float balance,TradeType tradeType);
+	boolean transferAccounts(String sourPassId,String destPassId,Double balance,TradeType tradeType);
 	
 	/**  
 	 * guarantyToGelation (保证金冻结接口)  
@@ -280,7 +355,7 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	boolean guarantyToGelation(String cid,float balance,String oid);
+	boolean guarantyToGelation(String cid,double balance,String oid);
 	
 	/**  
 	 * guarantyToUngelation (保证金解冻接口)  
@@ -290,7 +365,7 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	boolean guarantyToUngelation(String cid,float balance,String oid);
+	boolean guarantyToUngelation(String cid,double balance,String oid);
 	
 	/**  
 	 * guarantyToDeduct (保证金扣除接口)  
@@ -300,7 +375,7 @@ public interface IPassPayService {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	boolean guarantyToDeduct(String sourPassId,String destPassId,Float balance);
+	boolean guarantyToDeduct(String sourPassId,String destPassId,Double balance);
 	
 	/**  
 	 * getGuarantyTotal (获取保证金总额:包含保证金账户现有的金额和冻结的保证金)  
@@ -351,4 +426,25 @@ public interface IPassPayService {
 	 * @since  1.0.0  
 	 */
 	QueryContext<TOfflinePay> getOfflinePayList(QueryContext<TOfflinePay> qContext);
+	
+	/**  
+	 * getOfflinePayList (获取合同支付货款的实际金额)  
+	 * @param cid,oid  
+	 * @author Bill huang 
+	 * @return float  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	double getContractPayFundsAmount(String cid,String oid);
+	
+	/**  
+	 * getGuarantyToGelationRecord (获取合同冻结记录信息)  
+	 * @param cid,oid  
+	 * @author Bill huang 
+	 * @return float  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	TPassbookPay getGuarantyToGelationRecord(String oid,String cid);
+	
 }

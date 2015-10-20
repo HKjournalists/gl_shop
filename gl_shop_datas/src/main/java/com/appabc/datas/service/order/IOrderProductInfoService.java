@@ -14,6 +14,13 @@ import com.appabc.common.base.service.IBaseService;
  * @version     : 1.0
  * Create Date  : 2014年9月11日 上午9:49:48
  */
-public interface IOrderProductInfoService extends IBaseService<TOrderProductInfo>{
+public interface IOrderProductInfoService extends IBaseService<TOrderProductInfo> {
+	
+	/**
+	 * 复制一份交易中的商品信息(包括商品属性、商品规格、商品图片)
+	 * @param opiid 交易中的商品ID
+	 * @return newOpiid
+	 */
+	public int copyOrderProductAllInfo(int opiid);
 
 }

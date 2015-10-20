@@ -104,13 +104,7 @@ public class ProductInfoDaoImpl extends BaseJdbcDao<TProductInfo> implements IPr
 	}
 
 	public List<TProductInfo> queryForList(TProductInfo entity) {
-
-		StringBuffer sql = new StringBuffer(BASE_SQL);
-
-		if(entity.getPcode() != null && !entity.getPcode().isEmpty()){
-			sql.append(" AND PCODE = :pcode");
-		}
-		return super.queryForList(sql.toString(), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public List<TProductInfo> queryForList(Map<String, ?> args) {

@@ -30,6 +30,11 @@ public class TCompanyPersonal extends BaseBean {
     private String identification;
 
     /**
+     * 地址
+     */
+    private String address;
+    
+    /**
      * 籍贯
      */
     private String origo;
@@ -48,22 +53,22 @@ public class TCompanyPersonal extends BaseBean {
      * 备注
      */
     private String remark;
-    
+
     /**
      * 出生日期
      */
     private Date birthday;
-    
+
     /**
      * 签发机关
      */
     private String issuingauth;
-    
+
     /**
      * 有效期限-开始时间
      */
     private Date effstarttime;
-    
+
     /**
      * 有效期限-结束时间
      */
@@ -102,12 +107,13 @@ public class TCompanyPersonal extends BaseBean {
         this.identification = identification == null ? null : identification.trim();
     }
 
-    public String getOrigo() {
-        return origo;
+    public String getAddress() {
+        return address;
     }
 
-    public void setOrigo(String origo) {
-        this.origo = origo == null ? null : origo.trim();
+    public void setAddress(String address) {
+        this.address = address == null ? null : address.trim();
+        this.origo = this.address;
     }
 
     public Date getCratedate() {
@@ -165,5 +171,14 @@ public class TCompanyPersonal extends BaseBean {
 	public void setEffendtime(Date effendtime) {
 		this.effendtime = effendtime;
 	}
-    
+
+	public String getOrigo() {
+		return origo;
+	}
+
+	public void setOrigo(String origo) {
+		this.origo = origo == null ? null : origo.trim();
+	}
+
+	
 }

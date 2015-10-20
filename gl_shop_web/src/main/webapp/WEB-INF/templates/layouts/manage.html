@@ -6,8 +6,14 @@
   <li sec:authorize="hasRole('ROLE_ACCOUNT_MANAGER')">
     <a th:href="@{/manage/accounts/1/}"><i class="fa fa-fw fa-paperclip"></i> 人员管理</a>
   </li>
+  <li sec:authorize="hasRole('ROLE_BANNERADVERTISEMENT_CONFIGURE')" class="active">
+    <a th:href="@{/manage/advertise/configure/Android/}"><i class="fa fa-wrench fa-fw"></i> Banner广告图</a>
+  </li>
+  <li sec:authorize="hasRole('ROLE_CODE_RIVERSECTION')" class="active">
+    <a th:href="@{/manage/code/riversection/list}"><i class="fa fa-wrench fa-fw"></i> 行情地域配置</a>
+  </li>
   <li sec:authorize="hasRole('ROLE_SPECIAL_CONDITION_PROCESS')" class="active">
-    <a th:href="@{/manage/unsolved/}"><i class="fa fa-fw fa-align-left"></i> 特殊情况处理</a>
+    <a th:href="@{/manage/unsolved/}"><i class="fa fa-fw fa-align-left"></i> 特殊情况的处理</a>
   </li>
 </th:block>
 </body>

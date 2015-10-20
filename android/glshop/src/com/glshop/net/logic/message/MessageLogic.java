@@ -130,18 +130,6 @@ public class MessageLogic extends BasicLogic implements IMessageLogic {
 					respInfo.intArg1 = reqType.toValue();
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-						//Add test data
-						/*List<MessageInfoModel> data = new ArrayList<MessageInfoModel>();
-						for (int i = 0; i < Common.PAGE_SIZE; i++) {
-							MessageInfoModel info = new MessageInfoModel();
-							info.id = "123456";
-							info.content = "您还未缴纳保证金，缴纳后方可进行交易";
-							info.dateTime = "2014-10-10 01:02:03";
-							data.add(info);
-						}
-						result.datas = data;*/
-						//End add
-
 						message.what = MsgCenterMessageType.MSG_GET_MESSAGE_LIST_SUCCESS;
 						respInfo.data = result.datas == null ? 0 : result.datas.size();
 						respInfo.intArg2 = result.unreadTotalSize;

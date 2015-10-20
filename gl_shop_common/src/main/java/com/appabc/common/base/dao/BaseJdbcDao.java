@@ -2,12 +2,14 @@ package com.appabc.common.base.dao;
 
 import com.appabc.common.base.MultiTypeBeanPropertySqlParameterSource;
 import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.QueryResult;
 import com.appabc.common.base.SQLExpressionEnum;
 import com.appabc.common.base.bean.BaseBean;
 import com.appabc.common.utils.LogUtil;
 import com.appabc.common.utils.pagination.ISQLGenerator;
 import com.appabc.common.utils.pagination.PageModel;
 import com.appabc.common.utils.pagination.PaginationInfoDataBaseBuiler;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,7 +22,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
+
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -77,6 +81,17 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 		}
 		log.debug("addStandardSqWithParameter is : " + sql.toString());
 	}
+	
+	public void addStandardSqlWithDateQuery(StringBuilder sql,String dbColumnName,Date start,Date end){
+		if (sql == null || StringUtils.isEmpty(dbColumnName) || start == null || end == null) {
+			return;
+		}
+		ISQLGenerator iSQLGenerator = PaginationInfoDataBaseBuiler.generateSQLGenerateFactory();
+		String whereSqlCause = iSQLGenerator.convertDateToWhereCauseSql(dbColumnName, start, end);
+		sql.append(" AND ");
+		sql.append(whereSqlCause);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -177,6 +192,20 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(
 				entity);
 		int result = getNamedParameterJdbcTemplate().update(sql, paramSource);
+		log.debug(result);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see com.appabc.common.base.dao.IBaseDao#update(java.lang.String,
+	 * java.util.Map)
+	 */
+	public void update(String sql, Map<String,?> args) {
+		Assert.hasText(sql, "The Sql Str Is Null!");
+		Assert.notNull(args, "The Update Object Is Null!");
+		log.debug("The Sql Str Is : " + sql + " ; And The Value Is : "+args);
+		int result = getNamedParameterJdbcTemplate().update(sql, args);
 		log.debug(result);
 	}
 
@@ -318,9 +347,12 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 	 * com.appabc.common.base.dao.IBaseDao#queryListForPagination(java.lang.String
 	 * , com.appabc.common.base.QueryContext)
 	 */
-	public QueryContext<T> queryListForPagination(String sql,
-			QueryContext<T> qContext) {
-		return this.queryListForPagination(sql, qContext, this);
+	public QueryContext<T> queryListForPagination(String sql,QueryContext<T> qContext) {
+		return this.queryListForPagination(sql, null, qContext, this);
+	}
+	
+	public QueryContext<T> queryListForPagination(String sql, String countSql, QueryContext<T> qContext) {
+		return this.queryListForPagination(sql, countSql, qContext, this);
 	}
 
 	/*
@@ -330,8 +362,7 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 	 * com.appabc.common.base.dao.IBaseDao#queryListForPagination(java.lang.String
 	 * , com.appabc.common.base.QueryContext,RowMapper<T> rowMapper)
 	 */
-	public QueryContext<T> queryListForPagination(String sql,
-			QueryContext<T> qContext,RowMapper<T> rowMapper){
+	public QueryContext<T> queryListForPagination(String sql,String countSql, QueryContext<T> qContext,RowMapper<T> rowMapper){
 		Assert.hasText(sql, "The Sql Str Is null!");
 
 		if (StringUtils.isNotEmpty(qContext.getOrderColumn())) {
@@ -343,7 +374,6 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 			sql = sb.toString();
 		}
 		log.debug("The Sql Str Before Page Is : " + sql + " ; And The Value Is : "+qContext.getParameters());
-
 		/****BeanParameter中的数据不完整，不能做为参数查询，某些业务的自定义参数和分页参数不在BeanParameter中*******/
 //		SqlParameterSource parameterSource;
 //		if (qContext.getBeanParameter() != null) {
@@ -355,31 +385,36 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 		SqlParameterSource parameterSource = new MapSqlParameterSource(qContext.getParameters());
 		if (qContext.getPage().getPageIndex() < 0) {
 			List<T> list = getNamedParameterJdbcTemplate().query(sql, parameterSource, rowMapper);
-			qContext.getQueryResult().setResult(list);
-			qContext.getQueryResult().setTotalSize(list.size());
+			QueryResult<T> qr = qContext.getQueryResult();
+			qr.setResult(list);
+			qr.setTotalSize(list.size());
 		} else {
-			ISQLGenerator iSQLGenerator = PaginationInfoDataBaseBuiler
-					.generateSQLGenerateFactory();
-			String countSql = iSQLGenerator.generateCountSql(sql);
-			log.debug("The Count Sql Str Is  : " + countSql);
-			// 获取记录总数
-			Integer count = getNamedParameterJdbcTemplate().queryForObject(countSql, parameterSource, Integer.class);
-			qContext.getQueryResult().setTotalSize(count);
-			qContext.getPage().setTotalSize(count);
-
+			ISQLGenerator iSQLGenerator = PaginationInfoDataBaseBuiler.generateSQLGenerateFactory();
+			if(StringUtils.isEmpty(countSql)){
+				countSql = iSQLGenerator.generateCountSql(sql);
+			}
+			log.debug("The Count Sql Is  : " + countSql);
+			QueryResult<T> qr = qContext.getQueryResult();
 			PageModel page = qContext.getPage();
+			// 获取记录总数
+			int count = getNamedParameterJdbcTemplate().queryForObject(countSql, parameterSource, Integer.class);
+			qr.setTotalSize(count);
+			page.setTotalSize(count);
+
 			if(page.getPageIndex()<=page.getTotalPage()){
-				String pageSql = iSQLGenerator.generatePageSql(sql,
-						qContext.getPage());
-				log.debug("The Page Sql Str Is  : " + pageSql);
+				String pageSql = iSQLGenerator.generatePageSql(sql,page);
+				log.debug("The Page Sql Is  : " + pageSql);
 				// 获取分页后的记录数量
 				List<T> list = getNamedParameterJdbcTemplate().query(pageSql, parameterSource, rowMapper);
-				qContext.getQueryResult().setResult(list);
+				qr.setResult(list);
 			}
 		}
 		return qContext;
 	}
 
+	public QueryContext<T> queryListForPaginationForStandardSQL(String sql,QueryContext<T> qContext){
+		return this.queryListForPaginationForStandardSQL(sql, qContext, this);
+	}
 	/*
 	 * (non-Javadoc)
 	 *
@@ -387,9 +422,8 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 	 * com.appabc.common.base.dao.IBaseDao#queryListForPaginationForStandardSQL(java.lang.String
 	 * , com.appabc.common.base.QueryContext)
 	 */
-	public QueryContext<T> queryListForPaginationForStandardSQL(String sql,
-			QueryContext<T> qContext) {
-		Assert.hasText(sql, "The Sql Str Is Null!");
+	public QueryContext<T> queryListForPaginationForStandardSQL(String sql,QueryContext<T> qContext,RowMapper<T> rowMapper) {
+		Assert.hasText(sql, "The Sql Is Null!");
 		if (StringUtils.isNotEmpty(qContext.getOrderColumn())) {
 			StringBuffer sb = new StringBuffer(sql);
 			sb.append(" ORDER BY ");
@@ -398,42 +432,35 @@ public abstract class BaseJdbcDao<T extends BaseBean> extends
 			sb.append(qContext.getOrder());
 			sql = sb.toString();
 		}
-		log.debug("The Sql Str Before Page Is : " + sql + " ; And The Value Is : "+qContext.getParamList());
+		Object[] args = CollectionUtils.isEmpty(qContext.getParamList()) ? null: qContext.getParamList().toArray();
+		log.debug("The Sql Before Page Is : " + sql + " ; And The Value Is : "+args);
 		if (qContext.getPage().getPageIndex() < 0) {
-			List<T> list = getJdbcTemplate().query(
-					sql,
-					CollectionUtils.isEmpty(qContext.getParamList()) ? null
-							: qContext.getParamList().toArray(), this);
-			qContext.getQueryResult().setResult(list);
-			qContext.getQueryResult().setTotalSize(list.size());
+			List<T> list = getJdbcTemplate().query(sql, args, rowMapper);
+			QueryResult<T> qr = qContext.getQueryResult();
+			qr.setResult(list);
+			qr.setTotalSize(list.size());
 		} else {
-			ISQLGenerator iSQLGenerator = PaginationInfoDataBaseBuiler
-					.generateSQLGenerateFactory();
+			ISQLGenerator iSQLGenerator = PaginationInfoDataBaseBuiler.generateSQLGenerateFactory();
 			String countSql = iSQLGenerator.generateCountSql(sql);
-			log.debug("The Count Sql Str Is  : " + countSql);
-			// 获取记录总数
-			@SuppressWarnings("deprecation")
-			int count = getJdbcTemplate().queryForInt(
-					countSql,
-					CollectionUtils.isEmpty(qContext.getParamList()) ? null
-							: qContext.getParamList().toArray());
-			qContext.getQueryResult().setTotalSize(count);
-			qContext.getPage().setTotalSize(count);
-
+			log.debug("The Count Sql Is  : " + countSql);
+			QueryResult<T> qr = qContext.getQueryResult();
 			PageModel page = qContext.getPage();
+			// 获取记录总数
+			int count = getJdbcTemplate().queryForObject(countSql, args, Integer.class);
+			qr.setTotalSize(count);
+			page.setTotalSize(count);
+
 			if(page.getPageIndex()<=page.getTotalPage()){
-				String pageSql = iSQLGenerator.generatePageSql(sql,
-						qContext.getPage());
-				log.debug("The Page Sql Str Is  : " + pageSql);
+				String pageSql = iSQLGenerator.generatePageSql(sql,page);
+				log.debug("The Page Sql Is  : " + pageSql);
 				// 获取分页后的记录数量
-				List<T> list = getJdbcTemplate().query(
-						pageSql,
-						CollectionUtils.isEmpty(qContext.getParamList()) ? null
-								: qContext.getParamList().toArray(), this);
-				qContext.getQueryResult().setResult(list);
+				List<T> list = getJdbcTemplate().query(pageSql, args, rowMapper);
+				qr.setResult(list);
 			}
 		}
 		return qContext;
 	}
+	
+	
 
 }

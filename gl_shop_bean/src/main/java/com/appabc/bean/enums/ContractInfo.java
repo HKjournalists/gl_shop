@@ -61,6 +61,50 @@ public interface ContractInfo extends IBaseEnum{
 	}
 	
 	/**
+	 * 功能描述:买家或者卖家是否评价
+	 * @author Bill.Huang
+	 * <p>2015-01-12 上午10:21:14<p>
+	 * <p>修改历史 ：(修改人，修改时间，修改原因/内容)</p>
+	 */
+	public enum ContractEvaluationType implements ContractInfo {
+		
+		NOTHING("0","无"),
+		
+		EVALUATION("1","评价");
+		
+		private String val;
+		
+		private String text;
+		
+		private ContractEvaluationType(String value,String text){
+			this.val = value;
+			this.text = text;
+		}
+		
+		public String getVal(){return val;}
+		
+		public String getText(){return text;}
+		
+		public static ContractEvaluationType enumOf(String value){
+			for (ContractEvaluationType os : values()) {
+				if (StringUtils.equalsIgnoreCase(os.val, value)) {
+					return os;
+				}
+			}
+			return null;
+		}
+		
+		public static String getText(String value) {
+			ContractEvaluationType ct = enumOf(value);
+			if(ct != null){
+				return ct.text;
+			}
+			return null;
+	    }
+		
+	}
+	
+	/**
 	 * 功能描述:合同起草阶段买家和卖家的动作类型
 	 * @author Bill.Huang
 	 * <p>2015-01-12 上午10:21:14<p>
@@ -439,6 +483,95 @@ public interface ContractInfo extends IBaseEnum{
 			ContractOperateType cot = enumOf(value);
 			if(cot != null){
 				return cot.text;
+			}
+			return null;
+	    }
+		
+	}
+	
+	/**
+	 * 功能描述:合同仲裁的状态
+	 * @author Bill.Huang
+	 * <p>2014-09-02 上午10:21:14<p>
+	 * <p>修改历史 ：(修改人，修改时间，修改原因/内容)</p>
+	 */
+	public enum ContractArbitrationStatus implements ContractInfo {
+		/*初始化,申请*/
+		REQUEST(0,"初始化,申请"),
+		/*成功*/
+		SUCCESS(1,"成功"),
+		/*失败*/
+		FAILURE(2,"失败");
+		
+		private Integer val;
+		
+		private String text;
+		
+		private ContractArbitrationStatus(Integer value,String text){
+			this.val = value;
+			this.text = text;
+		}
+		
+		public Integer getVal(){
+			return val;
+		}
+		
+		public String getText(){
+			return text;
+		}
+		
+		public static ContractArbitrationStatus enumOf(Integer value){
+			for (ContractArbitrationStatus os : values()) {
+				if (os.val == value) {
+					return os;
+				}
+			}
+			return null;
+		}
+		
+		public static String getText(Integer value) {
+			ContractArbitrationStatus ts = enumOf(value);
+			if(ts != null){
+				return ts.text;
+			}
+			return null;
+	    }
+	}
+	
+	public enum ContractWebCmsTradeType implements ContractInfo {
+		
+		HISTORY("0","历史交易状态"),PRESENT("1","当前交易状态");
+		
+		private String val;
+		
+		private String text;
+		
+		private ContractWebCmsTradeType(String value,String text){
+			this.val = value;
+			this.text = text;
+		}
+		
+		public String getVal(){
+			return val;
+		}
+		
+		public String getText(){
+			return text;
+		}
+		
+		public static ContractWebCmsTradeType enumOf(String value){
+			for (ContractWebCmsTradeType os : values()) {
+				if (StringUtils.equalsIgnoreCase(os.val, value)) {
+					return os;
+				}
+			}
+			return null;
+		}
+		
+		public static String getText(String value) {
+			ContractWebCmsTradeType cdpt = enumOf(value);
+			if(cdpt != null){
+				return cdpt.text;
 			}
 			return null;
 	    }

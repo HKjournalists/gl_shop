@@ -47,8 +47,8 @@
 
 #pragma mark - Public Methods
 - (void)showSheet {
-    self.frame = [self topMostViewController].view.bounds;
-    [[self topMostViewController].view addSubview:self];
+    self.frame = [self topViewController].view.bounds;
+    [[self topViewController].view addSubview:self];
     
     self.contentView.frame = CGRectMake(0, self.vbottom, self.vwidth, self.contentView.vheight);
     [UIView animateWithDuration:AnimationDuration animations:^{
@@ -69,13 +69,6 @@
 }
 
 #pragma mark - Private
-- (UIViewController *)topMostViewController {
-    UIViewController *controller = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (controller.presentedViewController != nil) {
-        controller = controller.presentedViewController;
-    }
-    return controller;
-}
 
 - (void)tapAction:(UITapGestureRecognizer *)tap {
     CGPoint point = [tap locationInView:self];

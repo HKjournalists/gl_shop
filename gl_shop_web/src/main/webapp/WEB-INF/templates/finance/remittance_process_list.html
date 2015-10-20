@@ -24,7 +24,7 @@
     <td th:text="${remit.amount}">52938</td>
     <td th:text="${remit.remitterAccount}">62999999999999</td>
     <td th:text="${#calendars.format(remit.createTime, 'YYYY年M月d日 HH:mm')}">2014年3月16日 16:25</td>
-    <td th:text="${remit.creator.userName}">王五</td>
+    <td th:text="${remit.creator.realName}">王五</td>
     <td><a th:href="@{/finance/remittance/process/detail/{rid}/(rid=${remit.id})}">开始处理</a></td>
   </tr>
   <tr th:if="${#lists.isEmpty(remittances)}">

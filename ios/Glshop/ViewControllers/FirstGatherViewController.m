@@ -44,6 +44,8 @@
     }];
     
     UILabel *labelName = [UILabel labelWithTitle:@"收款人姓名"];
+    labelName.textColor = RGB(51,51,51,1);
+    labelName.font = [UIFont boldSystemFontOfSize:FONT_16];
     [imgView addSubview:labelName];
     [labelName makeConstraints:^(MASConstraintMaker *make) {
         make.leading.mas_equalTo(imgView).offset(15);
@@ -64,6 +66,8 @@
     
     _tfName = [UITextField textFieldWithPlaceHodler:@"请输入" withDelegate:self];
     [imgView addSubview:_tfName];
+    _tfName.textColor = RGB(153,153,153,1);
+    _tfName.font = [UIFont boldSystemFontOfSize:FONT_16];
     _tfName.textAlignment = NSTextAlignmentRight;
     [_tfName makeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(imgView).offset(-10);
@@ -74,7 +78,7 @@
     }];
     
     if (uInstance.userType == user_personal) {
-        UIButton *nextBtn = [UIFactory createBtn:BlueButtonImageName bTitle:@"下一步" bframe:CGRectZero];
+        UIButton *nextBtn = [UIFactory createBtn:BlueButtonImageName bTitle:btntitle_next bframe:CGRectZero];
         [nextBtn addTarget:self action:@selector(next) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:nextBtn];
         [nextBtn makeConstraints:^(MASConstraintMaker *make) {
@@ -109,8 +113,9 @@
         make.top.mas_equalTo(_photoView);
     }];
     
-    UIButton *nextBtn = [UIFactory createBtn:BlueButtonImageName bTitle:@"下一步" bframe:CGRectZero];
+    UIButton *nextBtn = [UIFactory createBtn:BlueButtonImageName bTitle:btntitle_next bframe:CGRectZero];
     [nextBtn addTarget:self action:@selector(next) forControlEvents:UIControlEventTouchUpInside];
+    //nextBtn.font = [UIFont boldSystemFontOfSize:FONT_16];
     [self.view addSubview:nextBtn];
     [nextBtn makeConstraints:^(MASConstraintMaker *make) {
         make.leading.mas_equalTo(self.view).offset(10);

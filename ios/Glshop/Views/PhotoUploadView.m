@@ -10,8 +10,38 @@
 #import "ASINetworkQueue.h"
 #import "NetService.h"
 #import "UIButton+WebCache.h"
+#import <objc/runtime.h>
+
+static NSString * const kXHloadingNavigationItemTitleViewKey = @"kXHloadingNavigationItemTitleViewKey";
 
 #define BtnStartTag 200
+
+@interface UIButton (PrivateButton)
+
+@property (nonatomic, strong) NSNumber *isDefaultImage;
+
+- (void)setImage:(UIImage *)image forState:(UIControlState)state hasImageName:(BOOL)hasDefaultImage;
+
+@end
+
+
+@implementation UIButton (PrivateButton)
+
+- (void)setIsDefaultImage:(NSNumber *)isDefaultImage {
+    objc_setAssociatedObject(self, &kXHloadingNavigationItemTitleViewKey, isDefaultImage, OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (NSNumber *)isDefaultImage {
+    return objc_getAssociatedObject(self, &kXHloadingNavigationItemTitleViewKey);
+}
+
+- (void)setImage:(UIImage *)image forState:(UIControlState)state hasImageName:(BOOL)hasDefaultImage {
+    self.isDefaultImage = hasDefaultImage ? [NSNumber numberWithBool:NO] : [NSNumber numberWithBool:YES];
+    
+    [self setImage:image forState:state];
+}
+
+@end
 
 @interface PhotoUploadView ()
 
@@ -33,14 +63,17 @@
             imageBtn.tag = BtnStartTag+i;
             if (i == 0) {
                 UIImage *image = [UIImage imageNamed:@"address_photo"];
-                [imageBtn setImage:image forState:UIControlStateNormal];
+//                [imageBtn setImage:image forState:UIControlStateNormal];
+                [imageBtn setImage:image forState:UIControlStateNormal hasImageName:YES];
             }else if (i == 1) {
                 UIImage *image = [UIImage imageNamed:@"address_photo_add"];
-                [imageBtn setImage:image forState:UIControlStateNormal];
+//                [imageBtn setImage:image forState:UIControlStateNormal];
+                [imageBtn setImage:image forState:UIControlStateNormal hasImageName:YES];
                 [imageBtn setHidden:YES];
             }else if (i == 2){
                 UIImage *image = [UIImage imageNamed:@"address_photo_add"];
-                [imageBtn setImage:image forState:UIControlStateNormal];
+//                [imageBtn setImage:image forState:UIControlStateNormal];
+                [imageBtn setImage:image forState:UIControlStateNormal hasImageName:YES];
                 [imageBtn setHidden:YES];
             }
             
@@ -60,7 +93,8 @@
     int i = 0;
     for (UIImage *image in _imageArray) {
         UIButton *btn = (UIButton *)[self viewWithTag:BtnStartTag+i];
-        [btn setImage:image forState:UIControlStateNormal];
+//        [btn setImage:image forState:UIControlStateNormal];
+        [btn setImage:image forState:UIControlStateNormal hasImageName:NO];
         if (i >= 0) {
             btn.hidden = NO;
         }
@@ -84,6 +118,7 @@
         [btn sd_setImageWithURL:url forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:PlaceHodelImageName] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             if (image) {
                 [_imageArray addObject:image];
+                [btn setImage:image forState:UIControlStateNormal hasImageName:NO];
             }
         }];
         
@@ -97,10 +132,11 @@ static long photoTag = 0;
     UIActionSheet *choosePhotoActionSheet;
     photoTag = btn.tag-BtnStartTag;
     
+    
     if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         choosePhotoActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"选择头像图片", @"")
                                                              delegate:self
-                                                    cancelButtonTitle:@"取消"
+                                                    cancelButtonTitle:globe_cancel_str
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:@"拍照", @"从相册获取", nil];
     } else {
@@ -110,13 +146,23 @@ static long photoTag = 0;
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:NSLocalizedString(@"take_photo_from_library", @""), nil];
     }
+    
+    if ([btn.isDefaultImage boolValue]) {
+        choosePhotoActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"选择头像图片", @"")
+                                                             delegate:self
+                                                    cancelButtonTitle:globe_cancel_str
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:@"拍照", @"从相册获取",@"删除", nil];
+    }
+    
     [choosePhotoActionSheet showInView:[UIApplication sharedApplication].keyWindow];
 }
 
 - (void)addImage:(UIImage *)photo {
     if (_imageArray.count == 0) {
         UIButton *btn = (UIButton *)[self viewWithTag:BtnStartTag];
-        [btn setImage:photo forState:UIControlStateNormal];
+//        [btn setImage:photo forState:UIControlStateNormal];]
+        [btn setImage:photo forState:UIControlStateNormal hasImageName:NO];
         if (!_NotshowNextPhoto) {
             UIButton *twobtn = (UIButton *)[self viewWithTag:BtnStartTag+1];
             twobtn.hidden = NO;
@@ -124,11 +170,13 @@ static long photoTag = 0;
         [_imageArray addObject:photo];
     }else if (_imageArray.count >= 1 && photoTag == 0) {
         UIButton *btn = (UIButton *)[self viewWithTag:BtnStartTag];
-        [btn setImage:photo forState:UIControlStateNormal];
+//        [btn setImage:photo forState:UIControlStateNormal];
+        [btn setImage:photo forState:UIControlStateNormal hasImageName:NO];
         [_imageArray replaceObjectAtIndex:0 withObject:photo];
     }else if (_imageArray.count == 1) {
         UIButton *btn = (UIButton *)[self viewWithTag:BtnStartTag+1];
-        [btn setImage:photo forState:UIControlStateNormal];
+//        [btn setImage:photo forState:UIControlStateNormal];
+        [btn setImage:photo forState:UIControlStateNormal hasImageName:NO];
         if (!_NotshowNextPhoto) {
             UIButton *threebtn = (UIButton *)[self viewWithTag:BtnStartTag+2];
             threebtn.hidden = NO;
@@ -136,17 +184,24 @@ static long photoTag = 0;
         [_imageArray addObject:photo];
     }else if (_imageArray.count >= 2 && photoTag == 1) {
         UIButton *btn = (UIButton *)[self viewWithTag:BtnStartTag+1];
-        [btn setImage:photo forState:UIControlStateNormal];
+//        [btn setImage:photo forState:UIControlStateNormal];
+        [btn setImage:photo forState:UIControlStateNormal hasImageName:NO];
         [_imageArray replaceObjectAtIndex:1 withObject:photo];
     }else if (_imageArray.count == 2) {
         UIButton *btn = (UIButton *)[self viewWithTag:BtnStartTag+2];
-        [btn setImage:photo forState:UIControlStateNormal];
+//        [btn setImage:photo forState:UIControlStateNormal];
+        [btn setImage:photo forState:UIControlStateNormal hasImageName:NO];
         [_imageArray addObject:photo];
     }else if (_imageArray.count == 3 && photoTag == 2) {
         UIButton *btn = (UIButton *)[self viewWithTag:BtnStartTag+2];
-        [btn setImage:photo forState:UIControlStateNormal];
+//        [btn setImage:photo forState:UIControlStateNormal];
+        [btn setImage:photo forState:UIControlStateNormal hasImageName:NO];
         [_imageArray replaceObjectAtIndex:2 withObject:photo];
     }
+    
+}
+
+- (void)reLayoutViews {
     
 }
 
@@ -155,7 +210,7 @@ static long photoTag = 0;
 {
     __block typeof(self) weakSelf = self;
     [self.firstViewController dismissViewControllerAnimated:YES completion:^{
-        UIImage *image = info[@"UIImagePickerControllerEditedImage"];
+        UIImage *image = info[@"UIImagePickerControllerOriginalImage"];
         if ([weakSelf.delegate respondsToSelector:@selector(pickerImageDidReplace)]) {
             [weakSelf.delegate pickerImageDidReplace];
         }
@@ -176,7 +231,24 @@ static long photoTag = 0;
                 sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
                 break;
             case 2:
-                return;
+            {
+                if (buttonIndex == actionSheet.cancelButtonIndex) {
+                    return;
+                }else {
+                    if (photoTag == 0) {
+                        UIButton *btn = (UIButton *)[self viewWithTag:BtnStartTag];
+                        [btn setImage:[UIImage imageNamed:@"address_photo"] forState:UIControlStateNormal hasImageName:YES];
+                    }else {
+                        UIButton *btn = (UIButton *)[self viewWithTag:BtnStartTag+photoTag];
+                        [btn setImage:[UIImage imageNamed:@"address_photo_add"] forState:UIControlStateNormal hasImageName:YES];
+                    }
+                    if (_imageArray.count > photoTag) {
+                        [_imageArray removeObjectAtIndex:photoTag];
+                    }
+                    return;
+                }
+            }
+            default: return;
         }
     } else {
         if (buttonIndex == 1) {
@@ -188,7 +260,7 @@ static long photoTag = 0;
     
     UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
     imagePickerController.delegate = self;
-    imagePickerController.allowsEditing = YES;
+    imagePickerController.allowsEditing = NO;
     imagePickerController.sourceType = sourceType;
     [self.firstViewController presentViewController:imagePickerController animated:YES completion:nil];
 }

@@ -10,4 +10,8 @@
 
 @implementation ProductTodayModel
 
+- (BOOL)isSendData {
+    return self.ptype.length > 0;
+}
+
 @end

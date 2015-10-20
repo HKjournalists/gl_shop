@@ -1,6 +1,8 @@
 package com.glshop.net.logic.syscfg.mgr;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.json.JSONException;
@@ -21,6 +23,7 @@ import com.glshop.platform.net.base.ResultItem;
 import com.glshop.platform.utils.BeanUtils;
 import com.glshop.platform.utils.FileUtils;
 import com.glshop.platform.utils.Logger;
+import com.glshop.platform.utils.StringUtils;
 
 /**
  * @Description : 本地系统参数配置管理类
@@ -150,6 +153,24 @@ public class SysCfgLocalMgr {
 			if (bankItem != null) {
 				bankList = SyncCfgUtils.parseSysBankData(bankItem, null);
 				if (BeanUtils.isNotEmpty(bankList)) {
+					Collections.sort(bankList, new Comparator<BankInfoModel>() {
+
+						@Override
+						public int compare(BankInfoModel info1, BankInfoModel info2) {
+							if (StringUtils.isNotEmpty(info1.orderNo) && StringUtils.isNotEmpty(info2.orderNo)) {
+								if (StringUtils.isDigital(info1.orderNo) && StringUtils.isDigital(info2.orderNo)) {
+									int lhs = Integer.parseInt(info1.orderNo);
+									int rhs = Integer.parseInt(info2.orderNo);
+									return lhs - rhs;
+								} else {
+									return info1.orderNo.compareTo(info2.orderNo);
+								}
+							} else {
+								return 0;
+							}
+						}
+
+					});
 					mBankList = bankList;
 				}
 			}

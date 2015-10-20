@@ -28,13 +28,13 @@ public interface AuthRecordInfo extends IBaseEnum{
 	public enum AuthRecordStatus implements AuthRecordInfo {
 		
 		/**
-		 * 审核不通过
+		 * 未认证
 		 */
-		AUTH_STATUS_CHECK_NO("0","审核不通过"),
+		AUTH_STATUS_CHECK_NO("0","未通过认证"),
 		/**
 		 * 审核通过
 		 */
-		AUTH_STATUS_CHECK_YES("1","审核通过"),
+		AUTH_STATUS_CHECK_YES("1","已认证"),
 		/**
 		 * 审核中
 		 */

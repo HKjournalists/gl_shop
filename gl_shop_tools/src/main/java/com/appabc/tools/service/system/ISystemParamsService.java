@@ -15,5 +15,14 @@ import com.appabc.common.base.service.IBaseService;
  * Create Date  : 2014年9月3日 上午10:01:20
  */
 public interface ISystemParamsService extends IBaseService<TSystemParams> {
-
+	
+	void initDataParameters();
+	
+	/**
+	 * 更新参数值
+	 * @param pname
+	 * @param value
+	 */
+	void updateValueByName(String pname, String value);
+	
 }

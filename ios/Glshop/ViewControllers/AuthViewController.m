@@ -7,6 +7,7 @@
 //
 
 #import "AuthViewController.h"
+#import "AddressImgModel.h"
 #import "PhotoUploadView.h"
 #import "REPlaceholderTextView.h"
 #import "WPHotspotLabel.h"
@@ -15,16 +16,31 @@
 #import "CopyRightInfoViewController.h"
 #import "UnloadAddressViewController.h"
 #import "ClickImage.h"
+#import "ProfileViewController.h"
+#import "HLCheckbox.h"
+#import "WebViewController.h"
+#import "IBActionSheet.h"
 
-@interface AuthViewController ()<UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,UIActionSheetDelegate,UploadImageDelete,UIAlertViewDelegate>
+static NSString *autypeString = @"选择认证类型";
+
+@interface AuthViewController ()<UITableViewDataSource,UITableViewDelegate,UITextViewDelegate,IBActionSheetDelegate,UploadImageDelete,UIAlertViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *dataSource;
+
+@property (nonatomic, strong) UILabel *agreeLabel;
+@property (nonatomic, strong) HLCheckbox *box;
+@property (nonatomic, strong) UIButton *nexBtn;
+@property (nonatomic, assign) NSInteger markIndex;
 
 /**
  *@brief 上传认证照片
  */
 @property (nonatomic, strong) PhotoUploadView *authPhotoView;
+/**
+ *@brief 上传认证照片
+ */
+@property (nonatomic, strong) PhotoUploadView *auth2PhotoView;
 
 /**
  *@brief 上传企业照片
@@ -39,14 +55,48 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.shouldShowFailView = NO;
     
 }
 
-- (void)initDatas {
-    _dataSource = @[@2,@2,@4,@2,@2,@2];
-    _authModel = [[AuthModel alloc] init];
+- (void)backRootVC {
+    ProfileViewController *vc = [self findDesignatedViewController:[ProfileViewController class]];
+    if (vc) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }else {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
 }
 
+- (void)initDatas {
+    self.title = @"认证申请";
+    _dataSource = @[@2,@2,@4];
+    _authModel = [[AuthModel alloc] init];
+    
+    UserInstance *userIns = [UserInstance sharedInstance];
+    if (userIns.userType == user_personal) {
+        _markIndex = 2;
+        _authModel.ctypeValue = @"2";
+        _dataSource = @[@2,@2,@4];
+        _authModel.exampleImgName = @"bg_demo_profile_people.jpg";
+    }else {
+        _markIndex = -1;
+    }
+    
+    if (_cModel) {
+        _authModel.contact = _cModel.contact;
+        _authModel.tel = _cModel.tel;
+        _authModel.phone = _cModel.cphone;
+        
+        _authModel.addrAreaFullName = _cModel.addrAreaFullName;
+        _authModel.address = _cModel.address;
+        
+        _authModel.mark = _cModel.mark;
+        _authModel.companyImgIds = _cModel.companyImgIds;
+    }
+}
+
+#pragma mark - UI
 - (void)loadSubViews {
     UIView *header = [self loadTipView];
     
@@ -55,18 +105,23 @@
     _tableView.dataSource = self;
     _tableView.delegate   = self;
     _tableView.tableHeaderView = header;
+    _tableView.tableFooterView = [self tableFooterView];
     [self.view addSubview:_tableView];
     
     _authPhotoView = [[PhotoUploadView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
     _authPhotoView.NotshowNextPhoto = YES;
     _authPhotoView.delegate = self;
     
+    _auth2PhotoView = [[PhotoUploadView alloc] initWithFrame:CGRectMake(105, 0, SCREEN_WIDTH, 100)];
+    _auth2PhotoView.NotshowNextPhoto = YES;
+    _auth2PhotoView.delegate = self;
+    
     _photoUploadView = [[PhotoUploadView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 100)];
     _photoUploadView.delegate = self;
     
-    UIButton *nexBtn = [UIFactory createBtn:BlueButtonImageName bTitle:@"提交认证申请" bframe:CGRectMake(10, self.tableView.vbottom+5, self.view.vwidth-20, 40)];
-    [nexBtn addTarget:self action:@selector(authOption) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:nexBtn];
+    _nexBtn = [UIFactory createBtn:BlueButtonImageName bTitle:@"提交认证申请" bframe:CGRectMake(10, self.tableView.vbottom+5, self.view.vwidth-20, 40)];
+    [_nexBtn addTarget:self action:@selector(authOption) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_nexBtn];
 }
 
 - (UIView *)loadTipView {
@@ -75,25 +130,60 @@
     UIImage *image = [UIImage imageNamed:@"attestation_prompt_background"];
     image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10) resizingMode:UIImageResizingModeTile];
     imageview.image = image;
-//    [imageview addSubview:imageview];
     
     UIImageView *logo = [[UIImageView alloc] initWithFrame:CGRectMake(5, 9, 15, 15)];
     logo.image = [UIImage imageNamed:@"supply-and-demand_icon_laba"];
     [imageview addSubview:logo];
     
-    _tipActionLabel = [[WPHotspotLabel alloc] initWithFrame:CGRectMake(logo.vright+2, 0, 290, 50)];
+    _tipActionLabel = [[WPHotspotLabel alloc] initWithFrame:CGRectMake(logo.vright+2, 0, 295, 50)];
     _tipActionLabel.numberOfLines = 3;
-    NSDictionary* style3 = @{@"body":@[[UIFont fontWithName:@"HelveticaNeue" size:15.0],ColorWithHex(@"#ba9057")],
+    NSDictionary* style3 = @{@"body":@[[UIFont fontWithName:@"HelveticaNeue" size:14.0],ColorWithHex(@"#ba9057")],
                              @"help":[WPAttributedStyleAction styledActionWithAction:^{
                                  
                              }],
                              @"link": @[[UIFont boldSystemFontOfSize:16.f],ColorWithHex(@"#FF0000"),],
                              };
     
-    self.tipActionLabel.attributedText = [@"本平台的<help>所有用户都需认证</help>，以保障平台的信息真实与交易真实。" attributedStringWithStyleBook:style3];
+    self.tipActionLabel.attributedText = [@"认证是免费的，认证通过后可永久点亮专属认证图标，同时您获取生意成交的机会也会越高！" attributedStringWithStyleBook:style3];
     [imageview addSubview:_tipActionLabel];
     
     return imageview;
+}
+
+- (UIView *)tableFooterView {
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 200)];
+    bgView.backgroundColor = _tableView.backgroundColor;
+    
+    _box = [[HLCheckbox alloc] initWithBoxImage:[UIImage imageNamed:@"check_unselected"] selectImage:[UIImage imageNamed:@"check_selected"]];
+    _box.frame = CGRectMake(10, 5, 20, 20);
+    _box.selected = YES;
+    [bgView addSubview:_box];
+    
+    __block typeof(self) weakSelf = self;
+    _box.tapBlock = ^(BOOL selected) {
+        weakSelf.nexBtn.enabled = selected;
+        weakSelf.agreeLabel.textColor = selected ? [UIColor blackColor] : ColorWithHex(@"#999999");
+    };
+    
+    self.agreeLabel = [UILabel labelWithTitle:@"同意"];
+    _agreeLabel.frame = CGRectMake(_box.vright+2, _box.vtop, 40, _box.vheight);
+    [bgView addSubview:_agreeLabel];
+    
+    UIButton * proBtn = [UIButton buttonWithTip:@"长江电商认证服务协议" target:self selector:@selector(showProtocal)];
+    [proBtn setTitleColor:ColorWithHex(@"#507daf") forState:UIControlStateNormal];
+    proBtn.frame = CGRectMake(_agreeLabel.vright-13, _agreeLabel.vtop+0.5, 180, 20);
+    proBtn.titleLabel.font = _agreeLabel.font;
+    [bgView addSubview:proBtn];
+    
+    UIView *tipView = [UIFactory createPromptViewframe:CGRectMake(10, 30, self.view.vwidth-20, 60) tipTitle:nil];
+    UILabel *label2 = [UILabel labelWithTitle:@"标*为必填项。"];
+    label2.font = UFONT_14;
+    label2.frame = CGRectMake(10, 30, self.view.vwidth-20, 30);
+    
+    [tipView addSubview:label2];
+    [bgView addSubview:tipView];
+    
+    return bgView;
 }
 
 #pragma mark - UIAction
@@ -102,8 +192,15 @@
         HUD(@"请先选择认证类型");
         return;
     }
+}
+
+- (void)showProtocal {
+#define protocalFileName @"长江电商用户认证协议-141009版.html"
+    WebViewController *vc = [[WebViewController alloc] initWithFileName:protocalFileName];
+    vc.title = @"长江电商用户认证协议";
+    [self.navigationController pushViewController:vc animated:YES];
     
-    
+#undef protocalFileName
 }
 
 - (void)authOption {
@@ -118,13 +215,21 @@
         return;
     }
     
+    if ([_authModel.ctypeValue isEqualToString:@"2"]) { // 个人认证
+        if (!_authPhotoView.imageArray.count || !_auth2PhotoView.imageArray.count) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"缺少认证照片" message:@"您必须上传认证照片，才能进行认证申请！" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+            [alert show];
+            return;
+        }
+    }
+    
     if (!_authModel.phone.length) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"缺少联系人信息" message:@"您必须填写联系人信息，才能进行认证申请！" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
         [alert show];
         return;
     }
     
-    [self showHUD:@"正在提交认证..." isDim:NO Yoffset:0];
+    [self showHUD];
     [_authPhotoView uploadImage];
 }
 
@@ -139,27 +244,35 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
-    cell.textLabel.font = [UIFont systemFontOfSize:14.f];
-
+    cell.textLabel.font = UFONT_16;
+    cell.textLabel.textColor = C_BLACK;
+    cell.detailTextLabel.font = UFONT_16;
+    cell.detailTextLabel.textColor = C_GRAY;
+    
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     switch (indexPath.section) {
         case 0:
         {
             if (indexPath.row == 0) {
+                
                 cell.textLabel.text = @"认证类型";
                 cell.imageView.image = [UIImage imageNamed:RedStartImageName];
+                cell.textLabel.font = UFONT_14;
+                cell.textLabel.textColor = C_GRAY;
             }else {
                 NSString *title;
                 if ([_authModel.ctypeValue isEqualToString:@"0"]) {
-                    title = @"企业";
+                    title = profile_company;
                 }else if ([_authModel.ctypeValue isEqualToString:@"1"]) {
-                    title = @"船舶";
+                    title = profile_bota;
                 }else if ([_authModel.ctypeValue isEqualToString:@"2"]) {
-                    title = @"个人";
+                    title = profile_persion;
                 }else {
                     title = @"选择认证类型";
                 }
                 cell.textLabel.text = title;
                 cell.indentationLevel = 3;
+                cell.selectionStyle = UITableViewCellSelectionStyleGray;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }
         }
@@ -169,20 +282,28 @@
             if (indexPath.row == 0) {
                 cell.imageView.image = [UIImage imageNamed:RedStartImageName];
                 cell.textLabel.text = @"认证照片";
+                cell.textLabel.font = UFONT_14;
+                cell.textLabel.textColor = C_GRAY;
             }else {
                 [cell addSubview:_authPhotoView];
                 
-                ClickImage *imgView = [[ClickImage alloc] initWithFrame:CGRectMake(15+(260/3+15), 10, 260/3, 60)];
-                imgView.image = [UIImage imageNamed:_authModel.exampleImgName];
+                ClickImage *imgView = [[ClickImage alloc] initWithFrame:CGRectMake(15+(260/3+15), 10, 260/3, 80)];
+                
+                if ([_authModel.ctypeValue isEqualToString:@"2"]) {
+                    [cell addSubview:_auth2PhotoView];
+                    imgView.frame =CGRectMake(15+(260/3+15)+105, 10, 260/3, 80);
+                }
+                
+                imgView.image = [UIImage imageNamed:@"wallet_photos_exm"];
                 imgView.showImg = _authModel.exampleImgName ? [UIImage imageNamed:_authModel.exampleImgName]:[UIImage imageNamed:@"bg_demo_profile_company.jpg"];
                 imgView.canClick = YES;
+                if ([[self authTypeStr] isEqualToString:autypeString]) {
+                    imgView.hidden = YES;
+                }else {
+                    imgView.hidden = NO;
+                }
                 [cell addSubview:imgView];
-                
-                UILabel *label = [UILabel labelWithTitle:@"点击查看样例图"];
-                label.font = [UIFont systemFontOfSize:13.f];
-                label.textColor = [UIColor orangeColor];
-                label.frame = CGRectMake(imgView.vleft, imgView.vbottom+2, imgView.vwidth+20, 20);
-                [cell addSubview:label];
+
             }
         }
             break;
@@ -191,7 +312,11 @@
             NSArray *texts = @[@"联系信息",@"姓名",@"手机",@"电话",];
             NSString *none = @"无";
             cell.textLabel.text = texts[indexPath.row];
+            
             if (indexPath.row == 0) {
+                cell.textLabel.font = UFONT_14;
+                cell.textLabel.textColor = C_GRAY;
+                cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                 cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             }else if (indexPath.row == 1) {
                 cell.imageView.image = [UIImage imageNamed:@"attestation_icon_name_xin"];
@@ -200,56 +325,13 @@
                 cell.imageView.image = [UIImage imageNamed:@"attestation_icon_cellphone_xin"];
                 cell.detailTextLabel.text = _authModel.phone ? _authModel.phone : none;
             }else if (indexPath.row == 3) {
-                cell.imageView.image = [UIImage imageNamed:@"attestation_icon_phone_xin"];
+                cell.imageView.image = [UIImage imageNamed:@"attestation_icon_phone_extan"];
                 cell.detailTextLabel.text = _authModel.tel ? _authModel.tel : none;
             }
         }
             break;
-        case 3:
-        {
-            if (indexPath.row == 0) {
-                cell.textLabel.text = @"交易地址";
-            }else {
-                cell.textLabel.numberOfLines = 2;
-                NSString *title;
-                if (_authModel.addrAreaFullName&&_authModel.address) {
-                    title = FommatString(_authModel.addrAreaFullName, _authModel.address);
-                }else {
-                    title = @"请选择交易地址";
-                }
-                cell.textLabel.text = title;
-                cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;                
-            }
-        }
-            break;
-        case 4:
-        {
-            if (indexPath.row == 0) {
-                cell.textLabel.text = @"企业简介";
-            }else {
-                REPlaceholderTextView *textView = [[REPlaceholderTextView alloc] initWithFrame:CGRectMake(15, 5,cell.vwidth-25, 80)];
-                textView.placeholder = @"请输入企业简介";
-                textView.returnKeyType = UIReturnKeyDone;
-                textView.font = [UIFont systemFontOfSize:14.f];
-                textView.delegate = self;
-                textView.layer.borderWidth = 1;
-                textView.text = _authModel.mark;
-                textView.layer.borderColor = [UIColor lightGrayColor].CGColor;;
-                [cell addSubview:textView];
-            }
-        }
-            break;
-        case 5:
-        {
-            if (indexPath.row == 0) {
-                cell.textLabel.text = @"企业照片";
-            }else {
-                [cell addSubview:_photoUploadView];
-            }
-        }
-            break;
             
-        default:
+           default:
             break;
     }
     
@@ -263,18 +345,6 @@
         }
     }
     
-    if (indexPath.section == 4) {
-        if (indexPath.row == 1) {
-            return 90;
-        }
-    }
-    
-    if (indexPath.section == 5) {
-        if (indexPath.row == 1) {
-            return 100;
-        }
-    }
-    
     return 44;
 }
 
@@ -282,7 +352,10 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
     if (indexPath.section == 0 && indexPath.row == 1) {
-        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"请选择认证类型" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"企业",@"船舶",@"个人", nil];
+        IBActionSheet *sheet = [[IBActionSheet alloc] initWithTitle:@"选择认证类型" delegate:self cancelButtonTitle:globe_cancel_str destructiveButtonTitle:nil otherButtonTitles:profile_company,profile_bota,profile_persion, nil];
+        
+        
+        sheet.markIndex = _markIndex;
         [sheet showInView:self.view];
     }
     
@@ -324,24 +397,50 @@
     
 }
 
-#pragma mark - UIActionSheet Delegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 0) {
-        _authModel.ctypeValue = @"0";
-        _dataSource = @[@2,@2,@4,@2,@2,@2];
-        _authModel.exampleImgName = @"bg_demo_profile_company.jpg";
-    }else if (buttonIndex == 1) {
-        _authModel.ctypeValue = @"1";
-        _dataSource = @[@2,@2,@4,@2,@2,@2];
-        _authModel.exampleImgName = @"bg_demo_profile_ship.jpg";
-    }else {
-        _authModel.ctypeValue = @"2";
-        _dataSource = @[@2,@2,@4,@2];
-        _authModel.exampleImgName = @"bg_demo_profile_people.jpg";        
+-(void)viewDidLayoutSubviews
+{
+    if ([self.tableView respondsToSelector:@selector(setSeparatorInset:)]) {
+        [self.tableView setSeparatorInset:UIEdgeInsetsMake(0,kCellLeftEdgeInsets,0,0)];
     }
     
-    if (buttonIndex != 3) {
-        [_tableView reloadData];
+    if ([self.tableView respondsToSelector:@selector(setLayoutMargins:)]) {
+        [self.tableView setLayoutMargins:UIEdgeInsetsMake(0,kCellLeftEdgeInsets,0,0)];
+    }
+}
+
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+        [cell setSeparatorInset:UIEdgeInsetsMake(0,kCellLeftEdgeInsets,0,0)];
+    }
+    
+    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
+        [cell setLayoutMargins:UIEdgeInsetsMake(0,kCellLeftEdgeInsets,0,0)];
+    }
+}
+
+#pragma mark - IBActionSheet Delegate
+- (void)actionSheet:(IBActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex != actionSheet.cancelButtonIndex) {
+        _markIndex = buttonIndex;
+        
+        if (buttonIndex == 0) {
+            _authModel.ctypeValue = @"0";
+            _dataSource = @[@2,@2,@4];
+            _authModel.exampleImgName = @"bg_demo_profile_company.jpg";
+        }else if (buttonIndex == 1) {
+            _authModel.ctypeValue = @"1";
+            _dataSource = @[@2,@2,@4];
+            _authModel.exampleImgName = @"bg_demo_profile_ship.jpg";
+        }else if (buttonIndex == 2) {
+            _authModel.ctypeValue = @"2";
+            _dataSource = @[@2,@2,@4];
+            _authModel.exampleImgName = @"bg_demo_profile_people.jpg";
+        }
+        
+        if (buttonIndex != 3) {
+            [_tableView reloadData];
+        }
     }
 }
 
@@ -350,16 +449,45 @@
     _authModel.mark = textView.text;
 }
 
+#pragma mark - Private
+- (NSString *)authTypeStr {
+    NSString *title;
+    if ([_authModel.ctypeValue isEqualToString:@"0"]) {
+        title = profile_company;
+    }else if ([_authModel.ctypeValue isEqualToString:@"1"]) {
+        title = profile_bota;
+    }else if ([_authModel.ctypeValue isEqualToString:@"2"]) {
+        title = profile_persion;
+    }else {
+        title = @"选择认证类型";
+    }
+    return title;
+}
+
 #pragma mark - UploadImageDelete
 - (void)uploadImageSuccess:(NSString *)imgsId uploadView:(PhotoUploadView *)uploadView {
     DLog(@"%@",imgsId);
     if (uploadView == _authPhotoView) {
+        if ([_authModel.ctypeValue isEqualToString:@"2"]) {
+            [_auth2PhotoView uploadImage];
+        }else{
+            if (_photoUploadView.imageArray.count) {
+                [_photoUploadView uploadImage];
+            }else {
+                [self auth];
+            }
+
+        }
+    }
+    
+    if(uploadView == _auth2PhotoView){
         if (_photoUploadView.imageArray.count) {
             [_photoUploadView uploadImage];
         }else {
             [self auth];
         }
     }
+    
     
     if (uploadView == _photoUploadView) {
         [self auth];
@@ -382,6 +510,11 @@
  */
 - (void)auth {
     NSString *authPhotoId = [_authPhotoView.imgIdArray componentsJoinedByString:@","];
+    if ([_authModel.ctypeValue isEqualToString:@"2"]){
+        NSString *authPhotoId2 = [_auth2PhotoView.imgIdArray componentsJoinedByString:@","];
+        authPhotoId = [authPhotoId stringByAppendingFormat:@","];
+        authPhotoId = [authPhotoId stringByAppendingString:authPhotoId2];
+    }
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_authModel.ctypeValue,@"ctypeValue",authPhotoId,@"imgid", nil];
     if (_authModel.mark.length) {
         [params addString:_authModel.mark forKey:@"mark"];
@@ -398,11 +531,11 @@
     
     [self requestWithURL:bCompanyAuthPath params:params HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
         kASIResultLog;
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"认证申请已发送，请等待审核通过" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"认证申请已发送，请等待审核通过。" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles:nil, nil];
         alert.tag = 2001;
         [alert show];
     } failedBlock:^(ASIHTTPRequest *request) {
-        HUD(kNetError);
+
     }];
 }
 

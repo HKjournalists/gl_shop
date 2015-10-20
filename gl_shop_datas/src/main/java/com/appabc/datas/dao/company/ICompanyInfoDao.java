@@ -3,8 +3,9 @@
  */
 package com.appabc.datas.dao.company;
 
+import java.util.List;
+
 import com.appabc.bean.bo.CompanyAllInfo;
-import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.dao.IBaseDao;
 
@@ -21,9 +22,29 @@ public interface ICompanyInfoDao extends IBaseDao<TCompanyInfo> {
 	/**
 	 * 根据企业ID查询已认证通过的企业详情
 	 * @param cid
-	 * @param authRecordStatus 认证状态
 	 * @return
 	 */
-	public CompanyAllInfo queryAuthCompanyInfo(String cid,AuthRecordStatus authRecordStatus);
+	public CompanyAllInfo queryAuthCompanyInfo(String cid);
 
+	/**
+	 * @param cid
+	 * @return
+	 */
+	TCompanyInfo queryAuthCmpInfo(String cid);
+	
+	TCompanyInfo queryCmpInfoByUserPhone(String phone);
+	
+	List<TCompanyInfo> queryCmpInfoListByUserPhones(String phones) ;
+
+	public int queryCount(TCompanyInfo entity);
+	
+	/**
+	 *  查询后台任务列表中无效的认证信息
+	 */
+	List<TCompanyInfo> queryInvalidListForTask();
+	/**
+	 * 新添加的用户
+	 * @return
+	 */
+	List<TCompanyInfo> queryNewListForTask();
 }

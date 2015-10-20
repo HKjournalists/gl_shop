@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/default">
+<body>
+<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+<th:block layout:fragment="side-menu">
+	
+	<li sec:authorize="hasRole('ROLE_SYSTEMMESSAGE_SEND')">
+    	<a th:href="@{/tool/manage/system_message/send/}"><i class="fa fa-wrench fa-fw"></i> 系统消息</a>
+  	</li>
+  	<li sec:authorize="hasRole('ROLE_SHORTMESSAGE_SEND')">
+    	<a th:href="@{/tool/manage/short_message/1/}"><i class="fa fa-fw fa-paperclip"></i> 短信工具</a>
+  	</li>
+  	<li sec:authorize="hasRole('ROLE_VALIDATECODE_MANAGE')">
+    	<a th:href="@{/tool/manage/validate_code/1/}"><i class="fa fa-fw fa-align-left"></i> 验证码管理</a>
+  	</li>
+
+</th:block>
+</body>
+</html>

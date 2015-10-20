@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_menu_bg"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/transparent"
+    android:gravity="center|bottom" >
+
+    <LinearLayout
+        android:id="@+id/ll_menu_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:clickable="true"
+        android:orientation="vertical" >
+
+        <!-- 菜单对话框标题 -->
+
+        <LinearLayout
+            android:id="@+id/ll_menu_title"
+            style="@style/dialog_title_bar"
+            android:gravity="center" >
+
+            <TextView
+                android:id="@+id/dialog_tv_title"
+                style="@style/dialog_title"
+                android:text="@string/dialog_title_info" />
+        </LinearLayout>
+
+        <View style="@style/item_devider_line" />
+
+        <!-- 菜单列表项 -->
+
+        <LinearLayout
+            android:id="@+id/ll_menu_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <ListView
+                android:id="@+id/lv_menu_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@null"
+                android:divider="@drawable/devider_line_h"
+                android:listSelector="@android:color/transparent" />
+        </LinearLayout>
+
+        <!-- 确认、取消菜单按钮 -->
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="10dp" >
+
+            <Button
+                android:id="@+id/dialog_btn_confirm"
+                style="@style/dialog_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_cancel"
+                android:text="@string/dialog_context_confirm"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/sp16"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/dialog_btn_cancel"
+                style="@style/dialog_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/selector_btn_cancel"
+                android:text="@string/dialog_context_no"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/sp16" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

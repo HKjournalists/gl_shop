@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
 
 import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.enums.AuthRecordInfo.AuthRecordType;
-import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.pvo.TCompanyInfo;
@@ -52,7 +51,7 @@ public class ToolCompanyDaoImpl extends BaseJdbcDao<TCompanyInfo> implements
 
 		t.setId(rs.getString("ID"));
 		t.setCname(rs.getString("CNAME"));
-		t.setAuthstatus(CompanyAuthStatus.enumOf(rs.getString("AUTHSTATUS")));
+		t.setAuthstatus(AuthRecordStatus.enumOf(rs.getString("AUTHSTATUS")));
 		t.setContact(rs.getString("CONTACT"));
 		t.setCphone(rs.getString("CPHONE"));
 		t.setCreatedate(rs.getTimestamp("CREATEDATE"));
@@ -140,7 +139,7 @@ public class ToolCompanyDaoImpl extends BaseJdbcDao<TCompanyInfo> implements
 						t.setSdeep(rs.getFloat("sdeep"));
 						t.setSlength(rs.getFloat("slength"));
 						t.setSload(rs.getFloat("sload"));
-						t.setSmateriall(rs.getFloat("smateriall"));
+						t.setSmateriall(rs.getString("smateriall"));
 						t.setSname(rs.getString("sname"));
 						t.setSno(rs.getString("sno"));
 						t.setSorg(rs.getString("sorg"));

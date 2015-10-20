@@ -16,7 +16,7 @@
                                @"bailstatus":@"bailstatus",
                                @"cname":@"cname",
                                @"cphone":@"cphone",
-                               @"createdate":@"createdate",
+                               @"rdate":@"rdate",
                                @"evaluationInfo":@"evaluationInfo",
                                @"companyId":@"id",
                                @"ctype":@"ctype",
@@ -74,7 +74,21 @@
     }
     self.addressImgList = [NSArray arrayWithArray:aImgTemp];
     
+    NSDictionary *evaDic = [dataDic objectForKey:@"evaluationInfo"];
+    if (evaDic) {
+        _evaluatModel = [[EvaluationModel alloc] initWithDataDic:evaDic];
+    }
 }
 
+- (BOOL)isUserAuthed {
+    return [self.authstatus[DataValueKey] integerValue] == 1;
+}
+
+- (BOOL)isPaymentMargin {
+    if ([self.bailstatus[DataValueKey] integerValue] == 1) {
+        return YES;
+    }
+    return NO;
+}
 
 @end

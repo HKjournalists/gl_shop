@@ -4,7 +4,7 @@
 //
 //  Created by River on 15-1-8.
 //  Copyright (c) 2015年 appabc. All rights reserved.
-//
+//  提现
 
 #import "TranserViewController.h"
 #import "HLCheckbox.h"
@@ -12,7 +12,6 @@
 #import "GatherModel.h"
 #import "MypurseViewController.h"
 #import "TipSuccessViewController.h"
-
 
 @interface TranserViewController ()<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
 
@@ -22,7 +21,7 @@
 @property (nonatomic, strong) UIButton *nextBtn;
 @property (nonatomic, strong) UIView *checkView;
 @property (nonatomic, strong) UITextField *codeAuthtf;
-@property (nonatomic, strong) UITextField *moneytf;
+@property (nonatomic, strong) WTReTextField *moneytf;
 @property (nonatomic, strong) UITextField *pwtf;
 @property (nonatomic, strong) UIButton *btnVerifCode;
 
@@ -54,6 +53,14 @@
         make.height.mas_equalTo(40);
         make.bottom.mas_equalTo(self.view).offset(-10);
     }];
+}
+
+- (void)tipErrorCode:(NSInteger)errorCode {
+    if (errorCode == 10005) {
+        [self showTip:@"密码错误,请重新输入"];
+    }else {
+        [super tipErrorCode:errorCode];
+    }
 }
 
 #pragma mark - UITableView DataSource/Delegate
@@ -92,10 +99,19 @@
     }else if (section == 1){
         return 2;
     }else {
-        return 5;
+        return 4;
     }
 }
 
+- (NSString *)bankName {
+    NSArray *banks = [SynacObject banksData];
+    for (BankModel *model in banks) {
+        if ([model.val isEqualToString:_gahter.banktype]) {
+            return model.name;
+        }
+    }
+    return nil;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -104,7 +120,7 @@
         NSArray *titles = @[@"提现至",@"用户名",@"卡号",];
         cell.textLabel.text = titles[indexPath.row];
         if (indexPath.row == 0) {
-            cell.detailTextLabel.text = @"工商银行";
+            cell.detailTextLabel.text = [self bankName];
         }else if (indexPath.row == 1) {
             cell.detailTextLabel.text = _gahter.carduser;
         }else if (indexPath.row == 2) {
@@ -114,7 +130,8 @@
         if (indexPath.row == 0) {
             cell.textLabel.text = @"可用余额";
             MypurseViewController *vc = [self findDesignatedViewController:[MypurseViewController class]];
-            cell.detailTextLabel.text = [vc.currentPurse.amount stringValue];
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%.2f",[vc.currentPurse.amount doubleValue]];
+            cell.detailTextLabel.textColor = [UIColor redColor];
             
         }else {
             cell.textLabel.text = @"提现金额";
@@ -141,7 +158,7 @@
             }];
             
         }else if (indexPath.row == 2) {
-            _codeAuthtf = [UITextField textFieldWithPlaceHodler:@"请输入验证码" withDelegate:self];
+            _codeAuthtf = [UITextField textFieldWithPlaceHodler:sms_input withDelegate:self];
             _codeAuthtf.textColor = [UIColor grayColor];
             _codeAuthtf.keyboardType = UIKeyboardTypeNumberPad;
             [cell.contentView addSubview:_codeAuthtf];
@@ -152,7 +169,7 @@
                 make.top.mas_equalTo(cell.contentView.top);
             }];
             
-            _btnVerifCode = [UIFactory createBtn:@"Buy_sell_publish" bTitle:@"获取验证码" bframe:CGRectZero];
+            _btnVerifCode = [UIFactory createBtn:@"Buy_sell_publish" bTitle:sms_get bframe:CGRectZero];
             [_btnVerifCode addTarget:self action:@selector(getCode:) forControlEvents:UIControlEventTouchUpInside];
             [_btnVerifCode setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             _btnVerifCode.titleLabel.font = [UIFont boldSystemFontOfSize:15.f];
@@ -188,8 +205,8 @@
         
         __block typeof(self) weakSelf = self;
         _box.tapBlock = ^(BOOL selected) {
-            weakSelf.nextBtn.enabled = !selected;
-            weakSelf.agreeLabel.textColor = !selected ? [UIColor blackColor] : ColorWithHex(@"#999999");
+            weakSelf.nextBtn.enabled = selected;
+            weakSelf.agreeLabel.textColor = selected ? [UIColor blackColor] : ColorWithHex(@"#999999");
         };
         
         self.agreeLabel = [UILabel labelWithTitle:@"同意"];
@@ -205,11 +222,14 @@
     return _checkView;
 }
 
-- (UITextField *)moneytf {
+- (WTReTextField *)moneytf {
     if (!_moneytf) {
-        _moneytf = [UITextField textFieldWithPlaceHodler:@"请输入金额" withDelegate:self];
+        _moneytf = [[WTReTextField alloc] init];
+        _moneytf.placeholder = @"请输入金额";
+        _moneytf.delegate = self;
         _moneytf.textAlignment = NSTextAlignmentRight;
-        _moneytf.keyboardType = UIKeyboardTypeNumberPad;
+        _moneytf.keyboardType = UIKeyboardTypeDecimalPad;
+        _moneytf.pattern = @"^[0-9]+(.[0-9]{1,2})?$";
         _moneytf.frame = CGRectMake(SCREEN_WIDTH-150-15, 0, 150, 44);
     }
     return _moneytf;
@@ -217,7 +237,7 @@
 
 - (UITextField *)pwtf {
     if (!_pwtf) {
-        _pwtf = [UITextField textFieldWithPlaceHodler:@"请输入登录密码" withDelegate:self];
+        _pwtf = [UITextField textFieldWithPlaceHodler:placehold_input_login_pw withDelegate:self];
         _pwtf.secureTextEntry = YES;
         _pwtf.frame = CGRectMake(15, 0, 200, 44);
     }
@@ -228,38 +248,43 @@
 - (void)postAuth {
     
     if (!_moneytf.text.length) {
-        HUD(@"请输入提现金额");
+        HUD(placehold_get_money);
         return;
     }
     
     if (!_codeAuthtf.text.length) {
-        HUD(@"请输入验证码");
+        HUD(sms_input);
         return;
     }
     
     if (!_pwtf.text.length) {
-        HUD(@"请输入登录密码");
+        HUD(placehold_input_login_pw);
         return;
     }
     
+    UserInstance *userInstance = [UserInstance sharedInstance];
+    NSString *append = [NSString stringWithFormat:@"%@%@",userInstance.user.username,_pwtf.text];
+    NSString *securityStr = [append md5];
+    
     MypurseViewController *vc = [self findDesignatedViewController:[MypurseViewController class]];
     NSNumber *type = vc.currentPurse.passtype[DataValueKey];
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.gahter.gatherId,@"acceptId",self.pwtf.text,@"password",self.codeAuthtf.text,@"validateCode",self.moneytf.text,@"balance",type,@"type", nil];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:self.gahter.gatherId,@"acceptId",securityStr,@"password",self.codeAuthtf.text,@"validateCode",self.moneytf.text,@"balance",type,@"type", nil];
     __block typeof(self) this = self;
     [self showHUD:@"正在提交..." isDim:NO Yoffset:0];
     [self requestWithURL:bextractCashRequest params:params HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
         kASIResultLog;
         [[NSNotificationCenter defaultCenter] postNotificationName:kRefrushMyPurseNotification object:nil];
         TipSuccessViewController *vc = [[TipSuccessViewController alloc] init];
+        vc.operationType = tip_rollout_success;
         [this.navigationController pushViewController:vc animated:YES];
     } failedBlock:^(ASIHTTPRequest *request) {
-        HUD(kNetError);
+        
     }];
 }// 提交提现申请
 
 - (void)showProtocal {
-//    WebViewController *vc = [[WebViewController alloc] initWithFileName:];
-//    vc
+    WebViewController *vc = [[WebViewController alloc] initWithFileName:nil];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)getCode:(UIButton *)btn {
@@ -277,7 +302,6 @@
            completeBlock:^(ASIHTTPRequest *request, id responseData) {
                [this _setTime];
            } failedBlock:^(ASIHTTPRequest *request) {
-               HUD(kNetError);
                this.btnVerifCode.enabled = YES;
            }];
 }
@@ -301,7 +325,7 @@
                 _btnVerifCode.enabled=YES;
             });
         }else{
-            NSString *strTime = [NSString stringWithFormat:@"%ds后重发",timeout];
+            NSString *strTime = [NSString stringWithFormat:@"%d秒后重发",timeout];
             dispatch_async(dispatch_get_main_queue(), ^{
                 _btnVerifCode.enabled=YES;
                 [_btnVerifCode setTitle:strTime forState:UIControlStateNormal];

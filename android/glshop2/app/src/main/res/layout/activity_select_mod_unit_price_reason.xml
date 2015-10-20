@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="12dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/buy_item_padding" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:background="@drawable/selector_item_top"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/contract_modify_price_reason" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:background="@drawable/ic_menu_selected_orange" />
+                </LinearLayout>
+
+                <View style="@style/item_devider_line" />
+
+                <LinearLayout
+                    android:id="@+id/ll_other_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:background="@drawable/selector_item_bottom"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="其他原因" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/selector_btn_more" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_done"
+                    style="@style/button_orange"
+                    android:layout_marginBottom="@dimen/buy_item_padding"
+                    android:layout_marginTop="@dimen/buy_item_padding"
+                    android:text="完成" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

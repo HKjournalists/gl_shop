@@ -1,17 +1,23 @@
 package com.appabc.datas.dao.system.impl;
 
+import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Component;
+
+import com.appabc.bean.enums.SysLogEnum.LogBusinessType;
+import com.appabc.bean.enums.SysLogEnum.LogLevel;
 import com.appabc.bean.pvo.TSystemLog;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
 import com.appabc.datas.dao.system.ISystemLogDAO;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
-
-import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Description : 
@@ -25,10 +31,13 @@ import java.util.Map;
 @Component(value="ISystemLogDAO")
 public class SystemLogDAOImpl extends BaseJdbcDao<TSystemLog> implements ISystemLogDAO {
 
-	private static final String INSERT_SQL = " INSERT INTO T_SYSTEM_LOG (LOGID,BUSINESSID,BUSINESSTYPE,LOGCONTENT,LOGTYPE,LOGLEVEL,LOGSTATUS,CREATETIME,CREATER) VALUES (:id,:businessid,:businesstype,:logcontent,:logtype,:loglevel,:logstatus,:createtime,:creater) ";
+	private static final String INSERT_SQL = " INSERT INTO T_SYSTEM_LOG (BUSINESSID,BUSINESSTYPE,LOGCONTENT,LOGTYPE,LOGLEVEL,LOGSTATUS,CREATETIME,CREATER) VALUES (:businessid,:businesstype,:logcontent,:logtype,:loglevel,:logstatus,:createtime,:creater) ";
 	private static final String UPDATE_SQL = " UPDATE T_SYSTEM_LOG SET BUSINESSID = :businessid,BUSINESSTYPE = :businesstype,LOGCONTENT = :logcontent,LOGTYPE = :logtype,LOGLEVEL = :loglevel,LOGSTATUS = :logstatus,CREATETIME = :createtime,CREATER= :creater WHERE LOGID = :id ";
 	private static final String DELETE_SQL = " DELETE FROM T_SYSTEM_LOG WHERE LOGID = :id ";
 	private static final String SELECT_SQL = " SELECT LOGID,BUSINESSID,BUSINESSTYPE,LOGCONTENT,LOGTYPE,LOGLEVEL,LOGSTATUS,CREATETIME,CREATER FROM T_SYSTEM_LOG ";
+	private static final String BASE_SQL = " SELECT * FROM T_SYSTEM_LOG ";
+	
+	private static final String COUNT_LOGIN_USER_OF_DATE = "SELECT COUNT(0) from (SELECT sl.BUSINESSID from T_SYSTEM_LOG sl WHERE sl.BUSINESSTYPE IN('101','105') and sl.LOGLEVEL=3 AND CREATETIME<:endTime AND CREATETIME>:startTime GROUP BY sl.BUSINESSID) a";
 	
 	private String dynamicJoinSqlWithEntity(TSystemLog entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
@@ -59,6 +68,7 @@ public class SystemLogDAOImpl extends BaseJdbcDao<TSystemLog> implements ISystem
 	 * @see com.appabc.common.base.dao.IBaseDao#saveAutoGenerateKey(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public KeyHolder saveAutoGenerateKey(TSystemLog entity) {
+		entity.setCreatetime(Calendar.getInstance().getTime());
 		return super.saveAutoGenerateKey(INSERT_SQL, entity);
 	}
 
@@ -140,15 +150,43 @@ public class SystemLogDAOImpl extends BaseJdbcDao<TSystemLog> implements ISystem
 		
 		bean.setId(rs.getString("LOGID"));
 		bean.setBusinessid(rs.getString("BUSINESSID"));
-		bean.setBusinesstype(rs.getString("BUSINESSTYPE"));
+		bean.setBusinesstype(LogBusinessType.enumOf(rs.getString("BUSINESSTYPE")));
 		bean.setLogcontent(rs.getString("LOGCONTENT"));
 		bean.setLogtype(rs.getInt("LOGTYPE"));
-		bean.setLoglevel(rs.getInt("LOGLEVEL"));
+		bean.setLoglevel(LogLevel.enumOf(rs.getInt("LOGLEVEL")));
 		bean.setLogstatus(rs.getInt("LOGSTATUS"));
 		bean.setCreatetime(rs.getTimestamp("CREATETIME"));
 		bean.setCreater(rs.getString("CREATER"));
 		
 		return bean;
+	}
+	
+	public int queryCountLoginUserOfDate(Date date){
+		Map<String,Object> paramMap = new HashMap<String, Object>();
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MINUTE, 0);
+		
+		paramMap.put("startTime", c.getTime());
+		
+		c.set(Calendar.HOUR_OF_DAY, 23);
+		c.set(Calendar.SECOND, 59);
+		c.set(Calendar.MINUTE, 59);
+		paramMap.put("endTime", c.getTime());
+		
+		Number number = super.getNamedParameterJdbcTemplate().queryForObject(COUNT_LOGIN_USER_OF_DATE, paramMap, Integer.class);  
+	    return (number != null ? number.intValue() : 0);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.dao.system.ISystemLogDAO#queryRecentOfOneRecord(com.appabc.bean.pvo.TSystemLog)
+	 */
+	@Override
+	public TSystemLog queryRecentOfOneRecord(TSystemLog entity) {
+		String sql = dynamicJoinSqlWithEntity(entity, new StringBuilder(BASE_SQL)) + " ORDER BY CREATETIME DESC LIMIT 0,1";
+		return super.query(sql.toString(), entity);
 	}
 
 }

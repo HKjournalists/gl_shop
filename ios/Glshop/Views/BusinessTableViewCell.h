@@ -9,15 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "OrderModel.h"
 
-typedef NS_ENUM(NSInteger, BusinessLogoType)
-{
-    LogoSaller,    // 出售
-    LogoPurchase, // 购买
-};
-
 @interface BusinessTableViewCell : UITableViewCell
 
-@property (nonatomic, assign) BusinessLogoType logoType;
 @property (nonatomic, strong) OrderModel *orderModel;
 
 @end

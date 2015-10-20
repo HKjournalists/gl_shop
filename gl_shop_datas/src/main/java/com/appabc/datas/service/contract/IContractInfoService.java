@@ -2,11 +2,10 @@ package com.appabc.datas.service.contract;
 
 import com.appabc.bean.bo.ContractInfoBean;
 import com.appabc.bean.bo.EvaluationInfoBean;
-import com.appabc.bean.bo.MatchOrderInfo;
+import com.appabc.bean.bo.OrderFindAllBean;
 import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderOperations;
 import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.service.IBaseService;
 import com.appabc.datas.exception.ServiceException;
 
 import java.util.List;
@@ -20,27 +19,27 @@ import java.util.List;
  * @since  : 2014年9月1日 下午6:29:18
  */
 
-public interface IContractInfoService extends IBaseService<TOrderInfo>{
+public interface IContractInfoService extends IContractBaseService<TOrderInfo>{
 
 	/**
 	 * @Description : 撮合生成一个合同
-	 * @param fid:询单ID,cid:被撮合的参与者,totalNum:撮合货物的总量,price:撮合货物的价格
+	 * @param bean:询单相关信息,cid:被撮合的参与者,operator:操作人员
 	 * @return TOrderInfo
 	 * @since 1.0
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	TOrderInfo makeAndMatchATOrderInfo(String fid,String cid,String operator,float totalNum,float price) throws ServiceException;
+	TOrderInfo makeAndMatchATOrderInfo(OrderFindAllBean bean,String cid,String operator) throws ServiceException;
 	
 	/**
-	 * @Description : 撮合生成一个合同
-	 * @param MatchOrderInfo moi 撮合合同的相关信息
+	 * @Description : 客服人员撮合生成一个合同
+	 * @param bean:询单相关信息,sellerCid:卖家CID,buyerCid:买家CID,operator:操作人员
 	 * @return TOrderInfo
 	 * @since 1.0
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	TOrderInfo makeAndMatchATOrderInfo(MatchOrderInfo moi) throws ServiceException;
+	TOrderInfo makeAndMatchTOrderWithCustomService(OrderFindAllBean bean,String sellerCid,String buyerCid,String operator) throws ServiceException;
 	
 	/**
 	 * @Description : 获取合同详情信息
@@ -50,7 +49,7 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	TOrderInfo getOrderDetailInfo(String id);
+	TOrderInfo getOrderDetailInfo(String oid);
 
 	/**
 	 * @Description : 获取合同详情信息
@@ -60,7 +59,7 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @throws ServiceException
 	 * @author Bill Huang
 	 * */
-	ContractInfoBean getContractInfoById(String cid,String contractId);
+	ContractInfoBean getContractInfoById(String cid,String oid);
 
 	/**
 	 * @Description : 买家支付合同货款
@@ -70,7 +69,17 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @throws ServiceException
 	 * @author Bill Huang
 	 * */
-	TOrderInfo payContractFunds(String contractId,String userId,String userName) throws ServiceException;
+	TOrderInfo payContractFunds(String oid,String cid,String cname) throws ServiceException;
+	
+	/**
+	 * @Description : 买家支付合同货款[支持用户自己定义货款数量]
+	 * @param contractId,userId,userName,amount
+	 * @return TOrderInfo
+	 * @since 1.0
+	 * @throws ServiceException
+	 * @author Bill Huang
+	 * */
+	TOrderInfo payContractFunds(String oid,String cid,String cname,double amount) throws ServiceException;
 
 	/**
 	 * @Description : 买家支付合同货款(线上)
@@ -80,7 +89,7 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @throws ServiceException
 	 * @author Bill Huang
 	 * */
-	TOrderInfo payContractFundsOnline(String contractId,String userId,String userName) throws ServiceException;
+	TOrderInfo payContractFundsOnline(String oid,String cid,String cname) throws ServiceException;
 
 	/**
 	 * @Description : 买家支付合同货款(线下)
@@ -90,7 +99,7 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @throws ServiceException
 	 * @author Bill Huang
 	 * */
-	TOrderInfo payContractFundsOffline(String contractId,String userId,String userName) throws ServiceException;
+	TOrderInfo payContractFundsOffline(String oid,String cid,String cname) throws ServiceException;
 
 	/**
 	 * description : 确认合同信息
@@ -100,7 +109,7 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @throws ServiceException
 	 * @author Bill Huang
 	 * */
-	int toConfirmContract(String contractId,String userId,String updaterName) throws ServiceException;
+	int toConfirmContract(String oid,String cid,String cname) throws ServiceException;
 
 	/**
 	 * description : 确认合同信息
@@ -110,7 +119,7 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @throws ServiceException
 	 * @author Bill Huang
 	 * */
-	List<TOrderOperations> toConfirmContractRetOperator(String contractId,String userId,String updaterName) throws ServiceException;
+	List<TOrderOperations> toConfirmContractRetOperator(String oid,String cid,String cname) throws ServiceException;
 
 	/**
 	 * description : 通知卖家发货
@@ -120,7 +129,7 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	void noticeShippingGoods(String contractId,String userId,String updaterName);
+	void noticeShippingGoods(String oid,String cid,String cname);
 
 	/**
 	 * description : 验证货物信息
@@ -130,7 +139,7 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @throws ServiceException
 	 * @author Bill Huang
 	 * */
-	void validateGoodsInfo(String contractId,String userId,String updaterName) throws ServiceException;
+	void validateGoodsInfo(String oid,String cid,String cname) throws ServiceException;
 
 	/**
 	 * description : 分页查询合同详情列表
@@ -141,6 +150,28 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @author Bill Huang
 	 * */
 	QueryContext<ContractInfoBean> queryContractInfoListForPagination(QueryContext<ContractInfoBean> qContext);
+	
+	/**
+	 * description : 分页查询我的合同详情列表
+	 * @param qContext
+	 * @return QueryContext<ContractInfoBean>
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	QueryContext<ContractInfoBean> queryContractListOfMineForPagination(QueryContext<ContractInfoBean> qContext);
+	
+	
+	/**
+	 * @description : 分页查询我的合同详情列表,给后台CMS提供的接口.
+	 * 	参数：cid :查询属于当前cid的合同;type:分为当前交易状态和历史交易状态.
+	 * @param qContext
+	 * @return QueryContext<TOrderInfo>
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	QueryContext<TOrderInfo> queryContractListOfMineForPaginationToWebCms(QueryContext<TOrderInfo> qContext);
 
 	/**
 	 * 获取企业的交易成功率
@@ -170,5 +201,13 @@ public interface IContractInfoService extends IBaseService<TOrderInfo>{
 	 * @return
 	 */
 	public int getMatchingNumByFid(String fid);
+	
+	public int queryCount(TOrderInfo entity);
+	
+	/**
+	 * 统计已完成合同数（有结算的，包括正常结束+仲裁+取消+违约）
+	 * @return
+	 */
+	public int queryCountOfFinished();
 
 }

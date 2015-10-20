@@ -25,26 +25,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    [self requestNet];
-}
 
--(void)viewDidLayoutSubviews
-{
-    if ([self.addressListView respondsToSelector:@selector(setSeparatorInset:)]) {
-        [self.addressListView setSeparatorInset:UIEdgeInsetsMake(0,0,0,0)];
-    }
-    
-    if ([self.addressListView respondsToSelector:@selector(setLayoutMargins:)]) {
-        [self.addressListView setLayoutMargins:UIEdgeInsetsMake(0,0,0,0)];
-    }
+    [self requestNet];
 }
 
 #pragma mark - Override
 - (void)initDatas {
-    self.title = @"选择交易地址";
+    self.title = @"选择交货地址";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestNet) name:kRefrushAddressListNotification object:nil];
-    self.shouldShowFailView = YES;
 }
 
 - (void)loadSubViews {
@@ -60,17 +48,9 @@
     view.backgroundColor = [UIColor clearColor];
     [_addressListView setTableFooterView:view];
     
-}
-
-- (void)hideViewsWhenNoData {
     _addressListView.hidden = YES;
     self.navigationItem.rightBarButtonItem = nil;
-}
-
-- (void)showViewsWhenDataComing {
-    _addressListView.hidden = NO;
-    UIBarButtonItem *barItem = [[UIBarButtonItem alloc] initWithTitle:@"管理" style:UIBarButtonItemStylePlain target:self action:@selector(mangerAddress)];
-    self.navigationItem.rightBarButtonItem = barItem;
+    
 }
 
 #pragma mark - UIActions
@@ -115,6 +95,10 @@
     }
     self.addresses = [NSArray arrayWithArray:temp];
     [self.addressListView reloadData];
+    
+    _addressListView.hidden = NO;
+    UIBarButtonItem *barItem = [[UIBarButtonItem alloc] initWithTitle:@"管理" style:UIBarButtonItemStylePlain target:self action:@selector(mangerAddress)];
+    self.navigationItem.rightBarButtonItem = barItem;
 }
 
 #pragma mark - UITableView DataSource/Delegate
@@ -132,6 +116,8 @@
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         cell.imageView.image = [UIImage imageNamed:@"information_icon_add"];
         cell.textLabel.text = @"新增交易地址";
+        cell.textLabel.textColor = C_BLACK;
+        cell.textLabel.font = UFONT_16_B;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         return cell;
@@ -141,6 +127,8 @@
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
+            cell.textLabel.font = [UIFont systemFontOfSize:FONT_14];
+            cell.textLabel.textColor = C_BLACK;
         }
         
         AddressPublicModel *model = self.addresses[indexPath.row];
@@ -185,18 +173,6 @@
     return view;
 }
 
-
--(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
-        [cell setSeparatorInset:UIEdgeInsetsZero];
-    }
-    
-    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
-        [cell setLayoutMargins:UIEdgeInsetsZero];
-    }
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
@@ -208,9 +184,11 @@
         vc.publicModel.address = model.address;
         vc.publicModel.deep = model.deep;
         vc.publicModel.addressImgModels = model.addressImgModels;
-        vc.publicModel.areaFullName = model.areaFullName;
+        vc.publicModel.addrAreaFullName = model.areaFullName;
         vc.publicModel.shippington = model.shippington;
         vc.publicModel.addressModel = model;
+        NSInteger addressRows = model.addressImgModels.count ? 6 : 5;
+        vc.sections = @[@1,@2,@1,[NSNumber numberWithInteger:addressRows],@2,@1];
         
         if (_type == Address_Public) {
             [vc.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
@@ -245,6 +223,10 @@
         }
     }
     return nil;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

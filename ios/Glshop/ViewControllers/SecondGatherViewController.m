@@ -10,6 +10,7 @@
 #import "BankListViewController.h"
 #import "RolloutViewController.h"
 #import "MangerGathersViewController.h"
+#import "TipSuccessViewController.h"
 
 @interface SecondGatherViewController () <UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
 
@@ -69,23 +70,27 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
-    cell.textLabel.font = [UIFont systemFontOfSize:16.f];
+    cell.textLabel.font = [UIFont systemFontOfSize:FONT_16];
+    cell.detailTextLabel.font = [UIFont systemFontOfSize:FONT_16];
+    cell.detailTextLabel.textColor = RGB(153, 153, 153, 1);
     
     if (indexPath.section == 0) {
-        NSArray *titles = @[@"添加银行卡号",@"选择开户行",@"支行名称",@"银行卡号",];
+        NSArray *titles = @[@"添加银行卡号",@"开户行",@"支行名称",@"银行卡号",];
         cell.textLabel.text = titles[indexPath.row];
         if (indexPath.row == 0) {
-            cell.textLabel.textColor = [UIColor grayColor];
+            cell.textLabel.textColor = RGB(100, 100, 100, 1);
+            cell.textLabel.font = [UIFont systemFontOfSize:FONT_14];
         }else if (indexPath.row == 1) {
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            cell.detailTextLabel.text = _selectBank ? _selectBank : @"选择";
+            cell.detailTextLabel.text = _selectBank ? _selectBank.name : @"选择";
+            cell.detailTextLabel.textColor = RGB(153, 153, 153, 1);
         }else if (indexPath.row == 2) {
             if (_subbranchtf) {
                 [cell addSubview:_subbranchtf];
             }else {
                 _subbranchtf = [UITextField textFieldWithPlaceHodler:@"选填" withDelegate:self];
-                _subbranchtf.textColor = [UIColor grayColor];
                 _subbranchtf.textAlignment = NSTextAlignmentRight;
+                _subbranchtf.textColor = RGB(153, 153, 153, 1);
                 [cell.contentView addSubview:_subbranchtf];
                 [_subbranchtf makeConstraints:^(MASConstraintMaker *make) {
                     make.right.mas_equalTo(cell.contentView).offset(-10);
@@ -99,7 +104,8 @@
             _cardNumtf = [UITextField textFieldWithPlaceHodler:@"请输入银行卡号" withDelegate:self];
             _cardNumtf.textAlignment = NSTextAlignmentRight;
             _cardNumtf.keyboardType = UIKeyboardTypeNumberPad;
-            _cardNumtf.textColor = [UIColor grayColor];
+            _cardNumtf.textColor = RGB(153, 153, 153, 1);
+            _cardNumtf.font = FontBoldSystem(15);
             [cell.contentView addSubview:_cardNumtf];
             [_cardNumtf makeConstraints:^(MASConstraintMaker *make) {
                 make.right.mas_equalTo(cell.contentView).offset(-10);
@@ -114,6 +120,8 @@
         if (indexPath.row == 0) {
             cell.textLabel.textColor = [UIColor grayColor];
             cell.textLabel.text = @"短信验证";
+            cell.textLabel.textColor = RGB(100, 100, 100, 1);
+            cell.textLabel.font = [UIFont systemFontOfSize:FONT_14];
         }else if (indexPath.row == 1) {
             cell.textLabel.text = @"验证码发送至:";
             UserInstance *uins = [UserInstance sharedInstance];
@@ -128,8 +136,8 @@
             }];
             
         }else if (indexPath.row == 2) {
-            _codeAuthtf = [UITextField textFieldWithPlaceHodler:@"请输入验证码" withDelegate:self];
-            _codeAuthtf.textColor = [UIColor grayColor];
+            _codeAuthtf = [UITextField textFieldWithPlaceHodler:sms_input withDelegate:self];
+            _codeAuthtf.textColor = RGB(153, 153, 153, 1);
             _codeAuthtf.keyboardType = UIKeyboardTypeNumberPad;
             [cell.contentView addSubview:_codeAuthtf];
             [_codeAuthtf makeConstraints:^(MASConstraintMaker *make) {
@@ -139,7 +147,7 @@
                 make.top.mas_equalTo(cell.contentView.top);
             }];
             
-            _btnVerifCode = [UIFactory createBtn:@"Buy_sell_publish" bTitle:@"获取验证码" bframe:CGRectZero];
+            _btnVerifCode = [UIFactory createBtn:@"Buy_sell_publish" bTitle:sms_get bframe:CGRectZero];
             [_btnVerifCode addTarget:self action:@selector(getCode:) forControlEvents:UIControlEventTouchUpInside];
             [_btnVerifCode setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             _btnVerifCode.titleLabel.font = [UIFont boldSystemFontOfSize:15.f];
@@ -180,18 +188,24 @@
  */
 - (void)post {
     
+    if (!_selectBank.val.length) {
+        [self showTip:@"请选择开户银行"];
+        return;
+    }
+    
     if (!_cardNumtf.text.length) {
         HUD(@"请输入银行卡号");
         return;
     }
     
     if (!_codeAuthtf.text.length) {
-        HUD(@"请输入验证码");
+        HUD(sms_input);
         return;
     }
+    
     UserInstance *usIns = [UserInstance sharedInstance];
     NSString *cid = usIns.user.cid;
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:cid,@"cid",_cardNumtf.text,@"bankcard",self.name,@"carduser",@"BANK001",@"banktype",_codeAuthtf.text,@"code",self.imgId,@"imgid", nil];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:cid,@"cid",_cardNumtf.text,@"bankcard",self.name,@"carduser",_selectBank.val,@"banktype",_codeAuthtf.text,@"code",self.imgId,@"imgid", nil];
     if (self.subbranchtf.text) {
         [params addString:_subbranchtf.text forKey:@"bankname"];
     }
@@ -206,9 +220,9 @@
 }
 
 - (void)handleNetData:(id)responseData {
-    [[NSNotificationCenter defaultCenter] postNotificationName:kRefrushGatherListNotification object:nil];
-    UIViewController *vc = [self targetvc];
-    [self.navigationController popToViewController:vc animated:YES];
+    TipSuccessViewController *vc = [[TipSuccessViewController alloc] init];
+    vc.operationType = tip_add_payee_success;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - Private
@@ -217,13 +231,14 @@
     UserInstance *uins = [UserInstance sharedInstance];
     NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:uins.user.username,@"phone", nil];
     __block typeof(self) this = self;
+    
     [self requestWithURL:bMessageSendPath
                   params:param
               HTTPMethod:kHttpGetMethod
            completeBlock:^(ASIHTTPRequest *request, id responseData) {
         [this _setTime];
     } failedBlock:^(ASIHTTPRequest *request) {
-        HUD(kNetError);
+       
         this.btnVerifCode.enabled = YES;
     }];
 }
@@ -247,7 +262,7 @@
                 _btnVerifCode.enabled=YES;
             });
         }else{
-            NSString *strTime = [NSString stringWithFormat:@"%ds后重发",timeout];
+            NSString *strTime = [NSString stringWithFormat:@"%d秒后重发",timeout];
             dispatch_async(dispatch_get_main_queue(), ^{
                 _btnVerifCode.enabled=YES;
                 [_btnVerifCode setTitle:strTime forState:UIControlStateNormal];
@@ -297,7 +312,7 @@
         
         newString = [newString stringByTrimmingCharactersInSet:[characterSet invertedSet]];
         
-        if (newString.length >= 20) {
+        if (newString.length >= 27) {
             return NO;
         }
         

@@ -1,8 +1,16 @@
 package com.appabc.http;
 
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +29,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.bean.pvo.TUser;
 import com.appabc.common.base.bean.UserInfoBean;
 import com.appabc.common.utils.LogUtil;
+import com.appabc.common.utils.SystemConstant;
+import com.appabc.common.utils.security.BaseCoder;
 import com.appabc.datas.tool.UserTokenManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -70,7 +80,7 @@ public abstract class AbstractHttpControllerTest {
 
         final Object controller = handler.getHandler();
         // if you want to override any injected attributes do it here
-
+        this.signTheRequest();
         final HandlerInterceptor[] interceptors =
             handlerMapping.getHandler(request).getInterceptors();
         for (HandlerInterceptor interceptor : interceptors) {
@@ -79,10 +89,47 @@ public abstract class AbstractHttpControllerTest {
                 return null;
             }
         }
-
+        
         final ModelAndView mav = handlerAdapter.handle(request, response, controller);
         return mav;
     }
+	
+	protected void signTheRequest(){
+		Enumeration<?> e = request.getParameterNames();
+		if (e != null && !CollectionUtils.sizeIsEmpty(e)) {
+			// 从request对象里面获取参数进行排序
+			Map<String, String> treeMap = new TreeMap<String, String>();
+			while (e.hasMoreElements()) {
+				String name = (String) e.nextElement();
+				String parameter = request.getParameter(name);
+				if (StringUtils.isNotEmpty(name.trim())) {
+					treeMap.put(name.trim(), parameter.trim());
+					logUtil.debug("Key: " + name + "; Value: " + parameter);
+				}
+			}
+			StringBuffer input = new StringBuffer();
+			input.append(SystemConstant.APPID_KEY);
+			Iterator<Entry<String, String>> itor = treeMap.entrySet()
+					.iterator();
+			while (itor.hasNext()) {
+				Entry<String, String> et = itor.next();
+				if(!SystemConstant.SIGN_KEY.equalsIgnoreCase(et.getKey()) && !SystemConstant.APPID_KEY.equalsIgnoreCase(et.getKey())){
+					input.append(et.getKey());
+					input.append(et.getValue());
+				}
+			}
+			// 生成签名
+			String sign;
+			try {
+				logUtil.debug("Sign input str : " + input.toString());
+				sign = BaseCoder.encryptMD5(input.toString());
+				request.addParameter("sign", sign);
+				logUtil.debug("Sign: " + sign);
+			} catch (Exception e1) {
+				logUtil.debug(e1.getMessage(), e1);
+			}
+		}
+	}
 	
 	protected void print(ModelAndView mav){
 		try{
@@ -142,12 +189,12 @@ public abstract class AbstractHttpControllerTest {
 		user.setCid(cid);
 		
 		ci.setCname("abc公司");
-		ci.setAuthstatus(CompanyAuthStatus.enumOf("1"));
+		ci.setAuthstatus(AuthRecordStatus.enumOf("1"));
 		ci.setCtype(CompanyType.enumOf("1"));
 		
 		
 		UserInfoBean ut = this.userTokenManager.saveUserToken(user, ci);
-		request.addHeader("USER_TOKEN", ut.getToken());
+		request.addHeader("USER_TOKEN", ut.getTokenList().getFirst().getToken());
 	}
 	
 	public abstract void mainTest();

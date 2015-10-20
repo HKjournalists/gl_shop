@@ -55,7 +55,6 @@ public class ServerClassLoader extends URLClassLoader {
 		int size = 0;
 		for (int i = 0; i < jars.length; i++){
 			if (jars[i].isFile()){size++;
-				logUtil.info(jars[i].getName());
 				addURL(jars[i].toURI().toURL());
 			}
 		}

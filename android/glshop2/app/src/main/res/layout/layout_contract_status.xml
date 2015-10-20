@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <!-- 状态栏 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buy_item_height"
+        android:background="@drawable/bg_item_top"
+        android:paddingBottom="0dp"
+        android:paddingLeft="1px"
+        android:paddingRight="1px"
+        android:paddingTop="1px" >
+
+        <TextView
+            android:id="@+id/tv_buyer_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/pink"
+            android:gravity="center"
+            android:text="买家(我)"
+            android:textColor="@color/orange" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/devider_line_v" />
+
+        <TextView
+            android:id="@+id/tv_seller_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/pink"
+            android:gravity="center"
+            android:text="卖家" />
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 状态详情 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_item_bottom"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/buy_item_padding"
+        android:paddingRight="@dimen/buy_item_padding"
+        android:paddingTop="0dp" >
+
+        <!-- 冻结双方保证金 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" >
+
+            <ImageView style="@style/ContractStatus_Status_Buyer_Icon" />
+
+            <Button
+                android:id="@+id/btn_buyer_freeze_deposit"
+                style="@style/ContractStatus_Status_Buyer_Bg"
+                android:text="冻结保证金" />
+
+            <ImageView style="@style/ContractStatus_Devider_Small_Circle" />
+
+            <Button
+                android:id="@+id/btn_seller_freeze_deposit"
+                style="@style/ContractStatus_Status_Seller_Bg"
+                android:text="冻结保证金" />
+
+            <ImageView style="@style/ContractStatus_Status_Seller_Icon" />
+        </LinearLayout>
+
+        <!-- 买方付款，卖方发货 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" >
+
+            <ImageView style="@style/ContractStatus_Status_Buyer_Icon" />
+
+            <Button
+                android:id="@+id/btn_buyer_pay"
+                style="@style/ContractStatus_Status_Buyer_Bg"
+                android:text="向平台支付货款" />
+
+            <ImageView style="@style/ContractStatus_Devider_Small_Circle" />
+
+            <Button
+                android:id="@+id/btn_seller_send_product"
+                style="@style/ContractStatus_Status_Seller_Bg"
+                android:text="按时送货" />
+
+            <ImageView style="@style/ContractStatus_Status_Seller_Icon" />
+        </LinearLayout>
+
+        <!-- 抽样验货 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" >
+
+            <ImageView style="@style/ContractStatus_Status_Buyer_Icon" />
+
+            <Button
+                android:id="@+id/btn_buyer_simple_check"
+                style="@style/ContractStatus_Status_Buyer_Bg"
+                android:background="@drawable/bg_contract_status_buyer_current"
+                android:text="抽样验货" />
+
+            <ImageView style="@style/ContractStatus_Devider_Small_Circle" />
+
+            <Button
+                android:id="@+id/btn_buyer_wait_simple_check"
+                style="@style/ContractStatus_Status_Seller_Bg"
+                android:background="@drawable/bg_contract_status_seller_current"
+                android:text="等待验货" />
+
+            <ImageView style="@style/ContractStatus_Status_Seller_Icon" />
+        </LinearLayout>
+
+        <!-- 第一次确认 -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                style="@style/ContractStatus_Status_Buyer_Icon"
+                android:layout_centerVertical="true" />
+
+            <Button
+                android:id="@+id/btn_simple_check_double_confirm"
+                style="@style/ContractStatus_Devider_Big_Circle"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                style="@style/ContractStatus_Status_Seller_Icon"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <!-- 全量验货 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" >
+
+            <ImageView style="@style/ContractStatus_Status_Buyer_Icon" />
+
+            <Button
+                android:id="@+id/btn_buyer_full_check"
+                style="@style/ContractStatus_Status_Buyer_Bg"
+                android:background="@drawable/bg_contract_status_buyer_current"
+                android:text="全量验货" />
+
+            <ImageView style="@style/ContractStatus_Devider_Small_Circle" />
+
+            <Button
+                android:id="@+id/btn_seller_wait_full_check"
+                style="@style/ContractStatus_Status_Seller_Bg"
+                android:background="@drawable/bg_contract_status_seller_current"
+                android:text="等待验货" />
+
+            <ImageView style="@style/ContractStatus_Status_Seller_Icon" />
+        </LinearLayout>
+
+        <!-- 第二次确认 -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                style="@style/ContractStatus_Status_Buyer_Icon"
+                android:layout_centerVertical="true" />
+
+            <Button
+                android:id="@+id/btn_full_check_double_confirm"
+                style="@style/ContractStatus_Devider_Big_Circle"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                style="@style/ContractStatus_Status_Seller_Icon"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <!-- 收货、卸货 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical" >
+
+            <ImageView style="@style/ContractStatus_Status_Buyer_Icon" />
+
+            <Button
+                android:id="@+id/btn_buyer_confirm_receipt"
+                style="@style/ContractStatus_Status_Buyer_Bg"
+                android:background="@drawable/bg_contract_status_buyer_current"
+                android:text="确认收货" />
+
+            <ImageView style="@style/ContractStatus_Devider_Small_Circle" />
+
+            <Button
+                android:id="@+id/btn_seller_confirm_discharge"
+                style="@style/ContractStatus_Status_Seller_Bg"
+                android:background="@drawable/bg_contract_status_seller_current"
+                android:text="确认卸货" />
+
+            <ImageView style="@style/ContractStatus_Status_Seller_Icon" />
+        </LinearLayout>
+
+        <!-- 合同结算 -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                style="@style/ContractStatus_Status_Buyer_Icon"
+                android:layout_centerVertical="true" />
+
+            <Button
+                android:id="@+id/btn_contract_settlement"
+                style="@style/ContractStatus_Devider_Big_Circle"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                style="@style/ContractStatus_Status_Seller_Icon"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <ImageView
+            style="@style/ContractStatus_Devider_Line"
+            android:layout_gravity="center" />
+
+        <!-- 合同结束 -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                style="@style/ContractStatus_Status_Buyer_Icon"
+                android:layout_centerVertical="true" />
+
+            <Button
+                android:id="@+id/btn_contract_finished"
+                style="@style/ContractStatus_Devider_Big_Circle"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true" />
+
+            <ImageView
+                style="@style/ContractStatus_Status_Seller_Icon"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

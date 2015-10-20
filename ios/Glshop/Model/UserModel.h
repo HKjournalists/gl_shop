@@ -19,7 +19,14 @@
 @property (nonatomic, copy) NSString *userToken;
 @property (nonatomic, copy) NSString *clientid;
 @property (nonatomic, strong) NSDictionary *ctype;
+@property (nonatomic, strong) NSNumber *isAuthRemind;
+/**
+ *@brief 用户是否认证
+ */
 @property (nonatomic, strong) NSDictionary *authstatus;
+/**
+ *@brief 用户是否缴纳保证金
+ */
 @property (nonatomic, strong) NSDictionary *bailstatus;
 
 @end

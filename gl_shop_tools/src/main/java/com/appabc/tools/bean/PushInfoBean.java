@@ -3,10 +3,11 @@
  */
 package com.appabc.tools.bean;
 
-import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
-
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
 
 /**
  * @Description :
@@ -16,9 +17,12 @@ import java.util.Map;
  * @version     : 1.0
  * Create Date  : 2014年10月23日 上午10:26:42
  */
-public class PushInfoBean {
+public class PushInfoBean implements Serializable, Cloneable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private MsgBusinessType businessType; // 业务类型,参照MsgBusinessType
+	private String bcode;// 业务类型CODE,对应MsgBusinessType的value
 
 	private String cid; // 企业ID
 	
@@ -28,7 +32,7 @@ public class PushInfoBean {
 
 	private String content; // 描述内容
 
-	private int pushType; // 0透传，1通知（默认为透传）
+	private Integer pushType; // 0透传，1通知（默认为透传）
 
 	private Map<String, Object> params = new HashMap<String, Object>(); // 其它属性
 
@@ -54,10 +58,10 @@ public class PushInfoBean {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public int getPushType() {
+	public Integer getPushType() {
 		return pushType;
 	}
-	public void setPushType(int pushType) {
+	public void setPushType(Integer pushType) {
 		this.pushType = pushType;
 	}
 	public Map<String, Object> getParams() {
@@ -67,6 +71,9 @@ public class PushInfoBean {
 		if(params != null){
 			this.params.putAll(params);
 		}
+	}
+	public void setParamsIsNull() {
+		this.params = null;
 	}
 	public Boolean getOffline() {
 		return offline;
@@ -91,6 +98,16 @@ public class PushInfoBean {
 	}
 	public void setCid(String cid) {
 		this.cid = cid;
+	}
+	public String getBcode() {
+		return bcode;
+	}
+	public void setBcode(String bcode) {
+		this.bcode = bcode;
+	}
+	
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 
 }

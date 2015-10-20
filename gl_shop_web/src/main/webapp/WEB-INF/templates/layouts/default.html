@@ -35,16 +35,17 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="index.html">长江电商管理系统</a>
+        <a class="navbar-brand" th:href="@{/dashboard/}">长江电商管理系统</a>
       </div>
 
       <!-- Top Menu Items -->
       <ul class="nav navbar-top-links navbar-right">
         <li><a href="#">首页</a></li>
-        <li><a th:href="@{/tasks/editor/verify_info_audit/1/}">我的工作台</a></li>
+        <li><a th:href="@{/dashboard/}">我的工作台</a></li>
         <li><a th:href="@{/finance/account_audit/pending/1/}">财务管理</a></li>
         <li><a th:href="@{/manage/accounts/1/}">系统管理</a></li>
-        <li><a href="#">常用工具</a></li>
+        <li><a th:href="@{/tool/manage/system_message/send/}">常用工具</a></li>
+        <li><a th:href="@{/data/user/all/count/1/}">数据</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span th:text="${#httpServletRequest.remoteUser}">John Smith</span> <b class="caret"></b></a>
           <ul class="dropdown-menu">
@@ -52,7 +53,7 @@
               <a href="#"><i class="fa fa-fw fa-user"></i> 个人资料</a>
             </li>
             <li>
-              <a href="#"><i class="fa fa-fw fa-cog"></i> 修改密码</a>
+              <a th:href="@{/system/change_password/}"><i class="fa fa-fw fa-cog"></i> 修改密码</a>
             </li>
             <li class="divider"></li>
             <li>
@@ -69,11 +70,11 @@
           <ul class="nav" id="side-menu">
             <li class="sidebar-search">
               <div class="input-group custom-search-form">
-                <input type="text" class="form-control" placeholder="手机号码">
+                <input id="searchByMobile" type="text" class="form-control" placeholder="手机号码">
                       <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">
+                        <a class="btn btn-default" th:href="@{/}" onclick="javascript: var mobile = $.trim($('#searchByMobile').val()); if (mobile) {searchCompany(this.href, {mobile: mobile});} return false;">
                           <i class="fa fa-search"></i>
-                        </button>
+                        </a>
                       </span>
               </div>
               <!-- /input-group -->
@@ -190,10 +191,13 @@
 </div>
 <!-- /#wrapper -->
 
+<footer>
+  <div class="row" th:text="'Version: 0.0.1-SNAPSHOT-2015-06-04, Request Host: ' + ${#httpServletRequest.serverName}">Version: 0.0.1-SNAPSHOT-2015-03-23</div>
+</footer>
 </th:block>
 
 <!-- jQuery Version 2.1.1 -->
-<script th:src="@{/static/js/jquery-2.1.1.min.js}"></script>
+<script th:src="@{/static/js/jquery-2.1.3.min.js}"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script th:src="@{/static/js/bootstrap.3.3.0.min.js}"></script>
@@ -205,6 +209,8 @@
 
 <!-- Custom Theme JavaScript -->
 <script th:src="@{/static/js/sb-admin-2.js}"></script>
+
+<script th:src="@{/static/js/common-info.js}"></script>
 
 <div layout:fragment="additionalScriptFiles"></div>
 

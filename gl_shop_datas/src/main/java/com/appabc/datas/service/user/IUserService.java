@@ -46,9 +46,19 @@ public interface IUserService extends IBaseService<TUser>{
 	/**
 	 * 帐号与客户端绑定
 	 * @param userid
+	 * @param username
 	 * @param clientid
 	 * @param clienttype
+	 * @param version
+	 * @param channel
 	 */
-	public void clientBinding(String userid, String clientid, String clienttype);
+	public void clientBinding(String userid, String username, String clientid, String clienttype, String version, String channel);
+	
+	/**
+	 * 统计用户个数
+	 * @param entity
+	 * @return
+	 */
+	public int queryCount(TUser entity);
 	
 }

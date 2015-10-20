@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <!-- 发布预览信息 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <ScrollView
+            android:id="@+id/ll_scroll_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:paddingTop="6dp" >
+
+                <!-- 货物信息 -->
+
+                <include layout="@layout/layout_buy_product_info" />
+
+                <View style="@style/item_devider_view" />
+
+                <!-- 交易信息 -->
+
+                <include layout="@layout/layout_buy_trade_info" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- Next Step -->
+
+    <Button
+        android:id="@+id/btn_sumbit_pub"
+        style="@style/button_orange"
+        android:layout_margin="@dimen/buy_item_padding"
+        android:text="@string/submit_pub_info" />
+
+</LinearLayout>

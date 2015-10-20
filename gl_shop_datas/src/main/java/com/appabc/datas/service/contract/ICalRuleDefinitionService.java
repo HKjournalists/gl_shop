@@ -1,7 +1,6 @@
 package com.appabc.datas.service.contract;
 
 import com.appabc.bean.pvo.TCalRuleDefinition;
-import com.appabc.common.base.service.IBaseService;
 
 /**
  * @Description : 
@@ -12,6 +11,6 @@ import com.appabc.common.base.service.IBaseService;
  * Create Date  : 2014年9月3日 下午3:08:52
  */
 
-public interface ICalRuleDefinitionService extends IBaseService<TCalRuleDefinition> {
+public interface ICalRuleDefinitionService extends IContractBaseService<TCalRuleDefinition> {
 
 }

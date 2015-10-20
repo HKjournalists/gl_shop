@@ -6,6 +6,11 @@
  */
 package com.appabc.pay.dao;
 
+import java.util.List;
+
+import com.appabc.bean.enums.PurseInfo.PayDirection;
+import com.appabc.bean.enums.PurseInfo.PurseType;
+import com.appabc.bean.enums.PurseInfo.TradeType;
 import com.appabc.common.base.dao.IBaseDao;
 import com.appabc.pay.bean.TPassbookPay;
 
@@ -20,4 +25,8 @@ import com.appabc.pay.bean.TPassbookPay;
 
 public interface IPassbookPayDAO extends IBaseDao<TPassbookPay> {
 
+	List<TPassbookPay> getPayRecordListWithOid(String cid, PurseType type, String oid, PayDirection payDirection);
+	
+	List<TPassbookPay> queryPayListWithParams(String cid,PurseType pType, String oid, TradeType tType, PayDirection direction);
+	
 }

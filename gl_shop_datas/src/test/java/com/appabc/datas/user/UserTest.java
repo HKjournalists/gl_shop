@@ -5,6 +5,15 @@
 package com.appabc.datas.user;
 
 
+import java.util.Date;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+
+import com.appabc.bean.enums.UserInfo.ClientTypeEnum;
 import com.appabc.bean.enums.UserInfo.UserStatus;
 import com.appabc.bean.pvo.TUser;
 import com.appabc.common.base.QueryContext;
@@ -13,13 +22,6 @@ import com.appabc.common.utils.SystemConstant.OrderEnum;
 import com.appabc.common.utils.security.BaseCoder;
 import com.appabc.datas.AbstractDatasTest;
 import com.appabc.datas.service.user.IUserService;
-import org.apache.log4j.Logger;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * @author yyh
@@ -40,7 +42,7 @@ public class UserTest extends AbstractDatasTest{
 	@Rollback(value=false)
 	public void mainTest() {
 //		encryptMd5AllUser();
-
+//		countUsers();
 	}
 
 	public void testQ(){
@@ -53,6 +55,13 @@ public class UserTest extends AbstractDatasTest{
 		//testUserDelete(9);
 		//testUserUpdate(35);
 //		testQueryTuserByEntity();
+	}
+	
+	public void countUsers(){
+		TUser user = new TUser();
+		user.setClienttype(ClientTypeEnum.CLIENT_TYPE_ANDROID);
+		int a = this.userService.queryCount(user);
+		System.out.println("all users count is :"+a);
 	}
 
 	public void encryptMd5AllUser(){

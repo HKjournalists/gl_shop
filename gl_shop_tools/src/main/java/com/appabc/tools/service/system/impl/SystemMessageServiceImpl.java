@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.appabc.bean.bo.SystemMessageEx;
 import com.appabc.bean.enums.MsgInfo.MsgStatus;
 import com.appabc.bean.pvo.TSystemMessage;
 import com.appabc.common.base.QueryContext;
@@ -147,6 +148,22 @@ public class SystemMessageServiceImpl extends BaseService<TSystemMessage>
 		entity.setQyid(cid);
 		entity.setStatus(MsgStatus.STATUS_IS_READ_NO);
 		return this.iSystemMessageDAO.getCountByEntity(entity);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.tools.service.system.ISystemMessageService#queryMessageExListForPagination(com.appabc.common.base.QueryContext)  
+	 */
+	@Override
+	public QueryContext<SystemMessageEx> queryMessageExListForPagination(
+			QueryContext<SystemMessageEx> qContext) {
+		return iSystemMessageDAO.queryMessageExListForPagination(qContext);
+	}
+
+	@Override
+	public QueryContext<TSystemMessage> queryListByTypeForPagination(
+			QueryContext<TSystemMessage> qContext) {
+		// TODO Auto-generated method stub
+		return iSystemMessageDAO.queryListByTypeForPagination(qContext);
 	}
 
 }

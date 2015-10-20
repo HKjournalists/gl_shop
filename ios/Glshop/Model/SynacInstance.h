@@ -11,6 +11,9 @@
 #import "RiverSectionModel.h"
 #import "GoodsModel.h"
 #import "GoodChildModel.h"
+#import "BankModel.h"
+
+static NSString *synacDataDidFinishNotification = @"synacDataDidFinishNotification";
 
 /**
  *@brief 商品信息、系统信息、银行信息、地域信息都从此处获取.
@@ -40,10 +43,22 @@
 - (NSArray *)riverSectionsNames;
 
 /**
- *@brief 商品大类名称、对象
+ *@brief 商品大类名称
  */
 - (NSArray *)productTopNames;
+/**
+ *@brief 商品大类对象
+ *@discussion 暂为石子和黄砂
+ */
 - (NSArray *)productTopModels;
+/**
+ *@brief 石子
+ */
+- (GoodsModel *)stoneModel;
+/**
+ *@brief 黄砂
+ */
+- (GoodsModel *)sendsModel;
 
 /**
  *@brief 根据pcode找到相应的产品顶层model
@@ -93,8 +108,28 @@
 - (NSArray *)sendsGroundSonProductTypeName:(NSString *)ptype;
 
 /**
+ *@brief 拼接第三层商品。例如：（特细砂（1.0-5.6）
+ */
+- (NSString *)sendsThreeCombine:(GoodChildModel *)model;
+
+/**
  *@brief 根据石子子类名称找到子类模型
  */
 - (GoodChildModel *)stoneSubTypeNameMapstoneSubTypeModel:(NSString *)stoneName;
+
+/**
+ *@brief 拼接产品名 e.g. 石子.碎石2-4（31.5-35.3）mm
+ */
+- (NSString *)combinProducName:(NSString *)ptype proId:(NSString *)proId;
+
+/**
+ *@brief 获取银行列表信息
+ */
+- (NSArray *)banksData;
+
+/**
+ *@brief 系统参数
+ */
+- (NSArray *)sysParams;
 
 @end

@@ -27,8 +27,8 @@ import java.util.Map;
 @Repository
 public class CompanyAuthDaoImpl extends BaseJdbcDao<TCompanyAuth> implements ICompanyAuthDao {
 
-	private static final String INSERTSQL = " insert into T_COMPANY_AUTH (AUTHID, CNAME, ADDRESS, RDATE, LPERSON, ORGID, CTYPE, CRATEDATE, UPDATEDATE) values (:authid, :cname, :address, :rdate, :lperson, :orgid, :ctype, :cratedate, :updatedate) ";
-	private static final String UPDATESQL = " update T_COMPANY_AUTH set AUTHID = :authid, CNAME = :cname, ADDRESS = :address, RDATE = :rdate, LPERSON = :lperson, ORGID = :orgid, CTYPE = :ctype, CRATEDATE = :cratedate, UPDATEDATE = :updatedate where ID = :id ";
+	private static final String INSERTSQL = " insert into T_COMPANY_AUTH (AUTHID, CNAME, ADDRESS, RDATE, LPERSON, ORGID, CTYPE, CRATEDATE, UPDATEDATE, REGNO) values (:authid, :cname, :address, :rdate, :lperson, :orgid, :ctype, :cratedate, :updatedate,:regno) ";
+	private static final String UPDATESQL = " update T_COMPANY_AUTH set AUTHID = :authid, CNAME = :cname, ADDRESS = :address, RDATE = :rdate, LPERSON = :lperson, ORGID = :orgid, CTYPE = :ctype, CRATEDATE = :cratedate, UPDATEDATE = :updatedate,REGNO=:regno where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_COMPANY_AUTH WHERE AUTHID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_COMPANY_AUTH WHERE AUTHID = :id ";
 
@@ -56,7 +56,7 @@ public class CompanyAuthDaoImpl extends BaseJdbcDao<TCompanyAuth> implements ICo
 	}
 
 	public TCompanyAuth query(TCompanyAuth entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
+		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)) + " ORDER BY CRATEDATE DESC", entity);
 	}
 
 	public TCompanyAuth query(Serializable id) {
@@ -89,6 +89,7 @@ public class CompanyAuthDaoImpl extends BaseJdbcDao<TCompanyAuth> implements ICo
 		t.setOrgid(rs.getString("orgid"));
 		t.setRdate(rs.getString("rdate"));
 		t.setUpdatedate(rs.getTimestamp("UPDATEDATE"));
+		t.setRegno(rs.getString("REGNO"));
 
 		return t;
 	}
@@ -105,6 +106,7 @@ public class CompanyAuthDaoImpl extends BaseJdbcDao<TCompanyAuth> implements ICo
 		this.addNameParamerSqlWithProperty(sql, "lperson", "LPERSON", bean.getLperson());
 		this.addNameParamerSqlWithProperty(sql, "orgid", "ORGID", bean.getOrgid());
 		this.addNameParamerSqlWithProperty(sql, "rdate", "RDATE", bean.getRdate());
+		this.addNameParamerSqlWithProperty(sql, "regno", "REGNO", bean.getRegno());
 		return sql.toString();
 	}
 

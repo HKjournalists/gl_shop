@@ -40,7 +40,7 @@
     tipLabel.font = [UIFont boldSystemFontOfSize:18.f];
     [self.view addSubview:tipLabel];
     
-    UILabel *detailLabel = [UILabel labelWithTitle:@"接下来请您提交企业认证信息，否则将无法在长江电商平台交易。"];
+    UILabel *detailLabel = [UILabel labelWithTitle:@"接下来请您提交平台认证信息，否则将无法在长江电商平台交易。"];
     detailLabel.frame = CGRectMake(20, tipLabel.vbottom+20, SCREEN_WIDTH-40, 45);
     detailLabel.numberOfLines = 2;
     detailLabel.textColor = [UIColor lightGrayColor];
@@ -72,16 +72,16 @@
     tipLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:tipLabel];
     
-    UILabel *detailLabel = [UILabel labelWithTitle:@"接下来请您提交企业认证信息，否则将无法在长江电商平台交易。"];
+    UILabel *detailLabel = [UILabel labelWithTitle:@"接下来请您提交平台认证信息，否则将无法在长江电商平台交易。"];
     detailLabel.frame = CGRectMake(20, tipLabel.vbottom+20, SCREEN_WIDTH-40, 45);
     detailLabel.numberOfLines = 2;
     detailLabel.textColor = [UIColor lightGrayColor];
     detailLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:detailLabel];
     
-    UIButton *sureBtn = [UIButton buttonWithTip:@"登录长江电商" target:self selector:@selector(skipToLogin)];
-    sureBtn.frame = CGRectMake(detailLabel.vleft, detailLabel.vbottom+30, detailLabel.vwidth, 35);
-    sureBtn.backgroundColor = CJBtnColor;
+    UIButton *sureBtn = [UIFactory createBtn:BlueButtonImageName bTitle:@"登录长江电商" bframe:CGRectZero];
+    [sureBtn addTarget:self action:@selector(skipToLogin) forControlEvents:UIControlEventTouchUpInside];
+    sureBtn.frame = CGRectMake(10, detailLabel.vbottom+30, SCREEN_WIDTH-20, 40);
     [self.view addSubview:sureBtn];
 
 }
@@ -93,12 +93,26 @@
 }
 
 - (void)skipToLogin {
-    UIViewController *vc = self.navigationController.viewControllers[1];
-    [self.navigationController popToViewController:vc animated:YES];
+    UIViewController *vc = [self findDesignatedViewController:[LoginViewController class]];
+    if (vc) {
+        [self.navigationController popToViewController:vc animated:YES];
+    }else {
+        vc = [[LoginViewController alloc] init];
+        [self.navigationController popToRootViewControllerAnimated:NO];
+        UIViewController *nav = [[UIApplication sharedApplication] keyWindow].rootViewController;
+        if ([nav isKindOfClass:[UINavigationController class]]) {
+            [(UINavigationController *)nav pushViewController:vc animated:YES];
+        }
+    }
 }
 
 - (void)turnToMain {
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    LoginViewController *vc = [self findDesignatedViewController:[LoginViewController class]];
+    if (vc) {
+        [self.navigationController popToViewController:vc animated:YES];
+    }else {
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    }
 }
 
 #pragma mark - mark Private 

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import org.junit.Test;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,11 +26,124 @@ public class ContractTest extends AbstractHttpControllerTest {
 	 */
 	@Override
 	@Test
+	@Rollback(value=true)
 	public void mainTest() {
 		//testGetEvaluationContractList();
-		loginSimulation("00000012", "00000012", "00000012");
-		testGetContractListWitPage();
+		//loginSimulation("13760434638", "180", "201501270000021");
+		//loginSimulation("15811822330", "167", "201501260000018");
+		//loginSimulation("18613064147", "170", "000000915102014");
+		//loginSimulation("15811822330", "178", "201501260000019");
+		//loginSimulation("15986805626", "177", "201501260000018");
+		//loginSimulation("15811822330", "178", "201501260000019");
+		//testGetPayRecordList();
+		//testGetContractListWitPage();
+		//this.testGetMyContractListWithPaginiation();
+		//this.testUnPayFundsContractList();
+		//loginSimulation("13760434638", "176", "241120140000017");
+		//testcontractArbitractionProcess();
+		//testGetEvaluationContractList();
+		//testGetContractDetailInfoEx();
 	}
+	
+	void testGetPayRecordList(){
+		request.setRequestURI("/purse/getPayRecordList");
+		request.setMethod("POST");
+		//request.addParameter("OID", "1020150112175");
+		request.addParameter("type", "1");
+		//request.addParameter("fid", "201501080047008");
+		
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logUtil.debug(e.getMessage(), e);
+		}
+	}
+	
+	void testCancelDraftContract(){
+		request.setRequestURI("/contract/cancelDraftContract");
+		request.setMethod("POST");
+		request.addParameter("OID", "1020150112175");
+		request.addParameter("operateType", "23");
+		request.addParameter("fid", "201501080047008");
+		
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logUtil.debug(e.getMessage(), e);
+		}
+	}
+	
+	void testcontractArbitractionProcess(){
+		
+		//true, "201501080008408", "201411270000014", "国立123公司2014-11-27 20:35:52", 10, 10
+		request.setRequestURI("/contract/contractArbitractionProcess");
+		request.setMethod("POST");
+		request.addParameter("aid", "201503260010226");
+		request.addParameter("isTrade", "true");//20//21//22
+		request.addParameter("disPrice", "2");
+		request.addParameter("disNum", "2.5");/**/
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logUtil.debug(e.getMessage(), e);
+		}
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	void testApplyOrAgreeOrArbitrateFinalEstimate(){
+		request.setRequestURI("/contract/applyOrAgreeOrArbitrateFinalEstimate");
+		request.setMethod("POST");
+		request.addParameter("OID", "1020150112174");
+		request.addParameter("operateType", "20");//20//21//22
+		request.addParameter("disPrice", "9");
+		request.addParameter("disNum", "10");
+		request.addParameter("finalAmount", "85");
+		//request.addParameter("fid", "201501080047008");
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logUtil.debug(e.getMessage(), e);
+		}
+	}
+	
+	void testGetContractDetailInfoEx(){
+		request.setRequestURI("/contract/getContractDetailInfoEx");
+		request.setMethod("GET");
+		request.addParameter("OID", "1020150403404");
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logUtil.debug(e.getMessage(), e);
+		}
+	}
+	
+	void testGetMyContractListWithPaginiation(){
+		request.setRequestURI("/contract/getMyContractListWithPaginiation");
+		request.setMethod("GET");
+		request.addParameter("status", "0");//0/1/3
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logUtil.debug(e.getMessage(), e);
+		}
+	}
+	
 	void testGetPurseList(){
 		request.setRequestURI("/purse/getPurseList");
         request.setMethod("GET");
@@ -82,7 +196,6 @@ public class ContractTest extends AbstractHttpControllerTest {
 			c = Base64Utils.decode(str.getBytes("UTF-8"));
 			System.out.println(new String(c,"UTF-8"));
 		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
@@ -92,7 +205,21 @@ public class ContractTest extends AbstractHttpControllerTest {
         request.setMethod("GET");
         //request.addParameter("status", "1");
         //request.addParameter("pageIndex", "-1");
+        request.addParameter("status", "1");
         try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logUtil.debug(e.getMessage(), e);
+		}
+	}
+	
+	void testconfirmUninstallGoods(){
+		request.setRequestURI("/contract/confirmUninstallGoods");
+		request.setMethod("POST");
+		request.addParameter("OID", "1020141209155");
+		try {
 			final ModelAndView mav = handle(request, response);
 			this.print(mav);
 		} catch (Exception e) {
@@ -321,9 +448,10 @@ public class ContractTest extends AbstractHttpControllerTest {
 	}
 	
 	void testGetEvaluationContractList(){
-		request.setRequestURI("/contract/getEvaluationContractList");
+		request.setRequestURI("/noAuthUrl/getEvaluationContractList");
         request.setMethod("GET");
-        request.addParameter("OID", "201409230007223");
+        request.addParameter("ID", "201411270000014");
+        request.addParameter("type", "0");
         try {
 			final ModelAndView mav = handle(request, response);
 			this.print(mav);

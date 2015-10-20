@@ -7,12 +7,14 @@ import com.appabc.bean.pvo.TProductPrice;
 import com.appabc.common.base.QueryContext;
 import com.appabc.datas.dao.product.IProductPriceDao;
 import com.appabc.datas.service.product.IProductPriceService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +75,12 @@ public class ProductPriceServiceImpl implements IProductPriceService{
 	 */
 	public List<Map<String, Object>> queryTodayPrice(String area, String pcode) {
 		return this.productPriceDao.queryTodayPrice(area, pcode);
+	}
+	
+	@Override
+	public List<TProductPrice> queryListByDay(TProductPrice entity, Date day) {
+		entity.setDatepoint(null);
+		return this.productPriceDao.queryListByDay(entity, day);
 	}
 
 }

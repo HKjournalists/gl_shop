@@ -1,31 +1,88 @@
 <!DOCTYPE html>
-<html layout:decorator="layouts/task">
+<html layout:decorator="layouts/tasks">
 <head>
 <title>站内销售 - 催促缴纳保证金</title>
 </head>
 <body>
-	<li layout:fragment="contentNavTitle"><i class="fa fa-paperclip"></i> 站内销售 - 催促缴纳保证金</li>
+	<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 站内销售 - 催促缴纳保证金列表
+</h4>
+	
 
-	<table layout:fragment="tableContent">
+
+<div layout:fragment="pageContent">
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" th:class="${#strings.contains(url, '/tasks/sales/deposit/need/')} ? 'active'"><a th:href="@{/tasks/sales/deposit/need/1/}">需催促保证金列表</a></li>
+		<li role="presentation" th:class="${#strings.contains(url, '/tasks/sales/deposit/no/')} ? 'active'"><a th:href="@{/tasks/sales/deposit/no/1/}">不需催促保证金列表</a></li>
+	</ul>
+ <div class="table-responsive media">
+		<table layout:fragment="tableContent" class="table table-bordered table-hover table-striped">
 		<thead>
 			<tr>
-				<th>用户ID</th>
-				<th>类型</th>
-				<th>当前保证金账户余额（元）</th>
+				<th>用户手机号码</th>
+				<th width="5%">类型</th>
+				<th width="10%">用户姓名</th>
+				<th width="6%">认证状态</th>
+				<th width="8%">
+					 <select name="registtime" class=" input-sm">
+       					<option value="ALL" th:selected="${'ALL'.equals(registtime)}">注册时间</option>
+        				<option value="DESC" th:selected="${'DESC'.equals(registtime)}">注册时间从高到低</option>
+        				<option value="ASC" th:selected="${'ASC'.equals(registtime)}">注册时间从低到高</option>
+     				 </select>
+				</th>
 				<th>最后一次登录时间</th>
-				<th>操作</th>
+				<th>求购信息数</th>
+				<th>出售信息数</th>
+				<th>当前保证金账户余额</th>
+				<th>客服催促次数</th>
+				<th width="8%">
+              		 <select name="verifytime" class=" input-sm">
+       					<option value="ALL" th:selected="${'ALL'.equals(verifytime)}">最后一次催促时间</option>
+        				<option value="DESC" th:selected="${'DESC'.equals(verifytime)}">最后一次催促时间从高到低</option>
+        				<option value="ASC" th:selected="${'ASC'.equals(verifytime)}">最后一次催促时间从低到高</option>
+     				 </select>
+				</th>
+				<th>操作项</th>
 			</tr>
 		</thead>
-		<tbody>
-			<tr>
-				<td>3326</td>
-				<td>10/21/2013</td>
-				<td>3:29 PM</td>
-				<td>$321.33</td>
-				<td>$321.33</td>
-			</tr>
-		</tbody>
+		 <tbody>
+          <tr th:each="bean : ${resList}">
+            <td><a th:href="@{/company/{cid}/info/(cid=${bean.userid})}" target="_blank" th:class="${#strings.contains(url, '/tasks/sales/deposit/need/')} and ${bean.owner} ? 'task-warn'" th:text="${bean.owner} ? '[' + ${bean.owner} + '] ' + ${bean.username} : ${bean.username}"></a></td>
+          	<td th:text="${bean.companyType}"></td>
+            <td th:text="${bean.userrealname}"></td>
+            <td th:text="${bean.authStatus}"></td>
+            <td th:text="${bean.regdate} ? ${#calendars.format(bean.regdate, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+            <td th:text="${bean.lastlogindate} ? ${#calendars.format(bean.lastlogindate, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+            <td th:text="${bean.buynum}"></td>
+            <td th:text="${bean.sellnum}"></td>
+           	<td th:text="${bean.passAmount} ? ${#numbers.formatDecimal(bean.passAmount,1,2)}"></td>
+            <td th:text="${bean.verifynum}"></td>
+            <td th:text="${bean.lastverifydate} ? ${#calendars.format(bean.lastverifydate, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+         	<td th:if="${#strings.contains(url, '/tasks/sales/deposit/need/')}"><a th:if="${currentUser.realName.equals(bean.owner)} or ${bean.owner == null}" th:href="@{/tasks/sales/deposit/need/detail/{taskid}/(taskid=${bean.taskid})}">开始处理</a></td>
+         	<td th:if="${#strings.contains(url, '/tasks/sales/deposit/no/')}"><a th:href="@{/tasks/sales/deposit/no/detail/{taskid}/(taskid=${bean.taskid})}">查看</a></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(resList)}">
+            <td colspan="14">暂时没有数据</td>
+          </tr>
+          </tbody>
 	</table>
+	</div>
+	<div th:replace="layouts/fragments :: pagingNavBar"></div>  
+	</div>
+	
+<script layout:fragment="inlineJavascript">
+$(document).ready(function() {
+	 var url=/*[[]]*/;
+	$('select[name=registtime]').change(function() {
+	  url += '?registtime=' + $(this).val();
+	  window.location.href = url;
+	});
+	$('select[name=verifytime]').change(function() {
+		  url += '?verifytime=' + $(this).val();
+		  window.location.href = url;
+		});
+});
+</script>
 </body>
 
 </html>

@@ -13,6 +13,7 @@ import java.util.Map;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.service.BaseService;
 import com.appabc.pay.bean.TPassbookDraw;
+import com.appabc.pay.bean.TPassbookDrawEx;
 import com.appabc.pay.dao.IPassbookDrawDAO;
 import com.appabc.pay.service.local.IPassbookDrawService;
 
@@ -159,6 +160,18 @@ public class PassbookDrawServiceImpl extends BaseService<TPassbookDraw>
 	 */
 	public List<TPassbookDraw> getTPassbookDrawByPassId(String passId) {
 		return iPassbookDrawDAO.getTPassbookDrawByPassId(passId);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.local.IPassbookDrawService#extractCashRequestListEx(com.appabc.common.base.QueryContext)  
+	 */
+	@Override
+	public QueryContext<TPassbookDrawEx> extractCashRequestListEx(
+			QueryContext<TPassbookDrawEx> qContext) {
+		if(qContext == null){
+			return null;
+		}
+		return iPassbookDrawDAO.extractCashRequestListEx(qContext);
 	}
 	
 }

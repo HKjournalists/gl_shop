@@ -19,7 +19,7 @@ public class TPassbookDraw extends BaseBean {
     /**
      * 提取金额
      */
-    private Float amount;
+    private Double amount;
 
     /**
      * 创建时间
@@ -64,11 +64,11 @@ public class TPassbookDraw extends BaseBean {
         this.aid = aid == null ? null : aid.trim();
     }
 
-    public Float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

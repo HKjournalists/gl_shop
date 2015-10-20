@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/buy_item_padding"
+    android:paddingRight="@dimen/buy_item_padding" >
+
+    <!-- 议价时间 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:gravity="center_vertical|right"
+        android:paddingRight="@dimen/buy_item_padding" >
+
+        <TextView
+            android:id="@+id/negotiate_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:singleLine="true"
+            android:text="2014年09月30日 19:32:45"
+            android:textColor="@color/gray" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:duplicateParentState="true"
+            android:singleLine="true"
+            android:text="我的意见:"
+            android:textColor="@color/orange" />
+    </LinearLayout>
+
+    <!-- 议价内容 -->
+
+    <LinearLayout
+        android:layout_width="@dimen/negotiate_item_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@drawable/bg_negotiate_item_mine" >
+
+        <include layout="@layout/layout_second_negotiate_item_content" />
+    </LinearLayout>
+
+</LinearLayout>

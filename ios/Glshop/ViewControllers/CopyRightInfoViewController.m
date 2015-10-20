@@ -34,8 +34,16 @@
     self.navigationItem.rightBarButtonItem = rightItem;
     
     [self fillData];
-    
+
     [self requestNet];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    if (_textView) {
+        [_textView becomeFirstResponder];
+    }
 }
 
 - (void)requestNet {
@@ -44,24 +52,24 @@
         UserInstance *uInstance = [UserInstance sharedInstance];
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:uInstance.user.cid forKey:@"cid"];
         __block typeof(self) this = self;
-        [self.view showWithTip:nil];
+        [super requestNet];
         [self requestWithURL:bCompanyContactListPath params:params HTTPMethod:kHttpGetMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
             kASIResultLog;
             [this handleNetData:responseData];
         } failedBlock:^(ASIHTTPRequest *request) {
-            this.tableView.hidden = NO;
+ 
         }];
     }
 }
 
 - (void)loadSubViews {
     if (_opentionType == Fill_Brief) {
-        _textView = [[REPlaceholderTextView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 160)];
-        _textView.placeholder = @"请输入企业相关简介";
+        _textView = [[REPlaceholderTextView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 140)];
+        _textView.placeholder = @"请输入用户相关简介";
         [self.view addSubview:_textView];
-        [_textView becomeFirstResponder];
+        _textView.font = UFONT_16;
     }else if (_opentionType == Upload_Image) {
-        UILabel *tip = [UILabel labelWithTitle:@"上传企业照片"];
+        UILabel *tip = [UILabel labelWithTitle:@"上传用户照片"];
         tip.frame = CGRectMake(5, 5, 200, 20);
         tip.font = [UIFont systemFontOfSize:13.f];
         [self.view addSubview:tip];
@@ -98,10 +106,13 @@
     UITextField *filed2 = (UITextField *)[self.view viewWithTag:102];
     UITextField *filed3 = (UITextField *)[self.view viewWithTag:103];
     
-    [filed1 becomeFirstResponder];
     filed1.text = _contact.cname;
     filed2.text = _contact.cphone;
     filed3.text = _contact.tel;
+
+//    [filed1 becomeFirstResponder];
+    [filed1 performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:0.5];
+
 }
 
 - (void)setOpentionType:(Opention_type)opentionType {
@@ -109,9 +120,9 @@
     if (_opentionType == Add_Contact) {
         self.title = @"联系人信息";
     }else if (_opentionType == Fill_Brief) {
-        self.title = @"企业简介";
+        self.title = @"用户简介";
     }else {
-        self.title = @"企业照片";
+        self.title = @"用户照片";
     }
 }
 
@@ -122,16 +133,21 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
-    cell.textLabel.font = [UIFont systemFontOfSize:14.f];
+    cell.textLabel.textColor = C_BLACK;
+    cell.textLabel.font = [UIFont systemFontOfSize:FONT_16];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    NSArray *texts = @[@"联系信息",@"姓名",@"手机",@"电话",];
+    
+    NSArray *texts = @[@"联系人信息",@"姓名",@"手机",@"电话",];
     cell.textLabel.text = texts[indexPath.row];
     if (indexPath.row) {
-        UITextField *filed = [[UITextField alloc] initWithFrame:CGRectMake(cell.vright-160, 0, 160, cell.vheight)];
+        UITextField *filed = [[UITextField alloc] initWithFrame:CGRectMake(cell.vright-165, 0, 160, cell.vheight)];
         filed.tag = 100+indexPath.row;
         filed.textAlignment = NSTextAlignmentRight;
         filed.placeholder = @"填写";
         [cell.contentView addSubview:filed];
+        filed.textColor = C_GRAY;
+        filed.font = [UIFont systemFontOfSize:FONT_16];
         
         if (indexPath.row == 2) {
             filed.keyboardType = UIKeyboardTypeNumberPad;
@@ -141,9 +157,12 @@
     }
     
     if (indexPath.row == 0) {
+        cell.textLabel.textColor = C_GRAY;
+        cell.textLabel.font = [UIFont systemFontOfSize:FONT_14];
+        
         UILabel *tip = [UILabel labelWithTitle:@"(*必填)"];
-        tip.frame = CGRectMake(70, 0, 100, cell.vheight);
-        tip.font = [UIFont systemFontOfSize:12.f];
+        tip.frame = CGRectMake(85, 0, 100, cell.vheight);
+        tip.font = [UIFont systemFontOfSize:FONT_12];
         tip.textColor = [UIColor redColor];
         [cell addSubview:tip];
     }else if (indexPath.row == 1) {
@@ -151,22 +170,13 @@
     }else if (indexPath.row == 2) {
         cell.imageView.image = [UIImage imageNamed:@"attestation_icon_cellphone_xin"];
     }else if (indexPath.row == 3) {
-        cell.imageView.image = [UIImage imageNamed:@"attestation_icon_phone_xin"];
+        cell.imageView.image = [UIImage imageNamed:@"attestation_icon_phone_extan"];
     }
     
     return cell;
 }
 
 #pragma mark - Private
-- (ProfileViewController *)profileVC {
-    for (UIViewController *vc in self.navigationController.viewControllers) {
-        if ([vc isKindOfClass:[ProfileViewController class]]) {
-            return (ProfileViewController *)vc;
-        }
-    }
-    return nil;
-}
-
 - (void)fillData {
     switch (_opentionType) {
         case Add_Contact:
@@ -176,7 +186,7 @@
             break;
         case Fill_Brief:
         {
-            ProfileViewController *vc = [self profileVC];
+            ProfileViewController *vc = [self findDesignatedViewController:[ProfileViewController class]];
             if (vc.cModel.mark) {
                 _textView.text = vc.cModel.mark;
             }
@@ -184,7 +194,7 @@
             break;
         case Upload_Image:
         {
-            ProfileViewController *vc = [self profileVC];
+            ProfileViewController *vc = [self findDesignatedViewController:[ProfileViewController class]];
             if (vc.cModel.companyImgList.count) { // 如果有实物图片
                 NSMutableArray *temp = [NSMutableArray array];
                 for (AddressImgModel *model in vc.cModel.companyImgList) {
@@ -217,7 +227,7 @@
             NSMutableDictionary *params = [NSMutableDictionary dictionary];
             [params addString:userInstance.user.cid forKey:@"cid"];
             [params addString:_textView.text forKey:@"mark"];
-            ProfileViewController *vc = [self profileVC];
+            ProfileViewController *vc = [self findDesignatedViewController:[ProfileViewController class]];
             
             if (vc.cModel.companyImgList) {
                 NSMutableArray *temp = [NSMutableArray arrayWithCapacity:vc.cModel.companyImgList.count];
@@ -226,7 +236,7 @@
                 }
                 [params addString:[temp componentsJoinedByString:@","] forKey:@"companyImgIds"];
             }
-            
+            [self showHUD];
             [self requestWithURL:bUpdateCompanyInfoPath
                           params:params
                       HTTPMethod:kHttpPostMethod
@@ -241,7 +251,7 @@
             HUD(@"请选择企业照片");
             return;
         }else {
-            [self showHUD:@"正在保存..." isDim:NO Yoffset:0];
+            [self showHUD];
             [_photoView uploadImage];
         }
     }else if (_opentionType == Add_Contact) {
@@ -249,7 +259,7 @@
         UITextField *filed2 = (UITextField *)[self.view viewWithTag:102];
         UITextField *filed3 = (UITextField *)[self.view viewWithTag:103];
         
-        if (!filed1.text.length || !filed2.text.length || !filed3.text.length) {
+        if (!filed1.text.length || !filed2.text.length) {
             [self showTip:@"请将信息填写完整"];
             return;
         }else {
@@ -265,16 +275,16 @@
                       HTTPMethod:kHttpPostMethod
                    completeBlock:^(ASIHTTPRequest *request, id responseData) {
                 kASIResultLog;
-                       if (_authModel) {
+                       if (_authModel) { // 如果是从”认证申请“页面进来
                            _authModel.contact = filed1.text;
                            _authModel.phone = filed2.text;
                            _authModel.tel = filed3.text;
-                           AuthViewController *vc = (AuthViewController *)self.navigationController.viewControllers[2];
+                           AuthViewController *vc = (AuthViewController *)[self findDesignatedViewController:[AuthViewController class]];
                            [vc.tableView reloadData];
                        }
                        [self tipSaveSuccess];
             } failedBlock:^(ASIHTTPRequest *request) {
-                DLog(@"failed");
+                
             }];
         }
     }
@@ -284,7 +294,7 @@
 
 - (void)uploadImageSuccess:(NSString *)imgsId uploadView:(PhotoUploadView *)uploadView {
     [self hideHUD];
-    ProfileViewController *vc = [self profileVC];
+    ProfileViewController *vc = [self findDesignatedViewController:[ProfileViewController class]];
     
     UserInstance *userInstance = [UserInstance sharedInstance];
     NSMutableDictionary *params = [NSMutableDictionary dictionary];

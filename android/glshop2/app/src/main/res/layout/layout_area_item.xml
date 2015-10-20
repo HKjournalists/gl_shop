@@ -1,0 +1,124 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_area_item"
+        android:padding="0dp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <!-- 数量 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:background="@drawable/ic_star_mark"
+                    android:contentDescription="@null"
+                    android:duplicateParentState="true" />
+
+                <TextView
+                    android:id="@+id/tv_item_area_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:duplicateParentState="true"
+                    android:singleLine="true"
+                    android:text="地域1" />
+
+                <TextView
+                    android:id="@+id/tv_item_area_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:duplicateParentState="true"
+                    android:gravity="right"
+                    android:singleLine="true"
+                    android:text="靖江"
+                    android:textColor="@color/blue" />
+            </LinearLayout>
+
+            <!-- 价格 -->
+
+            <View
+                style="@style/item_devider_line"
+                android:layout_marginLeft="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:background="@drawable/ic_star_mark"
+                    android:contentDescription="@null"
+                    android:duplicateParentState="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:duplicateParentState="true"
+                    android:singleLine="true"
+                    android:text="@string/business_product_portprice" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:duplicateParentState="true"
+                    android:singleLine="true"
+                    android:text="@string/product_unit_price"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_item_content_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:duplicateParentState="true"
+                    android:gravity="right"
+                    android:singleLine="true"
+                    android:text="0"
+                    android:textColor="@color/blue" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_more_area" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/ll_item_middle"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@drawable/bg_area_item_middle" />
+
+    <View
+        android:id="@+id/ll_item_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@drawable/bg_area_item_bottom"
+        android:visibility="gone" />
+
+</LinearLayout>

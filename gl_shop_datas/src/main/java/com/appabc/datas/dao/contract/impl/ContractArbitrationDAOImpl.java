@@ -1,15 +1,24 @@
 package com.appabc.datas.dao.contract.impl;
 
+import com.appabc.bean.bo.ContractArbitrationBean;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
+import com.appabc.bean.enums.ContractInfo.ContractArbitrationStatus;
 import com.appabc.bean.pvo.TOrderArbitration;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.common.utils.pagination.ISQLGenerator;
+import com.appabc.common.utils.pagination.PaginationInfoDataBaseBuiler;
 import com.appabc.datas.dao.contract.IContractArbitrationDAO;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +40,7 @@ public class ContractArbitrationDAOImpl extends BaseJdbcDao<TOrderArbitration>
 	private static final String UPDATE_SQL = " UPDATE T_ORDER_ARBITRATION SET LID = :lid,CREATER = :creater,CREATETIME = :createtime,REMARK = :remark,DEALER = :dealer,DEALTIME = :dealtime,DEALRESULT = :dealresult,STATUS = :status WHERE AID = :id ";
 	private static final String DELETE_SQL = " DELETE FROM T_ORDER_ARBITRATION WHERE AID = :id ";
 	private static final String SELECT_SQL = " SELECT AID,LID,CREATER,CREATETIME,REMARK,DEALER,DEALTIME,DEALRESULT,STATUS FROM T_ORDER_ARBITRATION ";
+	private static final String SELECTARBITRATION_SQL = " SELECT TCI.CNAME,TCI.CTYPE,TOI.REMARK AS COTITLE,TOO.OID,TOA.* FROM T_ORDER_ARBITRATION TOA LEFT JOIN T_COMPANY_INFO TCI ON TCI.ID = TOA.CREATER LEFT JOIN T_ORDER_OPERATIONS TOO ON TOO.LID = TOA.LID LEFT JOIN T_ORDER_INFO TOI ON TOI.OID = TOO.OID WHERE 1 = 1 ";
 
 	private String dynamicJoinSqlWithEntity(TOrderArbitration bean,
 			StringBuilder sql) {
@@ -186,8 +196,9 @@ public class ContractArbitrationDAOImpl extends BaseJdbcDao<TOrderArbitration>
 		bean.setDealer(rs.getString("DEALER"));
 		bean.setDealtime(rs.getTimestamp("DEALTIME"));
 		bean.setDealresult(rs.getString("DEALRESULT"));
-		bean.setStatus(rs.getInt("STATUS"));
-
+		ContractArbitrationStatus status = ContractArbitrationStatus.enumOf(rs.getInt("STATUS"));
+		bean.setStatus(status);
+		
 		return bean;
 	}
 
@@ -199,11 +210,93 @@ public class ContractArbitrationDAOImpl extends BaseJdbcDao<TOrderArbitration>
 	 * (java.lang.String)
 	 */
 	public List<TOrderArbitration> queryArbitrationForList(String contractId) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE LID IN (SELECT LID from T_ORDER_OPERATIONS where OID = ? ) ORDER BY CREATETIME ASC ");
 		return super.queryForList(sql.toString(),
 				Collections.singletonList(contractId));
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.dao.contract.IContractArbitrationDAO#queryContractArbitrationInfoForList(com.appabc.bean.enums.ContractInfo.ContractArbitrationStatus)  
+	 */
+	@Override
+	public List<ContractArbitrationBean> queryContractArbitrationInfoForList(
+			ContractArbitrationStatus status) {
+		if(status == null){
+			return null;
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append(SELECTARBITRATION_SQL);
+		sql.append(" AND TOA.STATUS = ? ORDER BY TOA.CREATETIME DESC");
+		return this.getJdbcTemplate().query(sql.toString(), rowMapper, Collections.singletonList(status.getVal()).toArray());
+	}
+	
+	private RowMapper<ContractArbitrationBean> rowMapper = new RowMapper<ContractArbitrationBean>() {
+		public ContractArbitrationBean mapRow(ResultSet rs,
+				int rowNum) throws SQLException {
+			ContractArbitrationBean bean = new ContractArbitrationBean();
+			
+			bean.setId(rs.getString("AID"));
+			bean.setLid(rs.getString("LID"));
+			bean.setCreater(rs.getString("CREATER"));
+			bean.setCreatetime(rs.getTimestamp("CREATETIME"));
+			bean.setRemark(rs.getString("REMARK"));
+			bean.setDealer(rs.getString("DEALER"));
+			bean.setDealtime(rs.getTimestamp("DEALTIME"));
+			bean.setDealresult(rs.getString("DEALRESULT"));
+			ContractArbitrationStatus status = ContractArbitrationStatus.enumOf(rs.getInt("STATUS"));
+			bean.setStatus(status);
+			bean.setCname(rs.getString("CNAME"));
+			bean.setCoTitle(rs.getString("COTITLE"));
+			CompanyType ctype = CompanyType.enumOf(rs.getString("CTYPE"));
+			bean.setCtype(ctype);
+			bean.setOid(rs.getString("OID"));
+			
+			return bean;
+		}
+	};
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.dao.contract.IContractArbitrationDAO#getContractArbitrationInfoListForPagination(com.appabc.common.base.QueryContext)  
+	 */
+	@Override
+	public QueryContext<ContractArbitrationBean> getContractArbitrationInfoListForPagination(
+			QueryContext<ContractArbitrationBean> qContext) {
+		if (qContext == null) {
+			return null;
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append(SELECTARBITRATION_SQL);
+		//sql.append(" AND TOA.STATUS = ?  ORDER BY TOA.CREATETIME DESC ");
+		List<Object> args = new ArrayList<Object>();
+		String status = String.valueOf(qContext.getParameter("status"));
+		this.addStandardSqlWithParameter(sql, " TOA.STATUS ", status, args);
+		qContext.setParamList(args);
+		sql.append(" ORDER BY TOA.CREATETIME DESC ");
+		
+		log.debug("The Sql Str Before Page Is : " + sql + " ; And The Value Is : "+qContext.getParameters());
+		if (qContext.getPage().getPageIndex() < 0) {
+			List<ContractArbitrationBean> list = getJdbcTemplate().query(sql.toString(),CollectionUtils.isEmpty(qContext.getParamList()) ? null: qContext.getParamList().toArray(), rowMapper);
+			qContext.getQueryResult().setResult(list);
+			qContext.getQueryResult().setTotalSize(list.size());
+		} else {
+			ISQLGenerator iSQLGenerator = PaginationInfoDataBaseBuiler.generateSQLGenerateFactory();
+			String countSql = iSQLGenerator.generateCountSql(sql.toString());
+			log.info("the count sql str is  : " + countSql);
+			// 获取记录总数
+			@SuppressWarnings("deprecation")
+			int count = getJdbcTemplate().queryForInt(countSql,CollectionUtils.isEmpty(qContext.getParamList()) ? null: qContext.getParamList().toArray());
+			qContext.getQueryResult().setTotalSize(count);
+			qContext.getPage().setTotalSize(count);
+
+			String pageSql = iSQLGenerator.generatePageSql(sql.toString(),qContext.getPage());
+			log.info("the page sql str is  : " + pageSql);
+			// 获取分页后的记录数量
+			List<ContractArbitrationBean> list = getJdbcTemplate().query(pageSql,CollectionUtils.isEmpty(qContext.getParamList()) ? null: qContext.getParamList().toArray(), rowMapper);
+			qContext.getQueryResult().setResult(list);
+		}
+		return qContext;
 	}
 
 }

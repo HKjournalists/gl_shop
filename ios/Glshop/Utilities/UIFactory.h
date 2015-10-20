@@ -17,6 +17,10 @@ typedef NS_ENUM(NSInteger, UnitTextType) {
      *@brief 单位：吨
      */
     unint_dun,
+    /**
+     *@brief 单位：元/吨
+     */
+    unint_per_dun_money,
 };
 
 @interface UIFactory : NSObject
@@ -30,7 +34,14 @@ typedef NS_ENUM(NSInteger, UnitTextType) {
  *@brief 针对列表的单元格添加单位列表
  *@discussion 针对本项目
  */
-+ (UILabel *)createUnitLabel:(NSString *)text withFont:(UIFont *)font unitType:(UnitTextType)type;
++ (UILabel *)createUnitLabel:(NSString *)text
+                    withFont:(UIFont *)font
+                    unitType:(UnitTextType)type;
+
++ (UILabel *)createUnitLabel:(NSString *)text
+                    withFont:(UIFont *)font
+                    unitType:(UnitTextType)type
+                  cellHeight:(float)height;
 
 /**
  *@brief 创建通用按钮，附带背景图片

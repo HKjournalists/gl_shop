@@ -7,8 +7,8 @@
 //
 
 #import "BaseViewController.h"
-#import "ViewPagerController.h"
+#import "NTSlidingViewController.h"
 
-@interface MyContractViewController : ViewPagerController
+@interface MyContractViewController : NTSlidingViewController
 
 @end

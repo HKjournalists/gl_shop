@@ -42,17 +42,17 @@ public class TPassbookPay extends BaseBean {
     /**
      * 实际金额
      */
-    private Float amount;
+    private Double amount;
 
     /**
      * 应收金额
      */
-    private Float needamount;
+    private Double needamount;
 
     /**
      * 余额
      */
-    private Float balance;
+    private Double balance;
     
     /**
      * 流入流出
@@ -103,6 +103,11 @@ public class TPassbookPay extends BaseBean {
      * 父操作ID
      */
     private String ppid;
+    
+    /**
+     * 合同名称(此属性非数据库中字段)
+     */
+    private String contractname;
 
     public String getPassid() {
         return passid;
@@ -136,19 +141,19 @@ public class TPassbookPay extends BaseBean {
         this.name = name == null ? null : name.trim();
     }
 
-    public Float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
-    public Float getNeedamount() {
+    public Double getNeedamount() {
         return needamount;
     }
 
-    public void setNeedamount(Float needamount) {
+    public void setNeedamount(Double needamount) {
         this.needamount = needamount;
     }
 
@@ -299,14 +304,14 @@ public class TPassbookPay extends BaseBean {
 	 * @since   1.0.0  
 	*/  
 	
-	public Float getBalance() {
+	public Double getBalance() {
 		return balance;
 	}
 
 	/**  
 	 * @param balance the balance to set  
 	 */
-	public void setBalance(Float balance) {
+	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
 
@@ -326,6 +331,14 @@ public class TPassbookPay extends BaseBean {
 	 */
 	public void setPpid(String ppid) {
 		this.ppid = ppid;
+	}
+
+	public String getContractname() {
+		return contractname;
+	}
+
+	public void setContractname(String contractname) {
+		this.contractname = contractname;
 	}
 
 }

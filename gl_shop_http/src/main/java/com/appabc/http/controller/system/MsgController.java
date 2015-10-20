@@ -49,7 +49,7 @@ public class MsgController extends BaseController<TSystemMessage> {
 	@ResponseBody
 	@RequestMapping(value = "/getList")
 	public Object getMsgList(HttpServletRequest request,HttpServletResponse response) {
-		
+
 		String cid = request.getParameter("cid");
 		if(StringUtils.isEmpty(cid)){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业编号不能为空");
@@ -58,6 +58,39 @@ public class MsgController extends BaseController<TSystemMessage> {
 		qContext.addParameter("cid", cid);
 		try {
 			qContext = systemMessageService.queryListForPagination(qContext);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		}
+		
+		int unreadTotalSize = this.systemMessageService.getUnreadMsgCountByCid(cid);
+		
+		qContext.getQueryResult().addResoutParam("unreadTotalSize", unreadTotalSize);
+		return qContext.getQueryResult();
+	}
+	
+	/**
+	 * 根据消息类型获取未删除消息列表
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getListByType")
+	public Object getMsgListByType(HttpServletRequest request,HttpServletResponse response) {
+		
+		String cid = request.getParameter("cid");
+		String type=request.getParameter("type");
+		if(StringUtils.isEmpty(cid)){
+			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业编号不能为空");
+		}
+		QueryContext<TSystemMessage> qContext = initializeQueryContext(request);
+		if(!StringUtils.isEmpty(type)){
+			qContext.addParameter("type", type);
+		}
+		qContext.addParameter("cid", cid);
+		try {
+			qContext = systemMessageService.queryListByTypeForPagination(qContext);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
@@ -122,6 +155,35 @@ public class MsgController extends BaseController<TSystemMessage> {
 			}
 		}
 		return buildSuccessResult("设置已读成功", "");
+	}
+	
+	/**
+	 * 设置消息为已删除
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/delete")
+	public Object msgDelete(HttpServletRequest request,HttpServletResponse response) {
+		
+		String msgids = request.getParameter("msgids");
+		if(StringUtils.isEmpty(msgids)){
+			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "消息ID不能为空");
+		}
+		String ids[] = msgids.split(",");
+		for(String id : ids){
+			TSystemMessage msg = this.systemMessageService.query(id);
+			msg.setStatus(MsgStatus.STATUS_IS_DELETE_YES); // 设置已删除
+			msg.setDeletetime(Calendar.getInstance().getTime());
+			try {
+				this.systemMessageService.modify(msg);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+			}
+		}
+		return buildSuccessResult("设置已删除成功", "");
 	}
 	
 	/**

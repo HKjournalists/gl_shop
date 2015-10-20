@@ -12,12 +12,6 @@
 #define SynacObject [SynacInstance sharedInstance]
 #define UserObject [UserInstance sharedInstance]
 
-#define TopProductSend @"黄砂"
-#define TopProductStone @"石子"
-
-#define TopProductStonePcode @"G001"
-#define TopProductSendPcode @"G002"
-
 #define MathUnitTon @"UNIT001" // 吨
 #define MathUnitCube @"UNIT002" // 立方
 

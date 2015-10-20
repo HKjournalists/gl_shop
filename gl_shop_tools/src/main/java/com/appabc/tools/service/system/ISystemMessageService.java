@@ -1,6 +1,8 @@
 package com.appabc.tools.service.system;
 
+import com.appabc.bean.bo.SystemMessageEx;
 import com.appabc.bean.pvo.TSystemMessage;
+import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.service.IBaseService;
 
 /**
@@ -20,5 +22,21 @@ public interface ISystemMessageService extends IBaseService<TSystemMessage> {
 	 * @return
 	 */
 	public int getUnreadMsgCountByCid(String cid);
+	
+	/**  
+	 * queryMessageExListForPagination (根据查询对象查询实体列表从数据库中)  
+	 * @param qContext  
+	 * @author Bill huang 
+	 * @return QueryContext<SystemMessageEx>  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	public QueryContext<SystemMessageEx> queryMessageExListForPagination(QueryContext<SystemMessageEx> qContext);
 
+	/**
+	 * 根据消息类型获取企业未删除消息列表
+	 * @param cid
+	 * @return
+	 */
+	public QueryContext<TSystemMessage> queryListByTypeForPagination(QueryContext<TSystemMessage> qContext);
 }

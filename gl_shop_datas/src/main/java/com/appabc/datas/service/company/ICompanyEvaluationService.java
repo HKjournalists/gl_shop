@@ -19,8 +19,32 @@ import java.util.List;
 
 public interface ICompanyEvaluationService extends IBaseService<TCompanyEvaluation> {
 
+	/**
+	 * @Description 评价合同
+	 * @param operator,operatorName,bean
+	 * @return TOrderArbitration
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	void toEvaluateContract(String operator,String operatorName,TCompanyEvaluation bean) throws ServiceException;
 
+	/**
+	 * @Description 获取合同评价列表
+	 * @param operator,operatorName,bean
+	 * @return List<CompanyEvaluationInfo>
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	List<CompanyEvaluationInfo> getEvaluationContractList(CompanyEvaluationInfo cei);
+	
+	/**
+	 * 获取被评价信息，返回内容中的用户信息是评价人的
+	 * @param cei
+	 * @return
+	 */
+	List<CompanyEvaluationInfo> queryEvaluationListByCompany(CompanyEvaluationInfo cei);
+
 
 }

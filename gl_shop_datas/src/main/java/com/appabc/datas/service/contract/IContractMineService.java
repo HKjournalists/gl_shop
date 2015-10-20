@@ -2,8 +2,8 @@ package com.appabc.datas.service.contract;
 
 import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
 import com.appabc.bean.enums.ContractInfo.ContractStatus;
+import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderMine;
-import com.appabc.common.base.service.IBaseService;
 import com.appabc.datas.exception.ServiceException;
 
 /**
@@ -15,7 +15,7 @@ import com.appabc.datas.exception.ServiceException;
  * @Create_Date  : 2014年12月24日 下午6:19:54
  */
 
-public interface IContractMineService extends IBaseService<TOrderMine> {
+public interface IContractMineService extends IContractBaseService<TOrderMine> {
 	
 	/**
 	 * @Description : 根据合同ID和企业ID查询我的合同信息
@@ -39,5 +39,7 @@ public interface IContractMineService extends IBaseService<TOrderMine> {
 	 * @author Bill Huang
 	 * */
 	boolean saveOrUpdateMineContractWithCidOid(String oid,String cid,ContractStatus status,ContractLifeCycle lifeCycle,String operator) throws ServiceException;
+	
+	void jobAutoSetupContractExpireDayFinish(TOrderInfo bean,String cid) throws ServiceException;
 	
 }

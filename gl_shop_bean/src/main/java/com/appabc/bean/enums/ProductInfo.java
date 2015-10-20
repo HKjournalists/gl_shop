@@ -6,6 +6,14 @@ import com.appabc.common.base.bean.IBaseEnum;
 
 public interface ProductInfo extends IBaseEnum{
 	
+	/**
+	 * @Description : 单位
+	 * @Copyright   : GL. All Rights Reserved
+	 * @Company     : 江苏国立网络技术有限公司
+	 * @author      : 杨跃红
+	 * @version     : 1.0
+	 * Create Date  : 2015年2月11日 下午2:17:20
+	 */
 	public enum UnitEnum implements ProductInfo {
 		
 		/**

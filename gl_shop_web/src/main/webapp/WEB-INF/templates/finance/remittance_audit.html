@@ -36,7 +36,7 @@
               <th>银行汇款流水号</th>
               <td th:text="${remittance.bankSerialNumber}">1234567890983748</td>
               <th>汇款录入人</th>
-              <td colspan="3" th:text="${remittance.creator.userName}">张三</td>
+              <td colspan="3" th:text="${remittance.creator.realName}">张三</td>
             </tr>
           </table>
         </div>
@@ -58,10 +58,8 @@
               <td width="30%" th:text="${remittance.remitter}">张思</td>
             </tr>
             <tr>
-              <th>合同编号</th>
-              <td th:text="${remittance.contractId}">201404159280</td>
               <th>公司名称</th>
-              <td th:text="${remittance.company}">江苏国立有限公司</td>
+              <td colspan="3" th:text="${remittance.company}">江苏国立有限公司</td>
             </tr>
             <tr>
               <th>其他信息</th>
@@ -94,7 +92,7 @@
               <td th:text="${target.ctype.text}">船舶</td>
               <td th:text="${remittance.targetWalletType.text}">货款</td>
               <td th:text="${remittance.amount}">65000</td>
-              <td th:text="${remittance.processor.userName}">李立</td>
+              <td th:text="${remittance.processor.realName}">李立</td>
             </tr>
             </tbody>
           </table>

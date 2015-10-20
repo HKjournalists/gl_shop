@@ -40,7 +40,7 @@ public class PurseParamObj extends BaseBean {
 	/*目标地址*/
 	private String destPassId;
 	/*金额*/
-	private Float balance;
+	private Double balance;
 	/*合同编号*/
 	private String contractId;
 	/*提取ID*/
@@ -115,14 +115,14 @@ public class PurseParamObj extends BaseBean {
 	 * @since   1.0.0  
 	 */
 	
-	public Float getBalance() {
+	public Double getBalance() {
 		return balance;
 	}
 
 	/**  
 	 * @param balance the balance to set  
 	 */
-	public void setBalance(Float balance) {
+	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
 

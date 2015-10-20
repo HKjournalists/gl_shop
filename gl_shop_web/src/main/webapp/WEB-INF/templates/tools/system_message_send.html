@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tools">
+<head>
+<meta charset="UTF-8">
+<title>常用工具 - 发送系统消息</title>
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/plugins/uploadify/uploadify.css}" />
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 常用工具 - 发送系统消息
+</h4>
+
+<div layout:fragment="pageContent">
+  <ul class="nav nav-tabs" th:replace="fragments/system_manage_fragments :: system_message_tab">
+    <li role="presentation"><a href="#">系统消息发送</a></li>
+    <li role="presentation" class="active"><a href="#">已发消息列表</a></li>
+  </ul>
+  
+  <div class="panel panel-primary media">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 发送系统消息
+    </div>
+    <div class="panel-body">
+    	<div class="alert alert-success" style="display:none;">该信息已发送成功，请知悉!</div>
+      	<form id="systemMessageForm" class="form-horizontal" role="form" th:action="@{/tool/manage/system_message/send/}" method="post">
+      		<input type="hidden" id="packageId" name="packageId" />
+      		<div class="form-group">
+              <label for="acceptor" class="col-sm-2 control-label required">接收人</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" name="acceptor" id="acceptor" placeholder="请输入接收人" />
+              </div>
+              <div class="col-sm-3">
+                <input id="file_upload" name="file" type="file" multiple class="btn btn-primary">
+              </div>
+              <div class="col-sm-2">
+              	<a target="_blank" th:href="@{/tool/manage/downloadPhonePackage/}" class="btn btn-primary">下载号码包模板</a>
+              </div>
+            </div>
+            
+        	<div class="form-group">
+              <label for="ctype" class="col-sm-2 control-label required">企业类型</label>
+              <div class="col-sm-5">
+              	<input type="hidden" name="cid" id="cid" />
+                <input type="text" class="form-control" name="ctype" id="ctype" placeholder="企业类型" disabled />
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="auth" class="col-sm-2 control-label required">认证名称</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" name="auth" id="auth" placeholder="认证名称" disabled />
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="messageType" class="col-sm-2 control-label required">消息类型</label>
+              <div class="col-sm-5">
+                <select id="messageType" name="messageType" class="form-control">
+                  <option value="1">系统消息</option>
+                  <option value="2">活动消息</option>
+                  <option value="3">交易消息</option>
+                  <option value="4">资讯消息</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="content" class="col-sm-2 control-label required">消息内容</label>
+              <div class="col-sm-5">
+                <textarea class="form-control" name="content" id="content" rows="6"></textarea>
+              </div>
+              <div class="col-sm-5">
+                <pre id="contentPre">预览消息内容</pre>
+              </div>
+            </div>
+	        
+	        <div class="text-center">
+	          <button class="btn btn-primary" type="submit">发送</button>
+	        </div>
+      	</form>
+      	
+      	<!-- Modal -->
+	  <div class="modal fade" id="confirmDialog" tabindex="-1" role="dialog" aria-labelledby="contractConfirm" aria-hidden="true">
+	    <div class="modal-dialog">
+	      <div class="modal-content">
+	        <div class="modal-header">
+	          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+	          <h4 class="modal-title" id="confirmDialogTitle">发送系统消息的二次确认</h4>
+	        </div>
+	        <div class="modal-body">
+	          <p id="confirmDialogContent"></p>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	          <button id="btnDialogOk" type="button" class="btn btn-primary">确定</button>
+	        </div>
+	      </div>
+	    </div>
+	  </div><!-- /Modal -->
+    </div>
+  </div>
+  
+</div>  
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/plugins/uploadify/jquery.uploadify.min.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+</div>
+<script layout:fragment="inlineJavascript">
+var contextPath = /*[[@{/}]]*/ '/';
+
+$(document).ready(function() {
+	
+	var retFlag = /*[[${retFlag} ? ${retFlag}]]*/ 'false';
+	if(retFlag != '' && retFlag == 'true'){
+		$(".alert-success").show();
+		setTimeout(function(){
+			$(".alert-success").hide();
+		}, 5000);
+	}
+	
+	$('textarea#content').change(function() {
+		var content = $.trim($(this).val());
+		if(content && content.length>500){
+			$(this).val('');
+			$('#contentPre').empty().html('预览消息内容');
+			alert('发送内容不能超过500个字!');
+			return ;
+		}
+        if (content && content.length<500) {
+        	$('#contentPre').empty().html(content);
+        }
+	});
+	
+	$('#acceptor').change(function() {
+        var mobile = $.trim($(this).val());
+        if (mobile) {
+            loadJsonData(contextPath, '/company/search/mobile/{mobile}/', {mobile: mobile}, function(data) {
+            	 if ($.isEmptyObject(data)) {
+                     alert('没有找到符合条件的结果！');
+                     $('#acceptor').val('');
+                     $('#ctype').val('');
+              		 $('#auth').val('');
+              		 $('#cid').val('');
+                     return;
+                 }
+                 $('#cid').val(data.cid);
+                 
+                 loadCompany(contextPath, data.cid, function(c) {
+                 	if(c){
+                 		$('#ctype').val(c.ctype.text);
+                 		$('#auth').val(c.cname);
+                 	}
+                 });
+            	
+            });
+        }
+    });
+	
+	var _csrf = $('input[name="_csrf"]').val();
+	$('#file_upload').uploadify({
+		'swf'      : contextPath+'static/plugins/uploadify/uploadify.swf',
+		'uploader' : contextPath+"tool/manage/uploadPhonePackage/?_csrf="+_csrf,
+		'buttonText' : '上传号码包',
+		'fileObjName' : 'Filedata',
+		'fileTypeExts': '*.txt; *.doc; *.docx; *.csv; *.xls; *.xlsx',
+		'onUploadSuccess' : function(file, data, response) {
+			data = JSON.parse(data);
+			if (data.success) {
+				$("#packageId").val(data.data);
+				$("#acceptor").val(file.name);
+			}
+			if (data.message) {
+				$("#"+file.id).find('.data').html("<div style='color:red;'>"+data.message+"</div>");
+			}
+        },
+        'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+        	alert(errorMsg+" : "+errorString);
+        }
+	});
+	
+	var validator = $('#systemMessageForm').validate({
+		submitHandler:function(form) {
+			var acceptor = $('#acceptor').val();
+	        var ctype = $('#ctype').val();
+	        var auth = $('#auth').val();
+	        var messageType = $('#messageType option:selected').text();
+	        var mtitle = $('#mtitle').val();
+	        var content = $('#content').val();
+	        var contractContent = ['<h4>请确认以下系统消息信息</h4>',
+	            '接收人：' + acceptor, '企业类型：' + ctype, '认证名称：' + auth,'消息类型：' + messageType,
+	            '消息内容：<pre>' + content + '</pre>',' <br/>您正在发送系统消息，请检查无误后，确认是否立即发送?'];
+	        $('#confirmDialogContent').html(contractContent.join('<br/>'));
+	        
+			$('#confirmDialog').modal('show');
+    		$('#btnDialogOk').click(function() {
+   		       $('#confirmDialog').modal('hide');
+   		    	form.submit();
+   		     });
+		},
+	    rules: {
+	    	acceptor: {
+	            required: true
+	        },
+	        ctype: {
+	            required: true
+	        },
+	        auth: {
+	            required: true
+	        },
+	        mtype: {
+	            required: true
+	        },
+	        mtitle: {
+	            required: true
+	        },
+	        content: {
+	        	required: true
+	        }
+	    },
+	    messages: {
+	    	acceptor: "请输入接收人",
+	    	ctype: "请输入企业类型",
+	    	auth: "请输入认证名称",
+	    	mtype: "请输入消息类型",
+	    	mtitle: "请输入消息标题",
+	    	content: "请输入消息内容"
+	    }
+	});
+	
+});
+</script>
+</body>
+</html>

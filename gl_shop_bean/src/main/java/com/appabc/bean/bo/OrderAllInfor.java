@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.enums.ContractInfo.ContractStatus;
@@ -32,8 +32,8 @@ public class OrderAllInfor extends BaseBean {
 	private String title; // 标题
 	private Integer type;// 类型:0买/1卖
 	private Float price;// 单价
-	private Float totalnum;// 当前数量
-	private Float num;//总量
+	private Float totalnum;// 总量
+	private Float num;//当前剩余数量
 	private Date creatime;//创建时间
 	private Date updatetime;//更新时间
 	private Date starttime;//有效开始时间
@@ -72,7 +72,10 @@ public class OrderAllInfor extends BaseBean {
     private Float shippington; // 可泊船吨位
     private List<ViewImgsBean> addressImgList = new ArrayList<ViewImgsBean>();// 企业卸货地址图片
     private List<ViewImgsBean> productImgList = new ArrayList<ViewImgsBean>();// 货物照片
+    
     private int isApply; // 是否申请过(1已申请，0未申请)
+    private Integer applyNum; // 交易盘询次数
+    private Date applyDate; // 最后一次交易询盘时间
     private String contractid; // 合同ID（该询单生成的合同ID）
     private ContractStatus contractStatus; // 合同状态
     private Date contractendtime; // 合同结束时间
@@ -81,8 +84,9 @@ public class OrderAllInfor extends BaseBean {
     private String cid; // 企业ID
 	private String cname; // 企业名称
     private CompanyType ctype;//企业类型
-    private CompanyAuthStatus authstatus; // 认证状态(是否认证)
+    private AuthRecordStatus authstatus; // 认证状态(是否认证)
     private CompanyBailStatus bailstatus; // 保证金缴纳状态（是否缴纳足额）
+    private double guaranty;
     
 	public String getFid() {
 		return fid;
@@ -160,7 +164,13 @@ public class OrderAllInfor extends BaseBean {
 		return endtime;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void setEndtime(Date endtime) {
+		if(endtime != null){
+    		endtime.setHours(23);
+    		endtime.setMinutes(59);
+    		endtime.setSeconds(59);
+    	}
 		this.endtime = endtime;
 	}
 
@@ -452,11 +462,11 @@ public class OrderAllInfor extends BaseBean {
 		this.ctype = ctype;
 	}
 
-	public CompanyAuthStatus getAuthstatus() {
+	public AuthRecordStatus getAuthstatus() {
 		return authstatus;
 	}
 
-	public void setAuthstatus(CompanyAuthStatus authstatus) {
+	public void setAuthstatus(AuthRecordStatus authstatus) {
 		this.authstatus = authstatus;
 	}
 
@@ -484,5 +494,50 @@ public class OrderAllInfor extends BaseBean {
 	public void setContractendtime(Date contractendtime) {
 		this.contractendtime = contractendtime;
 	}
+
+	public Integer getApplyNum() {
+		return applyNum;
+	}
+
+	public void setApplyNum(Integer applyNum) {
+		this.applyNum = applyNum;
+	}
+
+	/**  
+	 * guaranty  
+	 *  
+	 * @return  the guaranty  
+	 * @since   1.0.0  
+	*/  
+	
+	public double getGuaranty() {
+		return guaranty;
+	}
+
+	/**  
+	 * @param guaranty the guaranty to set  
+	 */
+	public void setGuaranty(double guaranty) {
+		this.guaranty = guaranty;
+	}
+
+	/**  
+	 * applyDate  
+	 *  
+	 * @return  the applyDate  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getApplyDate() {
+		return applyDate;
+	}
+
+	/**  
+	 * @param applyDate the applyDate to set  
+	 */
+	public void setApplyDate(Date applyDate) {
+		this.applyDate = applyDate;
+	}
+	
 
 }

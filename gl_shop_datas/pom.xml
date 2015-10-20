@@ -211,6 +211,11 @@
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+		</dependency>
 
 	</dependencies>
 	
@@ -220,8 +225,8 @@
            <resource>
                <directory>src/main/resources</directory>
                <excludes>
-                   <exclude>**/*.properties</exclude>
-                   <exclude>*.properties</exclude>
+                   <exclude>**/jdbc-*.properties</exclude>
+                   <exclude>jdbc-*.properties</exclude>
                </excludes>
            </resource>
        </resources>

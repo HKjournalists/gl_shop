@@ -67,8 +67,11 @@
             android:contentDescription="@null" />
 
         <TextView
+            android:id="@+id/tv_empty_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
             android:text="@string/load_data_empty"
             android:textColor="@color/gray" />
     </LinearLayout>

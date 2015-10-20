@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+  <title>合同管理 - 撮合交流</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap-datetimepicker.4.0.0.min.css}" />
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 合同管理 - 撮合交流 </h4>
+
+<div layout:fragment="pageContent">
+
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 需撮合对象
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped">
+          <tr>
+            <th width="15%">发布信息内容</th>
+            <td colspan="3"><a th:href="@{/public/order_request/{id}/(id=${task.taskObject.id})}" th:text="${task.taskObject.title}">求购黄砂50吨</a></td>
+          </tr>
+          <tr>
+            <th width="15%">用户手机号码</th>
+            <td><a th:href="@{/company/{id}/info/(id=${task.company.id})}" th:text="${task.customer.phone}" target="_blank">18666662520</a></td>
+            <th width="15%">用户类型</th>
+            <td width="30%" th:text="${task.company.ctype} ? ${task.company.ctype.text} : '未知'">企业</td>
+          </tr>
+          <tr>
+            <th width="20%">发布信息类型</th>
+            <td th:text="${task.taskObject.type} == 1 ? '求购' : '出售'">求购</td>
+            <th>被搓合次数</th>
+            <td th:text="${task.taskObject.matchingnum}">10</td>
+          </tr>
+          <tr>
+            <th width="15%">用户名称</th>
+            <td width="30%" th:text="${task.company.cname} ? ${task.company.cname} : '未知'">企业</td>
+            <th width="15%">商品种类</th>
+            <td><a th:href="@{/public/order_request/{id}/(id=${task.taskObject.id})}" th:text="${task.taskObject.pTypeName}" target="_blank">18666662520</a></td>
+          </tr>
+          <tr>
+            <th width="20%">交易保证金余额（元）</th>
+            <td th:text="${guaranty}">560980</td>
+            <th>发布时间</th>
+            <td th:text="${#calendars.format(task.taskObject.creatime, 'YYYY-MM-dd HH:mm')}">2015-03-22 17:34</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <div class="panel panel-primary" id="contractResultDiv">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 撮合结果
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped">
+          <tr>
+            <th width="15%">状态</th>
+            	<td th:if="${task.taskObject.contractid} != null" th:text="已签订"></td>
+            	<td th:if="${task.taskObject.contractid} == null" th:text="未签订，已回滚"></td>
+          </tr>
+          <tr>
+            <th width="15%">合同</th>
+            <td colspan="3" th:if="${task.taskObject.contractid} != null"><a target="_blank" th:href="@{/public/contract/{id}/(id=${task.taskObject.contractid})}" th:text="${task.taskObject.title}">求购黄砂50吨</a></td>
+            <td colspan="3" th:if="${task.taskObject.contractid} == null">无</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <th:block  th:if="${currentUser.equals(task.owner) || task.finished == true}">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 撮合对象
+      </div>
+      <div class="panel-body">
+        <ul class="nav nav-tabs" th:with="baseUrl='/tasks/contract/order_requests/detail/' + ${task.id}">
+          <th:block  th:if="${task.finished == false}">
+          <li role="presentation" id="tabs_possible" th:class="${#strings.contains(url, '/possible/')} ? active"><a th:href="@{{url}/possible/1/#candidates(url=${baseUrl},matchType=${matchType})}">可撮合列表</a></li>
+          </th:block>
+          <th:block  th:if="${task.finished == true}">
+          <li role="presentation" th:class="${#strings.contains(url, '/success/')} ? active"><a id="a_success" th:href="@{{url}/success/1/#candidates(url=${baseUrl},matchType=${matchType})}">撮合成功列表</a></li>
+          </th:block>
+          <li role="presentation" th:class="${#strings.contains(url, '/saved/')} ? active"><a id="a_saved" th:href="@{{url}/saved/1/#candidates(url=${baseUrl},matchType=${matchType},showType=${showType})}">已保存列表</a></li>
+          <li role="presentation" th:class="${#strings.contains(url, '/canceled/')} ? active"><a id="a_canceled" th:href="@{{url}/canceled/1/#candidates(url=${baseUrl},matchType=${matchType},showType=${showType})}">取消列表</a></li>
+        </ul>
+        <a name="candidates"></a>
+        <div class="table-responsive">
+          <table th:include="tasks/contract/order_match_fragments :: ${list_fragment_name}" class="table table-bordered table-hover table-striped"></table>
+        </div>
+        <div th:replace="layouts/fragments :: pagingNavBar"></div>
+      </div>
+    </div>
+
+    <div id="contractDraft" class="panel panel-primary" style="display: none">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 合同草稿
+      </div>
+      <form id="draftForm" th:action="@{/tasks/contract/order_requests/save_draft/}" method="post" class="form-horizontal" th:object="${task.taskObject}">
+        <input type="hidden" name="task.id" th:value="${task.id}"/>
+        <input type="hidden" id="matchType" name="matchType" value="-1" />
+        <input type="hidden" name="pid" th:value="${task.taskObject.pid}" />
+        <input type="hidden" name="draftId" />
+      <div class="panel-body">
+          <div class="form-group" th:object="${task}">
+            <div id="buyer.id" class="controls col-sm-2">
+              <label class="form-label pull-right">买方</label>
+            </div>
+            <input id="buyerId" type="hidden" name="buyer.id" th:value="*{taskObject.type == 1} ? *{company.id}" />
+            <div id="buyerName" class="controls col-sm-5" th:text="*{taskObject.type == 1} ? (*{company.cname} + ' ' + ${task.customer.phone})">江苏国立网络科技有限公司</div>
+            <div class="controls col-sm-3 guaranty" id="buyerGuarantyLabel">
+              <label class="form-label">保证金余额<span class="task-warn" id="buyerGuarantyAmount" th:text="*{taskObject.type == 1} ? ${guaranty}"></span>元</label>
+            </div>
+          </div>
+          <div class="form-group" th:object="${task}">
+            <div id="seller.id" class="controls col-sm-2">
+              <label class="form-label pull-right">卖方</label>
+            </div>
+            <input id="sellerId" type="hidden" name="seller.id" th:value="*{taskObject.type} == 2 ? *{company.id}" />
+            <div id="sellerName" class="controls col-sm-5" th:text="*{taskObject.type == 2} ? (*{company.cname} + ' ' + ${task.customer.phone})">江苏国立网络科技有限公司</div>
+            <div class="controls col-sm-3 guaranty" id="sellerGuarantyLabel">
+              <label class="form-label">保证金余额<span class="task-warn" id="sellerGuarantyAmount" th:text="*{taskObject.type == 2} ? ${guaranty}"></span>元</label>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <i class="fa fa-bar-chart-o fa-fw"></i> 货物信息
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label class="col-sm-2 control-label required">货物类型</label>
+                <div class="col-sm-4">
+                  <select id="pcode" name="pcode" class="form-control" disabled="disabled" th:object="${task}">
+                    <option value="0">请选择</option>
+                    <option value="G001" th:selected="*{taskObject.pcode} == 'G001'">石子</option>
+                    <option value="G002" th:selected="*{taskObject.pcode} == 'G002'">黄砂</option>
+                  </select>
+                </div>
+              </div>
+              <div id="productTypeDiv" class="form-group">
+                <label for="ptype" class="col-sm-2 control-label required">分类</label>
+                <div class="col-sm-4">
+                  <select id="ptype" name="ptype" class="form-control" disabled="disabled">
+                    <option value="0">请选择</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="productSpec" class="col-sm-2 control-label required">规格</label>
+                <div class="col-sm-4">
+                  <select id="productSpec" name="productSpec" class="form-control" disabled="disabled">
+                    <option value="0">请选择</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="clayContent" class="col-sm-2 control-label">泥块含量(%)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="clayContent" id="clayContent" placeholder="请输入泥块含量" />
+                  <input type="hidden" name="clayContentId" id="clayContentId" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="mudContent" class="col-sm-2 control-label">含泥量(%)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="mudContent" id="mudContent" placeholder="请输入含泥量">
+                  <input type="hidden" name="mudContentId" id="mudContentId" />
+                </div>
+              </div>
+              <div id="moistureContentDiv" class="form-group">
+                <label for="moistureContent" class="col-sm-2 control-label">含水率(%)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="moistureContent" id="moistureContent" placeholder="请输入含水量">
+                  <input type="hidden" name="moistureContentId" id="moistureContentId" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="apparentDensity" class="col-sm-2 control-label">表观密度(kg/m3)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="apparentDensity" id="apparentDensity" placeholder="请输入表观密度">
+                  <input type="hidden" name="apparentDensityId" id="apparentDensityId" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="bulkDensity" class="col-sm-2 control-label">堆积密度(kg/m3)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="bulkDensity" id="bulkDensity" placeholder="请输入堆积密度">
+                  <input type="hidden" name="bulkDensityId" id="bulkDensityId" />
+                </div>
+              </div>
+              <div id="crushingValueIndexDiv" class="form-group">
+                <label for="crushingValueIndex" class="col-sm-2 control-label">压碎值指标(%)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="crushingValueIndex" id="crushingValueIndex" placeholder="请输入压碎值指标">
+                  <input type="hidden" name="crushingValueIndexId" id="crushingValueIndexId" />
+                </div>
+              </div>
+              <div id="elongatedParticlesDiv" class="form-group">
+                <label for="elongatedParticles" class="col-sm-2 control-label">针片状颗粒含量(%)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="elongatedParticles" id="elongatedParticles" placeholder="请输入针片状颗粒含量">
+                  <input type="hidden" name="elongatedParticlesId" id="elongatedParticlesId" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="consistencyIndex" class="col-sm-2 control-label">坚固性指标(%)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="consistencyIndex" id="consistencyIndex" placeholder="请输入坚固性指标">
+                  <input type="hidden" name="consistencyIndexId" id="consistencyIndexId" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="pcolor" class="col-sm-2 control-label">颜色</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="pcolor" id="pcolor" placeholder="请输入货物颜色">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="paddress" class="col-sm-2 control-label">产地</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="paddress" id="paddress" placeholder="请输入货物产地">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="premark" class="col-sm-2 control-label">货物备注信息</label>
+                <div class="col-sm-4">
+                  <textarea class="form-control" name="premark" id="premark" rows="3" th:text="${task.taskObject.premark}"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <i class="fa fa-bar-chart-o fa-fw"></i> 交易价款
+            </div>
+            <div class="panel-body">
+              <div class="form-group">
+                <label for="price" class="col-sm-3 control-label required">商品单价(单位：元)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control required" name="price" id="price" th:value="*{price}" placeholder="请输入商品单价" required="required" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label id="lblTotalNum" for="totalnum" class="col-sm-3 control-label required">商品总量(单位：<span id="prodUnit"></span>)</label>
+                <div class="col-sm-4 form-inline">
+                  <input type="text" class="form-control required" name="totalnum" id="totalnum" placeholder="请输入商品总量" required="required" th:value="*{totalnum}" />
+                  <input type="hidden" id="unit" name="unit" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="totalPrice" class="col-sm-3 control-label required">总价(单位：元)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="totalPrice" id="totalPrice" th:value="*{price * totalnum}" readonly="readonly" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <i class="fa fa-bar-chart-o fa-fw"></i> 交货信息
+            </div>
+            <div class="panel-body">
+              <div class="row form-group">
+                <label class="col-sm-3 control-label required">交易时间范围</label>
+                <div class="controls col-sm-3">
+                  <div class="controls input-group date" id="fromDatePicker">
+                    <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="starttime" name="starttime"
+                           required="required" th:value="${#calendars.format(task.taskObject.starttime, 'YYYY-MM-dd')}"/>
+                    <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                  </div>
+                </div>
+                <div class="col-sm-1">
+                  <label class="control-label">至</label>
+                </div>
+                <div class="controls col-sm-3">
+                  <div class="input-group date" id="toDatePicker">
+                    <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="endtime" name="endtime"
+                           required="required" th:value="${#calendars.format(task.taskObject.endtime, 'YYYY-MM-dd')}"/>
+                    <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                  </div>
+                </div>
+              </div>
+              <label id="salesTimeFrame-error" class="col-sm-offset-3 error"></label>
+
+              <div class="form-group">
+                <label class="col-sm-3 control-label required">交易港口</label>
+                <div class="col-sm-7 form-inline">
+                  <select id="tradingProvince" class="form-control">
+                    <option value="0">请选择流域 </option>
+                  </select>
+                  <select id="tradingCity" class="form-control">
+                    <option value="0">请选择港口</option>
+                  </select>
+                  <select id="tradingDistrict" name="areacode" class="form-control">
+                    <option value="0">请选码头</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="addressid" class="col-sm-3 control-label">交易地址</label>
+                <div id="tradingPlaceListDiv" class="col-sm-4">
+                  <select id="addressid" name="address.id" class="form-control">
+                    <option value="0">请选择</option>
+                  </select>
+                </div>
+              </div>
+              <div id="tradingPlaceAddressDiv" class="form-group">
+                <label for="address" class="col-sm-3 control-label">交易详细地址</label>
+                <div class="col-sm-7">
+                  <input type="text" class="form-control" name="address" id="address" th:value="*{address}" placeholder="请输入交易地址" />
+                  <div id="unloadingAddressImagesDiv" class="row">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="deep" class="col-sm-3 control-label">卸货码头水深度(单位：米)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="deep" id="deep" th:value="*{deep}" placeholder="卸货码头水深度" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="shippington" class="col-sm-3 control-label">可停泊载重船吨位(单位：吨)</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="shippington" id="shippington" th:value="*{shippington}" placeholder="可停泊载重船吨位" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="remark" class="col-sm-3 control-label">交易信息备注</label>
+                <div class="col-sm-4">
+                  <textarea class="form-control" name="remark" id="remark" th:text="*{remark}" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <div id="match_remark" class="panel panel-default" th:if="${not type.equals('canceled') && task.finished == false}">
+          <div class="panel-heading">
+            <i class="fa fa-bar-chart-o fa-fw"></i> 撮合备注信息
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <div class="col-sm-8">
+                <textarea class="form-control" name="serviceLog" placeholder="请输入撮合备注信息" cols="80" rows="6"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="serviceLogPlaceHolder"></div>
+
+      </div>
+        <div id="action_button" class="panel-footer text-center" th:if="${not type.equals('canceled') && task.finished == false}">
+          <button id="btnGenContract" type="button" class="btn btn-primary text-center">生成合同</button>
+          <button id="btnSaveDraft" type="button" class="btn btn-default text-center">保存</button>
+          <button id="btnCancelDraft" type="button" class="btn btn-default text-center">取消</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmDialog" tabindex="-1" role="dialog" aria-labelledby="contractConfirm" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+            <h4 class="modal-title" id="confirmDialogTitle">合同处理</h4>
+          </div>
+          <div class="modal-body">
+            <p id="confirmDialogContent"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            <button id="btnDialogOk" type="button" class="btn btn-primary">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </th:block>
+</div>
+
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/is.min.js}"></script>
+  <script th:src="@{/static/js/common-info.js}"></script>
+  <script th:src="@{/static/js/product-info.js}"></script>
+  <script th:src="@{/static/js/public-info.js}"></script>
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+  <script th:src="@{/static/js/utils.js}"></script>
+</div>
+
+<script layout:fragment="inlineJavascript" th:if="${currentUser.equals(task.owner) || task.finished == true}">
+var contextPath = /*[[@{/}]]*/;
+var customerId = /*[[${task.company.id}]]*/ '29389879875';
+var customerName = /*[[${task.company.cname}]]*/ '江苏国立网络科技有限公司';
+var requestsListUrl = /*[[@{/tasks/contract/order_requests/1/}]]*/ '/tasks/contract/order_request/1/';
+var cancelDraftUrl = /*[[@{/tasks/contract/order_requests/cancel_draft/}]]*/ '/tasks/contract/order_request/cancel_draft/';
+var generateContractUrl = /*[[@{/tasks/contract/order_requests/generate_contract/}]]*/ '/tasks/contract/order_request/generate_contract/';
+var orderRequestId = /*[[${task.taskObject.id}]]*/ '1234123123';
+var isDraftSaved = /*[[${is_saved_draft}]]*/ false;
+var candidateType = /*[[${task.taskObject.type}]]*/ 1; // 1 buy; 2 sell
+var ptype = /*[[${task} ? ${task.taskObject.ptype}]]*/ 'G002001';
+var pid = /*[[${task} ? ${task.taskObject.pid}]]*/ '200019902909';
+var ppid = /*[[${task} ? ${task.taskObject.psize.ppid}]]*/ 80;
+var orderRequestBaseUrl = /*[[@{/public/order_request}]]*/;
+var originOrderArea = /*[[${task.taskObject.area}]]*/ '32000000000';
+var addressType = /*[[${task.taskObject.addresstype.val}]]*/; // refer: OrderAddressTypeEnum, '1' owner
+var showServiceLogs = true;
+var buyerPhone = /*[[${task.taskObject.type == 1 ? task.customer.phone : ''}]]*/ // Buyer phone
+var sellerPhone = /*[[${task.taskObject.type == 2 ? task.customer.phone : ''}]]*/ // Seller phone
+var candidateId = null, candidateCompanyType = null, candidateName = null;
+var candidatePhone = null, candidateGuaranty = null;
+
+var generateContractConfirm = '为买卖双方撮合成功！<br/><br/>买方：{buyer}<br/>卖方：{seller}<br/><br/>请确认是否为双方发起合同，确认后双方手机客户端将收到待确认的合同！';
+
+var _companyAddresses = null;
+
+function checkServiceLog() {
+    var isEmpty = is.empty($('textarea[name="log"]').val());
+    if (isEmpty) {
+        alert('请输入服务记录！');
+    }
+    return !isEmpty;
+}
+
+function loadContractDraft(orderDraftId) {
+  var url = orderRequestBaseUrl + '/' + orderDraftId + '/load/';
+  loadOrderInfo(url);
+}
+
+function loadOriginalOrderRequest(requestId) {
+  var url = orderRequestBaseUrl + '/' + requestId + '/load/';
+  loadOrderInfo(url);
+}
+
+function loadOrderInfo(url) {
+  $.get(url, function(data) {
+    fillOrderForm(data);
+  });
+}
+
+function chooseCandidate(candidate) {
+  var utype = candidateType == 1 ? 'seller' : 'buyer';
+  $('#' + utype + 'Id').val(candidate.id);
+  $('#' + utype + 'Name').html(candidate.name + ' ' + candidate.phone);
+  $('#' + utype + 'GuarantyAmount').html(candidate.guaranty);
+}
+
+function fillOrderForm(orderData) {
+  $('#pcode').val(orderData.product.val);
+  $('#pid').val(orderData.pid);
+  if (orderData.product.val == 'G001') {
+    $('#ptype').prop('disabled', true);
+    populateProductSpec('productSpec', productG001Specs, 'pname');
+  } else {
+    $('#ptype').prop('disabled', false);
+    $('#ptype').val(orderData.productType.val);
+    loadProductSpecs(contextPath, orderData.productType.val, function(data) {
+      populateProductSpec('productSpec', data, 'pname', orderData.order.psize.pproid);
+    });
+  }
+  $.each(orderData.productProperties, function(index, elem) {
+    var field = PRODUCT_PROPERTY_MAPPING[elem.code];
+    var propId = elem.pproid ? elem.pproid : elem.id
+    $('input[name=' + field + 'Id]').val(propId);
+    $('input[name=' + field + ']').val(elem.content);
+  });
+  $('input[name=paddress]').val(orderData.order.paddress);
+  $('input[name=pcolor]').val(orderData.order.pcolor);
+  if (orderData.order.unit) {
+    $('#unit').val(orderData.order.unit.val);
+    $('#prodUnit').html(orderData.order.unit.text);
+  }
+  $('#premark').val(orderData.order.premark);
+  $('#price').val(orderData.order.price);
+  $('#totalnum').val(orderData.order.totalnum);
+  $('#totalPrice').val(orderData.order.totalnum * orderData.order.price);
+  var startTime = moment(orderData.order.starttime);
+  $('#starttime').val(startTime.format('YYYY-MM-DD'));
+  $('#fromDatePicker').data('DateTimePicker').date();
+  var endTime = moment(orderData.order.endtime);
+  $('#endtime').val(endTime.format('YYYY-MM-DD'));
+  $('#toDatePicker').data('DateTimePicker').date(endTime);
+  if (originOrderArea !== orderData.order.area) {
+    resetArea(orderData.order.area);
+    $('#address').val(orderData.order.address);
+  }
+  $('#deep').val(orderData.order.deep);
+  $('#shippington').val(orderData.order.shippington);
+  $('#remark').val(orderData.order.remark);
+}
+
+function checkSalesTimeFrame(from, to) {
+    if (from && to) {
+        if (from.unix() > to.unix()) {
+            $('#salesTimeFrame-error').html('开始时间不能大于结束时间');
+            $('#salesTimeFrame-error').show();
+            return false;
+        } else {
+            $('#salesTimeFrame-error').hide();
+            return true;
+        }
+    } else {
+        $('#salesTimeFrame-error').html('请选择交易时间范围，开始时间不能大于结束时间');
+        return false;
+    }
+    return false;
+}
+
+function resetArea(area) {
+  if (area) {
+    var district = _AREA_DICT[area];
+    var city = _AREA_DICT[district.pcode];
+    var province = _AREA_DICT[city.pcode];
+    populateArea('tradingProvince', _PROVINCES, province.val);
+    populateArea('tradingCity', _CITIES[province.val], city.val);
+    populateArea('tradingDistrict', _CITIES[city.val], district.val);
+  } else {
+    populateArea('tradingProvince', _PROVINCES);
+  }
+}
+
+function populateCompanyAddresses() {
+  if (_companyAddresses && _companyAddresses.length > 0) {
+    $('#addressid option[value!="0"]').remove();
+    var addressList = $('#addressid');
+    $.each(_companyAddresses, function(index, elem) {
+        addressList.append('<option value="' + elem.id + '">' + elem.address + '</option>');
+    });
+  }
+}
+
+function showModalDialog(title, content, btnOkCallback) {
+  $('#confirmDialogTitle').html(title);
+  $('#confirmDialogContent').html(content);
+  $('#confirmDialog').modal('show');
+  $('#btnDialogOk').click(function() {
+    $('#confirmDialog').modal('hide');
+    btnOkCallback();
+  });
+}
+
+$(document).ready(function() {
+  initFormProductData(null, function() {
+      $.each(productG002Types, function(index, elem) {
+        $('#ptype').append('<option value="' + elem.val + '">' + elem.name + '</option>');
+      });
+  });
+  initContractProductFields();
+  bindProductSelectFormUI('pcode', 'ptype', 'productSpec', ppid);
+
+  var today = new Date();
+  $('#fromDatePicker').datetimepicker({
+    format: 'YYYY-MM-DD'
+  });
+  $('#fromDatePicker').data("DateTimePicker").minDate(today);
+  $('#toDatePicker').datetimepicker({
+    format: 'YYYY-MM-DD'
+  });
+  $('#toDatePicker').data("DateTimePicker").minDate(today);
+
+  $('#fromDatePicker').on('dp.change', function(e) {
+    var fromDate = $('#fromDatePicker').data("DateTimePicker").date();
+    var toDate = $('#toDatePicker').data("DateTimePicker").date();
+    checkSalesTimeFrame(fromDate, toDate);
+    $('#toDatePicker').data('DateTimePicker').minDate(fromDate);
+  });
+
+  $('#toDatePicker').on('dp.change', function(e) {
+    var fromDate = $('#fromDatePicker').data('DateTimePicker').date();
+    var toDate = $('#toDatePicker').data('DateTimePicker').date();
+    checkSalesTimeFrame(fromDate, toDate);
+    $('#fromDatePicker').data('DateTimePicker').maxDate(toDate);
+  });
+
+  loadArea(contextPath, function() {
+    resetArea(originOrderArea);
+  });
+
+  $('#tradingProvince').change(function() {
+    provinceChange($(this).val(), 'tradingCity', 'tradingDistrict');
+  });
+
+  $('#tradingCity').change(function() {
+    cityChange($(this).val(), 'tradingDistrict');
+  });
+
+  $('#price, #totalnum').change(function() {
+    var price = $('#price').val();
+    var totalnum = $('#totalnum').val();
+    if (price && totalnum) {
+      $('#totalPrice').val(calculatePrice(price, totalnum));
+    }
+  });
+
+  $('#addressid').change(function() {
+    var id = $(this).val();
+    if (id !== '0') {
+      var addr = $('#addressid option:selected');
+      $('#address').val(addr.text());
+      $.each(_companyAddresses, function(index, elem) {
+        if (elem.id === addr.val()) {
+          resetArea(elem.areacode);
+          $('#deep').val(elem.deep);
+          $('#shippington').val(elem.shippington);
+          return false;
+        }
+      });
+    }
+  });
+
+  $("input:radio[name='candidate']").each(function(index, elem) {
+    $(elem).click(function() {
+        var val = $(this).val().split(',');
+
+        candidateId = val[1];
+        candidateCompanyType = val[2];
+        candidateName = val[3];
+        candidatePhone = val[4];
+        candidateGuaranty = val[5];
+        var candidateMatchType = null;
+        var draftId = '';
+        $('input[name="draftId"]').val(draftId);
+        var candidateOptype = null;
+        if (val[0] === '0') {
+          candidateMatchType = val[6];
+        } else if (val[0] === '1') {
+          draftId = val[6];
+          $('input[name="draftId"]').val(draftId);
+          candidateOptype = val[7];
+        } else {
+          alert('数据异常！');
+          return;
+        }
+        chooseCandidate({
+          id: candidateId,
+          name: candidateName,
+          phone: candidatePhone,
+          guaranty: candidateGuaranty
+        });
+        $('#contractDraft').show();
+        $('#matchType').val(candidateMatchType);
+
+        loadCompanyAddresses(contextPath, val[1], function(addresses) {
+          _companyAddresses = addresses;
+          populateCompanyAddresses();
+        });
+
+        $('html, body').animate({
+            scrollTop: $("#contractDraft").offset().top
+        }, 500);
+
+        var typePrefix = (candidateType === 1 ? 'seller' : 'buyer');
+        $('#' + typePrefix + 'Id').val(candidateId);
+
+        if (draftId === '') {
+          loadOriginalOrderRequest(orderRequestId);
+        } else {
+          loadCompany(contextPath, candidateId, function(data) {
+            candidateName = data.cname;
+            candidatePhone = data.phone;
+            $('#' + typePrefix + 'Name').html(candidateName + ' ' + candidatePhone);
+          });
+          loadContractDraft(draftId);
+          $('#matchType').val(candidateOptype);
+          if (showServiceLogs) {
+            loadServiceLogs(contextPath,
+              {objectId: draftId, type: 1}, true,
+               function(data) {
+                if ($('#serviceLogs').length) {
+                  $('#serviceLogs').remove();
+                }
+                $('#serviceLogPlaceHolder').after(data);
+            });
+          }
+        }
+
+    });
+  });
+
+  $('#btnSaveDraft').click(function() {
+    if (validator.form()) {
+      var fromDate = $('#fromDatePicker').data('DateTimePicker').date();
+      var toDate = $('#toDatePicker').data('DateTimePicker').date();
+      if (!checkSalesTimeFrame(fromDate, toDate)) {
+        alert('交易时间不正确');
+        return;
+      }
+      var today = moment(new Date());
+      if (today.unix() > toDate.unix()) {
+        alert('交易结束时间无效，请重新选择');
+        return false;
+      }
+      var form = $('#draftForm');
+      $.post($(form).attr('action'), $(form).serialize(), function(data) {
+        $('input[name="draftId"]').val(data.ocfid);
+        $('text[name="serviceLog"]').val();
+        alert('合同草稿已保存，请到已保存列表中查看合同草稿信息');
+      });
+    }
+  });
+
+ $('#btnCancelDraft').click(function() {
+    if (validator.form()) {
+      var form = $('#draftForm');
+      $.post(cancelDraftUrl, $(form).serialize(), function(data) {
+        $('text[name="serviceLog"]').val();
+        alert('已取消撮合，请到取消列表中查看信息。');
+      });
+    }
+  });
+
+  $('#btnGenContract').click(function() {
+    var callback = function() {
+      var form = $('#draftForm');
+      $.post(generateContractUrl, $(form).serialize())
+          .done(function() {
+            $('text[name="serviceLog"]').val();
+            alert('该合同已成功下发至买卖双方的手机客户端，请通知用户及时确认合同！');
+            window.location.href = requestsListUrl;
+          })
+          .fail(function() {
+            alert('无法生成合同，请检查交易双方保证金是否足够。\n本合同草稿已经保存，请到已保存列表中查看。');
+          });
+    };
+    if (validator.form()) {
+      var fromDate = $('#fromDatePicker').data('DateTimePicker').date();
+      var toDate = $('#toDatePicker').data('DateTimePicker').date();
+      if (!checkSalesTimeFrame(fromDate, toDate)) {
+        alert('交易时间不正确');
+        return;
+      }
+      var today = moment(new Date());
+      if (today.unix() > toDate.unix()) {
+        alert('交易结束时间无效，请重新选择');
+        return false;
+      }
+
+      if (candidateType === 1) {
+        sellerPhone = candidatePhone;
+      } else {
+        buyerPhone = candidatePhone;
+      }
+
+      var modalContent = generateContractConfirm.replace('{buyer}', buyerPhone).replace('{seller}', sellerPhone);
+      showModalDialog('发起合同', modalContent, callback);
+    }
+  });
+
+  var validator = $('#draftForm').validate({
+        rules: {
+            price: {
+                required: true,
+                number: true,
+                min: 1
+            },
+            totalnum: {
+                required: true,
+                number: true,
+                min: 1
+            },
+            starttime: {
+                required: true,
+                date: true
+            },
+            endtime: {
+                required: true,
+                date: true
+            },
+            serviceLog: {
+              required: true
+            },
+            address: {
+              required: true
+            }
+        },
+        messages: {
+            starttime: "请输入正确的交易有效时间",
+            endtime: "请输入正确的交易有效时间",
+            price: "请输入正确的商品单价",
+            totalnum: "请输入正确的商品总量",
+            serviceLog: "请输入撮合备注信息",
+            address: "请输入交易详细地址"
+        }
+    });
+
+  $('select[name=matchType]').change(function() {
+    var url = /*[[@{/tasks/contract/order_requests/detail/{task}/{listType}/1/(task=${task.id},listType=${listType})}]]*/;
+    url += '?matchType=' + $(this).val();
+    window.location.href = url;
+  });
+  
+  var showType = /*[[${showType}]]*/;
+  if(showType == '1'){
+	  $('#tabs_possible').remove();
+	  $('#match_remark').remove();
+	  $('#action_button').remove();
+  }else{
+	  $('#contractResultDiv').remove();
+  }
+
+});
+</script>
+</body>
+
+</html>

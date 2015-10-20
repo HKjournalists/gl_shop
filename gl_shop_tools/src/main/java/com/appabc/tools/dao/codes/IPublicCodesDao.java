@@ -3,6 +3,8 @@
  */
 package com.appabc.tools.dao.codes;
 
+import java.util.List;
+
 import com.appabc.bean.pvo.TPublicCodes;
 import com.appabc.common.base.dao.IBaseDao;
 
@@ -15,5 +17,14 @@ import com.appabc.common.base.dao.IBaseDao;
  * Create Date  : 2014年8月29日 下午12:07:11
  */
 public interface IPublicCodesDao extends IBaseDao<TPublicCodes>{
+
+	String getMaxValue(TPublicCodes entity);
+
+	/**
+	 * 查询删除除删除属性外的数据(ISHIDDEN != 2)
+	 * @param code
+	 * @return
+	 */
+	List<TPublicCodes> queryListInNoDel(String code);
 
 }

@@ -4,7 +4,7 @@
 //
 //  Created by River on 15-1-13.
 //  Copyright (c) 2015年 appabc. All rights reserved.
-//
+//  转出
 
 #import "RolloutViewController.h"
 #import "TranserViewController.h"
@@ -26,8 +26,8 @@
     [super viewDidLoad];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestNet) name:kRefrushGatherListNotification object:nil];
-    self.shouldShowFailView = YES;
-    _lastSeleced = NSNotFound;
+    _lastSeleced = 0;
+    self.title = @"选择收款人";
     [self requestNet];
 }
 
@@ -43,8 +43,6 @@
     [self.view addSubview:_listView];
     _listView.hidden = YES;
     
-//    self.view.backgroundColor = [UIColor purpleColor];
-    
     UIView *view = [UIView new];
     view.backgroundColor = [UIColor clearColor];
     [_listView setTableFooterView:view];
@@ -52,7 +50,9 @@
     UIBarButtonItem *barItem = [[UIBarButtonItem alloc] initWithTitle:@"管理" style:UIBarButtonItemStylePlain target:self action:@selector(mangerGathers)];
     self.navigationItem.rightBarButtonItem = barItem;
     
-    UIButton *nextBtn = [UIFactory createBtn:BlueButtonImageName bTitle:@"下一步" bframe:CGRectZero];
+    UIButton *nextBtn = [UIFactory createBtn:BlueButtonImageName bTitle:btntitle_next bframe:CGRectZero];
+    nextBtn.hidden = YES;
+    nextBtn.tag = 2000;
     [nextBtn addTarget:self action:@selector(nextAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:nextBtn];
     [nextBtn makeConstraints:^(MASConstraintMaker *make) {
@@ -64,9 +64,8 @@
 }
 
 - (void)loadNoGatherUI {
-    self.navigationItem.rightBarButtonItem = nil;
     
-    UILabel *tilteLabel = [UILabel labelWithTitle:@"暂时还没有有效的提现收款人，赶紧来添加吧。"];
+    UILabel *tilteLabel = [UILabel labelWithTitle:@"暂时还没有有效的收款人信息，赶紧来添加吧!"];
     tilteLabel.font = [UIFont boldSystemFontOfSize:15.f];
     tilteLabel.textAlignment = NSTextAlignmentCenter;
     tilteLabel.numberOfLines = 2;
@@ -107,8 +106,11 @@
 - (void)handleNetData:(id)responseData {
     NSArray *datas = responseData[ServiceDataKey];
     if (datas.count <= 0) {
+        UIButton *btn = (UIButton *)[self.view viewWithTag:2000];
+        btn.hidden = YES;
+        _listView.hidden = YES;
         [self loadNoGatherUI];
-    }else {
+    }else { // 如果有审核通过的收款人
         NSMutableArray *temp = [NSMutableArray array];
         for (NSDictionary *dic in datas) {
             GatherModel *model = [[GatherModel alloc] initWithDataDic:dic];
@@ -117,7 +119,10 @@
         self.listDatas = [NSArray arrayWithArray:temp];
         _listView.hidden = NO;
         [_listView reloadData];
+        UIButton *btn = (UIButton *)[self.view viewWithTag:2000];
+        btn.hidden = NO;
     }
+    
 }
 
 #pragma mark - UITableView DataSource/Delegate
@@ -200,5 +205,9 @@
     vc.gahter = [_listDatas safeObjAtIndex:_lastSeleced];
     [self.navigationController pushViewController:vc animated:YES];
 }// 提现操作
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

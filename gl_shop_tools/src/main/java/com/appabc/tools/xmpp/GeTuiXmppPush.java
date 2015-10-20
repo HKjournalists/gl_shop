@@ -53,8 +53,10 @@ public class GeTuiXmppPush extends BaseXmppPush {
         Target target1 = new Target();
         target1.setAppId(config.getAppid());
         target1.setClientId(clientId);
-  
+        
         IPushResult ret = push.pushMessageToSingle(message, target1);
+        
+        push.close();
         return  ret.getResponse();
 	}
 	

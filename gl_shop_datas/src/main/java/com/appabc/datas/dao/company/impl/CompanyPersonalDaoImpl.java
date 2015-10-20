@@ -3,10 +3,12 @@
  */
 package com.appabc.datas.dao.company.impl;
 
+import com.appabc.bean.enums.CompanyInfo.PersonalAuthSex;
 import com.appabc.bean.pvo.TCompanyPersonal;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
 import com.appabc.datas.dao.company.ICompanyPersonalDao;
+
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
@@ -27,8 +29,8 @@ import java.util.Map;
 @Repository
 public class CompanyPersonalDaoImpl extends BaseJdbcDao<TCompanyPersonal> implements ICompanyPersonalDao {
 
-	private static final String INSERTSQL = " insert into T_COMPANY_PERSONAL (AUTHID, CPNAME, SEX, IDENTIFICATION, ORIGO, CRATEDATE, UPDATEDATE, REMARK ) values (:authid, :cpname, :sex, :identification, :origo, :cratedate, :updatedate, :remark ) ";
-	private static final String UPDATESQL = " update T_COMPANY_PERSONAL set AUTHID = :authid, CPNAME = :cpname, SEX = :sex, IDENTIFICATION = :identification, ORIGO = :origo, CRATEDATE = :cratedate, UPDATEDATE = :updatedate, REMARK = :remark  where CPID = :id ";
+	private static final String INSERTSQL = " insert into T_COMPANY_PERSONAL (AUTHID, CPNAME, SEX, IDENTIFICATION, ADDRESS, CRATEDATE, UPDATEDATE, REMARK,BIRTHDAY,ISSUINGAUTH,EFFSTARTTIME,EFFENDTIME ) values (:authid, :cpname, :sex, :identification, :address, :cratedate, :updatedate, :remark,:birthday,:issuingauth,:effstarttime,:effendtime ) ";
+	private static final String UPDATESQL = " update T_COMPANY_PERSONAL set AUTHID = :authid, CPNAME = :cpname, SEX = :sex, IDENTIFICATION = :identification, ADDRESS = :address, CRATEDATE = :cratedate, UPDATEDATE = :updatedate, REMARK = :remark,BIRTHDAY=:birthday,ISSUINGAUTH=:issuingauth,EFFSTARTTIME=:effstarttime,EFFENDTIME=:effendtime  where CPID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_COMPANY_PERSONAL WHERE CPID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_COMPANY_PERSONAL WHERE CPID = :id ";
 
@@ -55,7 +57,7 @@ public class CompanyPersonalDaoImpl extends BaseJdbcDao<TCompanyPersonal> implem
 	}
 
 	public TCompanyPersonal query(TCompanyPersonal entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
+		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)) + " ORDER BY CRATEDATE DESC", entity);
 	}
 
 	public TCompanyPersonal query(Serializable id) {
@@ -83,10 +85,14 @@ public class CompanyPersonalDaoImpl extends BaseJdbcDao<TCompanyPersonal> implem
 		t.setCpname(rs.getString("CPNAME"));
 		t.setCratedate(rs.getTimestamp("CRATEDATE"));
 		t.setIdentification(rs.getString("IDENTIFICATION"));
-		t.setOrigo(rs.getString("ORIGO"));
+		t.setAddress(rs.getString("ADDRESS"));
 		t.setRemark(rs.getString("REMARK"));
-		t.setSex(rs.getInt("SEX"));
+		t.setSex(PersonalAuthSex.enumOf(rs.getInt("SEX")));
 		t.setUpdatedate(rs.getTimestamp("UPDATEDATE"));
+		t.setBirthday(rs.getDate("BIRTHDAY"));
+		t.setIssuingauth(rs.getString("ISSUINGAUTH"));
+		t.setEffstarttime(rs.getDate("EFFSTARTTIME"));
+		t.setEffendtime(rs.getDate("EFFENDTIME"));
 
 		return t;
 	}
@@ -99,9 +105,13 @@ public class CompanyPersonalDaoImpl extends BaseJdbcDao<TCompanyPersonal> implem
 		this.addNameParamerSqlWithProperty(sql, "authid", "AUTHID", bean.getAuthid());
 		this.addNameParamerSqlWithProperty(sql, "cpname", "CPNAME", bean.getCpname());
 		this.addNameParamerSqlWithProperty(sql, "identification", "IDENTIFICATION", bean.getIdentification());
-		this.addNameParamerSqlWithProperty(sql, "origo", "ORIGO", bean.getOrigo());
+		this.addNameParamerSqlWithProperty(sql, "address", "ADDRESS", bean.getAddress());
 		this.addNameParamerSqlWithProperty(sql, "remark", "REMARK", bean.getRemark());
 		this.addNameParamerSqlWithProperty(sql, "sex", "SEX", bean.getSex());
+		this.addNameParamerSqlWithProperty(sql, "birthday", "BIRTHDAY", bean.getBirthday());
+		this.addNameParamerSqlWithProperty(sql, "issuingauth", "ISSUINGAUTH", bean.getIssuingauth());
+		this.addNameParamerSqlWithProperty(sql, "effstarttime", "EFFSTARTTIME", bean.getEffstarttime());
+		this.addNameParamerSqlWithProperty(sql, "effendtime", "EFFENDTIME", bean.getEffendtime());
 		return sql.toString();
 	}
 

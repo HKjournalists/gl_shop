@@ -2,6 +2,8 @@ package com.glshop.platform.api.contract.data.model;
 
 import java.util.List;
 
+import com.glshop.platform.api.purse.data.model.DealSummaryInfoModel;
+
 /**
  * @Description : 合同详情(包括进行中的和已介绍的合同详情)
  * @Copyright   : GL. All Rights Reserved
@@ -15,17 +17,17 @@ public class ContractInfoModel extends ContractSummaryInfoModel {
 	/**
 	 * 合同原始单价
 	 */
-	public float unitPrice;
+	public double unitPrice;
 
 	/**
 	 * 合同原始总体数量
 	 */
-	public float tradeAmount;
+	public double tradeAmount;
 
 	/**
 	 * 第一次议价后新的单价
 	 */
-	public float firstNegotiateUnitPrice;
+	public double firstNegotiateUnitPrice;
 
 	/**
 	 * 第一次议价原因
@@ -45,7 +47,7 @@ public class ContractInfoModel extends ContractSummaryInfoModel {
 	/**
 	 * 第二次议价后新的单价
 	 */
-	public float secondNegotiateUnitPrice;
+	public double secondNegotiateUnitPrice;
 
 	/**
 	 * 第二次议价原因
@@ -58,6 +60,21 @@ public class ContractInfoModel extends ContractSummaryInfoModel {
 	public List<NegotiateInfoModel> secondNegotiateList;
 
 	/**
+	 * 合同货款确认记录
+	 */
+	public NegotiateInfoModel finalNegotiateInfo;
+
+	/**
+	 * 合同平台账单流水记录
+	 */
+	public List<DealSummaryInfoModel> dealList;
+
+	/**
+	 * 平台仲裁信息
+	 */
+	public ArbitrateInfoModel arbitrateInfo;
+
+	/**
 	 * 是否同意对方的第二次议价
 	 */
 	public boolean isAgreeSecondNegotiate;
@@ -65,17 +82,27 @@ public class ContractInfoModel extends ContractSummaryInfoModel {
 	/**
 	 * 最终实际单价
 	 */
-	public float fianlTradeUnitPrice;
+	public double fianlTradeUnitPrice;
 
 	/**
 	 * 最终实际卸货数量
 	 */
-	public float finalTradedAmount;
-	
+	public double finalTradedAmount;
+
 	/**
 	 * 最终支付总价
 	 */
-	public float finalPayMoney;
+	public double finalPayMoney;
+
+	/**
+	 * 实际已支付金额
+	 */
+	public double payedMoney;
+
+	/**
+	 * 实际收到金额
+	 */
+	public double receivedMoney;
 
 	/**
 	 * 合同结束时间
@@ -86,6 +113,11 @@ public class ContractInfoModel extends ContractSummaryInfoModel {
 	 * 结束原因类型
 	 */
 	public int endedReasonType;
+
+	/**
+	 * 合同模板信息
+	 */
+	public ContractModelInfo modelInfo;
 
 	@Override
 	public String toString() {

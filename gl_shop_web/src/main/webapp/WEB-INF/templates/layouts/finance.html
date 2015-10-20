@@ -6,17 +6,17 @@
   <li th:if="${isRoleProcess}" class="active">
     <a href="#"><i class="fa fa-wrench fa-fw"></i> 财务处理 <i class="fa arrow"></i></a>
     <ul class="nav nav-second-level">
-      <li sec:authorize="hasRole('ROLE_REMITTANCE_INPUT')">
-        <a th:class="${#strings.contains(url, '/remittance/input/')} ? 'active'" th:href="@{/finance/remittance/input/}">汇入款项录入</a>
-      </li>
       <li sec:authorize="hasRole('ROLE_ACCOUNT_AUDIT')">
         <a th:class="${#strings.contains(url, '/account_audit/')} ? 'active'" th:href="@{/finance/account_audit/pending/1/}">账户审核</a>
+      </li>
+      <li sec:authorize="hasRole('ROLE_REMITTANCE_INPUT')">
+        <a th:class="${#strings.contains(url, '/remittance/input/')} ? 'active'" th:href="@{/finance/remittance/input/}">汇入款项录入</a>
       </li>
       <li sec:authorize="hasRole('ROLE_REMITTANCE_PROCESS')">
         <a th:class="${#strings.endsWith(url, '/remittance/process/')} ? 'active'" th:href="@{/finance/remittance/process/1/}">汇入款项处理</a>
       </li>
-      <li sec:authorize="hasRole('ROLE_PAY_PROCESS')">
-        <a th:class="${#strings.endsWith(url, '/pay_process/')} ? 'active'" th:href="@{/finance/pay_process/}">支出款项处理</a>
+      <li sec:authorize="hasRole('ROLE_WITHDRAW_PROCESS')">
+        <a th:class="${#strings.contains(url, '/withdraw/requests/')} ? 'active'" th:href="@{/finance/withdraw/requests/1/}">提现处理</a>
       </li>
     </ul>
   </li>
@@ -27,8 +27,8 @@
       <li sec:authorize="hasRole('ROLE_REMITTANCE_AUDIT')">
         <a th:href="@{/finance/remittance/audit/1/}" th:class="${#strings.endsWith(url, '/remittance_audit/')} ? 'active'">汇入款项审核</a>
       </li>
-      <li sec:authorize="hasRole('ROLE_PAY_AUDIT')">
-       <a th:href="@{/finance/pay_audit/}" th:class="${#strings.endsWith(url, '/pay_audit/')} ? 'active'">支出款项审核</a>
+      <li sec:authorize="hasRole('ROLE_WITHDRAW_CASHOUT')">
+       <a th:href="@{/finance/withdraw/cashout/1/}" th:class="${#strings.endsWith(url, '/withdraw/')} ? 'active'">提现打款</a>
      </li>
      <li sec:authorize="hasRole('ROLE_SPECIAL_FUND_PROCESS')">
        <a th:href="@{/finance/special_fund_process/}" th:class="${#strings.endsWith(url, '/special_fund_process/')} ? 'active'">特殊款项审核</a>

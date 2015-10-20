@@ -3,9 +3,11 @@
  */
 package com.appabc.datas.service.company;
 
+import java.util.List;
+
 import com.appabc.bean.bo.CompanyAllInfo;
 import com.appabc.bean.bo.EvaluationInfoBean;
-import com.appabc.bean.pvo.TAuthRecord;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.service.IBaseService;
 import com.appabc.datas.exception.ServiceException;
@@ -50,11 +52,11 @@ public interface ICompanyInfoService extends IBaseService<TCompanyInfo> {
 	/**
 	 * 认证申请信息,重新认证时将原认证通过的记录改为:已过期
 	 * @param ciBean
-	 * @param arBean
+	 * @param authImgids 认证图片ID
 	 * @param addressid
 	 * @param userid 当前用户ID
 	 */
-	public void authApply(TCompanyInfo ciBean, TAuthRecord arBean, String addressid ,String userid) throws ServiceException ;
+	public void authApply(TCompanyInfo ciBean, String[] authImgids, String addressid ,String userid) throws ServiceException;
 	
 	/**
 	 * 获取企业评价信息
@@ -62,5 +64,44 @@ public interface ICompanyInfoService extends IBaseService<TCompanyInfo> {
 	 * @return
 	 */
 	public EvaluationInfoBean getEvaluationByCid(String cid);
+	
+	/**
+	 * TCompanyInfo 中的authstatus(认证状态)换成  TAuthRecord 中authstatus，其它信息与TC
+	 * @param id
+	 * @return
+	 */
+	public TCompanyInfo queryAuthCmpInfo(String id);
+	
+	public TCompanyInfo queryCmpInfoByUserPhone(String phone);
+	
+	public List<TCompanyInfo> queryCmpInfoListByUserPhones(String phones);
+	
+	/**
+	 * 获取企业认证状态
+	 * @param cid
+	 * @return
+	 * @throws ServiceException 
+	 */
+	public AuthRecordStatus getAuthStatusByCid(String cid) throws ServiceException;
+	
+	public int queryCount(TCompanyInfo entity);
+	
+	/**
+	 *  查询后台任务列表中无效的认证信息
+	 */
+	List<TCompanyInfo> queryInvalidListForTask();
+	/**
+	 * 新添加的用户
+	 * @return
+	 */
+	List<TCompanyInfo> queryNewListForTask();
+	/**
+	 *用户认证任务   
+	 */
+	void jobQueryVerifyListForTask();
 
+	/**
+	 *用户缴纳保证金任务   
+	 */
+	void jobQueryDepositListForTask();
 }

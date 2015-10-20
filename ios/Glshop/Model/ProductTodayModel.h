@@ -16,4 +16,6 @@
 @property (nonatomic, strong) NSNumber *todayPrice;
 @property (nonatomic, strong) NSNumber *yesterdayPrice;
 
+- (BOOL)isSendData;
+
 @end

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/company">
+<head>
+  <title>交易行为 - 历史交易</title>
+</head>
+<body>
+
+  <h4 layout:fragment="contentNavTitle">
+    <i class="fa fa-fw fa-wrench"></i> 交易行为 - 有效供求
+  </h4>
+
+  <div layout:fragment="pageContent">
+    <div th:replace="company/fragments :: contract_progress_tab" class="nav nav-tabs"></div>
+
+    <p></p>
+    <div class="nav-tab-content">
+    <div class="tab-pane fade in active">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>序号</th>
+            <th>发布时间</th>
+		    <th>供求名称</th>
+		    <th>当前状态</th>
+		    <th>操作</th>
+          </thead>
+          <tbody th:each="bean, status : ${ofList}">
+          <tr>
+          <td><span th:text="${status.index+1}"></span></td>
+            <td th:text="${bean.creatime} ? ${#calendars.format(bean.creatime, 'YYYY-MM-dd')}">2014年9月19日13:51</td>
+            <td ><span th:text="${bean.title}"></span></td>
+            <td><span th:text="${bean.status.text}"></span></td>
+            <td><a th:href="@{/public/order_request/{id}/(id=${bean.id})}" target="_blank">查看详情</a></td>
+          </tr>
+          <!-- 
+           -->
+          </tbody>
+          <tr th:if="${#lists.isEmpty(ofList)}">
+            <td colspan="5">暂时没有数据</td>
+          </tr>
+        </table>
+      </div>
+      <div th:replace="layouts/fragments :: pagingNavBar"></div>
+    </div>
+  </div>
+
+  </div>
+  
+</body>
+
+</html>

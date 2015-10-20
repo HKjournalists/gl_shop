@@ -3,6 +3,8 @@
  */
 package com.appabc.datas.service.order;
 
+import java.util.List;
+
 import com.appabc.bean.pvo.TOrderFindItem;
 import com.appabc.common.base.service.IBaseService;
 import com.appabc.datas.exception.ServiceException;
@@ -31,5 +33,19 @@ public interface IOrderFindItemService extends IBaseService<TOrderFindItem> {
 	 * @return
 	 */
 	public int getIsApplyByCid(String cid, String fid);
+	
+	/**
+	 * 获取询单的感兴趣数
+	 * @param fid
+	 * @return
+	 */
+	public int countByFid(String fid);
+	
+	/**
+	 * 获取询单的感兴趣list
+	 * @param fid
+	 * @return
+	 */
+	public List<TOrderFindItem> queryOrderFindItemListByFid(String fid);
 
 }

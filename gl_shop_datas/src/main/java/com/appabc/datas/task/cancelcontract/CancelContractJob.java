@@ -4,21 +4,16 @@ package com.appabc.datas.task.cancelcontract;
 import com.appabc.bean.enums.ContractInfo.ContractCancelType;
 import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
 import com.appabc.bean.enums.ContractInfo.ContractOperateType;
-import com.appabc.bean.enums.ContractInfo.ContractStatus;
-import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
 import com.appabc.bean.pvo.TOrderCancel;
 import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderOperations;
 import com.appabc.common.utils.DateUtil;
+import com.appabc.datas.exception.ServiceException;
 import com.appabc.datas.service.contract.IContractCancelService;
 import com.appabc.datas.service.contract.IContractInfoService;
 import com.appabc.datas.service.contract.IContractOperationService;
-import com.appabc.datas.tool.DataSystemConstant;
-import com.appabc.tools.bean.MessageInfoBean;
+import com.appabc.datas.tool.ContractCostDetailUtil;
 import com.appabc.tools.schedule.utils.BaseJob;
-import com.appabc.tools.utils.MessageSendManager;
-import com.appabc.tools.utils.PrimaryKeyGenerator;
-import com.appabc.tools.utils.SystemMessageContent;
 import com.appabc.tools.utils.ToolsConstant;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -44,9 +39,6 @@ public class CancelContractJob extends BaseJob {
 
 	private IContractCancelService iContractCancelService = (IContractCancelService)ac.getBean("IContractCancelService");
 
-	private PrimaryKeyGenerator pkGenerator = ac.getBean(PrimaryKeyGenerator.class);
-
-	private MessageSendManager mesgSender = ac.getBean(MessageSendManager.class);
 	/* (non-Javadoc)
 	 * @see com.appabc.tools.schedule.utils.BaseJob#doExecutionJob(org.quartz.JobExecutionContext)
 	 */
@@ -56,6 +48,7 @@ public class CancelContractJob extends BaseJob {
 		entity.setLifecycle(ContractLifeCycle.CANCELING);
 		List<TOrderInfo> result = iContractInfoService.queryForList(entity);
 		for(TOrderInfo bean : result){
+			//根据取消确认类型和取消中合同生命周期来过滤合同的操作记录
 			TOrderOperations operator = new TOrderOperations();
 			operator.setOid(bean.getId());
 			operator.setOperator(bean.getSellerid());
@@ -75,55 +68,23 @@ public class CancelContractJob extends BaseJob {
 				cancel.setLid(buyerResult.get(0).getId());
 				cancelResult = iContractCancelService.queryForList(cancel);
 			}
-			if(DateUtil.getDifferHoursWithTwoDate(bean.getUpdatetime(), DateUtil.getNowDate())>=24 && CollectionUtils.isEmpty(cancelResult)){
+			Date now = DateUtil.getNowDate();
+			//如果超过了双方取消的时限
+			if(DateUtil.getDifferHoursWithTwoDate(bean.getUpdatetime(), now)>=ContractCostDetailUtil.getContractDuplexCancelLimitNum() && CollectionUtils.isEmpty(cancelResult)){
 				List<TOrderOperations> operationLists = iContractOperationService.queryForList(bean.getId());
 				if(CollectionUtils.isNotEmpty(operationLists)){
-					Date now = DateUtil.getNowDate();
-
-					bean.setLifecycle(operationLists.get(operationLists.size()-2).getOrderstatus());
-					bean.setStatus(ContractStatus.DOING);
-					bean.setUpdatetime(now);
-					bean.setUpdater(ToolsConstant.SCHEDULER);
-					try{
-						iContractInfoService.modify(bean);
-					}catch(Exception e){
-						logUtil.debug(e.getMessage(), e);
+					TOrderOperations lastOperator = operationLists.get(operationLists.size()-2);
+					try {
+						iContractCancelService.jobAutoRollbackCancelContract(bean, ToolsConstant.SYSTEMCID, lastOperator.getOrderstatus());
+					} catch (ServiceException e) {
+						logUtil.error(e);
 					}
-
-					TOrderOperations oper = new TOrderOperations();
-					oper.setId(pkGenerator.getPKey(DataSystemConstant.CONTRACTOPERATIONID));
-					oper.setOid(bean.getId());
-					oper.setOperator(ToolsConstant.SCHEDULER);
-					oper.setOperationtime(now);
-					oper.setType(ContractOperateType.REPEAL_CANCEL);
-					oper.setOrderstatus(ContractLifeCycle.DUPLEXCANCEL_FINISHED);
-					StringBuilder sb = new StringBuilder("由于买卖双方其中一方未能在24小时确认取消合同，该合同取消失败。合同已进入正常状态，请知悉.");
-					//sb.append("由于买方双方其中一方未能在24小时确认取消合同，该合同取消失败。合同已进入正常状态，请知悉。");
-					oper.setResult(sb.toString());
-					oper.setRemark(sb.toString());
-					try{
-						iContractOperationService.add(oper);
-					}catch(Exception e){
-						logUtil.debug(e.getMessage(), e);
-					}
-					//send system message and xmpp message
-					MessageInfoBean mi = new MessageInfoBean(
-							MsgBusinessType.BUSINESS_TYPE_CONTRACT_ING,
-							bean.getId(),
-							bean.getSellerid(),
-							SystemMessageContent.getMsgContentOfContractCancelFailure(bean.getId()));
-					mi.setSendSystemMsg(true);
-					mi.setSendPushMsg(true);
-					mesgSender.msgSend(mi);
-
-					mi.setCid(bean.getBuyerid());
-					mesgSender.msgSend(mi);
 				}
 			}
 		}
-		logUtil.info(result);
-		logUtil.info(result.size());
+		logUtil.info(this.getClass().getName());
 		logUtil.info(context.getTrigger().getName());
+		logUtil.info(CollectionUtils.isNotEmpty(result) ? result.size() : result);
 	}
 
 }

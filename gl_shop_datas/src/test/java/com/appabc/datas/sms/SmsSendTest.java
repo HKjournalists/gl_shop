@@ -9,6 +9,7 @@ import com.appabc.tools.bean.SMSTemplate;
 import com.appabc.tools.bean.ShortMsgInfo;
 import com.appabc.tools.sms.ISmsSender;
 import com.appabc.tools.utils.ValidateCodeManager;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -32,7 +33,11 @@ public class SmsSendTest extends AbstractDatasTest {
 	private ValidateCodeManager vcm;
 
 	public void validateCodeSend(){
-		vcm.sendSmsCode("15811822330");
+//		for (int i = 0; i < 1; i++) {
+			vcm.sendSmsCode("15811822330");
+//		}
+		
+		System.out.println("====================短信发送结束");
 	}
 
 	public void sendMoneyMsg(){
@@ -44,6 +49,22 @@ public class SmsSendTest extends AbstractDatasTest {
 		smi.setTel("15811822330");
 
 		SMSTemplate template = SMSTemplate.getTemplateWallet("保证金", new Date(), "冻结", 40000);
+		smi.setTemplate(template);
+		msgSender.sendMsg(smi);
+	}
+	
+	/**
+	 * 货款转保证金
+	 */
+	public void sendMoneyMsg2(){
+
+		ShortMsgInfo smi = new ShortMsgInfo();
+
+		smi.setBusinessId("11223");
+		smi.setBusinessType(MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY);
+		smi.setTel("15811822330");
+
+		SMSTemplate template = SMSTemplate.getTemplateWalletDespositToGuaranty(new Date(), 2342);
 		smi.setTemplate(template);
 		msgSender.sendMsg(smi);
 	}
@@ -70,6 +91,7 @@ public class SmsSendTest extends AbstractDatasTest {
 	public void mainTest() {
 //		validateCodeSend();
 //		sendMoneyMsg();
+//		sendMoneyMsg2();
 //		sendDownAppUrlMsg();
 	}
 

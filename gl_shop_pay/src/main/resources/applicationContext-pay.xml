@@ -28,8 +28,10 @@
 		<property name="iPayInfoService" ref="IPayInfoService"/>
 		<property name="iPayDetailService" ref="IPayDetailService"/>
 		<property name="iOfflinePayService" ref="IOfflinePayService"/>
+		<property name="iPayThirdInfoService" ref="IPayThirdInfoService"/>
 		<property name="iAcceptBankService" ref="IAcceptBankService"/>
 		<property name="iPassbookPayService" ref="IPassbookPayService"/>
+		<property name="iPayThirdRecordService" ref="IPayThirdRecordService"/>
 		<property name="iPassbookInfoService" ref="IPassbookInfoService"/>
 		<property name="iPassbookDrawService" ref="IPassbookDrawService"/>
 		<property name="iPassbookThirdCheckService" ref="IPassbookThirdCheckService"/>
@@ -59,14 +61,25 @@
 	<bean id="IPassbookThirdCheckService" class="com.appabc.pay.service.local.impl.PassbookThirdCheckServiceImpl">
 		<property name="iPassbookThirdCheckDAO" ref="IPassbookThirdCheckDAO" />
 	</bean>
+	<bean id="IPayThirdInfoService" class="com.appabc.pay.service.local.impl.PayThirdInfoServiceImpl">
+		<property name="PKGenerator" ref="PKGenerator"/>
+		<property name="iPayThirdInfoDAO" ref="IPayThirdInfoDAO" />
+		<property name="iPassbookInfoService" ref="IPassbookInfoService"/>
+		<property name="iPayThirdRecordService" ref="IPayThirdRecordService"/>		
+	</bean>
+	<bean id="IPayThirdRecordService" class="com.appabc.pay.service.local.impl.PayThirdRecordServiceImpl">
+		<property name="iPayThirdRecordDAO" ref="IPayThirdRecordDAO" />		
+	</bean>
 	
 	<bean class="com.appabc.pay.dao.impl.PayInfoDAOImpl" id="IPayInfoDAO"/>
 	<bean class="com.appabc.pay.dao.impl.PayDetailDAOImpl" id="IPayDetailDAO" />
-	<bean class="com.appabc.pay.dao.impl.PayAcceptBankDAOImpl" id="IAcceptBankDAO" />
 	<bean class="com.appabc.pay.dao.impl.OfflinePayDAOImpl" id="IOfflinePayDAO" />
 	<bean class="com.appabc.pay.dao.impl.PassbookPayDAOImpl" id="IPassbookPayDAO" />
+	<bean class="com.appabc.pay.dao.impl.PayAcceptBankDAOImpl" id="IAcceptBankDAO" />
 	<bean class="com.appabc.pay.dao.impl.PassbookInfoDAOImpl" id="IPassbookInfoDAO" />
 	<bean class="com.appabc.pay.dao.impl.PassbookDrawDAOImpl" id="IPassbookDrawDAO" />
+	<bean class="com.appabc.pay.dao.impl.PayThirdInfoDAOImpl" id="IPayThirdInfoDAO" />
+	<bean class="com.appabc.pay.dao.impl.PayThirdRecordDAOImpl" id="IPayThirdRecordDAO" />
 	<bean class="com.appabc.pay.dao.impl.PassbookThirdCheckDAOImpl" id="IPassbookThirdCheckDAO" />
 	
 </beans>

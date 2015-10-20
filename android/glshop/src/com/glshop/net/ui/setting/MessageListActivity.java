@@ -132,28 +132,32 @@ public class MessageListActivity extends BasicActivity implements OnItemClickLis
 
 			if (type == DataReqType.INIT && size == 0) {
 				updateDataStatus(DataStatus.EMPTY);
-			} else if (type == DataReqType.REFRESH && size == 0 && BeanUtils.isEmpty(DataCenter.getInstance().getData(DataType.MESSAGE_LIST))) {
-				updateDataStatus(DataStatus.EMPTY);
 			} else {
 				updateDataStatus(DataStatus.NORMAL);
+				if (type == DataReqType.REFRESH) {
+					pageIndex = DEFAULT_INDEX;
+					if (BeanUtils.isEmpty(DataCenter.getInstance().getData(DataType.MESSAGE_LIST))) {
+						updateDataStatus(DataStatus.EMPTY);
+					}
+				}
 				mAdapter.setList(DataCenter.getInstance().getData(DataType.MESSAGE_LIST));
 				mLvMassageList.onRefreshSuccess();
 				if (type == DataReqType.INIT) {
 					mLvMassageList.setSelection(0);
 				}
-				if (type == DataReqType.INIT || type == DataReqType.MORE) {
-					if (size > 0) {
-						pageIndex++;
-					}
-					Logger.e(TAG, "Size = " + size + ", PageSize= " + PAGE_SIZE);
-					hasNextPage = size >= PAGE_SIZE;
-					if (hasNextPage) {
-						mLvMassageList.showLoading();
-					} else {
-						mLvMassageList.showLoadFinish();
-					}
+				//if (type == DataReqType.INIT || type == DataReqType.MORE) {
+				if (size > 0) {
+					pageIndex++;
 				}
+				hasNextPage = size >= PAGE_SIZE;
+				if (hasNextPage) {
+					mLvMassageList.showLoading();
+				} else {
+					mLvMassageList.showLoadFinish();
+				}
+				//}
 			}
+
 		}
 	}
 
@@ -165,6 +169,20 @@ public class MessageListActivity extends BasicActivity implements OnItemClickLis
 				mLvMassageList.showLoadFail();
 			} else {
 				updateDataStatus(DataStatus.ERROR);
+			}
+		}
+	}
+
+	@Override
+	protected void showErrorMsg(RespInfo respInfo) {
+		if (respInfo != null) {
+			switch (respInfo.respMsgType) {
+			case GlobalMessageType.MsgCenterMessageType.MSG_GET_MESSAGE_LIST_FAILED:
+				showToast(R.string.error_req_get_list);
+				break;
+			default:
+				super.showErrorMsg(respInfo);
+				break;
 			}
 		}
 	}

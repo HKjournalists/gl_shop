@@ -24,7 +24,7 @@
     __block ASIFormDataRequest *request = [ASIFormDataRequest requestWithURL:url];
     [request setRequestMethod:httpMethod];
     
-    [request setTimeOutSeconds:10];
+    [request setTimeOutSeconds:30];
     
     UserInstance *userInstance = [UserInstance sharedInstance];
     NSString *token = userInstance.user.userToken;

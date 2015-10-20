@@ -19,8 +19,10 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.appabc.bean.enums.TokenEnum;
 import com.appabc.common.base.exception.BusinessException;
 import com.appabc.common.utils.LogUtil;
+import com.appabc.common.utils.RandomUtil;
 import com.appabc.common.utils.SystemConstant;
 import com.appabc.common.utils.security.BaseCoder;
+import com.appabc.datas.tool.UserLoginStatusManager;
 import com.appabc.datas.tool.UserTokenManager;
 import com.appabc.http.utils.HttpApplicationErrorCode;
 
@@ -40,6 +42,8 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 	private List<String> notAuthDirList;
 
 	private UserTokenManager userTokenManager;
+	
+	private UserLoginStatusManager userLoginStatusManager;
 
 	/**
 	 * separateStrByMark (通过分割字符分割字符串)
@@ -79,7 +83,7 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 			HttpServletResponse response) {
 		// 2 进行验证加密的处理请求，如验证成功则往下走，验证失败就不处理
 		Enumeration<?> e = request.getParameterNames();
-		if (e != null
+		if (e != null 
 				&& !org.apache.commons.collections.CollectionUtils
 						.sizeIsEmpty(e)) {
 			// 获取客户端传上来的签名
@@ -129,12 +133,14 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 					return false;
 				}
 				log.debug("The sign equals result: "	+ sign.equals(clientSign));
+				return true;
 			} catch (Exception e1) {
 				log.debug(e1.getMessage(), e1);
 				return false;
 			}
+		} else {			
+			return false;
 		}
-		return true;
 	}
 
 	/*
@@ -163,6 +169,7 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 		if(StringUtils.isNotEmpty(servletContext)){
 			requestUri = requestUri.replaceFirst(servletContext, StringUtils.EMPTY);
 		}
+		requestUri = RandomUtil.matchAndReplace("//", requestUri, "/");
 		log.debug("The request uri is : " + requestUri);
 		// 1 排除不需要登录请求的目录,这是属于配置静态资源的文件的配置过滤
 		if (!CollectionUtils.isEmpty(notAuthDirList)) {
@@ -192,16 +199,17 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 		if(StringUtils.isEmpty(token)){
 			token = request.getHeader(StringUtils.lowerCase(SystemConstant.ACCESS_TOKEN));
 		}
-		log.debug("The token is : "+token +"; token equals result is : "+userTokenManager.isExists(token));
 		TokenEnum tokenEnum = userTokenManager.isExists(token);
+		log.debug("The token is : "+token +"; token equals result is : " + tokenEnum);
 		if(StringUtils.isNotEmpty(token) && tokenEnum.equals(TokenEnum.TOKEN_STATUS_EXIST)){//normal case
+			userLoginStatusManager.recordingUserStatus(userTokenManager.getUsernameByToken(token));
 			return super.preHandle(request, response, handler);
 		}else if(StringUtils.isNotEmpty(token) && TokenEnum.TOKEN_STATUS_NOTEXIST.equals(tokenEnum)){//token not exits case : user not exits ,please user to login ; 
-			throw new BusinessException(HttpApplicationErrorCode.USER_UNLOGINE_RROR,"user is not login, please login . ");
+			throw new BusinessException(HttpApplicationErrorCode.USER_UNLOGINE_ERROR,"user is not login, please login . ");
 		}else if(StringUtils.isNotEmpty(token) && TokenEnum.TOKEN_STATUS_EXPIRED.equals(tokenEnum)){//token is out date case ,
 			throw new BusinessException(HttpApplicationErrorCode.TOKEN_IS_OUT_DATE,"the user token is out date, please login again. ");
 		}else{//the token is null case
-			throw new BusinessException(HttpApplicationErrorCode.USER_UNLOGINE_RROR,"user is not login, please login . ");
+			throw new BusinessException(HttpApplicationErrorCode.USER_UNLOGINE_ERROR,"user is not login, please login . ");
 		}
 	}
 
@@ -259,6 +267,11 @@ public class GlobalValidationInterceptor extends HandlerInterceptorAdapter {
 	 */
 	public void setUserTokenManager(UserTokenManager userTokenManager) {
 		this.userTokenManager = userTokenManager;
+	}
+	
+	public void setUserLoginStatusManager(
+			UserLoginStatusManager userLoginStatusManager) {
+		this.userLoginStatusManager = userLoginStatusManager;
 	}
 
 	public static void main(String[] args) {

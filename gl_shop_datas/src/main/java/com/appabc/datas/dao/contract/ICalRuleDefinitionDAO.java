@@ -15,6 +15,14 @@ import com.appabc.common.base.dao.IBaseDao;
 
 public interface ICalRuleDefinitionDAO extends IBaseDao<TCalRuleDefinition> {
 	
+	/**
+	 * @description 分页查询规则定义信息
+	 * @param qContext
+	 * @return QueryContext<TCalRuleDefinition>
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	QueryContext<TCalRuleDefinition> queryListForPaginationForSQL(QueryContext<TCalRuleDefinition> qContext);
 	
 }

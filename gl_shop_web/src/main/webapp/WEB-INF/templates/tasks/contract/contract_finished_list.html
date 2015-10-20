@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+  <title>生成/确认合同</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/content.css}" />
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 合同管理 - 生成/确认合同 </h4>
+
+<div layout:fragment="pageContent">
+  <ul class="nav nav-tabs" th:replace="tasks/contract/contract_fragments :: contract_tab">
+    <li role="presentation" class="active"><a href="#">生成合同</a></li>
+    <li role="presentation"><a href="#">确认合同</a></li>
+  </ul>
+
+  <div class="table-responsive media">
+  	<div class="panel panel-default">
+	  <div class="panel-body">
+      	<form class="form-inline">
+			  <div class="form-group">
+			    <label for="daifa">已完成合同</label>&nbsp;&nbsp;
+				<div th:replace="tasks/contract/contract_fragments :: confirm_contract_selector('finished', ${contractType})"></div>
+			  </div>
+			  <!-- <div class="form-group">
+			    <label for="fromDatePicker">开始时间</label>&nbsp;&nbsp;
+				<div class="controls input-group date" id="fromDatePicker">
+                  <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="starttime" name="starttime"
+                         th:value="*{task} ? (*{orderRequest.starttime} ? *{#calendars.format(orderRequest.starttime, 'yyyy-MM-dd')})" required="required" placeholder="请选择开始时间"/>
+                  <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                </div>
+			  </div>&nbsp;&nbsp;&nbsp;&nbsp;
+			  <div class="form-group">
+			    <label for="toDatePicker">结束时间</label>&nbsp;&nbsp;
+			    <div class="input-group date" id="toDatePicker">
+                  <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="endtime" name="endtime"
+                         th:value="*{task} ? (*{orderRequest.endtime} ? *{#calendars.format(orderRequest.endtime, 'yyyy-MM-dd')})" required="required" placeholder="请选择结束时间"/>
+                  <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                </div>
+			  </div> -->
+	      	<!-- <button id="btnSubmit" type="button" class="btn btn-primary text-center pull-right">查询</button> -->
+		  </form>
+	  </div>
+	</div>
+	<table layout:fragment="tableContent" class="table table-bordered table-hover table-striped">
+	  <thead>
+	  <tr>
+	    <th>用户手机号</th>
+	    <th>合同名称</th>
+	    <th>合同生成人</th>
+	    <th>合同状态</th>
+	    <th>操作</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  <tr th:each="taskContractInfo : ${confirmOrderInfo}">
+	    <td th:text="'[卖方]'+${taskContractInfo.sellerPhone} + '  <====>  [买方]' + ${taskContractInfo.buyerPhone}" class="task-warn">837648393874</td>
+	    <td><a th:href="@{/public/contract/{id}/(id=${taskContractInfo.oid})}" target="_blank" th:text="${taskContractInfo.remark} ? ${taskContractInfo.remark} : '未知'">名称</a></td>
+	    <td th:text="${taskContractInfo.operUserName}">出售黄沙10吨</td>
+	    <td th:text="${taskContractInfo.status.text} + ' / ' + ${taskContractInfo.lifecycle.text}">2014-12-03 12:35</td>
+	    <td><a th:href="@{/public/contract/{id}/(id=${taskContractInfo.oid})}" target="_blank">查看</a></td>
+	  </tr>
+	  <tr th:if="${#lists.isEmpty(confirmOrderInfo)}">
+	    <td colspan="5">没有查询到完成列表合同的对象</td>
+	  </tr>
+	  </tbody>
+	</table>
+	</div> 
+	<div th:replace="layouts/fragments :: pagingNavBar"></div> 
+</div>
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+</div>
+<script layout:fragment="inlineJavascript">
+var contextPath = /*[[@{/}]]*/ '/';
+
+$(document).ready(function() {   
+	//var today = new Date();
+    $('#fromDatePicker').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    //$('#fromDatePicker').data("DateTimePicker").minDate(today);
+    $('#toDatePicker').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    //$('#toDatePicker').data("DateTimePicker").minDate(today);
+});
+</script>
+</body>
+</html>

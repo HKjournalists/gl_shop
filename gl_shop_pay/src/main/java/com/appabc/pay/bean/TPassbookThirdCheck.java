@@ -46,7 +46,7 @@ public class TPassbookThirdCheck extends BaseBean {
     /**
      * 金额
      */
-    private Float amount;
+    private Double amount;
 
     /**
      * 流入流出
@@ -110,11 +110,11 @@ public class TPassbookThirdCheck extends BaseBean {
         this.name = name == null ? null : name.trim();
     }
 
-    public Float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

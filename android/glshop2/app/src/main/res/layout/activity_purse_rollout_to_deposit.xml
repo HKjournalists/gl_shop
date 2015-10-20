@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <!-- 可转余额 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_top"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="可转余额"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_aviable_money"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="9999.9"
+                    android:textColor="@color/red" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="元"
+                    android:textColor="@color/gray" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 转款余额 -->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_bottom"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="转款金额"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_unit_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="元"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/et_roll_money"
+                    style="@style/edittext"
+                    android:layout_width="120dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="3dp"
+                    android:layout_toLeftOf="@id/tv_unit_price"
+                    android:hint="请输入金额"
+                    android:inputType="numberDecimal" />
+            </RelativeLayout>
+
+            <!-- 发送验证码 -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:gravity="center_vertical"
+                android:text="短信验证"
+                android:textColor="@color/gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_top"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="发送验证码至:"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_user_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:text="18666668888"
+                    android:textColor="@color/blue" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line" />
+            <!-- 输入验证码 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_middle"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <EditText
+                    android:id="@+id/et_sms_code"
+                    style="@style/sms_verifycode_edittext"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_weight="1"
+                    android:hint="请输入验证码" />
+
+                <Button
+                    android:id="@+id/btn_send_sms_verfycode"
+                    style="@style/button_send_smscode"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_marginLeft="@dimen/buy_item_padding"
+                    android:layout_weight="1.2"
+                    android:text="@string/get_sms_verifycode_init" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line" />
+            <!-- 输入登录密码 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_bottom"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <EditText
+                    android:id="@+id/et_password"
+                    style="@style/edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:hint="请输入登录密码"
+                    android:inputType="textPassword" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/confirm_rollout"
+        style="@style/button_orange"
+        android:layout_margin="@dimen/buy_item_padding"
+        android:text="确认转款至交易保证金账户" />
+
+    <!-- 温馨提示 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:background="@drawable/bg_security_tips"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:text="温馨提示"
+            android:textColor="#5EA265" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recharge_security_tips" />
+    </LinearLayout>
+
+</LinearLayout>

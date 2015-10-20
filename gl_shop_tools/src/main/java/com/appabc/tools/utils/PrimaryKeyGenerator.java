@@ -35,7 +35,7 @@ public class PrimaryKeyGenerator {
 	
 	protected LogUtil log = LogUtil.getLogUtil(this.getClass());
 	
-	private String getCurrentDateValue(int index){
+	private synchronized String getCurrentDateValue(int index){
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		if(index == Calendar.MONTH){
@@ -58,7 +58,7 @@ public class PrimaryKeyGenerator {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	private String matchAndReplace(String preFlag,String sourceStr,String destStr){
+	private synchronized String matchAndReplace(String preFlag,String sourceStr,String destStr){
 		Pattern p = Pattern.compile(preFlag);
 		Matcher m = p.matcher(sourceStr);
 		while(m.find()){
@@ -75,7 +75,7 @@ public class PrimaryKeyGenerator {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	private void doPreProcess(TPk tpk,StringBuffer sb){
+	private synchronized void doPreProcess(TPk tpk,StringBuffer sb){
 		String prefix = tpk.getBprefix();
 		if(StringUtils.isNotEmpty(prefix)){
 			prefix = matchAndReplace(yearFlag,prefix,getCurrentDateValue(Calendar.YEAR));
@@ -98,7 +98,7 @@ public class PrimaryKeyGenerator {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	private void doMiddleProcess(TPk tpk,StringBuffer sb){
+	private synchronized void doMiddleProcess(TPk tpk,StringBuffer sb){
 		int len = tpk.getLength();
 		int curVal = tpk.getCurval();
 		int maxVal = tpk.getMaxval();
@@ -129,7 +129,7 @@ public class PrimaryKeyGenerator {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	private void doSufProcess(TPk tpk,StringBuffer sb){
+	private synchronized void doSufProcess(TPk tpk,StringBuffer sb){
 		String suffix = tpk.getBsuffix();
 		if(StringUtils.isNotEmpty(suffix)){
 			suffix = matchAndReplace(yearFlag,suffix,getCurrentDateValue(Calendar.YEAR));
@@ -144,11 +144,11 @@ public class PrimaryKeyGenerator {
 		}
 	}
 	
-	protected TPk getTPKByEntity(TPk entity){
+	protected synchronized TPk getTPKByEntity(TPk entity){
 		return service.query(entity);
 	}
 	
-	protected void saveOrUpdateTPk(TPk tpk){
+	protected synchronized void saveOrUpdateTPk(TPk tpk){
 		service.modify(tpk);
 	}
 	
@@ -160,7 +160,7 @@ public class PrimaryKeyGenerator {
 	 * @exception   
 	 * @since  1.0.0  
 	 */
-	protected String generatorBusinessKey(TPk wt) {
+	protected synchronized String generatorBusinessKey(TPk wt) {
 		//查询一条主键数据
 		TPk tpk = this.getTPKByEntity(wt);
 		if(tpk==null){

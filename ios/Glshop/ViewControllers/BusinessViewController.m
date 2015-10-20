@@ -15,10 +15,15 @@
 #import "IndicateExtionView.h"
 #import "BrowseViewController.h"
 #import "BarSegment.h"
+#import "FilerViewController.h"
+#import "IBActionSheet.h"
 
 #define kHeaderViewHeight 40
+#define kLoadCount 10
+#define kSellTableDateKey @"sellInfoListKey"
+#define kBuyTableDateKey @"buyInfoListKey"
 
-@interface BusinessViewController () <UITableViewEventDelegate,BarDidSelected>
+@interface BusinessViewController () <UITableViewEventDelegate,BarDidSelected,IBActionSheetDelegate>
 
 /**
  *@brief 出售列表
@@ -28,14 +33,19 @@
  *@brief 求购列表
  */
 @property (nonatomic, strong) PurchaseTableView *puchaseTableView;
-/**
- *@brief 下拉菜单
- */
-@property (nonatomic, strong) IndicateExtionView *indicateView;
+
 /**
  *@brief 头部控件
  */
 @property (nonatomic, strong) BarSegment *segmentBar;
+
+@property (nonatomic, strong) IBActionSheet *sheet;
+@property (nonatomic, strong) UIButton *titleViewBtn;
+
+/**
+ *@brief 为IBActionSheet记录选择的索引，默认为0
+ */
+@property (nonatomic, assign) NSInteger markIndex;
 
 
 @end
@@ -44,26 +54,34 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.shouldShowFailView = YES;
-
+    self.title = @"找买找卖";
     [self requestNet];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    _indicateView.hidden = NO;
+- (void)initDatas {
+    self.requestParams = [NSMutableDictionary dictionary];
+    _markIndex = 0;
+    self.isRefrushTable = YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestNet) name:kRefrushBuySellNotification object:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    _indicateView.hidden = YES;
+- (void)setTitle:(NSString *)title {
+    [super setTitle:title];
     
+    _titleViewBtn = [UIButton buttonWithTip:@"找买找卖" target:self selector:@selector(showSheet:)];
+    [_titleViewBtn setImage:[UIImage imageNamed:@"supply-and-demand_icon_on"] forState:UIControlStateNormal];
+    [_titleViewBtn setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+    [_titleViewBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 90, 0, 0)];
+    [_titleViewBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -30, 0, 0)];
+    _titleViewBtn.frame = CGRectMake(0, 0, 120, 44);
+    self.navigationItem.titleView = _titleViewBtn;
 }
 
 #pragma mark - UI
 - (void)loadSubViews {
-    [self loadTitleMenu];
+    
+    _sheet = [[IBActionSheet alloc] initWithTitle:@"选择查看排序" delegate:self cancelButtonTitle:globe_cancel_str destructiveButtonTitle:nil otherButtonTitlesArray:@[@"发布时间排序",@"价格从低到高",@"价格从高到低",@"诚信度从高到低"]];
+    _sheet.markIndex = _markIndex;
     
     // 发布信息按钮
     UIButton *filterBtn = [UIButton buttonWithTip:@"发布信息" target:self selector:nil];
@@ -83,79 +101,60 @@
 
     // 求购信息列表
     _listTableView = [[BusinessTableView alloc] initWithFrame:CGRectMake(0, _segmentBar.vbottom, self.view.vwidth, self.view.vheight-_segmentBar.vheight-kTopBarHeight) style:UITableViewStyleGrouped];
-    [_listTableView.refreshControl addTarget:self action:@selector(refrush:) forControlEvents:
-     UIControlEventValueChanged];
-    _listTableView.backgroundColor = self.view.backgroundColor;
+//    _listTableView.backgroundColor = self.view.backgroundColor;
     _listTableView.eventDelegate = self;
+    __weak typeof(self) this = self;
+    [_listTableView addLegendHeaderWithRefreshingBlock:^{
+        [this refrush:YES targetTable:this.listTableView];
+    } dateKey:kBuyTableDateKey];
     [self.view addSubview:_listTableView];
-    self.listTableView.contentOffset = CGPointMake(0, -44);
-    [_listTableView.refreshControl beginRefreshing];
 
     
     // 出售信息列表
     _puchaseTableView = [[PurchaseTableView alloc] initWithFrame:CGRectMake(0, _segmentBar.vbottom, self.view.vwidth, self.view.vheight-_segmentBar.vheight-kTopBarHeight) style:UITableViewStyleGrouped];
-    [_puchaseTableView.refreshControl addTarget:self action:@selector(refrush:) forControlEvents:UIControlEventValueChanged];
     _puchaseTableView.eventDelegate = self;
-    if (_puchaseTableView.dataArray.count < 5) {
+    if (_puchaseTableView.dataArray.count < kLoadCount) {
         _puchaseTableView.isMore = NO;
     }else {
         _puchaseTableView.isMore = YES;
     }
+    [_puchaseTableView addLegendHeaderWithRefreshingBlock:^{
+        [this refrush:YES targetTable:this.puchaseTableView];
+    } dateKey:kSellTableDateKey];
     [self.view addSubview:_puchaseTableView];
     _puchaseTableView.hidden = YES;
 }
 
-/**
- *@brief 下拉菜单
- */
-- (void)loadTitleMenu {    
-    _indicateView = [[IndicateExtionView alloc] initWithFrame:CGRectMake(self.view.vwidth/2-80, 20, 140, 44) title:@"找买找卖"];
-    _indicateView.dir = listDown;
-    _indicateView.weakViewController = self.navigationController;
-    [self.navigationController.view addSubview:_indicateView];
-    _indicateView.dataSource = @[@"全部",@"我的供",@"我的求",];
-}
-
 #pragma mark - Net
 - (void)requestNet {
-    [self currentTableView].hidden = YES;
+//    [self currentTableView].hidden = YES;
     [super requestNet];
-    [self refrush:nil];
+    [[self currentTableView].legendHeader beginRefreshing];
     
 }
 
-- (void)refrush:(ODRefreshControl *)refrush {
+- (void)refrush:(BOOL)refrush targetTable:(BaseTableView *)tableView {
     BOOL isRefresh = refrush ? YES : NO;
-    BaseTableView *tableView = [self currentTableView];
     tableView.pageIndex = isRefresh ? 1 : tableView.pageIndex;
-    BOOL isLoadMore = tableView.pageIndex == 1 ? NO : YES;
     NSString *businessType = _segmentBar.selctedIndex == 0 ? @"1" : @"2";
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:[self currentTableView].pageIndex],@"pageIndex",businessType,@"type",@5,@"pageSize", nil];
-    
-    if (!isLoadMore && tableView.dataArray.count <= 0) {
-        isRefresh = YES;
-    }
-    
-    if (isRefresh && tableView.dataArray.count > 0) {
-        self.shouldShowFailView = NO;
-    }else {
-        self.shouldShowFailView = YES;
-    }
+
+    [self.requestParams setObject:[NSNumber numberWithInteger:[self currentTableView].pageIndex] forKey:@"pageIndex"];
+    [self.requestParams setObject:businessType forKey:@"type"];
+    NSNumber *loadNum = [NSNumber numberWithInteger:kLoadCount];
+    [self.requestParams setObject:loadNum forKey:@"pageSize"];
+
     __block typeof(self) this = self;
     [self requestWithURL:bFoundOrderList
-                  params:params
+                  params:self.requestParams
               HTTPMethod:kHttpGetMethod
-             shouldCache:!isRefresh
+             shouldCache:NO
            completeBlock:^(ASIHTTPRequest *request, id responseData) {
         kASIResultLog;
+           [tableView.header endRefreshing];
         [this handleNetData:responseData];
         
         } failedBlock:^(ASIHTTPRequest *req){
-            if (isLoadMore && this.isFirstResponder) {
-                HUD(kNetError);
-            }
-        [[tableView refreshControl] endRefreshing];
-        this.shouldShowFailView = YES;
+        [tableView.header endRefreshing];
             
     }];
 }
@@ -175,7 +174,9 @@
         [self requestSuccessButNoData];
     }
     
-    if (temp.count < 5) {
+    // 每次加载5条数据
+    NSInteger loadCount = kLoadCount;
+    if (temp.count < loadCount) {
         tableView.isMore = NO;
     }else {
         tableView.isMore = YES;
@@ -187,34 +188,40 @@
         tableView.dataArray = [NSArray arrayWithArray:temp];
     }
     [tableView reloadData];
-    
-    [[tableView refreshControl] endRefreshing];
+
 }
 
 - (void)handleRequestFailed:(ASIHTTPRequest *)req {
-    [self.view hideLoading];
-    [self hideHUD];
-    [self hideViewsWhenNoData];
-    if ([self.requestArray containsObject:req]) {
-        [self.requestArray removeObject:req];
-    }
-    if (self.shouldShowFailView && !self.failView.superview) {
+    [super commandHandle:req];
+    if (self.shouldShowFailView && self.isNotActionRequest && !self.failView.superview) {
         [self.view addSubview:[self failViewWithFrame:CGRectMake(0, 50, self.view.vwidth, self.view.vheight-50) empty:NO]];
+    }else {
+        [self showTip:kNetError];
+    }
+}
+
+- (void)requestSuccessButNoData {
+    if (self.shouldShowFailView && !self.failView.superview) {
+        [self.view addSubview:[self failViewWithFrame:CGRectMake(0, _segmentBar.vheight, self.view.vwidth, self.view.vheight-_segmentBar.vheight) expectionImgName:nil expectionTitle:nil expectionSubTitle:@"该条件下暂无信息，请赶紧发布信息!" isNodata:YES]];
     }
 }
 
 #pragma mark - UITableViewEventDelegate
 - (void)pullUp:(BaseTableView *)tableView {
     tableView.pageIndex++;
-    [self refrush:nil];
-    self.shouldShowFailView = NO;
+    [self refrush:NO targetTable:tableView];
 }
 
 - (void)tableView:(BaseTableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     OrderModel *model = [self currentTableView].dataArray[indexPath.section];
     NSInteger orderStatus = [model.status[DataValueKey] integerValue];
+    NSInteger orderType = [model.type[DataValueKey] integerValue];
     BrowseViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"BrowseViewControllerId"];
-    vc.title = @"供求详细";
+    if (orderType == 1) {
+        vc.title = @"求购信息";
+    }else {
+        vc.title = @"出售信息";
+    }
     vc.orderStatus = orderStatus;
     vc.orderId = model.id;
     [self.navigationController pushViewController:vc animated:YES];
@@ -231,7 +238,42 @@
         _puchaseTableView.hidden = YES;
         _listTableView.hidden = NO;
         [self requestNet];
+    }else {
+        FilerViewController *vc = [[FilerViewController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
     }
+}
+
+#pragma mark - UIActionSheet Delegate
+- (void)actionSheet:(IBActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex != 4) {
+        self.requestParams = [NSMutableDictionary dictionary];
+    }
+    BaseTableView *table = [self currentTableView];
+    if (buttonIndex == 0) {
+        [self.requestParams setObject:@1 forKey:@"orderEffTime"];
+//        [self refrush:YES targetTable:table];
+    }else if (buttonIndex == 1) {
+        [self.requestParams setObject:@0 forKey:@"orderPrice"];
+//        [self refrush:YES targetTable:table];
+    }else if (buttonIndex == 2) {
+        [self.requestParams setObject:@1 forKey:@"orderPrice"];
+//        [self refrush:YES targetTable:table];
+    }else if (buttonIndex == 3) {
+        [self.requestParams setObject:@1 forKey:@"orderCredit"];
+//        [self refrush:YES targetTable:table];
+    }
+    if (buttonIndex != 4) {
+        [table.header beginRefreshing];
+    }
+}
+
+//- (void)actionSheet:(IBActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+//       [self indicateArrow];
+//}
+
+- (void)actionWillDismiss:(IBActionSheet *)actionSheet {
+    [self indicateArrow];
 }
 
 #pragma mark - UIActions
@@ -240,8 +282,29 @@
         HUD(@"您还没有登录");
         return;
     }
+    
+//    UserInstance *userObj = [UserInstance sharedInstance];
+//    if (!userObj.isBeAuthed) {
+//        [Utilits alertWithString:@"请完成长江电商平台认证后再来发布信息！" alertTitle:nil];
+//        return;
+//    }
+//    
+//    if (!userObj.isPaymentMargin) {
+//        [Utilits alertWithString:@"请先缴纳保证金后再来发布信息！" alertTitle:nil];
+//        return;
+//    }
+    
     PublicInfoViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"PublicInfoViewControllerId"];
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)showSheet:(UIButton *)button {
+    if (_sheet.visible) {
+        return;
+    }
+    
+    [self indicateArrow];
+    [_sheet showInView:self.view];
 }
 
 #pragma mark - Private
@@ -252,6 +315,22 @@
         return _puchaseTableView;
     }
     return nil;
+}
+
+static int selectFlag = 0;
+- (void)indicateArrow {
+    float duration = 0.25;
+    if (selectFlag) {
+        selectFlag = 0;
+        [UIView animateWithDuration:duration animations:^{
+            [_titleViewBtn.imageView.layer setTransform:CATransform3DIdentity];
+        }];
+    }else {
+        selectFlag = 1;
+        [UIView animateWithDuration:duration animations:^{
+            [_titleViewBtn.imageView.layer setTransform:CATransform3DMakeRotation(-M_PI/1.0000001, 0, 0, 1)];
+        }];
+    }
 }
 
 @end

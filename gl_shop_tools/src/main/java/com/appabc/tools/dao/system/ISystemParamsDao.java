@@ -16,4 +16,6 @@ import com.appabc.common.base.dao.IBaseDao;
  */
 public interface ISystemParamsDao extends IBaseDao<TSystemParams>{
 
+	void initDataParameters();
+	
 }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+
+<table th:fragment="match_candidates" class="table table-bordered table-hover table-striped">
+  <tr>
+    <th width="5%">选择</th>
+    <th>手机号码</th>
+    <th>用户名称</th>
+    <th width="15%">用户类型</th>
+    <th>
+      <select name="matchType" class="form-control input-sm">
+        <option value="ALL" th:selected="${'ALL'.equals(matchType)}">全部撮合类型</option>
+        <option value="INTR" th:selected="${'INTR'.equals(matchType)}">交易询盘</option>
+        <option value="MATCH" th:selected="${'MATCH'.equals(matchType)}">发布过对应供求信息</option>
+      </select>
+    </th>
+    <th>保证金余额（元）</th>
+    <th>交易询盘时间</th>
+    <th>系统标题</th>
+    <th>消息发布时间</th>
+  </tr>
+  <tr th:if="${not #lists.isEmpty(candidates)}" th:each="candidate : ${candidates}">
+    <td><input name="candidate" type="radio" th:value="'0,' + ${candidate.company.cid} + ',' + (${candidate.company.ctype} ? ${candidate.company.ctype.text} : '未知') + ',' + (${candidate.company.cname} ? ${candidate.company.cname} : '未知') + ',' + ${candidate.company.phone} + ',' + ${candidate.guaranty} + ',' + ${candidate.company.matchingtype.val}" /></td>
+    <td><a th:href="@{/company/{cid}/info/(cid=${candidate.company.cid})}" th:text="${candidate.phone}" target="_blank">18666662520</a></td>
+    <td th:text="${candidate.company.cname} ? ${candidate.company.cname} : '未知'">企业名称</td>
+    <td th:text="${candidate.company.ctype} ? ${candidate.company.ctype.text} : '未知'">企业</td>
+    <td th:text="${candidate.company.matchingtype.text}">发布过对应需求信息</td>
+    <td th:text="${candidate.guaranty}">51250.0</td>
+    <td th:text="${candidate.company.fItemTime} ? ${#calendars.format(candidate.company.fItemTime, 'YYYY-MM-dd HH:mm')} : '无'">2014-12-03 12:35</td>
+    <td th:switch="${candidate.company.matchingtype.val}">
+      <a th:case="'1'" th:href="@{/public/order_request/{id}/(id=${candidate.company.fid})}" th:text="${candidate.company.title}">出售石子·卵石(0.0-0.0) 94.0吨 22.0元/吨</a>
+    </td>
+    <td th:text="${candidate.company.fPulishTime} ? ${#calendars.format(candidate.company.fPulishTime, 'YYYY-MM-dd HH:mm')} : '无'">2014-12-03 12:35</td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(candidates)}">
+    <td colspan="9">抱歉，系统暂未找到与该信息相匹配的撮合对象，请稍后再试。</td>
+  </tr>
+</table>
+
+<table th:fragment="saved_contracts" class="table table-bordered table-hover table-striped">
+  <tr>
+    <th width="5%">选择</th>
+    <th>手机号码</th>
+    <th>用户名称</th>
+    <th width="15%">用户类型</th>
+    <th>
+      <select name="matchType" class="form-control input-sm">
+        <option value="ALL" th:selected="${'ALL'.equals(matchType)}">全部撮合类型</option>
+        <option value="INTR" th:selected="${'INTR'.equals(matchType)}">交易询盘</option>
+        <option value="MATCH" th:selected="${'MATCH'.equals(matchType)}">发布过对应供求信息</option>
+      </select>
+    </th>
+    <th>保证金余额（元）</th>
+    <th>交易询盘时间</th>
+    <th>系统标题</th>
+    <th>消息发布时间</th>
+  </tr>
+  <tr th:if="${not #lists.isEmpty(candidates)}" th:each="candidate : ${candidates}">
+    <td><input name="candidate" type="radio" th:value="'1,' + ${candidate.company.target} + ',' + (${candidate.ctype} ? ${candidate.ctype.text} : '未知') + ',,' + ${candidate.phone} + ',' + ${candidate.guaranty} + ',' + ${candidate.company.ocfid} + ',' + ${candidate.company.opType.val}" /></td>
+    <td th:text="${candidate.phone}">18666662520</td>
+    <td th:text="${candidate.company.tCname} ? ${candidate.company.tCname} : '未知'">企业名称</td>
+    <td th:text="${candidate.ctype} ? ${candidate.ctype.text} : '未知'">企业</td>
+    <td th:text="${candidate.company.opType} ? ${candidate.company.opType.text}">发布过对应需求信息</td>
+    <td th:text="${candidate.guaranty}">51250.0</td>
+    <td th:text="${candidate.company.fItemTime} ? ${#calendars.format(candidate.company.fItemTime, 'YYYY-MM-dd HH:mm')} : '无'">2014-12-03 12:35</td>
+    <td switch="${candidate.company.opType.val}">
+      <a case="'1'" th:href="@{/public/order_request/{id}/(id=${candidate.company.opfid})}" text="${candidate.company.title}">出售石子·卵石(0.0-0.0) 94.0吨 22.0元/吨</a>
+    </td>
+    <td th:text="${candidate.company.fPulishTime} ? ${#calendars.format(candidate.company.fPulishTime, 'YYYY-MM-dd HH:mm')} : '无'">2014-12-03 12:35</td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(candidates)}">
+    <td colspan="9">没有查询到可撮合的对象</td>
+  </tr>
+</table>
+
+</body>
+</html>

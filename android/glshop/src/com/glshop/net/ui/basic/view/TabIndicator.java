@@ -91,7 +91,7 @@ public class TabIndicator extends LinearLayout implements View.OnClickListener, 
 		setFocusable(true);
 		setOnFocusChangeListener(this);
 		mContext = context;
-		
+
 		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TabIndicator);
 		int footerColor = a.getColor(R.styleable.TabIndicator_footerColor, FOOTER_COLOR);
 		mTextColor = a.getColorStateList(R.styleable.TabIndicator_textDefaultColor);
@@ -154,6 +154,18 @@ public class TabIndicator extends LinearLayout implements View.OnClickListener, 
 			title = mTabs.get(pos).getName();
 		}
 		return title;
+	}
+
+	/**
+	 * 设置指定下标的选项卡的标题
+	 * @param position
+	 * @param title
+	 */
+	public void setTitle(int position, String title) {
+		if (mTabs != null && mTabs.size() > position) {
+			mTabs.get(position).setName(title);
+			invalidate();
+		}
 	}
 
 	/**

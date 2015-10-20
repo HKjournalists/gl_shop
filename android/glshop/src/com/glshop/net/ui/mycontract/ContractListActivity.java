@@ -18,7 +18,6 @@ import com.glshop.net.ui.MainActivity;
 import com.glshop.net.ui.basic.BasicFragmentActivity;
 import com.glshop.net.ui.basic.adapter.base.TabPagerAdapter;
 import com.glshop.net.ui.basic.adapter.base.TabPagerAdapter.TabInfo;
-import com.glshop.net.ui.basic.fragment.contract.ContractListFragment;
 import com.glshop.net.ui.basic.fragment.contract.list.EndedContractListFragment;
 import com.glshop.net.ui.basic.fragment.contract.list.OngoingContractListFragment;
 import com.glshop.net.ui.basic.fragment.contract.list.UfmContractListFragment;
@@ -108,12 +107,12 @@ public class ContractListActivity extends BasicFragmentActivity implements ViewP
 		transaction.hide(mFragmentOngoing);
 		transaction.hide(mFragmentEnded);
 
-		transaction.commit();
+		transaction.commitAllowingStateLoss();
 
 		List<TabInfo> tabs = new ArrayList<TabInfo>();
-		tabs.add(new TabInfo(0, getString(R.string.my_unconfirmed_contract), TAB_UNCONFIRM, ContractListFragment.class, mFragmentUnconfirmed));
-		tabs.add(new TabInfo(1, getString(R.string.my_ongoing_contract), TAB_ONGOING, ContractListFragment.class, mFragmentOngoing));
-		tabs.add(new TabInfo(2, getString(R.string.my_ended_contract), TAB_ENDED, ContractListFragment.class, mFragmentEnded));
+		tabs.add(new TabInfo(0, getString(R.string.my_unconfirmed_contract), TAB_UNCONFIRM, UfmContractListFragment.class, mFragmentUnconfirmed));
+		tabs.add(new TabInfo(1, getString(R.string.my_ongoing_contract), TAB_ONGOING, OngoingContractListFragment.class, mFragmentOngoing));
+		tabs.add(new TabInfo(2, getString(R.string.my_ended_contract), TAB_ENDED, EndedContractListFragment.class, mFragmentEnded));
 
 		mIndicator.init(contractType.toValue(), tabs, mViewPager);
 

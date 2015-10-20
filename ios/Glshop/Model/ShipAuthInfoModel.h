@@ -76,7 +76,7 @@
 /**
  *@brief 船体材料
  */
-@property (nonatomic, strong) NSNumber *smateriall;
+@property (nonatomic, copy) NSString *smateriall;
 /**
  *@brief 更新时间
  */

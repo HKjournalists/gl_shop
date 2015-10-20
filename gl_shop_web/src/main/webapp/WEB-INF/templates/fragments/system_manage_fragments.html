@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+<ul th:fragment="system_message_tab" class="nav nav-tabs">
+  <li role="presentation" th:class="${#strings.contains(url, '/system_message/send/')} ? active"><a th:href="@{/tool/manage/system_message/send/}">系统消息发送</a></li>
+  <li role="presentation" th:class="${#strings.contains(url, '/system_message/list/') || #strings.contains(url, '/system_message/query/')} ? active"><a th:href="@{/tool/manage/system_message/list/1/}">已发消息列表</a></li>
+</ul>
+
+<ul th:fragment="configure_advertise_tab" class="nav nav-tabs">
+	<li role="presentation" th:class="${#strings.contains(url, '/Android/')} ? active"><a th:href="@{/manage/advertise/configure/Android/}">Android客户端</a></li>
+	<li role="presentation" th:class="${#strings.contains(url, '/Ios/')} ? active"><a th:href="@{/manage/advertise/configure/Ios/}">IOS客户端</a></li>
+</ul>
+
+</body>
+</html>

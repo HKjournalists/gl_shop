@@ -7,34 +7,25 @@
       <span class="fa arrow"></span></a>
       <ul class="nav nav-second-level">
         <li>
-          <a th:href="@{/company/{cid}/info/(cid=${cid})}">基本资料</a>
+          <a th:href="@{/company/{cid}/info/(cid=${cid})}" th:class="${#strings.contains(url, '/info/')} ? 'active'">基本资料</a>
         </li>
         <li>
-          <a th:href="@{/company/{cid}/auth/(cid=${cid})}">身份状态</a>
+          <a th:href="@{/company/{cid}/auth/(cid=${cid})}" th:class="${#strings.contains(url, '/auth/')} ? 'active'">身份状态</a>
         </li>
       </ul>
     </li>
-    <li sec:authorize="isAuthenticated()" th:class="${#strings.endsWith(url, '/wallet/balance/') ? 'active' : (#strings.endsWith(url, '/wallet/trans/') ? 'active' : '')}">
-      <a href="#"><i class="fa fa-fw fa-euro"></i> 个人钱包
+    <li sec:authorize="isAuthenticated()">
+      <a th:href="@{/company/{cid}/wallet/trans/1/(cid=${cid})}" th:class="${#strings.contains(url, '/wallet/')} ? 'active'"><i class="fa fa-fw fa-euro"></i> 个人钱包</a>
+    </li>
+    <li sec:authorize="isAuthenticated()" th:class="${#strings.contains(url, '/history/') ? 'active' : (#strings.contains(url, '/progressing/') ? 'active' : '')}">
+      <a href="#"><i class="fa fa-fw fa-exchange"></i> 交易行为
         <span class="fa arrow"></span></a>
-        <ul class="nav nav-second-level">
-          <li>
-            <a th:href="@{/company/{cid}/wallet/balance/(cid=${cid})}">当前余额</a>
-          </li>
-          <li>
-            <a th:href="@{/company/{cid}/wallet/trans/(cid=${cid})}">历史流水</a>
-          </li>
-        </ul>
-      </li>
-      <li sec:authorize="isAuthenticated()" th:class="${#strings.endsWith(url, '/trans/history/') ? 'active' : (#strings.endsWith(url, '/trans/pending/') ? 'active' : '')}">
-        <a href="#"><i class="fa fa-fw fa-exchange"></i> 交易行为
-          <span class="fa arrow"></span></a>
           <ul class="nav nav-second-level">
             <li>
-              <a th:href="@{/company/{cid}/trans/history/(cid=${cid})}">历史交易状态</a>
+              <a th:href="@{/company/{cid}/contracts/history/1/(cid=${cid})}" th:class="${#strings.contains(url, '/contracts/history/')} ? 'active'">历史交易状态</a>
             </li>
             <li>
-              <a th:href="@{/company/{cid}/trans/pending/(cid=${cid})}">当前交易状态</a>
+              <a th:href="@{/company/{cid}/contracts/progressing/1/(cid=${cid})}" th:class="${#strings.contains(url, '/contracts/progressing/')} ? 'active'">当前交易状态</a>
             </li>
           </ul>
         </li>

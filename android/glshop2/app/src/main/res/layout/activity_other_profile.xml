@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <include layout="@layout/layout_load_data_status" />
+
+    <LinearLayout
+        android:id="@+id/ll_other_profile_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <!-- 账户信息 -->
+
+                <include layout="@layout/layout_another_profile_account_info" />
+
+                <!-- 评价信息 -->
+
+                <include layout="@layout/layout_another_profile_evaluation_info" />
+                <!-- 企业信息 -->
+
+                <include layout="@layout/layout_myprofile_contact_info" />
+
+                <!-- 卸货地址信息 -->
+
+                <include layout="@layout/layout_myprofile_discharge_addr_info" />
+
+                <!-- 企业信息 -->
+
+                <include layout="@layout/layout_myprofile_company_info" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>

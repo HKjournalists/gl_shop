@@ -28,16 +28,16 @@
           </thead>
           <tbody>
           <tr th:each="acct : ${bankAccounts}">
-            <td th:text="${acct.cid}">18666662520</td>
+            <td><a th:href="@{/company/{cid}/info/(cid=${acct.cid})}" th:text="${acct.cid}">18666662520</a></td>
             <td th:text="${acct.company.cname}">靖江商业有限公司</td>
             <td>
               <th:block th:switch="${acct.authstatus}">
-                <p th:case="${T(com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus).AUTH_STATUS_CHECK_YES}">通过</p>
-                <p th:case="${T(com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus).AUTH_STATUS_CHECK_NO}">不通过</p>
+                <p th:case="${T(com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus).AUTH_STATUS_CHECK_YES}">通过</p>
+                <p th:case="${T(com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus).AUTH_STATUS_CHECK_NO}">不通过</p>
               </th:block>
             </td>
-            <td th:text="${#calendars.format(acct.updatetime, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
-            <td th:text="${#calendars.format(acct.createtime, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+            <td th:text="${acct.updatetime} ? ${#calendars.format(acct.updatetime, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+            <td></td>
             <td><a th:href="@{/finance/account_audit/finished/detail/{id}/(id=${acct.id})}">查看</a></td>
           </tr>
           <tr th:if="${#lists.isEmpty(bankAccounts)}">

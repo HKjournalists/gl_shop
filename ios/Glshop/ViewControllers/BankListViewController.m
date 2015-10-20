@@ -22,13 +22,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.title = @"选择银行";
-    _banks = @[@"中国农业银行",@"中国工商银行",@"中国建设银行",@"中国邮政储蓄银行",@"中国银行",@"招商银行",@"交通银行",@"浦发银行",@"中国光大银行",@"中信银行",@"平安银行",@"中国民生银行",@"华夏银行",@"兴业银行",@"上海银行",@"南京银行",@"江苏银行",];
+    self.title = @"选择开户行";
+    _banks = [SynacObject banksData];
     _lastSeleced = 0;
     SecondGatherViewController *vc = [self secgaVC];
-    if ([_banks indexOfObject:vc.selectBank] != NSNotFound) {
-        _lastSeleced = [_banks indexOfObject:vc.selectBank];
+  
+    if (vc.selectBank) {
+        _lastSeleced = [vc.selectBank.orderno integerValue]-1;
     }
+    
 }
 
 - (void)loadSubViews {
@@ -56,7 +58,8 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
         cell.textLabel.font = [UIFont boldSystemFontOfSize:16.f];
     }
-    cell.textLabel.text = _banks[indexPath.row];
+    BankModel *model = _banks[indexPath.row];
+    cell.textLabel.text = model.name;
     
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 25, 15)];
     imageView.image = [UIImage imageNamed:@"address_icon_select"];

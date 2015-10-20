@@ -59,7 +59,7 @@ public class DepositTest extends AbstractPayTest {
 		String topId = "PURSEOFFLINEPAYID2014101500001120650";
 		String passId = "PASSID2014101500005104400";
 		String payNo = "PAYNO0000000000001";
-		float balance = 50000f;
+		double balance = 50000.0;
 		String payId = PKGenerator.generatorBusinessKeyByBid("PURSEPAYID");
 		TOfflinePay bean = iOfflinePayService.query(topId);
 

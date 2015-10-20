@@ -30,17 +30,23 @@ import com.appabc.tools.service.codes.IPublicCodesService;
 public class AreaManager {
 	
 	private Logger logger = Logger.getLogger(this.getClass());
-	private final static String AREA_MAP_KEY = "TOKEN_MAP";
+	private final static String AREA_MAP_KEY = "AREA_MAP";
+	private final static String RIVER_PORT_DOCK_MAP_KEY = "RPD_MAP"; // 港口码头
 	
 	@Autowired
 	private IPublicCodesService publicCodesService;
 	@Autowired
 	private RedisHelper redisHelper;
 	
+	public void initPublicCodes(){
+		loadArea();
+		loadRiverPortDock();
+	}
+	
 	/**
 	 * 区域信息加载
 	 */
-	public void initArea(){
+	public void loadArea(){
 		
 		try {
 			Map<byte[],byte[]> map = this.redisHelper.hgetAll(AREA_MAP_KEY.getBytes("UTF-8"));
@@ -66,14 +72,41 @@ public class AreaManager {
 	}
 	
 	/**
+	 * 港口码头加载
+	 */
+	private void loadRiverPortDock(){
+		try {
+			Map<byte[],byte[]> map = this.redisHelper.hgetAll(RIVER_PORT_DOCK_MAP_KEY.getBytes("UTF-8"));
+			if(map.isEmpty()){
+				map = new HashMap<byte[],byte[]>();
+			}
+			
+			TPublicCodes entity = new TPublicCodes();
+			entity.setCode("RIVER_PORT_DOCK");
+			List<TPublicCodes> pcList = publicCodesService.queryForList(entity);
+			logger.info("river port dock list size:" + pcList.size());
+			for(TPublicCodes pc : pcList){
+				byte[] bytes = SerializeUtil.serialize(pc);
+				map.put(pc.getVal().getBytes("UTF-8"), bytes);
+			}
+			this.redisHelper.hmset(RIVER_PORT_DOCK_MAP_KEY.getBytes("UTF-8"), map);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * 获取区域实体BEAN
 	 * @param areaVal
 	 * @return
 	 */
-	public TPublicCodes getAreaBean(String areaVal){
+	public TPublicCodes getAreaBean(String value){
+		
+		String mapKey = getMapKey(value);
+		
 		try {
-			if(StringUtils.isNotEmpty(areaVal) && this.redisHelper.hexists(AREA_MAP_KEY.getBytes("UTF-8"), areaVal.getBytes("UTF-8"))){
-				byte[] bytes = this.redisHelper.hget(AREA_MAP_KEY.getBytes("UTF-8"), areaVal.getBytes("UTF-8"));
+			if(StringUtils.isNotEmpty(value) && this.redisHelper.hexists(mapKey.getBytes("UTF-8"), value.getBytes("UTF-8"))){
+				byte[] bytes = this.redisHelper.hget(mapKey.getBytes("UTF-8"), value.getBytes("UTF-8"));
 				if(bytes != null){
 					return (TPublicCodes) SerializeUtil.unserialize(bytes);
 				}
@@ -104,9 +137,9 @@ public class AreaManager {
 	 * @param areaVal
 	 * @return
 	 */
-	public String getFullAreaName(String areaVal){
+	public String getFullAreaName(String value){
 		StringBuilder areaName = new StringBuilder();
-		spelFullAreaName(areaVal, areaName);
+		spelFullAreaName(value, areaName);
 		return areaName.toString();
 	}
 	
@@ -115,10 +148,10 @@ public class AreaManager {
 	 * @param areaVal
 	 * @param areaName
 	 */
-	private void spelFullAreaName(String areaVal, StringBuilder areaName){
-		if(StringUtils.isNotEmpty(areaVal)){
+	private void spelFullAreaName(String value, StringBuilder areaName){
+		if(StringUtils.isNotEmpty(value)){
 			if(areaName == null) areaName = new StringBuilder();
-			TPublicCodes pc = getAreaBean(areaVal);
+			TPublicCodes pc = getAreaBean(value);
 			if(pc != null){
 				areaName.insert(0, pc.getName());
 				if(StringUtils.isNotEmpty(pc.getPcode()) && !"0".equalsIgnoreCase(pc.getPcode())){
@@ -126,6 +159,18 @@ public class AreaManager {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 获取类型
+	 * @param value
+	 * @return
+	 */
+	private String getMapKey( String value){
+		if(StringUtils.isNotEmpty(value) && value.length() == 12){
+			return AREA_MAP_KEY;
+		}
+		return RIVER_PORT_DOCK_MAP_KEY;
 	}
 
 }

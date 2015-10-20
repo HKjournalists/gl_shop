@@ -18,7 +18,14 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor clearColor];
+        
+        UIImage *image = [UIImage imageNamed:@"wallet_beijing"];
+        UIImageView *imgView = [[UIImageView alloc] initWithFrame:self.bounds];
+        image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10) resizingMode:UIImageResizingModeStretch];
+        imgView.image = image;
+        [self addSubview:imgView];
+        
         NSArray *lightImageName = @[@"information_dot_lvse",@"information_dot_er",@"information_dot_san",];
         NSArray *grayImageName = @[@"information_dot_huise_yi",@"information_dot_huise_er",@"information_dot_huise_san",];
         NSArray *stepNames = @[@"货物信息",@"交易信息",@"预览发布"];

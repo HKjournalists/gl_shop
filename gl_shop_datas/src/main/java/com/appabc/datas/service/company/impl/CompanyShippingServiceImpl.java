@@ -3,6 +3,15 @@
  */
 package com.appabc.datas.service.company.impl;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.enums.AuthRecordInfo.AuthRecordType;
 import com.appabc.bean.pvo.TAuthRecord;
@@ -11,14 +20,6 @@ import com.appabc.common.base.QueryContext;
 import com.appabc.datas.dao.company.ICompanyShippingDao;
 import com.appabc.datas.service.company.IAuthRecordService;
 import com.appabc.datas.service.company.ICompanyShippingService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Description : 船舶认证信息SERVICE实现
@@ -98,6 +99,15 @@ public class CompanyShippingServiceImpl implements ICompanyShippingService {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.company.ICompanyShippingService#queryByAuthid(int)
+	 */
+	@Override
+	public TCompanyShipping queryByAuthid(int authid) {
+		TCompanyShipping entity = new TCompanyShipping();
+		entity.setAuthid(authid);
+		return query(entity);
+	}
 
 
 }

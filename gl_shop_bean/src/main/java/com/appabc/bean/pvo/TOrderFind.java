@@ -6,9 +6,13 @@ import java.util.List;
 
 import com.appabc.bean.bo.MatchingBean;
 import com.appabc.bean.bo.MoreAreaInfos;
+import com.appabc.bean.bo.OrderFindInsteadBean;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
 import com.appabc.bean.enums.OrderFindInfo.OrderAddressTypeEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderMoreAreaEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderOverallStatusEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderOverallTypeEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderStatusEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
 import com.appabc.bean.enums.ProductInfo.UnitEnum;
@@ -138,6 +142,12 @@ public class TOrderFind extends BaseBean implements Cloneable{
      */
     private Integer matchingnum; 
     
+    /**
+     * 询单大类型(正式询单、草稿、副本)
+     * 正式询单:用户可见，草稿:撮合合同暂存，副本:合同本身关联
+     */
+    private OrderOverallTypeEnum overalltype; 
+    
     private String pname; //产品名称
     private String pcode; //商品类型（大类）
     private String pid; // 商品ID
@@ -150,11 +160,44 @@ public class TOrderFind extends BaseBean implements Cloneable{
     private String moreAreaInfos; 
     private List<MoreAreaInfos> moreAreaList = new ArrayList<MoreAreaInfos>(); // 我的供求列表页面的多地域信息
     
-    private MatchingBean matchingBean; // 询单自动匹配列表
     private String areaFullName;// 地区全名称（顶级到）
 	private Float credit; //企业诚信度
+	
+	private int isApply; // 是否申请过交易询盘(1已申请，0未申请)
+	private Integer applyNum; // 交易盘询次数
+    private Date applyDate; // 最后一次交易询盘时间
+    private AuthRecordStatus authstatus;// 认证状态(是否认证)
+    private CompanyBailStatus bailstatus; // 保证金缴纳状态（是否缴纳足额）
     
-    public MatchingBean getMatchingBean() {
+    private MatchingBean matchingBean; // 询单自动匹配列表
+    private OrderFindInsteadBean orderFindInsteadBean; // 供求已代发列表
+    private double guaranty; //缴纳保证金
+	
+    public AuthRecordStatus getAuthstatus() {
+		return authstatus;
+	}
+
+	public void setAuthstatus(AuthRecordStatus authstatus) {
+		this.authstatus = authstatus;
+	}
+
+	public CompanyBailStatus getBailstatus() {
+		return bailstatus;
+	}
+
+	public void setBailstatus(CompanyBailStatus bailstatus) {
+		this.bailstatus = bailstatus;
+	}
+
+	public int getIsApply() {
+		return isApply;
+	}
+
+	public void setIsApply(int isApply) {
+		this.isApply = isApply;
+	}
+
+	public MatchingBean getMatchingBean() {
 		return matchingBean;
 	}
 
@@ -254,7 +297,13 @@ public class TOrderFind extends BaseBean implements Cloneable{
         return endtime;
     }
 
-    public void setEndtime(Date endtime) {
+    @SuppressWarnings("deprecation")
+	public void setEndtime(Date endtime) {
+    	if(endtime != null){
+    		endtime.setHours(23);
+    		endtime.setMinutes(59);
+    		endtime.setSeconds(59);
+    	}
         this.endtime = endtime;
     }
 
@@ -410,5 +459,74 @@ public class TOrderFind extends BaseBean implements Cloneable{
 		this.credit = credit;
 	}
 
+	public OrderOverallTypeEnum getOveralltype() {
+		return overalltype;
+	}
+
+	public void setOveralltype(OrderOverallTypeEnum overalltype) {
+		this.overalltype = overalltype;
+	}
+
+	public OrderFindInsteadBean getOrderFindInsteadBean() {
+		return orderFindInsteadBean;
+	}
+
+	public void setOrderFindInsteadBean(OrderFindInsteadBean orderFindInsteadBean) {
+		this.orderFindInsteadBean = orderFindInsteadBean;
+	}
+
+	/**  
+	 * applyNum  
+	 *  
+	 * @return  the applyNum  
+	 * @since   1.0.0  
+	 */
+	
+	public Integer getApplyNum() {
+		return applyNum;
+	}
+
+	/**  
+	 * @param applyNum the applyNum to set  
+	 */
+	public void setApplyNum(Integer applyNum) {
+		this.applyNum = applyNum;
+	}
+
+	/**  
+	 * applyDate  
+	 *  
+	 * @return  the applyDate  
+	 * @since   1.0.0  
+	 */
+	
+	public Date getApplyDate() {
+		return applyDate;
+	}
+
+	/**  
+	 * @param applyDate the applyDate to set  
+	 */
+	public void setApplyDate(Date applyDate) {
+		this.applyDate = applyDate;
+	}
+
+	/**  
+	 * guaranty  
+	 *  
+	 * @return  the guaranty  
+	 * @since   1.0.0  
+	 */
+	
+	public double getGuaranty() {
+		return guaranty;
+	}
+
+	/**  
+	 * @param guaranty the guaranty to set  
+	 */
+	public void setGuaranty(double guaranty) {
+		this.guaranty = guaranty;
+	}
 
 }

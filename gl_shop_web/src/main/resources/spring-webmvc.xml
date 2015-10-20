@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+	    http://www.springframework.org/schema/mvc
+	    http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+
+	<!-- Although applicationContext-web.xml is loaded with web.xml contextListener,
+	     we have to load it again, since they are two different context and can't be
+	     referenced. -->
+	<import resource="classpath*:applicationContext-web.xml" />
+
+	<context:component-scan base-package="com.appabc.cms.web">
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<mvc:annotation-driven ignore-default-model-on-redirect="true">
+        <mvc:message-converters register-defaults="true">
+			<bean class="com.appabc.common.spring.UTF8StringHttpMessageConverter" />
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>application/json;charset=UTF-8</value>
+							<value>application/*+json;charset=UTF-8</value>
+                    		<value>text/json;charset=UTF-8</value>
+                    		<value>text/plain;charset=UTF-8</value>
+                    		<value>*/*;charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+	
+	<mvc:default-servlet-handler />
+
+	<!-- 定义首页 -->
+	<mvc:view-controller path="/" view-name="redirect:/error/403" />
+	
+	<!-- 支持上传文件 -->  
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+	<!-- 定义视图起始路径和视图文件后缀为JSP -->
+	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/"/> <property name="suffix"
+		value=".jsp"/> </bean> -->
+	<bean id="templateResolver"
+		class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+		<property name="prefix" value="/WEB-INF/templates/" />
+		<property name="suffix" value=".html" />
+		<property name="templateMode" value="LEGACYHTML5" />
+		<property name="cacheable" value="${template.cacheable}" />
+	</bean>
+
+	<bean id="templateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+		<property name="templateResolver" ref="templateResolver" />
+		<property name="additionalDialects">
+			<set>
+				<bean class="nz.net.ultraq.thymeleaf.LayoutDialect" />
+				<bean class="org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect"/>
+			</set>
+		</property>
+	</bean>
+
+	<bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+		<property name="templateEngine" ref="templateEngine" />
+		<property name="characterEncoding" value="UTF-8" />
+		<property name="order" value="1" />
+	</bean>
+
+	<!-- <bean name="main" class="org.thymeleaf.spring3.view.ThymeleafView">
+		<property name="staticVariables"> <map> <entry key="footer" value="Some company:
+		&lt;b&gt;ACME&lt;/b&gt;" /> </map> </property> </bean> -->
+
+</beans>

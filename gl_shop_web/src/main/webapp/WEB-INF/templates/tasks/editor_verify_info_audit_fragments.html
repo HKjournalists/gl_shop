@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+<div th:fragment="person">
+  <div class="form-group">
+    <label for="identification" class="col-sm-2 control-label required">身份证号</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="identification" id="identification" placeholder="请输入身份证号" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="cpname" class="col-sm-2 control-label required">姓名</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="cpname" id="cpname" placeholder="请输入姓名" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-2 control-label required">性别</label>
+    <div class="col-sm-2">
+      <label class="radio-inline">
+        <input type="radio" name="gender" id="genderMale" value="1" checked="checked"> 男
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="gender" id="genderFemale" value="0"> 女
+      </label>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="nation" class="col-sm-2 control-label required">民族</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="nation" id="nation" placeholder="请输入民族" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="birthday" class="col-sm-2 control-label required">出生日期</label>
+    <div class="col-sm-4">
+      <div class="input-group date" id="birthdayPicker">
+          <input type="text" class="form-control" data-date-format="YYYY-MM-DD" name="birthday" id="birthday" placeholder="请输入出生日期" required="required" />
+          <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="address" class="col-sm-2 control-label required">住址</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="address" id="address" placeholder="请输入住址" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="issuingauth" class="col-sm-2 control-label required">签发机关</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="issuingauth" id="issuingauth" placeholder="请输入签发机关" required="required">
+    </div>
+  </div>
+  <div class="form-inline form-group">
+    <label class="col-sm-2 control-label required">有效时间范围</label>
+    <div class="col-sm-3">
+      <div class="input-group date" id="effstarttimePicker">
+        <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="effstarttime" name="effstarttime"
+               required="required"/>
+        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+      </div>
+    </div>
+    <div class="col-sm-offset-5">
+      <div class="input-group date" id="effendtimePicker">
+        <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="effendtime" name="effendtime"
+            required="required"/>
+        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+      </div>
+      <label id="effTimeFrame-error" class="col-sm-offset-3 error" style="display: none">身份证有效日期不正确</label>
+    </div>
+  </div>
+
+<script type="text/javascript">
+function onReady() {
+    var defaultDate = new Date(1990, 0, 1);
+
+    $('#birthdayPicker').datetimepicker({
+        defaultDate: defaultDate,
+        format: 'YYYY-MM-DD',
+        maxDate: new Date(),
+        locale: 'zh-cn'
+    });
+
+    $('#effstarttimePicker').datetimepicker({
+        defaultDate: defaultDate,
+        locale: 'zh-cn',
+        format: 'YYYY-MM-DD',
+        minDate: new Date(1980, 0, 1)
+    });
+    $('#effendtimePicker').datetimepicker({
+        locale: 'zh-cn',
+        format: 'YYYY-MM-DD',
+        defaultDate: defaultDate
+    });
+
+    $('#effstarttimePicker').on('dp.change', function(e) {
+        var fromDate = $('#effstarttimePicker').data('DateTimePicker').date();
+        var toDate = $('#effendtimePicker').data('DateTimePicker').date();
+        if (fromDate.unix() > toDate.unix()) {
+            $('#effendtimePicker').data('DateTimePicker').date(fromDate);
+        }
+        $('#effendtimePicker').data('DateTimePicker').minDate(fromDate);
+    });
+
+    $('#effendtimePicker').on('dp.change', function(e) {
+        var fromDate = $('#effstarttimePicker').data('DateTimePicker').date();
+        var toDate = $('#effendtimePicker').data('DateTimePicker').date();
+        if (fromDate.unix() > toDate.unix()) {
+            $('#effstarttimePicker').data('DateTimePicker').date(toDate);
+        }
+        $('#effstarttimePicker').data('DateTimePicker').maxDate(toDate);
+    });
+
+    $("#identification").blur(function(){
+    	if($('#identification').val().length ==18){
+    		 $('#birthdayPicker').data('DateTimePicker').date($('#identification').val().substr(6,8));
+    	}
+    });
+}
+
+function registerFormValidator(form) {
+    var validator = form.validate({
+        rules: {
+            identification: {
+                required: true,
+                idCardCN: true
+            },
+            cpname: {
+                required: true
+            },
+            nation: {
+                required: true
+            },
+            birthday: {
+                required: true,
+                date: true
+            },
+            address: {
+                required: true
+            },
+            issuingauth: {
+                required: true
+            },
+            effstarttime: {
+                required: true,
+                date: true
+            },
+            effendtime: {
+                required: true,
+                date: true
+            }
+        },
+        messages: {
+            identification: '请输入正确的身份证号码15位或18位',
+            effstarttime: "请输入正确的有效时间",
+            effendtime: "请输入正确的有效时间"
+        }
+    });
+    
+    return validator;
+}
+//数据完整性验证
+function vld(){
+	var validator = true;
+	if($('#identification').val().length !=15 && $('#identification').val().length !=18){
+    	$('#identification').focus();
+    	validator = false;
+    }else if($('#cpname').val()==''){
+    	$('#cpname').focus();
+    	validator = false;
+    }else if($('#nation').val()==''){
+    	$('#nation').focus();
+    	validator = false;
+    }else if($('#birthday').val()==''){
+    	$('#birthday').focus();
+    	validator = false;
+    }else if($('#address').val()==''){
+    	$('#address').focus();
+    	validator = false;
+    }else if($('#issuingauth').val()==''){
+    	$('#issuingauth').focus();
+    	validator = false;
+    }else if($('#effstarttime').val()==''){
+    	$('#effstarttime').focus();
+    	validator = false;
+    }else if($('#effendtime').val()==''){
+    	$('#effendtime').focus();
+    	validator = false;
+    }
+	if(!validator) alert("用户认证信息录入不全，请填写完整后再进行提交。");
+	return validator;
+}
+
+</script>
+</div>
+
+<div th:fragment="company">
+  <div class="form-group">
+    <label for="regno" class="col-sm-2 control-label required">注册号</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="regno" id="regno" placeholder="请输入注册号" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="cname" class="col-sm-2 control-label required">名称</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="cname" id="cname" placeholder="请输入企业名称" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="address" class="col-sm-2 control-label required">注册地址</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" name="address" id="address" placeholder="请输入注册地址" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="lperson" class="col-sm-2 control-label required">法定代表人</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="lperson" id="lperson" placeholder="请输入法定代表人" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="regcapital" class="col-sm-2 control-label required">注册资本（万元）</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="regcapital" id="regcapital" placeholder="请输入注册资本" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="realcapital" class="col-sm-2 control-label required">实收资本（万元）</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="realcapital" id="realcapital" placeholder="请输入实收资本" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="ctype" class="col-sm-2 control-label required">公司类型</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="ctype" id="ctype" placeholder="请输入公司类型" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="rdate" class="col-sm-2 control-label required">成立日期</label>
+    <div class="col-sm-4">
+      <div class="input-group date" id="rdatePicker">
+        <input type="text" class="form-control" data-date-format="YYYY-MM-DD" name="rdate" id="rdate" placeholder="请输入成立日期" required="required" />
+        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="orgid" class="col-sm-2 control-label required">登记机构</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="orgid" id="orgid" placeholder="请输入登记机构" required="required">
+    </div>
+  </div>
+
+<script type="text/javascript">
+function onReady() {
+    var defaultDate = new Date(2010, 0, 1);
+
+    $('#rdatePicker').datetimepicker({
+        defaultDate: defaultDate,
+        format: 'YYYY-MM-DD',
+        maxDate: new Date(),
+        locale: 'zh-cn'
+    });
+}
+
+function registerFormValidator(form) {
+    var validator = form.validate({
+        rules: {
+            regno: {
+                required: true
+            },
+            cname: {
+                required: true
+            },
+            address: {
+                required: true
+            },
+            lperson: {
+                required: true
+            },
+            regcapital: {
+                required: true,
+                number: true
+            },
+            realcapital: {
+                required: true,
+                number: true
+            },
+            ctype: {
+                required: true
+            },
+            rdate: {
+                required: true,
+                date: true
+            },
+            orgid: {
+                required: true
+            }
+        },
+        messages: {
+            regno: '请输入正确的注册号',
+            cname: '请输入企业名称',
+            address: '请输入注册地址',
+            lperson: '请输入法定代表人',
+            regcapital: '请输入注册资本',
+            realcapital: '请输入实收资本',
+            ctype: '请输入企业类型',
+            rdate: '请输入成立日期',
+            orgid: '请输入登记机构'
+        }
+    });
+    return validator;
+}
+
+//数据完整性验证
+function vld(){
+	var validator = true;
+	if($('#regno').val() == ''){
+    	$('#regno').focus();
+    	validator = false;
+    }else if($('#cname').val()==''){
+    	$('#cname').focus();
+    	validator = false;
+    }else if($('#address').val()==''){
+    	$('#address').focus();
+    	validator = false;
+    }else if($('#lperson').val()==''){
+    	$('#lperson').focus();
+    	validator = false;
+    }else if($('#regcapital').val()==''){
+    	$('#regcapital').focus();
+    	validator = false;
+    }else if($('#realcapital').val()==''){
+    	$('#realcapital').focus();
+    	validator = false;
+    }else if($('#ctype').val()==''){
+    	$('#ctype').focus();
+    	validator = false;
+    }else if($('#rdate').val()==''){
+    	$('#rdate').focus();
+    	validator = false;
+    }else if($('#orgid').val()==''){
+    	$('#orgid').focus();
+    	validator = false;
+    }
+	if(!validator) alert("用户认证信息录入不全，请填写完整后再进行提交。");
+	return validator;
+}
+
+</script>
+</div>
+
+<div th:fragment="ship">
+  <div class="form-group">
+    <label for="sno" class="col-sm-2 control-label required">船舶登记号</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="sno" id="sno" placeholder="请输入船舶登记号" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="sname" class="col-sm-2 control-label required">船舶名称</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="sname" id="sname" placeholder="请输入船舶名称" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="pregistry" class="col-sm-2 control-label required">船籍港</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="pregistry" id="pregistry" placeholder="请输入船籍港" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="sorg" class="col-sm-2 control-label required">船舶检验机构</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="sorg" id="sorg" placeholder="请输入船舶检验机构" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="sowner" class="col-sm-2 control-label required">船舶所有人</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="sowner" id="sowner" placeholder="请输入船舶所有人" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="sbusinesser" class="col-sm-2 control-label required">船舶经营人</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="sbusinesser" id="sbusinesser" placeholder="请输入船舶经营人" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="stype" class="col-sm-2 control-label required">船舶种类</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="stype" id="stype" placeholder="请输入船舶种类" required="required" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="screatetime" class="col-sm-2 control-label required">船舶建成日期</label>
+    <div class="col-sm-4">
+      <div class="input-group date" id="screatetimePicker">
+        <input type="text" class="form-control" data-date-format="YYYY-MM-DD" name="screatetime" id="screatetime" placeholder="请输入船舶建成日期" required="required" />
+        <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="stotal" class="col-sm-2 control-label required">总吨位（吨）</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="stotal" id="stotal" placeholder="请输入总吨位" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="sload" class="col-sm-2 control-label required">载重（吨）</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="sload" id="sload" placeholder="请输入载重量" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="slength" class="col-sm-2 control-label required">船长（米）</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="slength" id="slength" placeholder="请输入船长" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="swidth" class="col-sm-2 control-label required">船宽（米）</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="swidth" id="swidth" placeholder="请输入船宽" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="sdeep" class="col-sm-2 control-label required">型深（米）</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="sdeep" id="sdeep" placeholder="请输入载型深" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="sover" class="col-sm-2 control-label required">满载吃水（米）</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="sover" id="sover" placeholder="请输入满载吃水" required="required">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="smateriall" class="col-sm-2 control-label required">船体材料</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" name="smateriall" id="smateriall" placeholder="请输入船体材料" required="required">
+    </div>
+  </div>
+
+<script type="text/javascript">
+function onReady() {
+    var defaultDate = new Date(2010, 0, 1);
+
+    $('#screatetimePicker').datetimepicker({
+        defaultDate: defaultDate,
+        format: 'YYYY-MM-DD',
+        maxDate: new Date(),
+        locale: 'zh-cn'
+    });
+}
+
+function registerFormValidator(form) {
+    var validator = form.validate({
+        rules: {
+            sname: {
+                required: true,
+            },
+            pregistry: {
+                required: true
+            },
+            sno: {
+                required: true
+            },
+            sorg: {
+                required: true
+            },
+            sowner: {
+                required: true
+            },
+            sbusinesser: {
+                required: true
+            },
+            stype: {
+                required: true
+            },
+            screatetime: {
+                required: true,
+                date: true
+            },
+            stotal: {
+                required: true,
+                number: true
+            },
+            sload: {
+                required: true,
+                number: true
+            },
+            slength: {
+                required: true,
+                number: true
+            },
+            swidth: {
+                required: true,
+                number: true
+            },
+            sdeep: {
+                required: true,
+                number: true
+            },
+            sover: {
+                required: true,
+                number: true
+            },
+            smateriall: {
+                required: true
+            }
+        },
+        messages: {
+            sname: '请输入船舶名称',
+            pregistry: '请输入船籍港',
+            sno: '请输入船舶登记号',
+            sorg: '请输入船舶检验机构',
+            sowner: '请输入船舶所有人',
+            sbusinesser: '请输入船舶经营人',
+            stype: '请输入船舶种类',
+            screatetime: '请输入船舶建成日期',
+            stotal: '请输入总吨位',
+            sload: '请输入载重量',
+            slength: '请输入船身长度',
+            swidth: '请输入船身宽度',
+            sdeep: '请输入型深',
+            sover: '请输入满载吃水',
+            smateriall: '请输入船体材料'
+        }
+    });
+    return validator;
+}
+
+//数据完整性验证
+function vld(){
+	var validator = true;
+	if($('#sno').val() == ''){
+    	$('#sno').focus();
+    	validator = false;
+    }else if($('#sname').val()==''){
+    	$('#sname').focus();
+    	validator = false;
+    }else if($('#pregistry').val()==''){
+    	$('#pregistry').focus();
+    	validator = false;
+    }else if($('#sorg').val()==''){
+    	$('#sorg').focus();
+    	validator = false;
+    }else if($('#sowner').val()==''){
+    	$('#sowner').focus();
+    	validator = false;
+    }else if($('#sbusinesser').val()==''){
+    	$('#sbusinesser').focus();
+    	validator = false;
+    }else if($('#stype').val()==''){
+    	$('#stype').focus();
+    	validator = false;
+    }else if($('#screatetime').val()==''){
+    	$('#screatetime').focus();
+    	validator = false;
+    }else if($('#stotal').val()==''){
+    	$('#stotal').focus();
+    	validator = false;
+    }else if($('#sload').val()==''){
+    	$('#sload').focus();
+    	validator = false;
+    }else if($('#slength').val()==''){
+    	$('#slength').focus();
+    	validator = false;
+    }else if($('#swidth').val()==''){
+    	$('#swidth').focus();
+    	validator = false;
+    }else if($('#sdeep').val()==''){
+    	$('#sdeep').focus();
+    	validator = false;
+    }else if($('#sover').val()==''){
+    	$('#sover').focus();
+    	validator = false;
+    }else if($('#smateriall').val()==''){
+    	$('#smateriall').focus();
+    	validator = false;
+    }
+	if(!validator) alert("用户认证信息录入不全，请填写完整后再进行提交。");
+	return validator;
+}
+</script>
+</div>
+
+</body>
+</html>

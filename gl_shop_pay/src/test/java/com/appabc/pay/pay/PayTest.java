@@ -6,6 +6,9 @@
  */
 package com.appabc.pay.pay;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
@@ -19,6 +22,7 @@ import com.appabc.common.utils.DateUtil;
 import com.appabc.pay.AbstractPayTest;
 import com.appabc.pay.bean.TPassbookInfo;
 import com.appabc.pay.bean.TPassbookPay;
+import com.appabc.pay.service.IPassPayService;
 import com.appabc.pay.service.local.IPassbookInfoService;
 import com.appabc.pay.service.local.IPassbookPayService;
 import com.appabc.tools.utils.PrimaryKeyGenerator;
@@ -39,6 +43,8 @@ public class PayTest extends AbstractPayTest {
 	@Autowired
 	private IPassbookPayService iPassbookPayService;
 	@Autowired
+	private IPassPayService iPassPayService;
+	@Autowired
 	private PrimaryKeyGenerator PKGenerator;
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.AbstractPayTest#mainTest()  
@@ -47,13 +53,19 @@ public class PayTest extends AbstractPayTest {
 	@Test
 	@Rollback(value=true)
 	public void mainTest() {
-		testCase();
+		//testGetPayRecordListWithOid();
+	}
+	
+	public void testGetPayRecordListWithOid(){
+		String oid = "201412010010311";
+		List<TPassbookPay> result = iPassPayService.getPayRecordListWithOid(StringUtils.EMPTY, null, oid, null);
+		log.info(result);
 	}
 	
 	public void testCase(){
 		String cid = "181120140000013";
 		String passId = "PASSID2014111800014154246";//PASSID2014111800014154246 //PASSID2014111800013154246
-		float balance = 1000000f;
+		double balance = 1000000.0;
 		String payno = "PAYNO0000000000003";
 		String oid = "";
 		

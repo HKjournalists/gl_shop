@@ -9,8 +9,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.appabc.bean.enums.MsgInfo.MsgStatus;
+import com.appabc.bean.enums.SystemInfo.SystemCategory;
+import com.appabc.bean.enums.UserInfo.ClientTypeEnum;
 import com.appabc.bean.pvo.TSystemMessage;
 import com.appabc.bean.pvo.TUser;
 import com.appabc.tools.bean.MessageInfoBean;
@@ -47,6 +51,7 @@ public class MessageSendManager {
 	 * 消息发送
 	 * @param mi
 	 */
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public void msgSend(MessageInfoBean mi) {
 		if(mi == null){
 			logger.error("MessageInfoBean is null");
@@ -64,6 +69,7 @@ public class MessageSendManager {
 			smsg.setQyid(mi.getCid());
 			smsg.setStatus(MsgStatus.STATUS_IS_READ_NO);
 			smsg.setType(mi.getMsgType());
+			smsg.setSystemcategory(SystemCategory.SYSTEM_CATEGORY_HTTP);
 			systemMessageService.add(smsg); // 新消息存储
 			
 			logger.debug("systemMessage="+smsg.getContent());
@@ -71,15 +77,20 @@ public class MessageSendManager {
 		
 		if(mi.isSendPushMsg()){ // 推送消息
 			if(StringUtils.isNotEmpty(mi.getCid())){
-				PushInfoBean piBean  = new PushInfoBean();
-				piBean.setBusinessId(mi.getBusinessId());
-				piBean.setBusinessType(mi.getBusinessType());
-				piBean.setContent(mi.getSystemMessageContent().getContent());
-				piBean.setPushType(0);
-				piBean.setParams(mi.getParams());
-				piBean.setCid(mi.getCid());
 				user = this.userService.getUserByCid(mi.getCid());
 				if(user != null){
+					PushInfoBean piBean  = new PushInfoBean();
+					piBean.setBusinessId(mi.getBusinessId());
+					piBean.setBusinessType(mi.getBusinessType());
+					if(ClientTypeEnum.CLIENT_TYPE_IOS == user.getClienttype()){ // IOS消息精简
+						piBean.setContent(mi.getSystemMessageContent().getContentIos());
+					}else{
+						piBean.setContent(mi.getSystemMessageContent().getContent());
+					}
+					piBean.setPushType(0);
+					piBean.setParams(mi.getParams());
+					piBean.setCid(mi.getCid());
+					
 					xmppPush.pushToSingle(piBean, user);
 					logger.debug("xmppPush="+piBean.getContent());
 				}else{

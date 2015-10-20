@@ -1,6 +1,8 @@
 package com.appabc.bean.pvo;
 
+import com.appabc.bean.enums.ContractInfo.ContractArbitrationStatus;
 import com.appabc.common.base.bean.BaseBean;
+
 import java.util.Date;
 
 public class TOrderArbitration extends BaseBean {
@@ -47,7 +49,7 @@ public class TOrderArbitration extends BaseBean {
     /**
      * 状态
      */
-    private Integer status;
+    private ContractArbitrationStatus status;
 
     public String getLid() {
         return lid;
@@ -105,11 +107,11 @@ public class TOrderArbitration extends BaseBean {
         this.dealresult = dealresult == null ? null : dealresult.trim();
     }
 
-    public Integer getStatus() {
+    public ContractArbitrationStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(ContractArbitrationStatus status) {
         this.status = status;
     }
 }

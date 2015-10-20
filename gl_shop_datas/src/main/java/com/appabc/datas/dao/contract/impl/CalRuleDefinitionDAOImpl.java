@@ -127,10 +127,10 @@ public class CalRuleDefinitionDAOImpl extends BaseJdbcDao<TCalRuleDefinition> im
 		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1=1  ");//CREATOR = :creator
-		this.addNameParamerSqlWithProperty(sql, "creator", "CREATOR", qContext.getParameters().get("creator"));
-		this.addNameParamerSqlWithProperty(sql, "rule", "RULE", qContext.getParameters().get("rule"), SQLExpressionEnum.GT.getText());
-		this.addNameParamerSqlWithProperty(sql, "name", "NAME", qContext.getParameters().get("name"), SQLExpressionEnum.LIKE.getText());
-		this.addNameParamerSqlWithProperty(sql, "expression", "EXPRESSION", qContext.getParameters().get("expression"), SQLExpressionEnum.NOTEQ.getText());
+		this.addNameParamerSqlWithProperty(sql, "creator", "CREATOR", qContext.getParameter("creator"));
+		this.addNameParamerSqlWithProperty(sql, "rule", "RULE", qContext.getParameter("rule"), SQLExpressionEnum.GT.getText());
+		this.addNameParamerSqlWithProperty(sql, "name", "NAME", qContext.getParameter("name"), SQLExpressionEnum.LIKE.getText());
+		this.addNameParamerSqlWithProperty(sql, "expression", "EXPRESSION", qContext.getParameter("expression"), SQLExpressionEnum.NOTEQ.getText());
 		
 		return super.queryListForPagination(sql.toString(), qContext);
 	}
@@ -162,10 +162,10 @@ public class CalRuleDefinitionDAOImpl extends BaseJdbcDao<TCalRuleDefinition> im
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE 1=1  ");//CREATOR = :creator
 		List<Object> args = new ArrayList<Object>();
-		this.addStandardSqlWithParameter(sql, "CREATOR", qContext.getParameters().get("creator"), args);
-		this.addStandardSqlWithParameter(sql, "RULE", qContext.getParameters().get("rule"), args,SQLExpressionEnum.GT.getText());
-		this.addStandardSqlWithParameter(sql, "NAME", qContext.getParameters().get("name"), args, SQLExpressionEnum.LIKE.getText());
-		this.addStandardSqlWithParameter(sql, "EXPRESSION", qContext.getParameters().get("expression"), args, SQLExpressionEnum.NOTEQ.getText());
+		this.addStandardSqlWithParameter(sql, "CREATOR", qContext.getParameter("creator"), args);
+		this.addStandardSqlWithParameter(sql, "RULE", qContext.getParameter("rule"), args,SQLExpressionEnum.GT.getText());
+		this.addStandardSqlWithParameter(sql, "NAME", qContext.getParameter("name"), args, SQLExpressionEnum.LIKE.getText());
+		this.addStandardSqlWithParameter(sql, "EXPRESSION", qContext.getParameter("expression"), args, SQLExpressionEnum.NOTEQ.getText());
 		
 		qContext.setParamList(args);
 		return super.queryListForPaginationForStandardSQL(sql.toString(), qContext);

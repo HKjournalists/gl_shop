@@ -1,20 +1,24 @@
 package com.appabc.datas.dao.user.impl;
 
-import com.appabc.bean.enums.UserInfo.ClientTypeEnum;
-import com.appabc.bean.enums.UserInfo.UserStatus;
-import com.appabc.bean.pvo.TUser;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.user.IUserDao;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import com.appabc.bean.enums.UserInfo.ClientTypeEnum;
+import com.appabc.bean.enums.UserInfo.UserStatus;
+import com.appabc.bean.pvo.TUser;
+import com.appabc.common.base.MultiTypeBeanPropertySqlParameterSource;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.dao.user.IUserDao;
 
 /**
  * @Description :
@@ -27,12 +31,13 @@ import java.util.Map;
 @Repository
 public class UserDaoImpl extends BaseJdbcDao<TUser> implements IUserDao {
 
-	private static final String INSERTSQL = " INSERT INTO T_USER (CID,USERNAME,PASSWORD,NICK,PHONE,LOGO,STATUS,CREATEDATE,UPDATEDATE,CLIENTID,CLIENTTYPE) VALUES (:cid,:username,:password,:nick,:phone,:logo,:status,:createdate,:updatedate,:clientid,:clienttype) ";
-	private static final String UPDATESQL = " UPDATE T_USER SET CID = :cid,USERNAME = :username,PASSWORD = :password,NICK = :nick,PHONE = :phone,LOGO = :logo,STATUS = :status,CREATEDATE = :createdate,UPDATEDATE = :updatedate,CLIENTID=:clientid,CLIENTTYPE=:clienttype WHERE ID = :id ";
+	private static final String INSERTSQL = " INSERT INTO T_USER (CID,USERNAME,PASSWORD,NICK,PHONE,LOGO,STATUS,CREATEDATE,UPDATEDATE,CLIENTID,CLIENTTYPE,VERSION) VALUES (:cid,:username,:password,:nick,:phone,:logo,:status,:createdate,:updatedate,:clientid,:clienttype,:version) ";
+	private static final String UPDATESQL = " UPDATE T_USER SET CID = :cid,USERNAME = :username,PASSWORD = :password,NICK = :nick,PHONE = :phone,LOGO = :logo,STATUS = :status,CREATEDATE = :createdate,UPDATEDATE = :updatedate,CLIENTID=:clientid,CLIENTTYPE=:clienttype,VERSION=:version WHERE ID = :id ";
 	private static final String DELETESQL = " DELETE FROM T_USER WHERE ID = :id ";
 	private static final String SELECTSQL = " SELECT * FROM T_USER where 1=1 ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_USER WHERE ID = :id ";
 	private static final String SELECTSQLBYUSERANDPASS = " SELECT * FROM T_USER WHERE PASSWORD = :password AND USERNAME = :username ";
+	private static final String COUNT_SQL = "SELECT COUNT(0) cou FROM T_USER WHERE 1=1";
 	
 	/* (non-Javadoc)  
 	 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)  
@@ -51,6 +56,7 @@ public class UserDaoImpl extends BaseJdbcDao<TUser> implements IUserDao {
 		user.setUpdatedate(rs.getTimestamp("UPDATEDATE"));
 		user.setClientid(rs.getString("CLIENTID"));
 		user.setClienttype(ClientTypeEnum.enumOf(rs.getString("CLIENTTYPE")));
+		user.setVersion(rs.getString("VERSION"));
 		return user;
 	}
 
@@ -72,6 +78,7 @@ public class UserDaoImpl extends BaseJdbcDao<TUser> implements IUserDao {
 	 * @see com.appabc.common.base.dao.IBaseDao#update(com.appabc.common.base.bean.BaseBean)  
 	 */
 	public void update(TUser entity) {
+		entity.setUpdatedate(Calendar.getInstance().getTime());
 		super.update(UPDATESQL, entity);
 	}
 
@@ -154,7 +161,18 @@ public class UserDaoImpl extends BaseJdbcDao<TUser> implements IUserDao {
 		this.addNameParamerSqlWithProperty(sql, "status", "STATUS", bean.getStatus());
 		this.addNameParamerSqlWithProperty(sql, "clientid", "CLIENTID", bean.getClientid());
 		this.addNameParamerSqlWithProperty(sql, "clienttype", "CLIENTTYPE", bean.getClienttype());
+		this.addNameParamerSqlWithProperty(sql, "version", "VERSION", bean.getVersion());
 		return sql.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.dao.user.IUserDao#queryCountUser(com.appabc.bean.pvo.TUser)
+	 */
+	@Override
+	public int queryCount(TUser entity) {
+		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(entity);
+		Number number = super.getNamedParameterJdbcTemplate().queryForObject(dynamicJoinSqlWithEntity(entity, new StringBuilder(COUNT_SQL)).toString(), paramSource, Integer.class);  
+	    return (number != null ? number.intValue() : 0);
 	}
 
 }

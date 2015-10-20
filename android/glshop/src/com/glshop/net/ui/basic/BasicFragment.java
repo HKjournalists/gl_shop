@@ -16,10 +16,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.AbsListView.OnScrollListener;
 
 import com.glshop.net.R;
@@ -27,6 +30,7 @@ import com.glshop.net.common.GlobalAction;
 import com.glshop.net.common.GlobalConfig;
 import com.glshop.net.common.GlobalConstants;
 import com.glshop.net.common.GlobalConstants.DataStatus;
+import com.glshop.net.common.GlobalConstants.ReqSendType;
 import com.glshop.net.common.GlobalErrorMessage;
 import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.logic.model.MenuItemInfo;
@@ -82,6 +86,9 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 	/** 加载失败视图 */
 	protected View mLoadErrorView;
 
+	/** 显示空数据视图文案 */
+	protected TextView mTvEmtpyData;
+
 	/** 列表当前页数 */
 	protected int pageIndex = 1;
 
@@ -89,7 +96,7 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 	protected static final int DEFAULT_INDEX = 1;
 
 	/** 列表分页大小 */
-	protected static final int PAGE_SIZE = GlobalConstants.Common.PAGE_SIZE;
+	protected static final int PAGE_SIZE = GlobalConstants.CfgConstants.PAGE_SIZE;
 
 	/** 图片上传方式选择菜单 */
 	protected MenuDialog menuUploadPicType;
@@ -126,6 +133,7 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 		mLoadingDataView = getView(R.id.ll_loading_data);
 		mLoadErrorView = getView(R.id.ll_load_data_error);
 		mEmptyDataView = getView(R.id.ll_empty_data);
+		mTvEmtpyData = getView(R.id.tv_empty_data);
 
 		OnClickListener listener = new OnClickListener() {
 
@@ -238,6 +246,17 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 			mLoadingDataView.setVisibility(status == DataStatus.LOADING ? View.VISIBLE : View.GONE);
 			mEmptyDataView.setVisibility(status == DataStatus.EMPTY ? View.VISIBLE : View.GONE);
 			mLoadErrorView.setVisibility(status == DataStatus.ERROR ? View.VISIBLE : View.GONE);
+		}
+	}
+
+	/**
+	 * 设置加载内容为空文案显示
+	 */
+	protected void updateEmptyDataMessage(String message) {
+		if (mTvEmtpyData != null) {
+			mTvEmtpyData.setText(message);
+		} else {
+			throw new IllegalArgumentException("You must to call initLoadView() before updateEmptyDataMessage()!");
 		}
 	}
 
@@ -470,7 +489,9 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 	 */
 	protected RespInfo getRespInfo(Message message) {
 		if (message != null && message.obj instanceof RespInfo) {
-			return (RespInfo) message.obj;
+			RespInfo info = (RespInfo) message.obj;
+			info.respMsgType = message.what;
+			return info;
 		}
 		return null;
 	}
@@ -485,9 +506,16 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 			if (GlobalErrorMessage.isFilterErrorCode(info.errorCode)) {
 				// 暂时不做任何处理
 			} else {
-				showToast(GlobalErrorMessage.getErrorMsg(mContext, info.errorCode, info.errorMsg));
+				//showToast(GlobalErrorMessage.getErrorMsg(mContext, info.errorCode, info.errorMsg));
+				if (!GlobalErrorMessage.handleErrorMsg(mContext, info.errorCode)) {
+					showErrorMsg(info);
+				}
 			}
 		}
+	}
+
+	protected void showErrorMsg(RespInfo respInfo) {
+		showToast(R.string.error_req_error); // 显示统一默认错误信息
 	}
 
 	/**
@@ -498,6 +526,61 @@ public abstract class BasicFragment extends BaseFragment implements OnClickListe
 		if (view != null) {
 			view.setSelection(view.getText().toString().length());
 		}
+	}
+
+	/**
+	 * 添加文本监听，限制文本输入
+	 * @param View
+	 */
+	protected void setTextWatcher(final EditText view) {
+		if (view != null) {
+			view.addTextChangedListener(new TextWatcher() {
+
+				private int editStart;
+				private int editEnd;
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					editStart = view.getSelectionStart();
+					editEnd = view.getSelectionEnd();
+					String data = view.getEditableText().toString();
+					if (StringUtils.isDouble(data) && !StringUtils.checkDecimal(data, 2)) {
+						s.delete(editStart - 1, editEnd);
+						int tempSelection = editStart;
+						view.setText(s);
+						view.setSelection(tempSelection);
+					}
+				}
+			});
+		}
+	}
+
+	/**
+	 * 是否为前台请求
+	 * @param respInfo
+	 * @return
+	 */
+	protected boolean isForegroudReq(RespInfo respInfo) {
+		return respInfo != null && respInfo.reqSendType == ReqSendType.FOREGROUND;
+	}
+
+	/**
+	 * 是否为后台请求
+	 * @param respInfo
+	 * @return
+	 */
+	protected boolean isBackgroudReq(RespInfo respInfo) {
+		return respInfo != null && respInfo.reqSendType == ReqSendType.BACKGROUND;
 	}
 
 	@Override

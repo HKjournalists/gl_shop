@@ -42,7 +42,7 @@ public class SerializeUtil {
 	 * @param bytes
 	 * @return
 	 */
-	public static Object unserialize(byte[] bytes) {
+	public static Object unserialize(byte[] bytes) throws Exception{
 		ByteArrayInputStream bais = null;
 		try {
 			bais = new ByteArrayInputStream(bytes);
@@ -50,7 +50,7 @@ public class SerializeUtil {
 			return ois.readObject();
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw e;
 		}
-		return null;
 	}
 }

@@ -12,13 +12,14 @@
 <body>
   <div class="container">
     <!-- <form class="form-signin" method="POST" role="form" th:action='@{/system/doSignin/}'> -->
-    <form class="form-signin" method="POST" role="form" th:action='@{/system/doSignin/}'>
+    <form class="form-signin" method="POST" role="form" th:action='@{/system/doSignin/}' autocomplete="off">
       <h2 class="form-signin-heading">管理系统</h2>
       <div class="alert alert-danger" th:remove="${error} ? none : all" role="alert">用户名或者密码不正确</div>
-      <input type="text" name="userName" class="form-control" placeholder="用户名" value="user1" required autofocus />
-      <input type="password" name="password" class="form-control" placeholder="密码" value="12309812" required />
+      <input type="text" name="userName" class="form-control" placeholder="用户名" required autofocus />
+      <input type="password" name="password" class="form-control" placeholder="密码" required />
       <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
     </form>
+    <div class="row" th:text="'Version: 0.0.1-SNAPSHOT-2015-03-23, Request Host: ' + ${#httpServletRequest.serverName}">Version: 0.0.1-SNAPSHOT-2015-03-23</div>
   </div> <!-- /container -->
 </body>
 </html>

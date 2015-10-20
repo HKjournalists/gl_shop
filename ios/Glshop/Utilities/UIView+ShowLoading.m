@@ -37,6 +37,14 @@ static NSString * const kXHloadingViewKey = @"kXHloadingViewKey";
     [self addSubview:self.loadingView];
 }
 
+- (BOOL)isShowLoading {
+    if (self.loadingView.superview) {
+        return YES;
+    }else {
+        return NO;
+    }
+}
+
 - (void)hideLoading {
     [self.loadingView removeFromSuperview];
     self.loadingView = nil;

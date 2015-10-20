@@ -67,5 +67,15 @@ public class CompanyAuthServiceImpl implements ICompanyAuthService {
 			QueryContext<TCompanyAuth> qContext) {
 		return this.companyAuthDao.queryListForPagination(qContext);
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.company.ICompanyAuthService#queryByAuthid(int)
+	 */
+	@Override
+	public TCompanyAuth queryByAuthid(int authid) {
+		TCompanyAuth entity = new TCompanyAuth();
+		entity.setAuthid(authid);
+		return query(entity);
+	}
 
 }

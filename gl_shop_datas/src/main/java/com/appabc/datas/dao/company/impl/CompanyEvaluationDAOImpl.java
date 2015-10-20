@@ -1,11 +1,13 @@
 package com.appabc.datas.dao.company.impl;
 
 import com.appabc.bean.bo.CompanyEvaluationInfo;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.pvo.TCompanyEvaluation;
 import com.appabc.common.base.MultiTypeBeanPropertySqlParameterSource;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
 import com.appabc.datas.dao.company.ICompanyEvaluationDAO;
+
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.KeyHolder;
@@ -34,7 +36,8 @@ public class CompanyEvaluationDAOImpl extends BaseJdbcDao<TCompanyEvaluation>
 	private static final String DELETE_SQL = " DELETE FROM T_COMPANY_EVALUATION WHERE ID = :id ";
 	private static final String SELECT_SQL = " SELECT ID,CID,OID,SATISFACTION,CREDIT,EVALUATION,CRATEDATE,CREATER FROM T_COMPANY_EVALUATION ";
 
-	private static final String SELECTCOMPANY_SQL = " SELECT evalInfo.ID AS ID, evalInfo.CID AS CID, evalInfo.OID AS OID,evalInfo.SATISFACTION AS SATISFACTION,evalInfo.CREDIT AS CREDIT,evalInfo.EVALUATION AS EVALUATION,evalInfo.CRATEDATE AS CRATEDATE,evalInfo.CREATER AS CREATER,ci.CNAME AS CNAME FROM T_COMPANY_EVALUATION evalInfo LEFT JOIN T_COMPANY_INFO ci ON evalInfo.CID = ci.ID  ";
+	private static final String SELECTCOMPANY_SQL = " SELECT evalInfo.ID AS ID, evalInfo.CID AS CID, evalInfo.OID AS OID,evalInfo.SATISFACTION AS SATISFACTION,evalInfo.CREDIT AS CREDIT,evalInfo.EVALUATION AS EVALUATION,evalInfo.CRATEDATE AS CRATEDATE,evalInfo.CREATER AS CREATER,ci.CNAME AS CNAME FROM T_COMPANY_EVALUATION evalInfo LEFT JOIN T_COMPANY_INFO ci ON evalInfo.CID = ci.ID ";
+	private static final String SELECT_EVALUATION_BY_COMPANY_SQL = " SELECT evalInfo.ID AS ID, evalInfo.CID AS CID, evalInfo.OID AS OID,evalInfo.SATISFACTION AS SATISFACTION,evalInfo.CREDIT AS CREDIT,evalInfo.EVALUATION AS EVALUATION,evalInfo.CRATEDATE AS CRATEDATE,evalInfo.CREATER AS CREATER,ci.CNAME, ci.CTYPE, u.USERNAME FROM T_COMPANY_EVALUATION evalInfo LEFT JOIN T_COMPANY_INFO ci ON evalInfo.CREATER = ci.ID LEFT JOIN T_USER u ON u.CID = evalInfo.CREATER  ";
 
 	private String dynamicJoinSqlWithEntity(TCompanyEvaluation entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
@@ -231,6 +234,57 @@ public class CompanyEvaluationDAOImpl extends BaseJdbcDao<TCompanyEvaluation>
 				bean.setCratedate(rs.getTimestamp("CRATEDATE"));
 				bean.setCreater(rs.getString("CREATER"));
 				bean.setCname(rs.getString("CNAME"));
+				return bean;
+			}
+
+		});
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.dao.company.ICompanyEvaluationDAO#queryEvaluationListByCompany(com.appabc.bean.bo.CompanyEvaluationInfo)
+	 */
+	@Override
+	public List<CompanyEvaluationInfo> queryEvaluationListByCompany(
+			CompanyEvaluationInfo cei) {
+		if(cei == null){
+			return null;
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append(SELECT_EVALUATION_BY_COMPANY_SQL);
+
+		sql.append(" WHERE 1 = 1 ");
+		addNameParamerSqlWithProperty(sql, "id", "evalInfo.ID", cei.getId());
+		addNameParamerSqlWithProperty(sql, "cid", "evalInfo.CID", cei.getCid());
+		addNameParamerSqlWithProperty(sql, "oid", "evalInfo.OID", cei.getOid());
+		addNameParamerSqlWithProperty(sql, "satisfaction", "evalInfo.SATISFACTION", cei.getSatisfaction());
+		addNameParamerSqlWithProperty(sql, "credit", "evalInfo.CREDIT", cei.getCredit());
+		addNameParamerSqlWithProperty(sql, "evaluation", "evalInfo.EVALUATION", cei.getEvaluation());
+		addNameParamerSqlWithProperty(sql, "cratedate", "evalInfo.CRATEDATE", cei.getCratedate());
+		addNameParamerSqlWithProperty(sql, "creater", "evalInfo.CREATER", cei.getCreater());
+		addNameParamerSqlWithProperty(sql, "cname", "ci.CNAME", cei.getCname());
+		addNameParamerSqlWithProperty(sql, "ctype", "ci.CTYPE", cei.getCtype());
+		addNameParamerSqlWithProperty(sql, "username", "u.username", cei.getUsername());
+		
+		sql.append(" ORDER BY evalInfo.CRATEDATE ASC");
+		log.debug("The Sql Str Is : " + sql.toString() + " ; And The Value Is : "+cei);
+		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(cei);
+		return getNamedParameterJdbcTemplate().query(sql.toString(), paramSource, new RowMapper<CompanyEvaluationInfo>() {
+
+			@Override
+			public CompanyEvaluationInfo mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				CompanyEvaluationInfo bean = new CompanyEvaluationInfo();
+				bean.setId(rs.getString("ID"));
+				bean.setCid(rs.getString("CID"));
+				bean.setOid(rs.getString("OID"));
+				bean.setSatisfaction(rs.getInt("SATISFACTION"));
+				bean.setCredit(rs.getInt("CREDIT"));
+				bean.setEvaluation(rs.getString("EVALUATION"));
+				bean.setCratedate(rs.getTimestamp("CRATEDATE"));
+				bean.setCreater(rs.getString("CREATER"));
+				bean.setCname(rs.getString("CNAME"));
+				bean.setCtype(CompanyType.enumOf(rs.getString("CTYPE")));
+				bean.setUsername(rs.getString("USERNAME"));
 				return bean;
 			}
 

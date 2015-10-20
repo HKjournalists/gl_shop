@@ -19,4 +19,8 @@ public class ToolsConstant {
 
 	public static final String SCHEDULER = "SCHEDULER_MACHINE";
 	
+	public static final String SYSTEMCID = "SYSTEMCID";
+	
+	public static final String SYSTEMCNAME = "SYSTEMCNAME";
+	
 }

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<ul th:fragment="marketinfo_tab" class="nav nav-tabs">
+  <li role="presentation" th:class="${#strings.contains(url, '/marketinfo/show/')} ? active"><a th:href="@{/tasks/editor/marketinfo/show/}">当日参考价格</a></li>
+  <li role="presentation" th:class="${#strings.contains(url, '/marketinfo/forecast/')} ? active"><a th:href="@{/tasks/editor/marketinfo/forecast/}">未来价格预测</a></li>
+</ul>
+</body>
+</html>

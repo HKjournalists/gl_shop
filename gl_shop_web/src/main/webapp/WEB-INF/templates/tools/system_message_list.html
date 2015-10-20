@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tools">
+<head>
+<meta charset="UTF-8">
+<title>常用工具 - 系统消息</title>
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap-datetimepicker.4.0.0.min.css}" />
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 常用工具 - 系统消息
+</h4>
+
+<div layout:fragment="pageContent">
+  <ul class="nav nav-tabs" th:replace="fragments/system_manage_fragments :: system_message_tab">
+    <li role="presentation"><a href="#">系统消息发送</a></li>
+    <li role="presentation" class="active"><a href="#">已发消息列表</a></li>
+  </ul>
+  
+  <div class="table-responsive media">
+  <div class="panel panel-default">
+	  <div class="panel-body">
+      	<form class="form-inline" th:action="@{/tool/manage/system_message/query/}" method="post">
+			  <div class="form-group">
+			    <label for="fromDatePicker">开始时间</label>&nbsp;&nbsp;
+				<div class="controls input-group date" id="fromDatePicker">
+                  <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="starttime" name="starttime" th:value="${starttime}" placeholder="请选择开始时间" />
+                  <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                </div>
+			  </div>&nbsp;&nbsp;&nbsp;&nbsp;
+			  <div class="form-group">
+			    <label for="toDatePicker">结束时间</label>&nbsp;&nbsp;
+			    <div class="input-group date" id="toDatePicker">
+                  <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="endtime" name="endtime" th:value="${endtime}" placeholder="请选择结束时间" />
+                  <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                </div>
+			  </div>
+			  <label id="queryTimeFrame-error" class="col-sm-offset-0 error"></label>
+	      	<button id="btnSubmit" type="submit" class="btn btn-primary text-center pull-right">查询</button>
+		  </form>
+	  </div>
+	</div>
+	
+	<table layout:fragment="tableContent" class="table table-bordered table-hover table-striped">
+	  <thead>
+	  <tr>
+	    <th>用户手机号码</th>
+	    <th>消息类型</th>
+	    <th>发送时间</th>
+	    <th>操作人</th>
+	    <th>发送内容</th>
+	    <th>发送状态</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  <tr th:each="message : ${systemMessage}">
+	    <td th:text="${message.qyPhone}">用户手机号码</td>
+	    <td th:text="${message.type} ? ${message.type.text} : '未知'">消息类型</td>
+	    <td th:text="${#calendars.format(message.createtime, 'YYYY-MM-d HH:mm')}">发送时间</td>
+	    <td th:text="${message.operName} ? ${message.operName} : '操作人'">操作人</td>
+	    <td th:text="${#strings.length(message.content) > 72} ? ${#strings.substring(message.content,0,72)}+' ...... ' : ${message.content}">发送内容</td>
+	    <td th:text="${message.status.text}">发送状态</td>
+	  </tr>
+	  <tr th:if="${#lists.isEmpty(systemMessage)}">
+	    <td colspan="6">当前查询条件下暂无数据，请更换查询条件进行尝试</td>
+	  </tr>
+	  </tbody>
+	</table>
+  	</div>
+  	<div th:replace="layouts/fragments :: pagingNavBar"></div> 
+</div>
+
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+</div>
+<script layout:fragment="inlineJavascript">
+var contextPath = /*[[@{/}]]*/ '/';
+
+function checkQueryTimeFrame(from, to) {
+    if (from && to) {
+        if (from.unix() > to.unix()) {
+            $('#queryTimeFrame-error').html('开始时间不能大于结束时间');
+            $('#queryTimeFrame-error').show();
+        } else {
+            $('#queryTimeFrame-error').hide();
+        }
+    } else {
+        $('#queryTimeFrame-error').html('请选择交易时间范围，开始时间不能大于结束时间');
+    }
+    
+}
+
+$(document).ready(function() {
+    $('#fromDatePicker').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    
+    $('#toDatePicker').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    
+    $('#fromDatePicker').on('dp.change', function(e) {
+        var fromDate = $('#fromDatePicker').data("DateTimePicker").date();
+        var toDate = $('#toDatePicker').data("DateTimePicker").date();
+        checkQueryTimeFrame(fromDate, toDate);
+        $('#toDatePicker').data('DateTimePicker').minDate(fromDate);
+    });
+
+    $('#toDatePicker').on('dp.change', function(e) {
+        var fromDate = $('#fromDatePicker').data('DateTimePicker').date();
+        var toDate = $('#toDatePicker').data('DateTimePicker').date();
+        checkQueryTimeFrame(fromDate, toDate);
+        $('#fromDatePicker').data('DateTimePicker').maxDate(toDate);
+    });
+});
+</script>
+</body>
+</html>

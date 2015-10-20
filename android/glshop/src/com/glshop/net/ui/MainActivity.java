@@ -1,9 +1,7 @@
 package com.glshop.net.ui;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,10 +13,13 @@ import android.widget.TabHost.TabSpec;
 
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalAction;
+import com.glshop.net.common.GlobalConstants.ReqSendType;
 import com.glshop.net.common.GlobalConstants.TabStatus;
 import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.common.GlobalMessageType.UserMessageType;
 import com.glshop.net.logic.model.RespInfo;
+import com.glshop.net.logic.upgrade.IUpgradeLogic;
+import com.glshop.net.logic.upgrade.mgr.UpgradeUtils;
 import com.glshop.net.ui.basic.BasicActivity;
 import com.glshop.net.ui.findbuy.BuyListActivity;
 import com.glshop.net.ui.findbuy.ShopActivity;
@@ -29,6 +30,7 @@ import com.glshop.net.ui.mypurse.PurseActivity;
 import com.glshop.net.utils.ActivityUtil;
 import com.glshop.platform.api.DataConstants;
 import com.glshop.platform.api.setting.data.model.UpgradeInfoModel;
+import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.utils.Logger;
 import com.glshop.platform.utils.StringUtils;
 
@@ -44,11 +46,12 @@ public class MainActivity extends BasicActivity {
 
 	private static final String TAG = "MainActivity";
 
-	// 用于判断是否连续按两次Back退出程序
+	/** 用于判断是否连续按两次Back退出程序  */
 	private boolean isNeedToExitApp = false;
 
 	private TabHost mTabHost;
 
+	/** 默认Tab页面  */
 	private TabStatus curTabStatus = TabStatus.SHOP;
 
 	private static Map<String, TabStatus> tabActionMap = new HashMap<String, TabStatus>();
@@ -126,14 +129,20 @@ public class MainActivity extends BasicActivity {
 		case GlobalMessageType.UpgradeMessageType.MSG_GET_UPGRADE_INFO_FAILED:
 			// 暂不处理
 			break;
+		case GlobalMessageType.UpgradeMessageType.MSG_CHECK_UPGRADE_INFO: // 检测升级信息
+			mUpgradeLogic.getUpgradeInfo(ActivityUtil.getAppInfo(this), ReqSendType.BACKGROUND);
+			break;
 		case UserMessageType.MSG_MODIFY_PASSWORD_SUCCESS: // 密码修改成功
 		case DataConstants.GlobalMessageType.MSG_USER_OFFLINE: // 用户离线
-		case DataConstants.GlobalMessageType.MSG_USER_NOT_LOGINED: // 用户未登录
+			//case DataConstants.GlobalMessageType.MSG_USER_NOT_LOGINED: // 用户未登录(暂不处理，避免界面死循环)
 		case DataConstants.GlobalMessageType.MSG_USER_TOKEN_EXPIRE: // 用户Token失效
 			Intent intent = new Intent(this, MainActivity.class);
 			intent.putExtra(GlobalAction.TipsAction.EXTRA_DO_ACTION, GlobalAction.TipsAction.ACTION_VIEW_SHOP);
 			intent.putExtra(GlobalAction.UserAction.EXTRA_IS_USER_LOGOUT, true);
 			doAction(intent);
+			break;
+		case GlobalMessageType.UpgradeMessageType.MSG_EXIT: // exit
+			finish();
 			break;
 		}
 	}
@@ -143,14 +152,11 @@ public class MainActivity extends BasicActivity {
 		boolean isLogout = intent.getBooleanExtra(GlobalAction.UserAction.EXTRA_IS_USER_LOGOUT, false);
 		if (isLogout) {
 			curTabStatus = TabStatus.SHOP;
-			mTabHost.setCurrentTabByTag(curTabStatus.toString());
-			Iterator<Map.Entry<TabStatus, Class<?>>> it = tabIntentMap.entrySet().iterator();
-			while (it.hasNext()) {
-				Entry<TabStatus, Class<?>> entry = it.next();
-				if (TabStatus.SHOP != entry.getKey()) {
-					getLocalActivityManager().destroyActivity(entry.getKey().toString(), true);
-				}
-			}
+			//mTabHost.setCurrentTabByTag(curTabStatus.toString());
+			mTabHost.setCurrentTab(curTabStatus.toValue());
+			mTabHost.clearAllTabs();
+			getLocalActivityManager().removeAllActivities();
+			initTabs();
 		}
 		if (StringUtils.isNotEmpty(action)) {
 			if (tabActionMap.containsKey(action)) {
@@ -168,7 +174,8 @@ public class MainActivity extends BasicActivity {
 	public void switchTabView(TabStatus tabStatus) {
 		curTabStatus = tabStatus;
 		try {
-			mTabHost.setCurrentTabByTag(curTabStatus.toString());
+			//mTabHost.setCurrentTabByTag(curTabStatus.toString());
+			mTabHost.setCurrentTab(curTabStatus.toValue());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -197,16 +204,24 @@ public class MainActivity extends BasicActivity {
 		//return mTabHost.newTabSpec(tab.toString()).setIndicator(tab.toString()).setContent(new Intent(this, tabIntentMap.get(tab)));
 	}
 
+	/**
+	 * 检测应用升级信息
+	 */
 	private void checkUpgrade() {
-		mUpgradeLogic.getUpgradeInfo(ActivityUtil.getAppInfo(this));
+		//mUpgradeLogic.getUpgradeInfo(ActivityUtil.getAppInfo(this), ReqSendType.BACKGROUND);
+		sendEmptyMessageDelayed(GlobalMessageType.UpgradeMessageType.MSG_CHECK_UPGRADE_INFO, 1000);
 	}
 
 	private void onGetUpgradeSuccess(RespInfo respInfo) {
 		if (isCurrentActivity()) {
 			if (respInfo.data != null) {
 				UpgradeInfoModel upgradeInfo = (UpgradeInfoModel) respInfo.data;
-				if (StringUtils.isNotEmpty(upgradeInfo.url)) {
-					showUpgradeDialog(upgradeInfo);
+				if (upgradeInfo != null) {
+					if (!UpgradeUtils.isIgnoreVersion(this, upgradeInfo.versionCode) || upgradeInfo.isForceUpgrade) {
+						if (StringUtils.isNotEmpty(upgradeInfo.url)) {
+							showUpgradeDialog(upgradeInfo, upgradeInfo.isForceUpgrade);
+						}
+					}
 				}
 			}
 		}
@@ -233,8 +248,13 @@ public class MainActivity extends BasicActivity {
 					isNeedToExitApp = true;
 					showToast(R.string.exit_app_tips);
 					return true;
-				} else {
-					// 连续按两次Back,退出客户端
+				} else { // 连续按两次Back,退出客户端
+					// 取消升级下载
+					IUpgradeLogic mUpgradeLogic = LogicFactory.getLogicByClass(IUpgradeLogic.class);
+					if (mUpgradeLogic != null) {
+						mUpgradeLogic.cancelDownload();
+					}
+					//DefineNotification.clearById(UpgradeNotifyID.ID_UPGRADE_PKG_DOWNLOAD);
 					return super.dispatchKeyEvent(event);
 				}
 			} else {

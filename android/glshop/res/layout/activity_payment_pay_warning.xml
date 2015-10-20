@@ -1,0 +1,88 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/ic_tip_warning"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
+                android:text="@string/operator_tips_opr_failed_title"
+                android:textColor="@color/green_light" />
+
+            <TextView
+                android:id="@+id/tv_pay_money_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/buy_item_padding"
+                android:layout_marginTop="@dimen/buy_item_padding"
+                android:text="@string/contract_payment_pay_warning_content" />
+
+            <Button
+                android:id="@+id/btn_recharge"
+                style="@style/button_orange"
+                android:layout_marginTop="@dimen/buy_item_padding"
+                android:text="充值货款账户" />
+
+            <!-- 温馨提示 -->
+
+            <LinearLayout
+                android:id="@+id/ll_security_tips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_security_tips"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="6dp"
+                    android:text="温馨提示"
+                    android:textColor="#5EA265" />
+
+                <TextView
+                    android:id="@+id/tv_pay_money_warning_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contract_payment_pay_warning_hint" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="★请速向平台支付货款"
+                    android:textColor="@color/red" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

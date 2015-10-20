@@ -1,0 +1,325 @@
+package com.glshop.net.ui.setting;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.glshop.net.R;
+import com.glshop.net.common.GlobalAction;
+import com.glshop.net.common.GlobalConstants.DataStatus;
+import com.glshop.net.common.GlobalMessageType;
+import com.glshop.net.logic.cache.DataCenter;
+import com.glshop.net.logic.message.IMessageLogic;
+import com.glshop.net.logic.model.RespInfo;
+import com.glshop.net.ui.basic.BasicActivity;
+import com.glshop.net.ui.basic.view.dialog.BaseDialog;
+import com.glshop.net.ui.basic.view.dialog.ConfirmDialog;
+import com.glshop.net.ui.mycontract.ContractInfoActivityV2;
+import com.glshop.platform.api.DataConstants.MessageStatus;
+import com.glshop.platform.api.message.data.model.MessageInfoModel;
+import com.glshop.platform.base.manager.LogicFactory;
+import com.glshop.platform.utils.Logger;
+import com.glshop.platform.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author : 叶跃丰
+ * @version : 1.0
+ *          Create Date  : 2014-7-17 下午5:01:00
+ * @Description : 消息详情页面
+ * @Copyright : GL. All Rights Reserved
+ * @Company : 深圳市国立数码动画有限公司
+ */
+public class MessageDetailActivity extends BasicActivity {
+
+    private static final String TAG = "MessageDetailActivity";
+
+    private ImageView iv_commmon_action;
+    private MessageInfoModel info;
+    private String msgId;
+
+    private TextView mTvType;
+    private TextView mTvTime;
+    private TextView mTvContent;
+    private Button mBtnAction;
+
+    private IMessageLogic mMessageLogic;
+    private Button btn_commmon_action;
+    private ConfirmDialog confirmDialog;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Logger.e(TAG, "onCreate()");
+        setContentView(R.layout.activity_message_detail);
+        Logger.d(TAG, "onCreate()" + DataCenter.getInstance().getData(DataCenter.DataType.MESSAGE_ALL_LIST).size());
+        initView();
+        initData();
+        Logger.d(TAG, "onCreate()----" + DataCenter.getInstance().getData(DataCenter.DataType.MESSAGE_ALL_LIST).size());
+    }
+
+    private void initView() {
+        initLoadView();
+        mNormalDataView = getView(R.id.ll_msg_info);
+
+        ((TextView) getView(R.id.tv_commmon_title)).setText(R.string.message_center);
+        getView(R.id.iv_common_back).setOnClickListener(this);
+        getView(R.id.btn_action).setOnClickListener(this);
+        iv_commmon_action=getView(R.id.iv_commmon_action);
+        btn_commmon_action = getView(R.id.btn_commmon_action);
+        iv_commmon_action.setVisibility(View.VISIBLE);
+        iv_commmon_action.setOnClickListener(this);
+        mTvType = getView(R.id.iv_message_type);
+        mTvTime = getView(R.id.iv_message_time);
+        mTvContent = getView(R.id.iv_message_content);
+        mBtnAction = getView(R.id.btn_action);
+    }
+
+    private void initData() {
+        info = (MessageInfoModel) getIntent().getSerializableExtra(GlobalAction.MessageAction.EXTRA_KEY_MESSAGE_INFO);
+        if (info != null) {
+            mTvTime.setText(info.dateTime);
+            mTvContent.setText(info.content);
+            updateDataStatus(DataStatus.NORMAL);
+            updateUI();
+        } else {
+            msgId = getIntent().getStringExtra(GlobalAction.MessageAction.EXTRA_KEY_MESSAGE_ID);
+            if (StringUtils.isNotEmpty(msgId)) {
+                updateDataStatus(DataStatus.LOADING);
+                mMessageLogic.getMessageInfo(msgId);
+            } else {
+                showToast("消息ID不能为空!");
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onReloadData() {
+        updateDataStatus(DataStatus.LOADING);
+        mMessageLogic.getMessageInfo(msgId);
+    }
+
+    private void reportMsg() {
+        if (info != null) {
+            if (!info.isReported) {
+                mMessageLogic.reportMessage(info);
+            }
+        }
+    }
+
+    @Override
+    protected void handleStateMessage(Message message) {
+        super.handleStateMessage(message);
+        Logger.d(TAG, "handleStateMessage: what = " + message.what);
+        RespInfo respInfo = getRespInfo(message);
+        switch (message.what) {
+            case GlobalMessageType.MsgCenterMessageType.MSG_GET_MESSAGE_INFO_SUCCESS:
+                onGetMessageInfoSuccess(respInfo);
+                break;
+            case GlobalMessageType.MsgCenterMessageType.MSG_GET_MESSAGE_INFO_FAILED:
+                onGetMessageInfoFailed(respInfo);
+                break;
+            case GlobalMessageType.MsgCenterMessageType.MSG_REPORT_MESSAGE_READED_SUCCESS:
+                onReportSuccess(respInfo);
+                break;
+            case GlobalMessageType.MsgCenterMessageType.MSG_REPORT_MESSAGE_READED_FAILED:
+                onReportFailed(respInfo);
+                break;
+            case GlobalMessageType.MsgCenterMessageType.MSG_DEL_MSG_SUCCESS:
+                onDelMessageSuccess(respInfo);
+                break;
+            case GlobalMessageType.MsgCenterMessageType.MSG_DEL_MSG_FAILED:
+                onDelMessageFailed(respInfo);
+                break;
+        }
+        Logger.d(TAG, "handleStateMessage ()" + DataCenter.getInstance().getData(DataCenter.DataType.MESSAGE_ALL_LIST).size());
+    }
+
+    private void onDelMessageSuccess(RespInfo respInfo){
+        showToast("删除成功");
+        finish();
+    }
+    private void onDelMessageFailed(RespInfo respInfo){
+        showToast("删除失败");
+    }
+    private void onGetMessageInfoSuccess(RespInfo respInfo) {
+        if (respInfo.data != null) {
+            info = (MessageInfoModel) respInfo.data;
+            if (info != null) {
+                updateUI();
+                updateDataStatus(DataStatus.NORMAL);
+            } else {
+                updateDataStatus(DataStatus.EMPTY);
+            }
+        } else {
+            updateDataStatus(DataStatus.EMPTY);
+        }
+    }
+
+    private void onGetMessageInfoFailed(RespInfo respInfo) {
+        updateDataStatus(DataStatus.ERROR);
+        handleErrorAction(respInfo);
+    }
+
+    private void onReportSuccess(RespInfo respInfo) {
+        Logger.e(TAG, "Report message success");
+        if (info != null) {
+            info.status = MessageStatus.READED;
+            info.isReported = true;
+        }
+    }
+
+    private void onReportFailed(RespInfo respInfo) {
+        Logger.e(TAG, "Report message failed");
+    }
+
+    @Override
+    protected void showErrorMsg(RespInfo respInfo) {
+        if (respInfo != null) {
+            switch (respInfo.respMsgType) {
+                case GlobalMessageType.MsgCenterMessageType.MSG_GET_MESSAGE_INFO_FAILED:
+                    showToast(R.string.error_req_get_info);
+                    break;
+                default:
+                    super.showErrorMsg(respInfo);
+                    break;
+            }
+        }
+    }
+
+    private void updateUI() {
+        Logger.i(TAG, "Info = " + info);
+        mTvTime.setText(info.dateTime);
+        mTvContent.setText(info.content);
+        switch (info.type) {
+            case SYSTEM:
+                mTvType.setText(getString(R.string.message_type_system));
+                break;
+            case ACTIVE:
+                mTvType.setText(getString(R.string.message_type_active));
+                break;
+            case ADVISORY:
+                mTvType.setText(getString(R.string.message_type_info));
+                break;
+            case TRANSACTION:
+                mTvType.setText(getString(R.string.message_type_transaction));
+                break;
+
+
+        }
+        Logger.d(TAG,"info.businessType="+info.businessType);
+        switch (info.businessType) {
+            case TYPE_COMPANY_AUTH:
+                //mBtnAction.setText(getString(R.string.message_action_repeat_auth));
+                break;
+            case TYPE_ORDER_FIND:
+
+                break;
+            case TYPE_CONTRACT_SIGN:
+            case TYPE_CONTRACT_ING:
+            case TYPE_CONTRACT_EVALUATION:
+            case TYPE_CONTRACT_CANCEL:
+            case TYPE_CONTRACT_MAKE_MATCH:
+            case TYPE_CONTRACT_SINGLE_DAF_CONFIRM:
+            case TYPE_CONTRACT_DAF_CANCEL:
+            case TYPE_CONTRACT_DAF_TIMEOUT:
+            case TYPE_CONTRACT_BUYER_PAYFUNDS:
+            case TYPE_CONTRACT_BUYER_APPLY_FINALESTIMATE:
+            case TYPE_CONTRACT_SELLER_AGREE_FINALESTIMATE:
+            case TYPE_CONTRACT_APPLY_ARBITRATION:
+            case TYPE_CONTRACT_ARBITRATED_FINALESTIMATE:
+            case TYPE_CONTRACT_PAYFUNDS_TIMEOUT:
+            case TYPE_CONTRACT_OTHERS:
+                mBtnAction.setVisibility(View.VISIBLE);
+                mBtnAction.setText(getString(R.string.message_action_contract_info));
+                break;
+        }
+
+        reportMsg();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_action:
+                doAction();
+                break;
+            case R.id.iv_common_back:
+                Logger.d(TAG, "finish ()" + DataCenter.getInstance().getData(DataCenter.DataType.MESSAGE_ALL_LIST).size());
+                finish();
+                break;
+            case R.id.iv_commmon_action:
+                confirmDialog = new ConfirmDialog(this, R.style.dialog);
+                confirmDialog.setContent(getResources().getString(R.string.dialog_content_del_msg));
+                confirmDialog.setCallback(new BaseDialog.IDialogCallback() {
+                    @Override
+                    public void onConfirm(int type, Object obj) {
+                        List<MessageInfoModel> ids = new ArrayList<MessageInfoModel>();
+                        if (null != info)
+                            ids.add(info);
+                        mMessageLogic.delMessage(ids);
+                    }
+
+                    @Override
+                    public void onCancel(int type) {
+
+                    }
+                });
+                confirmDialog.show();
+                break;
+        }
+    }
+
+    private void doAction() {
+        Intent intent;
+        switch (info.businessType) {
+            case TYPE_COMPANY_AUTH:
+            /*intent = new Intent(this, ProfileAuthActivity.class);
+			startActivity(intent);*/
+                break;
+            case TYPE_ORDER_FIND:
+			/*intent = new Intent(this, MainActivity.class);
+			intent.setAction(GlobalAction.TipsAction.ACTION_VIEW_FIND_BUY);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			finish();*/
+                break;
+            case TYPE_CONTRACT_SIGN:
+            case TYPE_CONTRACT_ING:
+            case TYPE_CONTRACT_EVALUATION:
+            case TYPE_CONTRACT_CANCEL:
+            case TYPE_CONTRACT_MAKE_MATCH:
+            case TYPE_CONTRACT_SINGLE_DAF_CONFIRM:
+            case TYPE_CONTRACT_DAF_CANCEL:
+            case TYPE_CONTRACT_DAF_TIMEOUT:
+            case TYPE_CONTRACT_BUYER_PAYFUNDS:
+            case TYPE_CONTRACT_BUYER_APPLY_FINALESTIMATE:
+            case TYPE_CONTRACT_SELLER_AGREE_FINALESTIMATE:
+            case TYPE_CONTRACT_APPLY_ARBITRATION:
+            case TYPE_CONTRACT_ARBITRATED_FINALESTIMATE:
+            case TYPE_CONTRACT_PAYFUNDS_TIMEOUT:
+            case TYPE_CONTRACT_OTHERS:
+                if (StringUtils.isNotEmpty(info.businessID)) {
+                    intent = new Intent(this, ContractInfoActivityV2.class);
+                    intent.putExtra(GlobalAction.ContractAction.EXTRA_KEY_CONTRACT_ID, info.businessID);
+                    intent.putExtra(GlobalAction.ContractAction.EXTRA_KEY_IS_GET_CONTRACT_MODEL, true);
+                    startActivity(intent);
+                }
+                break;
+        }
+    }
+
+    @Override
+    protected void initLogics() {
+        mMessageLogic = LogicFactory.getLogicByClass(IMessageLogic.class);
+    }
+
+}

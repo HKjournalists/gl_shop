@@ -46,6 +46,7 @@
                         android:duplicateParentState="true" />
 
                     <TextView
+                        android:id="@+id/tv_buy_amount_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:duplicateParentState="true"
@@ -102,7 +103,7 @@
                     style="@style/BuyTextItem.Action.Bottom"
                     glshop:itemContent="@string/product_unit_price"
                     glshop:itemInputType="numberDecimal"
-                    glshop:itemSecondTitle="@string/unit_rmb_v3"
+                    glshop:itemSecondTitle="@string/unit_price_ton_v2"
                     glshop:itemTitle="@string/business_product_portprice"
                     glshop:showItemIcon="true" />
 
@@ -359,8 +360,8 @@
                         android:textColor="#5EA265" />
 
                     <TextView
-                        android:id="@+id/tv_buy_security_tips"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tv_pub_security_tips"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/business_buyer_tips" />
                 </LinearLayout>

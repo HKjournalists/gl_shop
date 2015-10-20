@@ -27,8 +27,8 @@ import java.util.Map;
 @Repository
 public class OrderAddressDaoImpl extends BaseJdbcDao<TOrderAddress> implements IOrderAddressDao {
 
-	private static final String INSERTSQL = " insert into T_ORDER_ADDRESS (FID, OID, TYPE, CREATIME, CRATER, CID, REALDEEP, AREACODE, ADDRESS, LONGITUDE, LATITUDE, DEEP) values (:fid, :oid, :type, :creatime, :crater, :cid, :realdeep, :areacode, :address, :longitude, :latitude, :deep) ";
-	private static final String UPDATESQL = " update T_ORDER_ADDRESS set FID = :fid, OID = :oid, TYPE = :type, CREATIME = :creatime, CRATER = :crater, CID = :cid, REALDEEP = :realdeep, AREACODE = :areacode, ADDRESS = :address, LONGITUDE = :longitude, LATITUDE = :latitude, DEEP = :deep where ID = :id ";
+	private static final String INSERTSQL = " insert into T_ORDER_ADDRESS (FID, OID, TYPE, CREATIME, CRATER, CID, REALDEEP, AREACODE, ADDRESS, LONGITUDE, LATITUDE, DEEP, SHIPPINGTON) values (:fid, :oid, :type, :creatime, :crater, :cid, :realdeep, :areacode, :address, :longitude, :latitude, :deep, :shippington) ";
+	private static final String UPDATESQL = " update T_ORDER_ADDRESS set FID = :fid, OID = :oid, TYPE = :type, CREATIME = :creatime, CRATER = :crater, CID = :cid, REALDEEP = :realdeep, AREACODE = :areacode, ADDRESS = :address, LONGITUDE = :longitude, LATITUDE = :latitude, DEEP = :deep, SHIPPINGTON = :shippington where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_ORDER_ADDRESS WHERE ID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_ORDER_ADDRESS WHERE ID = :id ";
 
@@ -91,6 +91,7 @@ public class OrderAddressDaoImpl extends BaseJdbcDao<TOrderAddress> implements I
 		t.setOid(rs.getString("OID"));
 		t.setRealdeep(rs.getFloat("REALDEEP"));
 		t.setType(rs.getString("TYPE"));
+		t.setShippington(rs.getFloat("SHIPPINGTON"));
 
 		return t;
 	}
@@ -111,6 +112,7 @@ public class OrderAddressDaoImpl extends BaseJdbcDao<TOrderAddress> implements I
 		this.addNameParamerSqlWithProperty(sql, "oid", "OID", bean.getOid());
 		this.addNameParamerSqlWithProperty(sql, "realdeep", "REALDEEP", bean.getRealdeep());
 		this.addNameParamerSqlWithProperty(sql, "type", "TYPE", bean.getType());
+		this.addNameParamerSqlWithProperty(sql, "shippington", "SHIPPINGTON", bean.getShippington());
 		return sql.toString();
 	}
 

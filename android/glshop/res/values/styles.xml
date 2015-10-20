@@ -79,6 +79,16 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <!-- 通用密码EditText -->
+    <style name="pwd_edittext" parent="@android:style/Widget.EditText">
+        <item name="android:background">@drawable/bg_edit_normal</item>
+        <item name="android:textSize">@dimen/sp14</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:inputType">textPassword</item>
+        <item name="android:digits">._1234567890abcdefjhijklmnopqrstuvwxyzABCDEFJHIJKLMNOPQRSTUVWXYZ</item>
+    </style>
+
     <!-- 短信验证码输入 -->
     <style name="sms_verifycode_edittext" parent="edittext">
         <item name="android:inputType">number</item>
@@ -298,6 +308,26 @@
         <item name="android:drawableLeft">@drawable/ic_contract_buy</item>
         <item name="android:drawablePadding">2dp</item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+    </style>
+    
+    <!-- 通用购买Icon -->
+    <style name="Ic_Buy_Bg_new">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/buy_icon_buy</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+    </style>
+    
+    <!-- 通用购买Icon -->
+    <style name="Ic_Sell_Bg_new">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/buy_icon_sell</item>
         <item name="android:clickable">false</item>
         <item name="android:focusable">false</item>
         <item name="android:focusableInTouchMode">false</item>

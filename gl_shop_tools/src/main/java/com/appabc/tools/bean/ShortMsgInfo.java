@@ -10,7 +10,7 @@ import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
  * @version     : 1.0
  * Create Date  : 2014年9月5日 下午12:59:36
  */
-public class ShortMsgInfo{
+public class ShortMsgInfo implements Cloneable {
 	
 	private String tel; // 接收者电话号码
 	private String businessId; // 业务ID
@@ -42,6 +42,8 @@ public class ShortMsgInfo{
 		this.template = template;
 	}
 	
-	
+	public ShortMsgInfo clone() throws CloneNotSupportedException {
+		return (ShortMsgInfo) super.clone();
+	}
 
 }

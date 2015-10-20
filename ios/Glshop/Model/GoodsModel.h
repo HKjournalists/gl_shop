@@ -17,4 +17,6 @@
 @property (nonatomic, copy) NSString *goodsVal;
 @property (nonatomic, strong) NSNumber *orderNo;
 
+@property (nonatomic, assign, getter=isSelected) BOOL selected; // 自加字段，用于筛选
+
 @end

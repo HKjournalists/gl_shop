@@ -1,0 +1,3 @@
+include ':app'
+include ':gl_platform_sdk'
+include ':gl_platform_api'

@@ -29,7 +29,7 @@ import java.util.Map;
 public class SystemParamsDaoImpl extends BaseJdbcDao<TSystemParams> implements ISystemParamsDao {
 	
 	private static final String INSERTSQL = " insert into T_SYSTEM_PARAMS (PNAME, PVALUE, PTYPE, DEFAULTVALUE, UPDATER, UPDATETIME, DESCRIPTION) values (:pname, :pvalue, :ptype, :defaultvalue, :updater, :updatetime, :description) ";
-	private static final String UPDATESQL = " update T_SYSTEM_PARAMS set PNAME = :pname, PVALUE = :pvalue, PTYPE = :ptype, DEFAULTVALUE = :defaultvalue, UPDATER = :updater,  UPDATETIME = :updatetime, DESC = :desc where SID = :id ";
+	private static final String UPDATESQL = " update T_SYSTEM_PARAMS set PNAME = :pname, PVALUE = :pvalue, PTYPE = :ptype, DEFAULTVALUE = :defaultvalue, UPDATER = :updater,  UPDATETIME = :updatetime, DESCRIPTION = :description where SID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_SYSTEM_PARAMS WHERE SID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_SYSTEM_PARAMS WHERE SID = :id ";
 	
@@ -105,6 +105,32 @@ public class SystemParamsDaoImpl extends BaseJdbcDao<TSystemParams> implements I
 		t.setDescription(rs.getString("DESCRIPTION"));
 		
 		return t;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.tools.dao.system.ISystemParamsDao#initDataParameters()  
+	 */
+	@Override
+	@SuppressWarnings("deprecation")
+	public void initDataParameters() {
+		log.info("execute the initDataParameters start...");
+		String companySql = "SELECT COUNT(1) FROM T_COMPANY_INFO WHERE ID = 'CIDPLATFORM000000'";
+		int i = this.getJdbcTemplate().queryForInt(companySql);
+		log.info("execute the T_COMPANY_INFO Query the result is : "+i);
+		if(i==0){
+			String insertSql = " INSERT INTO `T_COMPANY_INFO` (`ID`, `CNAME`, `MARK`, `CONTACT`, `CPHONE`, `CTYPE`, `AUTHSTATUS`, `STATUS`, `CREATEDATE`, `UPDATEDATE`, `UPDATER`, `TEL`, `BAILSTATUS`) VALUES ('CIDPLATFORM000000', '平台企业信息', '平台企业信息', NULL, NULL, '1', '1', '1', '2015-01-27 15:17:08', NULL, NULL, NULL, '0') ";
+			this.getJdbcTemplate().execute(insertSql);
+		}
+		String passbookSql = "SELECT COUNT(1) FROM T_PASSBOOK_INFO WHERE CID = 'CIDPLATFORM000000'";
+		int j = this.getJdbcTemplate().queryForInt(passbookSql);
+		log.info("execute the T_PASSBOOK_INFO Query the result is : "+j);
+		if(j==0){
+			String insertSql = " INSERT INTO `T_PASSBOOK_INFO` (`PASSID`, `CID`, `PASSTYPE`, `AMOUNT`, `CREATETIME`, `REMARK`) VALUES ('PASSIDPLATFORM100000', 'CIDPLATFORM000000', '0', '57515.00', '2014-10-17 18:18:51', NULL) ";
+			this.getJdbcTemplate().execute(insertSql);
+			String insertSql1 = " INSERT INTO `T_PASSBOOK_INFO` (`PASSID`, `CID`, `PASSTYPE`, `AMOUNT`, `CREATETIME`, `REMARK`) VALUES ('PASSIDPLATFORM100001', 'CIDPLATFORM000000', '1', '295812.50', '2014-10-17 18:21:31', NULL) ";
+			this.getJdbcTemplate().execute(insertSql1);
+		}
+		log.info("execute the initDataParameters end...");
 	}
 
 }

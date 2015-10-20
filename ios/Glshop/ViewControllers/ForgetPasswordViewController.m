@@ -8,16 +8,16 @@
 
 #import "ForgetPasswordViewController.h"
 #import "SettingPasswordViewController.h"
-#import "OpenUDID.h"
 #import "NetEngine.h"
 #import "IQKeyboardManager.h"
 #import "WPHotspotLabel.h"
 #import "WPAttributedStyleAction.h"
 #import "NSString+WPAttributedMarkup.h"
 
-@interface ForgetPasswordViewController ()
+@interface ForgetPasswordViewController () <UIAlertViewDelegate>
 
 @property (nonatomic, strong) WPHotspotLabel *tipActionLabel;
+@property (nonatomic, strong) UIWebView *webView;
 
 @end
 
@@ -26,6 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+//    self.shouldShowFailView = NO;
     [self refreshCode];
 }
 
@@ -33,13 +34,13 @@
     [super viewWillDisappear:animated];
     
     [[IQKeyboardManager sharedManager] setEnableAutoToolbar:YES];
-    [MKNetworkEngine cancelOperationsContainingURLString:bImageCodeCheckPath];
-    [MKNetworkEngine cancelOperationsContainingURLString:bImageCodePath];
+    [[IQKeyboardManager sharedManager] setShouldResignOnTouchOutside:NO];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    [[IQKeyboardManager sharedManager] setShouldResignOnTouchOutside:YES];
     [[IQKeyboardManager sharedManager] setEnableAutoToolbar:NO];
 }
 
@@ -61,7 +62,7 @@
     _userNameField.keyboardType = UIKeyboardTypeNumberPad;
     [backgroundView addSubview:_userNameField];
     
-    _codeField = [UITextField textFieldWithPlaceHodler:@"请输入验证码" withDelegate:self];
+    _codeField = [UITextField textFieldWithPlaceHodler:sms_input withDelegate:self];
     _codeField.frame = CGRectMake(_userNameField.vleft, _userNameField.vbottom+15, _userNameField.vwidth-150, _userNameField.vheight);
     _codeField.keyboardType = UIKeyboardTypeNumberPad;
     [backgroundView addSubview:_codeField];
@@ -75,23 +76,28 @@
     [_refrushBtn setImage:[UIImage imageNamed:@"password_refresh"] forState:UIControlStateNormal];
     [self.view addSubview:_refrushBtn];
     
-    _nextBtn = [UIButton buttonWithTip:@"下一步" target:self selector:@selector(gotoSetVC)];
-    _nextBtn.frame = CGRectMake(10, backgroundView.vbottom+30, SCREEN_WIDTH-20, 40);
-    _nextBtn.backgroundColor = CJBtnColor;
+    _nextBtn = [UIFactory createBtn:BlueButtonImageName bTitle:btntitle_next bframe:CGRectZero];
+    [_nextBtn addTarget:self action:@selector(gotoSetVC) forControlEvents:UIControlEventTouchUpInside];
+    _nextBtn.frame = CGRectMake(10, backgroundView.vbottom+20, SCREEN_WIDTH-20, 40);
+    _nextBtn.layer.cornerRadius = 2.5f;
     [self.view addSubview:_nextBtn];
     
     UIView *view = [UIFactory createPromptViewframe:CGRectMake(_nextBtn.vleft, _nextBtn.vbottom+20, _nextBtn.vwidth, 100) tipTitle:nil];
-    _tipActionLabel = [[WPHotspotLabel alloc] initWithFrame:CGRectMake(20, 38, view.vwidth-20, 40)];
+    _tipActionLabel = [[WPHotspotLabel alloc] initWithFrame:CGRectMake(20, 38, view.vwidth-20, 50)];
     _tipActionLabel.numberOfLines = 3;
-    NSDictionary* style3 = @{@"body":@[[UIFont fontWithName:@"HelveticaNeue" size:15.0],ColorWithHex(@"#ba9057")],
+    NSDictionary* style3 = @{@"body":@[[UIFont fontWithName:@"HelveticaNeue" size:14.0],ColorWithHex(@"#ba9057")],
                              @"help":[WPAttributedStyleAction styledActionWithAction:^{
-                                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"点击拨打电话" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-                                 [alert show];
+                                 if (_webView == nil) {
+                                     _webView = [[UIWebView alloc] init];
+                                 }
+                                 NSURL *url = [NSURL URLWithString:kAppTel];
+                                 NSURLRequest *request = [NSURLRequest requestWithURL:url];
+                                 [_webView loadRequest:request];
                              }],
-                             @"link": @[[UIFont boldSystemFontOfSize:18.f],ColorWithHex(@"#FF0000"),],
+                             @"link": @[[UIFont boldSystemFontOfSize:16.f],ColorWithHex(@"#FF0000"),],
                              };
     
-    self.tipActionLabel.attributedText = [@"若您无法通过此方式找回密码,请致电 <help>4008001234</help> 联系我司客服为您解决。" attributedStringWithStyleBook:style3];
+    self.tipActionLabel.attributedText = [@"若您无法通过此方式找回密码,请致电 <help>400-961-6816</help> 联系我司客服为您解决。" attributedStringWithStyleBook:style3];
     [view addSubview:_tipActionLabel];
     [self.view addSubview:view];
 }
@@ -101,7 +107,11 @@
  *@brief 刷新图片验证码
  */
 - (void)refreshCode {
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[OpenUDID value] forKey:@"deviceId"];
+    NSString *token = [Utilits ToGetdeviceToken];
+    if (!token.length) {
+        return;
+    }
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[Utilits ToGetdeviceToken] forKey:@"deviceId"];
     MKNetworkEngine *engine = [[MKNetworkEngine alloc] initWithHostName:kBaseUrl];
     
     MKNetworkOperation *op = [engine operationWithPath:bImageCodePath params:[Utilits packSevrverRequestParams:params] httpMethod:kHttpGetMethod];
@@ -113,7 +123,7 @@
         _codeImageView.image = image;
         
     } errorHandler:^(MKNetworkOperation *completedOperation, NSError *error) {
-
+        
         HUD(kNetError);
     }];
     
@@ -132,13 +142,19 @@
     }
     
     if (!_codeField.text.length) {
-        HUD(@"请输入验证码");
+        HUD(sms_input);
         return;
     }
     
-    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[OpenUDID value] forKey:@"deviceId"];
-    [params setObject:_codeField.text forKey:@"imgCode"];
-    [self requestWithURL:bImageCodeCheckPath params:params HTTPMethod:kHttpGetMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObject:[Utilits ToGetdeviceToken] forKey:@"deviceId"];
+    NSString *token = [Utilits ToGetdeviceToken];
+    if (!token.length) {
+        return;
+    }
+    [params setObject:_codeField.text forKey:@"code"];
+    [params setObject:_userNameField.text forKey:@"userName"];
+    [self showHUD];
+    [self requestWithURL:bImageCodeCheckPath params:params HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
         kASIResultLog;
         SettingPasswordViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"SettingPasswordViewControllerId"];
         vc.phone = _userNameField.text;
@@ -148,6 +164,13 @@
         
     }];
     
+}
+
+#pragma mark - UIAlertView Delegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex) {
+        
+    }
 }
 
 @end

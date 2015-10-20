@@ -1,0 +1,273 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <!-- 正在加载 -->
+
+    <LinearLayout
+        android:id="@+id/ll_loading_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
+
+        <ProgressBar
+            style="@style/refresh_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="@string/loading_data"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <!-- 加载失败 -->
+
+    <LinearLayout
+        android:id="@+id/ll_load_data_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/load_data_error"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <!-- 加载为空 -->
+
+    <LinearLayout
+        android:id="@+id/ll_empty_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/load_data_empty"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_normal_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:visibility="gone" >
+
+        <ImageButton
+            android:id="@+id/btn_pre_page"
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@drawable/selector_btn_left_arrow_bg" />
+
+        <ViewFlipper
+            android:id="@+id/vf_today_price"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center" >
+
+                <!-- Feature1 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_today_price_feature_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_item_single"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_today_price"
+                        style="@style/today_forecast_item_price"
+                        android:text="100" />
+
+                    <TextView
+                        android:id="@+id/tv_product_top_category"
+                        style="@style/today_forecast_item_top_category"
+                        android:text="粗砂" />
+
+                    <TextView
+                        android:id="@+id/tv_product_sub_category"
+                        style="@style/today_forecast_item_sub_category"
+                        android:text="中砂(2.3-3.0)" />
+                </LinearLayout>
+
+                <!-- Feature2 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_today_price_feature_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_item_single"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_today_price"
+                        style="@style/today_forecast_item_price"
+                        android:text="200" />
+
+                    <TextView
+                        android:id="@+id/tv_product_top_category"
+                        style="@style/today_forecast_item_top_category"
+                        android:text="粗砂" />
+
+                    <TextView
+                        android:id="@+id/tv_product_sub_category"
+                        style="@style/today_forecast_item_sub_category"
+                        android:text="中砂(2.3-3.0)" />
+                </LinearLayout>
+
+                <!-- Feature3 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_today_price_feature_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_item_single"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_today_price"
+                        style="@style/today_forecast_item_price"
+                        android:text="300" />
+
+                    <TextView
+                        android:id="@+id/tv_product_top_category"
+                        style="@style/today_forecast_item_top_category"
+                        android:text="粗砂" />
+
+                    <TextView
+                        android:id="@+id/tv_product_sub_category"
+                        style="@style/today_forecast_item_sub_category"
+                        android:text="中砂(2.3-3.0)" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center" >
+
+                <!-- Feature4 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_today_price_feature_4"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_item_single"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_today_price"
+                        style="@style/today_forecast_item_price"
+                        android:text="400" />
+
+                    <TextView
+                        android:id="@+id/tv_product_top_category"
+                        style="@style/today_forecast_item_top_category"
+                        android:text="粗砂" />
+
+                    <TextView
+                        android:id="@+id/tv_product_sub_category"
+                        style="@style/today_forecast_item_sub_category"
+                        android:text="中砂(2.3-3.0)" />
+                </LinearLayout>
+
+                <!-- Feature5 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_today_price_feature_5"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_item_single"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_today_price"
+                        style="@style/today_forecast_item_price"
+                        android:text="500" />
+
+                    <TextView
+                        android:id="@+id/tv_product_top_category"
+                        style="@style/today_forecast_item_top_category"
+                        android:text="粗砂" />
+
+                    <TextView
+                        android:id="@+id/tv_product_sub_category"
+                        style="@style/today_forecast_item_sub_category"
+                        android:text="中砂(2.3-3.0)" />
+                </LinearLayout>
+
+                <!-- Feature6 -->
+
+                <LinearLayout
+                    android:id="@+id/ll_today_price_feature_6"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_item_single"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tv_today_price"
+                        style="@style/today_forecast_item_price"
+                        android:text="600" />
+
+                    <TextView
+                        android:id="@+id/tv_product_top_category"
+                        style="@style/today_forecast_item_top_category"
+                        android:text="粗砂" />
+
+                    <TextView
+                        android:id="@+id/tv_product_sub_category"
+                        style="@style/today_forecast_item_sub_category"
+                        android:text="中砂(2.3-3.0)" />
+                </LinearLayout>
+            </LinearLayout>
+        </ViewFlipper>
+
+        <ImageButton
+            android:id="@+id/btn_next_page"
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:contentDescription="@null"
+            android:src="@drawable/selector_btn_right_arrow_bg" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -4,10 +4,12 @@ import android.content.Context;
 
 import com.glshop.net.logic.upgrade.IUpgradeLogic;
 import com.glshop.net.ui.basic.notification.DefineNotification;
+import com.glshop.platform.api.DataConstants.PayEnvType;
 import com.glshop.platform.api.DataConstants.ProfileType;
 import com.glshop.platform.api.user.data.model.LoginRespInfoModel;
 import com.glshop.platform.base.config.PlatformConfig;
 import com.glshop.platform.base.manager.LogicFactory;
+import com.glshop.platform.utils.Logger;
 import com.igexin.sdk.PushManager;
 
 /**
@@ -19,6 +21,8 @@ import com.igexin.sdk.PushManager;
  * Create Date  : 2014-7-16 下午4:55:51
  */
 public class GlobalConfig {
+
+	private static final String TAG = "GlobalConfig";
 
 	private static GlobalConfig mInstance;
 
@@ -35,19 +39,29 @@ public class GlobalConfig {
 	private int mContractCount = 0;
 
 	/** 保证金是否足够 */
-	private boolean isDepositEnough;
+	//private boolean isDepositEnough;
 
 	/** 货款是否足够 */
-	private boolean isPaymentEnough;
+	//private boolean isPaymentEnough;
 
 	/** 保证金余额 */
-	private float depositBalance;
+	//private double depositBalance;
 
 	/** 货款余额 */
-	private float paymentBalance;
+	//private double paymentBalance;
 
 	/** 未读消息数目 */
 	private int unreadMsgNum;
+
+	/**是否认证*/
+	//private boolean authe = false;
+
+	/** 是否已刷新Token  */
+	private boolean isTokenUpdated = false;
+	private boolean isAuthRemind = false;
+
+	/** 支付环境  */
+	private PayEnvType payEnvType = PayEnvType.RELEASE;
 
 	private GlobalConfig() {
 
@@ -93,7 +107,7 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public String getUserAccount() {
-		return (String) getSPValue(GlobalConstants.SPKey.USER_ACCOUNT);
+		return getStringSPValue(GlobalConstants.SPKey.USER_ACCOUNT);
 	}
 
 	/**
@@ -109,7 +123,7 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public String getUserPhone() {
-		return (String) getSPValue(GlobalConstants.SPKey.USER_PHONE);
+		return getStringSPValue(GlobalConstants.SPKey.USER_PHONE);
 	}
 
 	/**
@@ -125,7 +139,7 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public String getUserID() {
-		return (String) getSPValue(GlobalConstants.SPKey.USER_ID);
+		return getStringSPValue(GlobalConstants.SPKey.USER_ID);
 	}
 
 	/**
@@ -198,7 +212,7 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public String getCompanyId() {
-		return (String) getSPValue(GlobalConstants.SPKey.COMPANY_ID);
+		return getStringSPValue(GlobalConstants.SPKey.COMPANY_ID);
 	}
 
 	/**
@@ -214,7 +228,7 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public String getCompanyName() {
-		return (String) getSPValue(GlobalConstants.SPKey.COMPANY_NAME);
+		return getStringSPValue(GlobalConstants.SPKey.COMPANY_NAME);
 	}
 
 	/**
@@ -222,7 +236,9 @@ public class GlobalConfig {
 	 * @param enough
 	 */
 	public void setDepositStatus(boolean enough) {
-		isDepositEnough = enough;
+		//isDepositEnough = enough;
+		Logger.i(TAG, "setDepositStatus = " + enough);
+		setSPValue(GlobalConstants.SPKey.USER_DEPOSIT_STATUS, enough);
 	}
 
 	/**
@@ -230,7 +246,26 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public boolean isDepositEnough() {
-		return isDepositEnough;
+		//return isDepositEnough;
+		return getBooleanSPValue(GlobalConstants.SPKey.USER_DEPOSIT_STATUS);
+	}
+
+	/**
+	 * 设置认证状态
+	 * @param auth
+	 */
+	public void setAuth(boolean auth) {
+		//this.authe = auth;
+		Logger.i(TAG, "SetAuth = " + auth);
+		setSPValue(GlobalConstants.SPKey.USER_AUTH_STATUS, auth);
+	}
+
+	/**
+	 * 获取认证状态
+	 */
+	public boolean isAuth() {
+		//return authe;
+		return getBooleanSPValue(GlobalConstants.SPKey.USER_AUTH_STATUS);
 	}
 
 	/**
@@ -238,7 +273,9 @@ public class GlobalConfig {
 	 * @param enough
 	 */
 	public void setPaymentStatus(boolean enough) {
-		isPaymentEnough = enough;
+		//isPaymentEnough = enough;
+		Logger.i(TAG, "setPaymentStatus = " + enough);
+		setSPValue(GlobalConstants.SPKey.USER_PAYMENT_STATUS, enough);
 	}
 
 	/**
@@ -246,39 +283,44 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public boolean isPaymentEnough() {
-		return isPaymentEnough;
+		//return isPaymentEnough;
+		return getBooleanSPValue(GlobalConstants.SPKey.USER_PAYMENT_STATUS);
 	}
 
 	/**
 	 * 设置用户保证金余额
 	 * @param enough
 	 */
-	public void setDepositBalance(float balance) {
-		depositBalance = balance;
+	public void setDepositBalance(double balance) {
+		//depositBalance = balance;
+		setSPValue(GlobalConstants.SPKey.USER_DEPOSIT_BALANCE, balance);
 	}
 
 	/**
 	 * 获取用户保证金余额
 	 * @return
 	 */
-	public float getDepositBalance() {
-		return depositBalance;
+	public double getDepositBalance() {
+		//return depositBalance;
+		return getDoubleSPValue(GlobalConstants.SPKey.USER_DEPOSIT_BALANCE);
 	}
 
 	/**
 	 * 设置用户货款余额
 	 * @param enough
 	 */
-	public void setPaymentBalance(float balance) {
-		paymentBalance = balance;
+	public void setPaymentBalance(double balance) {
+		//paymentBalance = balance;
+		setSPValue(GlobalConstants.SPKey.USER_PAYMENT_BALANCE, balance);
 	}
 
 	/**
 	 * 获取用户货款余额
 	 * @return
 	 */
-	public float getPaymentBalance() {
-		return paymentBalance;
+	public double getPaymentBalance() {
+		//return paymentBalance;
+		return getDoubleSPValue(GlobalConstants.SPKey.USER_PAYMENT_BALANCE);
 	}
 
 	/**
@@ -309,7 +351,7 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public String getToken() {
-		return (String) getSPValue(PlatformConfig.USER_TOKEN);
+		return getStringSPValue(PlatformConfig.USER_TOKEN);
 	}
 
 	/**
@@ -325,7 +367,7 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public Long getTokenExpire() {
-		return (Long) getSPValue(PlatformConfig.TOKEN_EXPIRY);
+		return getLongSPValue(PlatformConfig.TOKEN_EXPIRY);
 	}
 
 	/**
@@ -341,7 +383,50 @@ public class GlobalConfig {
 	 * @return
 	 */
 	public Long getTokenUpdateTime() {
-		return (Long) getSPValue(GlobalConstants.SPKey.USER_TOKEN_UPDATE_TIME);
+		return getLongSPValue(GlobalConstants.SPKey.USER_TOKEN_UPDATE_TIME);
+	}
+
+	/**
+	 * 是否已刷新Token
+	 * @return
+	 */
+	public boolean isTokenUpdated() {
+		return isTokenUpdated;
+	}
+
+	/**
+	 * 设置用户是否已刷新Token
+	 * @param isTokenUpdated
+	 */
+	public void setTokenUpdatedStatus(boolean isTokenUpdated) {
+		this.isTokenUpdated = isTokenUpdated;
+	}
+	
+	public boolean isAuthRemind(){
+		return this.isAuthRemind;
+	}
+	
+	public void setAuthRemind(boolean isMinde){
+		this.isAuthRemind = isMinde;
+	}
+
+	/**
+	 * 获取支付环境
+	 * @return
+	 */
+	public PayEnvType getPayEnvType() {
+		if (payEnvType == null) {
+			payEnvType = PayEnvType.RELEASE;
+		}
+		return payEnvType;
+	}
+
+	/**
+	 * 设置支付环境
+	 * @param payEnvType
+	 */
+	public void setPayEnvType(PayEnvType payEnvType) {
+		this.payEnvType = payEnvType;
 	}
 
 	/**
@@ -367,7 +452,12 @@ public class GlobalConfig {
 			setContractCount(info.contractCount);
 			setProfleType(info.profileType);
 			setDepositStatus(info.isDepositEnough);
+			setDepositBalance(info.depositBalance);
+			setPaymentBalance(info.paymentBalance);
+			setPayEnvType(info.payEnvType);
+			setAuth(info.isAuth);
 			saveToken(info.token);
+			setAuthRemind(info.isAuthRemind);
 			saveTokenExpire(info.tokenExpire); // 保存Token有效期
 			saveTokenUpdateTime(System.currentTimeMillis()); // 保存Token更新时间
 			loginXmpp(); // 登录xmpp
@@ -381,10 +471,15 @@ public class GlobalConfig {
 		isLogined = false;
 		mContractCount = 0;
 		mMyBuyCount = 0;
-		isDepositEnough = false;
+		payEnvType = PayEnvType.RELEASE;
 		removeSPValue(GlobalConstants.SPKey.COMPANY_ID);
 		removeSPValue(GlobalConstants.SPKey.COMPANY_NAME);
 		removeSPValue(GlobalConstants.SPKey.USER_PROFILE_TYPE);
+		removeSPValue(GlobalConstants.SPKey.USER_AUTH_STATUS);
+		removeSPValue(GlobalConstants.SPKey.USER_DEPOSIT_STATUS);
+		removeSPValue(GlobalConstants.SPKey.USER_PAYMENT_STATUS);
+		removeSPValue(GlobalConstants.SPKey.USER_DEPOSIT_BALANCE);
+		removeSPValue(GlobalConstants.SPKey.USER_PAYMENT_BALANCE);
 		removeSPValue(PlatformConfig.USER_TOKEN);
 		removeSPValue(PlatformConfig.TOKEN_EXPIRY);
 		removeSPValue(GlobalConstants.SPKey.USER_TOKEN_UPDATE_TIME);
@@ -421,8 +516,40 @@ public class GlobalConfig {
 	 * 获取SP值
 	 * @return
 	 */
-	public Object getSPValue(String key) {
+	public static String getStringSPValue(String key) {
 		return PlatformConfig.getString(key);
+	}
+
+	/**
+	 * 获取SP值
+	 * @return
+	 */
+	public static Boolean getBooleanSPValue(String key) {
+		return PlatformConfig.getBoolean(key);
+	}
+
+	/**
+	 * 获取SP值
+	 * @return
+	 */
+	public static Double getDoubleSPValue(String key) {
+		return PlatformConfig.getDouble(key);
+	}
+
+	/**
+	 * 获取SP值
+	 * @return
+	 */
+	public static Long getLongSPValue(String key) {
+		return PlatformConfig.getLong(key);
+	}
+
+	/**
+	 * 获取SP值
+	 * @return
+	 */
+	public static Boolean getFloatSPValue(String key) {
+		return PlatformConfig.getBoolean(key);
 	}
 
 	/**
@@ -430,7 +557,7 @@ public class GlobalConfig {
 	 * @param key
 	 * @param value
 	 */
-	public void setSPValue(String key, Object value) {
+	public static void setSPValue(String key, Object value) {
 		PlatformConfig.setValue(key, value);
 	}
 
@@ -438,7 +565,7 @@ public class GlobalConfig {
 	 * 删除SP值
 	 * @param key
 	 */
-	public void removeSPValue(String key) {
+	public static void removeSPValue(String key) {
 		PlatformConfig.remove(key);
 	}
 

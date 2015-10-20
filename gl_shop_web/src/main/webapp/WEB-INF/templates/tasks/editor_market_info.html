@@ -1,10 +1,302 @@
 <!DOCTYPE html>
-<html layout:decorator="layouts/task">
+<html layout:decorator="layouts/tasks">
 <head>
-<title>市场行情</title>
+  <title>编辑 - 市场行情编辑</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap-datetimepicker.4.0.0.min.css}" />
 </head>
 <body>
-    
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 编辑 - 市场行情编辑
+</h4>
+
+<div layout:fragment="pageContent">
+  <ul class="nav nav-tabs" th:replace="tasks/editor_fragments :: marketinfo_tab">
+    <li role="presentation" class="active"><a href="#">当日参考价格</a></li>
+    <li role="presentation"><a href="#">未来价格预测</a></li>
+  </ul>
+
+  <form id="infoForm" method="post" role="form" th:action="@{/tasks/editor/marketinfo/update/}">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="form-inline">
+            <div class="form-group">
+              <label for="area" class="control-label">长江段</label>
+              <select id="area" name="area" class="form-control">
+                <option th:each="area : ${riverSection}" th:value="${area.val}" th:text="${area.name}">靖江段</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="pcode" class="control-label">产品</label>
+              <select class="form-control" id="pcode">
+                <option value="0">请选择</option>
+                <option value="G001">石子</option>
+                <option value="G002">黄砂</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="ptype" class="control-label">类别</label>
+              <select class="form-control" id="ptype" disabled="disabled">
+                <option value="0">请选择</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="datePicker" class="control-label">时间</label>
+              <div class="input-group date" id="datePicker">
+                  <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="datepoint" name="datepoint"
+                         th:value="${#calendars.format(#calendars.createToday(), 'yyyy-MM-dd')}" required="required"/>
+                  <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <table class="table" id="priceTable">
+          <thead>
+            <tr>
+                <th width="30%">规格</th>
+                <th width="30%" class="text-center">参考价格（单位：元/吨）</th>
+                <th class="text-center">录入人</th>
+            </tr>
+          </thead>
+          <tbody id="priceTableContent">
+          </tbody>
+      </table>
+
+      <div class="panel-footer text-center">
+        <div id="btnUpdateBar">
+            <button type="button" id="btnUpdate" class="btn btn-primary">修改</button>
+        </div>
+        <div id="btnSubmitBar" style="display: none">
+          <button id="btnSubmit" type="submit" class="btn btn-primary">提交</button>
+          <button id="btnCancel" type="button" class="btn btn-default">取消</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>
+
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+  <script th:src="@{/static/js/product-info.js}"></script>
+  <script th:src="@{/static/js/editor-market.js}"></script>
+</div>
+
+<script layout:fragment="inlineJavascript">
+var contextPath = /*[[@{/}]]*/ '/';
+var _currentProductList = [];
+var _currentProductPriceInfo = {};
+var _pageMode = "PLAIN";
+
+function loadProductG002Spec(typeId) {
+    loadProductSpecs(contextPath, typeId, function(data) {
+        populateProductSpec(data, 'pname');
+    });
+}
+
+function populateProductSpec(data, nameField) {
+    if (data) {
+        _currentProductList = [];
+        $.each(data, function(index, elem) {
+            _currentProductList.push({id: elem.id, name: elem[nameField], minv: elem.minv, maxv: elem.maxv});
+        });
+        renderPriceTable();
+    }
+}
+
+function renderPriceTable() {
+    if (_currentProductList.length === 0) {
+        console.log('Empty product list.');
+        return;
+    }
+    var cache = getProductPriceCache($('#area').val(), $('#datePicker').data('DateTimePicker').date().format('YYYY-MM-DD'));
+    if (cache.length > 0) {
+        _currentProductPriceInfo = {};
+        $.each(cache, function(index, prodPrice) {
+            $.each(_currentProductList, function(index, prod) {
+                if (prodPrice.pid === prod.id) {
+                    var price = {
+                        price: prodPrice.price,
+                        operator: prodPrice.updater,
+                        oid: prodPrice.id
+                    };
+                    _currentProductPriceInfo[prod.id] = price;
+                }
+            })
+        })
+    }
+
+    if ($.isEmptyObject(_currentProductPriceInfo)) {
+        _pageMode = "FORM";
+    }
+
+    if (_pageMode === "PLAIN") {
+        renderPlainPriceTable();
+        $('#btnUpdateBar').show();
+        $('#btnSubmitBar').hide();
+    } else {
+        renderFormPriceTable();
+        $('#btnUpdateBar').hide();
+        $('#btnSubmitBar').show();
+    }
+
+}
+
+function renderPlainPriceTable() {
+    var html = [];
+    $.each(_currentProductList, function(index, elem) {
+        var priceInfo = _currentProductPriceInfo[elem.id];
+        html.push('<tr><td>' + composeProductName(elem)
+            + '</td><td class="text-center">' + (priceInfo ? priceInfo.price.toFixed(1) : '')
+            + '</td><td class="text-center">' + (priceInfo ? priceInfo.operator : '') + '</td></tr>');
+    });
+    $('#priceTableContent').empty();
+    $('#priceTableContent').append(html.join(''));
+}
+
+function renderFormPriceTable() {
+    var html = [];
+    $.each(_currentProductList, function(index, elem) {
+        var priceInfo = _currentProductPriceInfo[elem.id];
+        html.push('<tr><td>' + composeProductName(elem)
+            + '<input type="hidden" name="prices[' + index + '].pid" value="' + elem.id
+            + '" />');
+        if (elem.oid) {
+            html.push('<input type="hidden" name="prices[' + index + '].oid" value="' + elem.oid + '" />');
+        }
+        html.push('</td><td><input type="text" class="form-control" name="prices[' + index + '].price" value="' + (priceInfo ? priceInfo.price.toFixed(1) : '')
+            + '" /></td><td></td></tr>');
+    });
+    var tbl = $('#priceTableContent');
+    tbl.empty();
+    tbl.append(html.join(''));
+}
+
+function onAreaOrDateChange() {
+    loadProductPrice(contextPath, $('#area').val(),
+                    $('#datePicker').data('DateTimePicker').date().format('YYYY-MM-DD'), function(data) {
+        _currentProductPriceInfo = {};
+        _pageMode = 'PLAIN';
+        changePriceTableData();
+    });
+}
+
+function changePriceTableData() {
+    if ($('#pcode').val() === 'G001' || $('ptype').val() !== '0') {
+        renderPriceTable();
+    }
+}
+
+$(document).ready(function() {
+    loadProductPrice(contextPath, $('#area').val(), $('#datepoint').val());
+
+    initFormProductData(function() {
+        if ($('#pcode').val() === 'G001') {
+            populateProductSpec(productG001Specs, 'pname');
+        }
+    }, function() {
+        $.each(productG002Types, function(index, elem) {
+            $('#ptype').append('<option value="' + elem.val + '">' + elem.name + '</option>');
+        });
+        if ($('#pcode').val() === 'G002') {
+            $('#ptype').val(ptype);
+            loadProductSpecs(contextPath, ptype, function(data) {
+                populateProductSpec(data, 'pname');
+            });
+        }
+    });
+
+    $('#pcode').change(function() {
+        var code = $(this).val();
+        if (code === 'G001') {
+            $('#ptype').prop('disabled', true);
+            $('#ptype').val('0');
+            populateProductSpec(productG001Specs, 'pname');
+        } else if (code === 'G002') {
+            $('#ptype').prop('disabled', false);
+        }
+    });
+
+    $('#ptype').change(function() {
+        var typeId = $(this).val();
+        if (typeId !== '0')
+            loadProductG002Spec(typeId);
+    });
+
+    $('#datePicker').datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: 'zh-cn'
+    });
+
+    $('#area').change(function() {
+        onAreaOrDateChange();
+    });
+    $('#datePicker').on('dp.change', function() {
+        onAreaOrDateChange();
+    });
+
+    $('#btnUpdate').click(function() {
+        _pageMode = 'FORM';
+        renderPriceTable();
+    });
+
+    $('#btnCancel').click(function() {
+        _pageMode = 'PLAIN';
+        renderPriceTable();
+    });
+
+    $('#infoForm').submit(function() {
+        var isValid = true;
+        var i = 0;
+        while (true) {
+            var input = $('input[name="prices[' + i + '].price"]');
+            if (input.length === 0) {
+                break;
+            }
+            if ($(input).val() === '') {
+                isValid = false;
+                break;
+            }
+            i++;
+        }
+
+        if (!isValid) {
+            alert("请输入商品价格");
+            return false;
+        }
+
+        var formURL = $(this).attr("action");
+        $.ajax(
+        {
+            url: formURL,
+            type: "POST",
+            data: $(this).serializeArray(),
+            success: function(data, textStatus, jqXHR) {
+                var area = $('#area').val();
+                var date = $('#datePicker').data("DateTimePicker").date().format('YYYY-MM-DD');
+                expireProductPriceCache(area, date);
+                loadProductPrice(contextPath, area, date,
+                    function() {
+                        alert('市场行情已更新！');
+                        _pageMode = 'PLAIN';
+                        renderPriceTable();
+                    });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert("更新市场行情出现错误！");
+            }
+        });
+        return false;
+    });
+
+
+});
+</script>
+
 </body>
 
 </html>

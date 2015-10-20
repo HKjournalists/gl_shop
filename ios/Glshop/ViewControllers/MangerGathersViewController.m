@@ -25,7 +25,6 @@
     // Do any additional setup after loading the view.
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(requestNet) name:kRefrushGatherListNotification object:nil];
-    self.shouldShowFailView = YES;
     self.title = @"收款人管理";
     [self requestNet];
 }
@@ -47,10 +46,10 @@
 }
 
 - (void)requestNet {
+    [super requestNet];
     UserInstance *userInstance = [UserInstance sharedInstance];
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:userInstance.user.cid,@"cid", nil];
     __block typeof(self) this = self;
-    [self.view show];
     [self requestWithURL:bcopnacceptgetList params:params HTTPMethod:kHttpGetMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
         kASIResultLog;
         [this handleNetData:responseData];
@@ -61,9 +60,7 @@
 
 - (void)handleNetData:(id)responseData {
     NSArray *datas = responseData[ServiceDataKey];
-    if (datas.count <= 0) {
-        return;
-    }else {
+
         NSMutableArray *temp = [NSMutableArray array];
         for (NSDictionary *dic in datas) {
             GatherModel *model = [[GatherModel alloc] initWithDataDic:dic];
@@ -72,7 +69,7 @@
         self.listDatas = [NSArray arrayWithArray:temp];
         _listView.hidden = NO;
         [_listView reloadData];
-    }
+    
 }
 
 #pragma mark - UITableView DataSource/Delegate
@@ -90,6 +87,8 @@
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         cell.imageView.image = [UIImage imageNamed:@"information_icon_add"];
         cell.textLabel.text = @"新增收款人";
+        cell.textLabel.font = UFONT_16_B;
+        cell.textLabel.textColor = C_BLACK;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         return cell;
@@ -102,13 +101,18 @@
             UILabel *label = [UILabel label];
             label.frame = CGRectMake(cell.vright-160, 0, 150, cell.vheight);
             label.tag = 100+indexPath.row;
-            label.font = [UIFont boldSystemFontOfSize:16.f];
+            label.font = [UIFont boldSystemFontOfSize:FONT_12];
             label.textAlignment = NSTextAlignmentRight;
             [cell.contentView addSubview:label];
         }
         GatherModel *model = _listDatas[indexPath.row];
         cell.textLabel.text = model.carduser;
+        cell.textLabel.textColor = C_BLACK;
+        cell.textLabel.font = [UIFont boldSystemFontOfSize:FONT_13];
         cell.detailTextLabel.text = model.bankcard;
+        cell.detailTextLabel.textColor = RGB(100, 100, 100, 1);
+        cell.detailTextLabel.font = [UIFont systemFontOfSize:FONT_12];
+
         
         UILabel *label = (UILabel *)[cell viewWithTag:100+indexPath.row];
         if ([model.authstatus[DataValueKey] integerValue] == 2) {
@@ -137,12 +141,8 @@
     }
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.section == 1) {
-//        return 60;
-//    }
-//    return 44;
-//}
-
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 @end

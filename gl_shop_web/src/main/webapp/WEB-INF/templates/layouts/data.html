@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/default">
+<body>
+<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+<th:block layout:fragment="side-menu">
+
+<th:block sec:authorize="hasAnyRole('ROLE_DATA_USER_ALL_COUNT,ROLE_DATA_USER_SINGLE_COUNT')">
+    <li th:class="${#strings.contains(url, '/data/user/')} ? 'active'">
+      <a href="#"><i class="fa fa-wrench fa-fw"></i> 用户数据<i class="fa arrow"></i></a>
+      <ul id="sales" class="nav nav-second-level">
+        <li><a th:href="@{/data/user/all/count/1/}" th:class="${#strings.contains(url, '/user/all/')} ? 'active'">用户整体数据</a></li>
+        <li><a th:href="@{/data/user/single/count/1/}" th:class="${#strings.contains(url, '/user/single/')} ? 'active'">用户明细数据</a></li>
+      </ul>
+    </li>
+  </th:block>
+
+
+</th:block>
+</body>
+</html>

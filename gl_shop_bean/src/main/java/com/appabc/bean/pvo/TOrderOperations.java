@@ -42,6 +42,11 @@ public class TOrderOperations extends BaseBean {
      * */
     private ContractLifeCycle orderstatus;
     
+    /**
+     * 操作时候的合同前一个状态
+     * */
+    private ContractLifeCycle oldstatus;
+    
 	/**
      * 父操作ID
      */
@@ -135,5 +140,23 @@ public class TOrderOperations extends BaseBean {
 	public void setOrderstatus(ContractLifeCycle orderstatus) {
 		this.orderstatus = orderstatus;
 	}
-    
+
+	/**  
+	 * oldstatus  
+	 *  
+	 * @return  the oldstatus  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractLifeCycle getOldstatus() {
+		return oldstatus;
+	}
+
+	/**  
+	 * @param oldstatus the oldstatus to set  
+	 */
+	public void setOldstatus(ContractLifeCycle oldstatus) {
+		this.oldstatus = oldstatus;
+	}
+
 }

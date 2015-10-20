@@ -11,13 +11,10 @@ indent_style = space
 indent_size = 2
 
 [{*.js, *.json}]
-indent_size = 4
+indent_size = 2
 
-[*.html]
+[{*.html, *.xml}]
 indent_size = 2
 
 [{*.java}]
-indent_size = 4
-
-[{*.xml}]
 indent_size = 4

@@ -43,4 +43,12 @@
     return model;
 }
 
+- (NSString *)combinePnameWithUnit {
+    if ([self.proCode isEqualToString:@"APPARENT_DENSITY"] || [self.proCode isEqualToString:@"BULK_DENSITY"]) { // 表观密度/堆积密度
+        return [NSString stringWithFormat:@"%@(kg/m³)",self.pname];
+    }else {
+        return [NSString stringWithFormat:@"%@(%%)",self.pname];
+    }
+}
+
 @end

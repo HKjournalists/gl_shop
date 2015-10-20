@@ -8,6 +8,7 @@ import java.util.List;
 import com.appabc.bean.pvo.TOrderAddress;
 import com.appabc.bean.pvo.TOrderFind;
 import com.appabc.bean.pvo.TOrderProductInfo;
+import com.appabc.common.base.bean.BaseBean;
 
 /**
  * @Description : 
@@ -17,8 +18,16 @@ import com.appabc.bean.pvo.TOrderProductInfo;
  * @version     : 1.0
  * Create Date  : 2015年1月4日 下午1:56:52
  */
-public class OrderFindAllBean {
+public class OrderFindAllBean extends BaseBean{
 	
+	/**  
+	 * serialVersionUID:（用一句话描述这个变量表示什么）  
+	 *  
+	 * @since 1.0.0  
+	 */  
+	
+	private static final long serialVersionUID = -5111472913785970465L;
+
 	/**
 	 * 询单基本信息
 	 */

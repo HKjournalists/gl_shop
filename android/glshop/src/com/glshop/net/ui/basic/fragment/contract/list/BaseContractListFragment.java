@@ -217,6 +217,20 @@ public abstract class BaseContractListFragment<T> extends BasicFragment implemen
 	}
 
 	@Override
+	protected void showErrorMsg(RespInfo respInfo) {
+		if (respInfo != null) {
+			switch (respInfo.respMsgType) {
+			case GlobalMessageType.ContractMessageType.MSG_GET_CONTRACTS_FAILED:
+				showToast(R.string.error_req_get_list);
+				break;
+			default:
+				super.showErrorMsg(respInfo);
+				break;
+			}
+		}
+	}
+
+	@Override
 	public void onTimerTick() {
 		//Logger.e(TAG, "onTimerTick & Type = " + type.toValue());
 		if (mAdapter != null) {

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+    android:background="@drawable/bootpage_three_bg">
+    <ImageView
+        android:id="@+id/iv_adver_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@mipmap/boot_three_txt"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        />
+    <ImageView
+        android:id="@+id/iv_adver_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        android:src="@mipmap/boot_three_center"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/iv_adver_top"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/iv_star"
+
+        />
+    <ImageView
+        android:id="@+id/iv_bottom_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="45dp"
+        android:src="@mipmap/bootpage_point_three"/>
+    <ImageView
+        android:id="@+id/iv_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/iv_bottom_point"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/star_selector"
+        />
+</RelativeLayout>

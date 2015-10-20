@@ -52,8 +52,8 @@
         
         province = [[NSArray alloc] initWithArray: provinceTmp];
         
-        NSString *index = [sortedArray objectAtIndex:0];
-        NSString *selected = [province objectAtIndex:0];
+        NSString *index = [sortedArray safeObjAtIndex:0];
+        NSString *selected = [province safeObjAtIndex:0];
         NSDictionary *dic = [NSDictionary dictionaryWithDictionary: [[areaDic objectForKey:index]objectForKey:selected]];
         
         NSArray *cityArray = [dic allKeys];
@@ -61,13 +61,13 @@
         city = [[NSArray alloc] initWithArray: [cityDic allKeys]];
         
         
-        NSString *selectedCity = [city objectAtIndex: 0];
+        NSString *selectedCity = [city safeObjAtIndex: 0];
         district = [[NSArray alloc] initWithArray: [cityDic objectForKey: selectedCity]];
-        selectedProvince = [province objectAtIndex: 0];
+        selectedProvince = [province safeObjAtIndex: 0];
         
         province = [[AreaInstance sharedInstance] provinceAreas];
-        city = [[AreaInstance sharedInstance] citysForProvinceId:province[0]];
-        district = [[AreaInstance sharedInstance] regionAreasForProvince:city[0]];
+        city = [[AreaInstance sharedInstance] citysForProvinceId:[province safeObjAtIndex:0]];
+        district = [[AreaInstance sharedInstance] regionAreasForProvince:[city safeObjAtIndex:0]];
     }
     return self;
 }
@@ -91,21 +91,21 @@
  */
 - (UIView *)contryPlace {
     UIView * contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 260)];
-    contentView.backgroundColor = [UIColor whiteColor];
+    contentView.backgroundColor = ColorWithHex(@"#EDEDED");
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, contentView.vwidth, 40)];
     headerView.backgroundColor = ColorWithHex(@"#838383");
     [contentView addSubview:headerView];
     
-    UIButton *sure = [UIFactory createBtn:@"登录-未触及状态" bTitle:@"完成" bframe:CGRectMake(contentView.vwidth-80-10, 5, 80, 30)];
+    UIButton *sure = [UIFactory createBtn:@"登录-未触及状态" bTitle:@"确认" bframe:CGRectMake(contentView.vwidth-80-10, 5, 80, 30)];
     [sure addTarget:self action:@selector(surePlace) forControlEvents:UIControlEventTouchUpInside];
     sure.backgroundColor = [UIColor orangeColor];
     [sure setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     sure.layer.cornerRadius = 3;
     [headerView addSubview:sure];
     
-    UIButton *cancel = [UIButton buttonWithTip:@"取消" target:self selector:@selector(cancelSelectPlace)];
-    cancel.frame = CGRectMake(10, sure.vtop, 80, 30);
+    UIButton *cancel = [UIButton buttonWithTip:globe_cancel_str target:self selector:@selector(cancelSelectPlace)];
+    cancel.frame = CGRectMake(0, sure.vtop, 80, 30);
     [cancel setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
     [headerView addSubview:cancel];
 
@@ -260,7 +260,7 @@
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view
 {
     UILabel *myView = nil;
-    UIFont *font = [UIFont systemFontOfSize:15.f];
+    UIFont *font = [UIFont boldSystemFontOfSize:15.f];
     
     if (component == PROVINCE_COMPONENT) {
         myView = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, 78, 30)];

@@ -55,7 +55,7 @@ public class CompanyShippingDaoImpl extends BaseJdbcDao<TCompanyShipping> implem
 	}
 
 	public TCompanyShipping query(TCompanyShipping entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)), entity);
+		return super.query(dynamicJoinSqlWithEntity(entity,  new StringBuilder(BASE_SQL)) + " ORDER BY UPDATEDATE DESC", entity);
 	}
 
 	public TCompanyShipping query(Serializable id) {
@@ -86,7 +86,7 @@ public class CompanyShippingDaoImpl extends BaseJdbcDao<TCompanyShipping> implem
 		t.setSdeep(rs.getFloat("SDEEP"));
 		t.setSlength(rs.getFloat("SLENGTH"));
 		t.setSload(rs.getFloat("SLOAD"));
-		t.setSmateriall(rs.getFloat("SMATERIALL"));
+		t.setSmateriall(rs.getString("SMATERIALL"));
 		t.setSname(rs.getString("SNAME"));
 		t.setSno(rs.getString("SNO"));
 		t.setSorg(rs.getString("SORG"));

@@ -17,9 +17,35 @@ import com.appabc.common.base.dao.IBaseDao;
 
 public interface IContractInfoDAO extends IBaseDao<TOrderInfo> {
 	
+	/**
+	 * @description 分页查询合同信息
+	 * @param qContext
+	 * @return QueryContext<ContractInfoBean>
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	QueryContext<ContractInfoBean> queryContractInfoListForPagination(QueryContext<ContractInfoBean> qContext);
 	
+	/**
+	 * @description 根据合同ID和企业ID查询合同信息
+	 * @param cid, contractId
+	 * @return ContractInfoBean
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	ContractInfoBean queryContractInfoWithId(String cid,String contractId);
+	
+	/**
+	 * @description 通过仲裁编号获取合同信息
+	 * @param aid
+	 * @return TOrderInfo
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	TOrderInfo queryContractWithAID(String aid);
 	
 	/**
 	 * 根据企业和合同的生命周期获得已结束的合同数
@@ -45,4 +71,37 @@ public interface IContractInfoDAO extends IBaseDao<TOrderInfo> {
 	 */
 	int getMatchingNumByFid(String fid);
 
+	/**
+	 * @description 分页查询我的合同信息
+	 * @param qContext
+	 * @return QueryContext<ContractInfoBean>
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	QueryContext<ContractInfoBean> queryContractListOfMineForPagination(QueryContext<ContractInfoBean> qContext);
+	
+	/**
+	 * @description : 分页查询我的合同详情列表,给后台CMS提供的接口.
+	 * 	参数：cid :查询属于当前cid的合同;type:分为当前交易状态和历史交易状态.
+	 * @param qContext
+	 * @return QueryContext<ContractInfoBean>
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	@Deprecated
+	QueryContext<ContractInfoBean> queryContractListOfMineForPaginationToWebCms(QueryContext<ContractInfoBean> qContext);
+	
+	
+	/**
+	 * 分页查询我的合同详情列表,给后台CMS提供的接口
+	 * @param qContext
+	 * @return
+	 */
+	QueryContext<TOrderInfo> queryContractListForPaginationOfUserToWebCms(QueryContext<TOrderInfo> qContext);
+	
+	public int queryCount(TOrderInfo entity);
+	
+	public int queryCountOfFinished();
 }

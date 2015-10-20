@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.appabc.bean.bo.CompanyAllInfo;
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
-import com.appabc.bean.pvo.TAuthRecord;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
+import com.appabc.datas.exception.ServiceException;
 import com.appabc.datas.service.company.IAuthRecordService;
 import com.appabc.datas.service.company.ICompanyInfoService;
 import com.appabc.datas.service.contract.IContractInfoService;
@@ -55,13 +55,13 @@ public class CompanyController extends BaseController<TCompanyInfo> {
 	@ResponseBody
 	@RequestMapping(value = "/authApply",method=RequestMethod.POST)
 	public Object authApply(HttpServletRequest request,HttpServletResponse response, 
-			TCompanyInfo ciBean, TAuthRecord arBean) {
+			TCompanyInfo ciBean) {
 		
 		String ctypeValue = request.getParameter("ctypeValue");
 		String addressid = request.getParameter("addressid"); // 默认卸货地址ID
-		String imgid = request.getParameter("imgid"); // 图片ID
+		String authImgids = request.getParameter("imgid"); // 图片ID
 		
-		if(StringUtils.isEmpty(imgid)){
+		if(StringUtils.isEmpty(authImgids)){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "认证图片信息不能为空");
 		}else if(StringUtils.isEmpty(ctypeValue)){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "未选择认证类型");
@@ -73,10 +73,10 @@ public class CompanyController extends BaseController<TCompanyInfo> {
 		}
 		ciBean.setId(getCurrentUserCid(request)); // 获取用户企业ID
 		try {
-			this.companyInfoService.authApply(ciBean, arBean, addressid,
+			this.companyInfoService.authApply(ciBean, authImgids.split(","), addressid,
 					getCurrentUserId(request));
-		} catch (Exception e) {
-			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
+		} catch (ServiceException e) {
+			return getBuildFailureResult(e, HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
 		}
 		return buildSuccessRetJson("认证申请已发送", "");
 		
@@ -116,7 +116,7 @@ public class CompanyController extends BaseController<TCompanyInfo> {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/getMyCompanyInfo",method=RequestMethod.GET)
-	public Object testGetCompanyInfo(HttpServletRequest request,HttpServletResponse response){
+	public Object getMyCompanyInfo(HttpServletRequest request,HttpServletResponse response){
 		String cid = this.getCurrentUserCid(request); // 企业ID
 		
 		if(StringUtils.isEmpty(cid)){

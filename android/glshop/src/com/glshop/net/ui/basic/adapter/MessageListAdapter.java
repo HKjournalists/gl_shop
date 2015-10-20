@@ -11,6 +11,7 @@ import com.glshop.net.R;
 import com.glshop.net.ui.basic.adapter.base.BasicAdapter;
 import com.glshop.net.ui.basic.adapter.base.ViewHolder;
 import com.glshop.platform.api.DataConstants.MessageStatus;
+import com.glshop.platform.api.DataConstants.SystemMsgType;
 import com.glshop.platform.api.message.data.model.MessageInfoModel;
 
 /**
@@ -35,6 +36,13 @@ public class MessageListAdapter extends BasicAdapter<MessageInfoModel> {
 
 		MessageInfoModel model = getItem(position);
 
+		TextView mTvType = ViewHolder.get(convertView, R.id.iv_message_type);
+		if (model.type == SystemMsgType.ACTIVE) {
+			mTvType.setText(mContext.getString(R.string.message_type_active));
+		} else {
+			mTvType.setText(mContext.getString(R.string.message_type_system));
+		}
+
 		TextView mTvTime = ViewHolder.get(convertView, R.id.iv_message_time);
 		mTvTime.setText(model.dateTime);
 
@@ -49,5 +57,4 @@ public class MessageListAdapter extends BasicAdapter<MessageInfoModel> {
 
 		return convertView;
 	}
-
 }

@@ -3,6 +3,7 @@ package com.appabc.datas.service.system.impl;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -197,12 +198,16 @@ public class UploadImagesServiceImpl extends BaseService<TUploadImages> implemen
 	/* (non-Javadoc)根据业务ID和业务类型删除文件记录
 	 * @see com.appabc.datas.service.system.IUploadImagesService#delByOidAndOtype(java.lang.String, java.lang.String)
 	 */
-	public void delByOidAndOtype(String oid, String otype) {
-		TUploadImages entity = new TUploadImages();
-		entity.setOid(oid);
-		entity.setOtype(FileOType.enumOf(otype));
-
-		delete(entity);
+	public void delByOidAndOtype(String oid, FileOType otype) {
+		if(StringUtils.isNotEmpty(oid) && otype != null){
+			TUploadImages entity = new TUploadImages();
+			entity.setOid(oid);
+			entity.setOtype(otype);
+			
+			delete(entity);
+		}else{
+			logger.error("文件删除错误，oid="+oid+",otype="+otype);
+		}
 	}
 
 	/* (non-Javadoc)获取List,根据业务ID和业务类型获取一组文件信息
@@ -256,6 +261,10 @@ public class UploadImagesServiceImpl extends BaseService<TUploadImages> implemen
 	 * @see com.appabc.datas.service.system.IUploadImagesService#updateOtypeAndOid(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public void updateOtypeAndOid(String oid, FileOType otype, String fileid) {
+		
+		if(StringUtils.isEmpty(oid) || otype ==  null || StringUtils.isEmpty(fileid)){
+			logger.warn("数据不完整，oid="+oid+",otype="+otype+",fileid="+fileid);
+		}
 
 		TUploadImages ui = this.iUploadImagesDAO.query(fileid);
 		if(ui != null){
@@ -347,6 +356,38 @@ public class UploadImagesServiceImpl extends BaseService<TUploadImages> implemen
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.system.IUploadImagesService#copyUploadImagesRelationshipsObject(java.lang.String, com.appabc.bean.enums.FileInfo.FileOType, java.util.List)
+	 */
+	@Override
+	public void copyUploadImagesRelationshipsObject(String oid,
+			FileOType otype, List<TUploadImages> uiList) {
+		logger.debug("图片信息复制，oid="+oid+",otype="+otype);
+		String newParentId = null ;
+		for(TUploadImages ui : uiList){
+			try {
+				TUploadImages uiNew = (TUploadImages) ui.clone();
+				uiNew.setOid(oid);
+				uiNew.setOtype(otype);
+				uiNew.setId(null);
+				uiNew.setCreatedate(Calendar.getInstance().getTime());
+				if(FileStyle.FILE_STYLE_SMALL.equals(uiNew.getFstyle())) { // 略图
+					uiNew.setPid(Integer.parseInt(newParentId));  // 父ID为上一条原始图片ID
+				}
+				
+				this.iUploadImagesDAO.save(uiNew);
+				if(FileStyle.FILE_STYLE_ORIGINAL.equals(uiNew.getFstyle())){ // 原始图片
+					newParentId = uiNew.getId();
+				}else{
+					newParentId = null;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	

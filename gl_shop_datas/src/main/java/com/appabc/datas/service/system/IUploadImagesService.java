@@ -46,7 +46,7 @@ public interface IUploadImagesService extends IBaseService<TUploadImages> {
 	 * @param otype 业务类型
 	 * @return
 	 */
-	public void delByOidAndOtype(String oid, String otype);
+	public void delByOidAndOtype(String oid, FileOType otype);
 
 	/**
 	 * 获取图片信息
@@ -79,5 +79,13 @@ public interface IUploadImagesService extends IBaseService<TUploadImages> {
 	 * @param fileids 文件ID数组
 	 */
 	public void updateOtypeAndOidBatch(String oid, FileOType otype, String[] fileids);
+	
+	/**
+	 * 将图片对象复制一份,并与新的业务进行关联
+	 * @param oid 业务ID
+	 * @param otype 业务类型
+	 * @param uiList 图片列表
+	 */
+	public void copyUploadImagesRelationshipsObject(String oid, FileOType otype, List<TUploadImages> uiList);
 
 }

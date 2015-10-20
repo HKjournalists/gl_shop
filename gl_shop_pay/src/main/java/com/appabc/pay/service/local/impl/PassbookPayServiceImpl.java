@@ -10,6 +10,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.appabc.bean.enums.PurseInfo.PayDirection;
+import com.appabc.bean.enums.PurseInfo.PurseType;
+import com.appabc.bean.enums.PurseInfo.TradeType;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.service.BaseService;
 import com.appabc.pay.bean.TPassbookPay;
@@ -152,6 +155,23 @@ public class PassbookPayServiceImpl extends BaseService<TPassbookPay> implements
 	 */
 	public void setIPassbookPayDAO(IPassbookPayDAO iPassbookPayDAO) {
 		this.iPassbookPayDAO = iPassbookPayDAO;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.local.IPassbookPayService#getPayRecordListWithOid(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, java.lang.String, com.appabc.bean.enums.PurseInfo.PayDirection)  
+	 */
+	@Override
+	public List<TPassbookPay> getPayRecordListWithOid(String cid,
+			PurseType type, String oid, PayDirection payDirection) {
+		return this.iPassbookPayDAO.getPayRecordListWithOid(cid, type, oid, payDirection);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.local.IPassbookPayService#queryPayListWithParams(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, java.lang.String, com.appabc.bean.enums.PurseInfo.TradeType, com.appabc.bean.enums.PurseInfo.PayDirection)  
+	 */
+	@Override
+	public List<TPassbookPay> getPayListWithParams(String cid,PurseType pType, String oid, TradeType tType, PayDirection direction) {
+		return iPassbookPayDAO.queryPayListWithParams(cid, pType, oid, tType, direction);
 	}
 	
 }

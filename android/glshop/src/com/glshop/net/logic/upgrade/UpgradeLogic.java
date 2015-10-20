@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 
 import com.glshop.net.R;
+import com.glshop.net.common.GlobalConstants.ReqSendType;
 import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.common.GlobalMessageType.UpgradeMessageType;
 import com.glshop.net.logic.basic.BasicLogic;
@@ -28,7 +29,7 @@ import com.glshop.platform.net.base.ProtocolType.ResponseEvent;
 import com.glshop.platform.utils.Logger;
 
 /**
- * @Description : 
+ * @Description : 升级业务逻辑实现
  * @Copyright   : GL. All Rights Reserved
  * @Company     : 深圳市国立数码动画有限公司
  * @author      : 叶跃丰
@@ -42,14 +43,14 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 
 	private boolean isProgressing = false;
 
-	private TimerUpdate mTimerUpdate;
+	private UpdateTimer mUpdateTimer;
 
 	public UpgradeLogic(Context context) {
 		super(context);
 	}
 
 	@Override
-	public void getUpgradeInfo(AppInfoModel info) {
+	public void getUpgradeInfo(AppInfoModel info, final ReqSendType type) {
 		GetUpgradeInfoReq req = new GetUpgradeInfoReq(this, new IReturnCallback<GetUpgradeInfoResult>() {
 
 			@Override
@@ -58,6 +59,7 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 					Logger.i(TAG, "GetUpgradeInfoResult = " + result.toString());
 					Message message = new Message();
 					RespInfo respInfo = getOprRespInfo(result);
+					respInfo.reqSendType = type;
 					message.obj = respInfo;
 					if (result.isSuccess()) {
 						message.what = GlobalMessageType.UpgradeMessageType.MSG_GET_UPGRADE_INFO_SUCCESS;
@@ -89,7 +91,7 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 				if (ActivityUtil.isForeground(mcontext)) {
 					// 若程序在前台，则直接提示安装。
 					notifyCancel();
-					installApk(mcontext, filePath);
+					ActivityUtil.installApk(mcontext, filePath);
 				} else {
 					// 若程序在后台，则通知栏提示安装。
 					notifyComplete(filePath);
@@ -98,14 +100,14 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 
 			@Override
 			public void onProgress(long curLen, long totalLen) {
-				Logger.e(TAG, "Download: curLen = " + curLen + ", totalLen = " + totalLen);
 				//notifyProgress(curLen, totalLen);
 				mCurProgress = (int) (curLen * 100 / totalLen);
+				Logger.e(TAG, "Download: progress = %" + mCurProgress + ", curLen = " + curLen + ", totalLen = " + totalLen);
 			}
 
 			@Override
 			public void onError(int errorCode) {
-				Logger.e(TAG, "Error msg: " + getPkgErrorDescription(errorCode));
+				Logger.e(TAG, "Error msg: [ErrorCode = " + errorCode + ", ErrorDesc = " + getPkgErrorDescription(errorCode) + "]");
 				stopTimer();
 				notifyError(errorCode);
 			}
@@ -116,6 +118,12 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 	public void cancelDownload() {
 		sendEmptyMesage(UpgradeMessageType.MSG_DOWNLOAD_CANCELED);
 		UpgradeMgr.getIntance(mcontext).cancelDownload();
+		DefineNotification.clearById(notifyID());
+	}
+
+	@Override
+	public boolean isDownloadingUpgradePkg() {
+		return UpgradeMgr.getIntance(mcontext).isDownloadPkg();
 	}
 
 	private void notifyStart() {
@@ -129,30 +137,8 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 		DefineNotification.notifyCommon(mcontext, notifyID(), builder.build());
 	}
 
-	private void notifyProgress(/*long curLen, long totalLen*/int progress) {
-		/*Message msg = new Message();
-		msg.what = UpgradeMessageType.MSG_UPDATE_PROGRESS;
-		Bundle bundle = new Bundle();
-		bundle.putLong(UpgradeAction.EXTRA_KEY_CUR_LEN, curLen);
-		bundle.putLong(UpgradeAction.EXTRA_KEY_TOTAL_LEN, totalLen);
-		msg.setData(bundle);
-		sendMessage(msg);*/
-
-		/*NotificationCompat.Builder builder = new NotificationCompat.Builder(mcontext);
-		int progress = (int) (curLen * 100 / totalLen);
-		builder.setSmallIcon(R.drawable.icon).setTicker(mcontext.getString(R.string.upgrade_pkg_notify_progress)).setContentTitle(mcontext.getString(R.string.upgrade_pkg_notify_title))
-				.setContentText(mcontext.getString(R.string.upgrade_pkg_notify_progress) + " " + progress + "%").setProgress(100, progress, false);
-		builder.setOngoing(true);
-		setNullIntentForNotification(builder);
-		DefineNotification.notifyCommon(mcontext, notifyID(), builder.build());*/
-
-		//Logger.e(TAG, "OldProgress = " + mCurProgress + ", NewProgress = " + progress);
-		/*if (progress > mCurProgress) {
-			mCurProgress = progress;
-			//Logger.e(TAG, "Progress = " + mProgress);
-			sendMessage(UpgradeMessageType.MSG_UPDATE_PROGRESS, mCurProgress);
-		}*/
-
+	private void notifyProgress(int progress) {
+		Logger.i(TAG, "notifyProgress: progress = %" + progress);
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(mcontext);
 		//int progress = (int) (curLen * 100 / totalLen);
 		builder.setSmallIcon(R.drawable.icon).setTicker(mcontext.getString(R.string.upgrade_pkg_notify_progress)).setContentTitle(mcontext.getString(R.string.upgrade_pkg_notify_title))
@@ -160,7 +146,6 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 		builder.setOngoing(true);
 		setNullIntentForNotification(builder);
 		DefineNotification.notifyCommon(mcontext, notifyID(), builder.build());
-
 	}
 
 	private void notifyComplete(String filePath) {
@@ -212,52 +197,52 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 	 * @param errCode 错误码
 	 * @return 错误描述
 	 */
-	private int getPkgErrorDescription(int errCode) {
-
+	private String getPkgErrorDescription(int errCode) {
+		int resID = 0;
 		if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_SDCARD) {
-			return R.string.upgrade_pkg_error_sdcard;
+			Logger.e(TAG, "SDCARD异常");
+			resID = R.string.upgrade_pkg_error_sdcard;
 		} else if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_HTTP) {
-			return R.string.upgrade_pkg_error_http;
+			Logger.e(TAG, "升级异常，HTTP返回码错误");
+			resID = R.string.upgrade_pkg_error_http;
 		} else if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_NET) {
-			return R.string.upgrade_pkg_error_net;
+			Logger.e(TAG, "网络异常");
+			resID = R.string.upgrade_pkg_error_net;
 		} else if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_CANCELED) {
-			return R.string.upgrade_pkg_error_canceled;
+			Logger.e(TAG, "用户取消");
+			resID = R.string.upgrade_pkg_error_canceled;
 		} else if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_FILE_MD5_DISMATCH) {
-			return R.string.upgrade_pkg_error_file_md5_dismatch;
+			Logger.e(TAG, "文件MD5不匹配");
+			resID = R.string.upgrade_pkg_error_file_md5_dismatch;
 		} else if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_FILE_SIZE_DISMATCH) {
-			return R.string.upgrade_pkg_error_file_size_dismatch;
+			Logger.e(TAG, "文件大小不匹配");
+			resID = R.string.upgrade_pkg_error_file_size_dismatch;
 		} else if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_FILE_DELETED) {
-			return R.string.upgrade_pkg_error_file_deleted;
+			Logger.e(TAG, "文件被删除");
+			resID = R.string.upgrade_pkg_error_file_deleted;
 		} else if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_FILE_SIZE_INVALID) {
-			return R.string.upgrade_pkg_error_file_deleted;
+			Logger.e(TAG, "文件大小异常");
+			resID = R.string.upgrade_pkg_error_file_deleted;
 		} else if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_SDCARD_SPACE) {
-			return R.string.upgrade_pkg_error_sdcard_space;
+			Logger.e(TAG, "SDCARD空间不足");
+			resID = R.string.upgrade_pkg_error_sdcard_space;
 		} else if (errCode == UpgradeMgr.UpgradeErrorCode.ERROR_OTHER) {
-			return R.string.upgrade_pkg_error_other;
+			Logger.e(TAG, "其它异常");
+			resID = R.string.upgrade_pkg_error_other;
+		} else {
+			Logger.e(TAG, "其它异常");
+			resID = R.string.upgrade_pkg_error_default;
 		}
-		return R.string.upgrade_pkg_error_default;
-	}
-
-	/**
-	 * 安装APK
-	 * @param context 上下文
-	 * @param filePath 文件路径
-	 */
-	private void installApk(Context context, String filePath) {
-		Intent intent = new Intent();
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.setAction(android.content.Intent.ACTION_VIEW);
-		intent.setDataAndType(Uri.fromFile(new File(filePath)), "application/vnd.android.package-archive");
-		context.startActivity(intent);
+		return mcontext.getString(resID);
 	}
 
 	private void startTimer() {
 		mCurProgress = 0;
 		mUpdatedProgress = 0;
 		isProgressing = true;
-		if (mTimerUpdate == null) {
-			mTimerUpdate = new TimerUpdate();
-			mTimerUpdate.start();
+		if (mUpdateTimer == null) {
+			mUpdateTimer = new UpdateTimer();
+			mUpdateTimer.start();
 		}
 	}
 
@@ -265,7 +250,7 @@ public class UpgradeLogic extends BasicLogic implements IUpgradeLogic {
 		isProgressing = false;
 	}
 
-	public class TimerUpdate extends Thread {
+	public class UpdateTimer extends Thread {
 
 		@Override
 		public void run() {

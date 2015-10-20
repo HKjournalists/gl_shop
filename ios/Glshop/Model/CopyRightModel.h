@@ -11,6 +11,7 @@
 #import "CompanyAuthInfoModel.h"
 #import "PersonalAuthInfoModel.h"
 #import "ShipAuthInfoModel.h"
+#import "EvaluationModel.h"
 
 @interface CopyRightModel : WXBaseModel
 
@@ -39,9 +40,17 @@
  */
 @property (nonatomic, strong) NSDictionary *bailstatus;
 @property (nonatomic, copy) NSString *cname;
+/**
+ *@brief 联系人手机号码
+ */
 @property (nonatomic, copy) NSString *cphone;
-@property (nonatomic, copy) NSString *createdate;
+@property (nonatomic, copy) NSString *rdate;
 @property (nonatomic, strong) NSDictionary *evaluationInfo;
+
+/**
+ *@brief 评价信息
+ */
+@property (nonatomic, strong) EvaluationModel *evaluatModel;
 /**
  *@brief 企业id
  */
@@ -97,6 +106,16 @@
 @property (nonatomic, strong) NSArray *authImgList;
 @property (nonatomic, strong) NSArray *addressImgList;
 //@property (nonatomic, strong) CompanyAuthModel *authModel;
+
+/**
+ *@brief 用户是否已认证通过
+ */
+- (BOOL)isUserAuthed;
+
+/**
+ *@brief 是否已缴纳保证金
+ */
+- (BOOL)isPaymentMargin;
 
 
 @end

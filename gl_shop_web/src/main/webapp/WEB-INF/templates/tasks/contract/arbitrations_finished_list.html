@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+<title>我的工作台 - 合同仲裁处理</title>
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 合同管理 - 仲裁处理 - 已完成列表
+</h4>
+
+<div layout:fragment="pageContent">
+  <ul class="nav nav-tabs" th:replace="tasks/contract/contract_fragments :: contract_arbitraction_tab"></ul>
+	<div class="table-responsive media">
+		<div class="panel panel-default">
+		  <div class="panel-body">
+		  	  <form class="form-inline">
+				  <div class="form-group">
+				    <label for="needConfirmContract">仲裁结束合同</label>&nbsp;&nbsp;
+					<div th:replace="tasks/contract/contract_fragments :: confirm_contract_selector('arbitrations/finished', ${contractType})"></div>
+				  </div>
+			  </form>
+		  </div>
+		</div>
+		<table layout:fragment="tableContent" class="table table-bordered table-hover table-striped">
+		  <thead>
+		  <tr>
+		    <th>提交仲裁用户手机号码</th>
+		    <th>类型</th>
+		    <th>合同内容</th>
+		    <th>提交仲裁时间</th>
+		    <th>仲裁处理人</th>
+		    <th>仲裁处理时间</th>
+		    <th>操作</th>
+		  </tr>
+		  </thead>
+		  <tbody>
+		  <tr th:each="taskArbitrationInfo : ${arbitrationContractList}">
+		    <td><a th:href="@{/company/{cid}/info/(cid=${taskArbitrationInfo.cid})}" target="_blank" th:text="${taskArbitrationInfo.tphone}">837648393874</a></td>
+		    <td th:text="${taskArbitrationInfo.tctype.text}">企业</td>
+		    <td><a th:href="@{/public/contract/{id}/(id=${taskArbitrationInfo.oid})} " target="_blank" th:text="${taskArbitrationInfo.title}">出售黄沙10吨</a></td>
+		    <td th:text="${#calendars.format(taskArbitrationInfo.createtime, 'YYYY-MM-d HH:mm')}">2015-03-22 09:32</td>
+		    <td th:text="${taskArbitrationInfo.srealname}">仲裁处理人</td>
+		    <td th:text="${#calendars.format(taskArbitrationInfo.dealtime, 'YYYY-MM-d HH:mm')}">2015-03-22 09:32</td>
+		    <td><a th:href="@{/tasks/contract/arbitrations/pending/{id}/detail/(id=${taskArbitrationInfo.id})}" target="_blank">查看</a></td>
+		  </tr>
+		  <tr th:if="${#lists.isEmpty(arbitrationContractList)}">
+		    <td colspan="6">暂时没有需要仲裁的合同。</td>
+		  </tr>
+		  </tbody>
+		</table>
+		</div>
+		<div th:replace="layouts/fragments :: pagingNavBar"></div>   
+</div>
+
+
+<script layout:fragment="inlineJavascript">
+var contextPath = /*[[@{/}]]*/ '/';
+
+$(document).ready(function() {	
+	
+});
+</script>
+</body>

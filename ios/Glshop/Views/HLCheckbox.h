@@ -12,6 +12,8 @@ typedef void(^BoxTaped)(BOOL selected);
 
 @interface HLCheckbox : UIView
 
+@property (nonatomic, strong) UIImage *boxImage;
+@property (nonatomic, strong) UIImage *selectImage;
 @property (nonatomic, assign,getter=isSelected) BOOL selected;
 @property (nonatomic, copy) BoxTaped tapBlock;
 

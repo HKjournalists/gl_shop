@@ -1,13 +1,14 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
+import java.util.Date;
+
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
+import com.appabc.bean.enums.SystemInfo.ServerEnvironmentEnum;
 import com.appabc.bean.enums.UserInfo.ClientTypeEnum;
 import com.appabc.bean.enums.UserInfo.UserStatus;
 import com.appabc.common.base.bean.BaseBean;
-
-import java.util.Date;
 
 public class TUser extends BaseBean {
     /**
@@ -74,21 +75,38 @@ public class TUser extends BaseBean {
      */
     private ClientTypeEnum clienttype;
     
+    /**
+     * 客户端使用的版本号
+     */
+    private String version;
+    
     private String userToken;
     
     private Integer effTimeLength; // userToken 有效时长，单位：秒
     
     private int contractTotal; // 合同数
     private int orderfindTotal; // 询单数
+    private double deposit; // 货款余额
+    private double guaranty; // 保证金余额
+    private ServerEnvironmentEnum serverEnvironment; // 服务器环境:开发:0、测试:1、正式:2
+    private int isAuthRemind; // 是否认证提醒,0 no ,1 yes;
     
-    /**
+    public int getIsAuthRemind() {
+		return isAuthRemind;
+	}
+
+	public void setIsAuthRemind(int isAuthRemind) {
+		this.isAuthRemind = isAuthRemind;
+	}
+
+	/**
      * 保证金缴纳状态（是否缴纳足额）
      */
     private CompanyBailStatus bailstatus;
     /**
      * 认证状态(是否认证)
      */
-    private CompanyAuthStatus authstatus;
+    private AuthRecordStatus authstatus;
 
     public String getCid() {
         return cid;
@@ -234,13 +252,45 @@ public class TUser extends BaseBean {
 		this.orderfindTotal = orderfindTotal;
 	}
 
-	public CompanyAuthStatus getAuthstatus() {
+	public AuthRecordStatus getAuthstatus() {
 		return authstatus;
 	}
 
-	public void setAuthstatus(CompanyAuthStatus authstatus) {
+	public void setAuthstatus(AuthRecordStatus authstatus) {
 		this.authstatus = authstatus;
 	}
-	
+
+	public double getDeposit() {
+		return deposit;
+	}
+
+	public void setDeposit(double deposit) {
+		this.deposit = deposit;
+	}
+
+	public double getGuaranty() {
+		return guaranty;
+	}
+
+	public void setGuaranty(double guaranty) {
+		this.guaranty = guaranty;
+	}
+
+	public ServerEnvironmentEnum getServerEnvironment() {
+		return serverEnvironment;
+	}
+
+	public void setServerEnvironment(ServerEnvironmentEnum serverEnvironment) {
+		this.serverEnvironment = serverEnvironment;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
     
 }

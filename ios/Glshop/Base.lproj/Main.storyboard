@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="78x-m0-9m8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="78x-m0-9m8">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
         <scene sceneID="vvU-jz-yzN">
             <objects>
-                <navigationController id="78x-m0-9m8" customClass="WXNavigationController" sceneMemberID="viewController">
+                <navigationController id="78x-m0-9m8" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="WTa-D2-qm9">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -48,7 +48,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dbK-Uu-LCy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="426" y="301"/>
+            <point key="canvasLocation" x="335" y="272"/>
         </scene>
         <!--找买找卖-->
         <scene sceneID="gdg-e7-MzI">
@@ -72,7 +72,7 @@
             </objects>
             <point key="canvasLocation" x="-546" y="1264"/>
         </scene>
-        <!--发布方式-->
+        <!--发布信息-->
         <scene sceneID="KVH-wn-iBD">
             <objects>
                 <viewController storyboardIdentifier="PublicInfoViewControllerId" id="YL4-LB-hyH" customClass="PublicInfoViewController" sceneMemberID="viewController">
@@ -85,7 +85,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="发布方式" id="F0Z-DV-BvX"/>
+                    <navigationItem key="navigationItem" title="发布信息" id="F0Z-DV-BvX"/>
                     <connections>
                         <segue destination="4Ul-K3-G53" kind="push" id="aiF-0A-yCy"/>
                     </connections>
@@ -263,7 +263,7 @@
             </objects>
             <point key="canvasLocation" x="918" y="2209"/>
         </scene>
-        <!--未来趋势-->
+        <!--价格预测-->
         <scene sceneID="xS9-pg-5hy">
             <objects>
                 <viewController storyboardIdentifier="ForcastViewControllerId" id="eOl-FX-Ksm" customClass="ForcastViewController" sceneMemberID="viewController">
@@ -276,7 +276,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="未来趋势" id="O52-K5-nLo"/>
+                    <navigationItem key="navigationItem" title="价格预测" id="O52-K5-nLo"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="le9-mA-rbY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -328,7 +328,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fgu-2P-GZL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="895" y="1248"/>
+            <point key="canvasLocation" x="1013" y="1304"/>
         </scene>
         <!--Re Charge View Controller-->
         <scene sceneID="owL-00-ReY">
@@ -657,7 +657,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="246-M3-D7R" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="148" y="3485"/>
+            <point key="canvasLocation" x="57" y="3469"/>
         </scene>
         <!--Manger Address View Controller-->
         <scene sceneID="a4P-Mw-Ei9">
@@ -678,7 +678,7 @@
             </objects>
             <point key="canvasLocation" x="-200" y="3987"/>
         </scene>
-        <!--预览发布-->
+        <!--发布信息-->
         <scene sceneID="uH4-wx-Ktd">
             <objects>
                 <viewController storyboardIdentifier="PreViewPublicViewControllerId" id="bKY-0w-qds" customClass="PreViewPublicViewController" sceneMemberID="viewController">
@@ -691,7 +691,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="预览发布" id="sIc-dR-73z"/>
+                    <navigationItem key="navigationItem" title="发布信息" id="sIc-dR-73z"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PGm-66-mKk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -762,8 +762,8 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="t6I-jC-TWe"/>
         <segue reference="V0y-4a-yP6"/>
+        <segue reference="aiF-0A-yCy"/>
         <segue reference="5Pn-1p-dYw"/>
     </inferredMetricsTieBreakers>
 </document>

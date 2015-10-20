@@ -15,13 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus;
 import com.appabc.bean.enums.AcceptBankInfo.AcceptBankStatus;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.enums.FileInfo;
+import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
-import com.appabc.common.utils.RandomUtil;
 import com.appabc.datas.service.company.IAcceptBankService;
+import com.appabc.datas.service.company.ICompanyInfoService;
 import com.appabc.datas.service.system.IUploadImagesService;
 import com.appabc.http.utils.HttpApplicationErrorCode;
 import com.appabc.pay.bean.TAcceptBank;
@@ -43,6 +45,8 @@ public class AcceptBankController extends BaseController<TAcceptBank> {
 	private IAcceptBankService acceptBankService;
 	@Autowired
 	private IUploadImagesService uploadImagesService;
+	@Autowired
+	private ICompanyInfoService companyInfoService;
 	@Autowired
 	private ValidateCodeManager vcm;
 	
@@ -75,12 +79,19 @@ public class AcceptBankController extends BaseController<TAcceptBank> {
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业编号不能为空");
 		}else if(StringUtils.isEmpty(abBean.getCarduser())){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "提款人姓名不能为空");
-		}else if(StringUtils.isEmpty(imgid)){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "认证图片ID不能为空");
 		}else if(StringUtils.isEmpty(abBean.getBankcard())){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "银行卡号不能为空");
 		}else if(StringUtils.isEmpty(abBean.getBanktype())){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "银行类型不能为空");
+		}
+		
+		// 图片是否需要验证，个人身份不需要上传图片
+		TCompanyInfo ci = this.companyInfoService.query(abBean.getCid());
+		CompanyType ctype = null;
+		if(ci != null) ctype = ci.getCtype();
+		
+		if(StringUtils.isEmpty(imgid) && ctype != CompanyType.COMPANY_TYPE_PERSONAL){
+			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "认证图片ID不能为空");
 		}
 		
 		abBean.setCarduserid(this.getCurrentUserId(request));
@@ -153,7 +164,7 @@ public class AcceptBankController extends BaseController<TAcceptBank> {
 		TAcceptBank ab = new TAcceptBank();
 		ab.setCid(cid);
 		if(StringUtils.isNotEmpty(authStatus)){ // 添加过滤条件，在管理页面可以查看审核中的提款人
-			ab.setAuthstatus(AcceptAuthStatus.enumOf(RandomUtil.str2int(authStatus)));
+			ab.setAuthstatus(AuthRecordStatus.enumOf(authStatus));
 		}
 		List<TAcceptBank> list = this.acceptBankService.queryForList(ab);
 		

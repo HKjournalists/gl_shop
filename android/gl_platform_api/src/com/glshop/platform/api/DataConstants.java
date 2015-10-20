@@ -30,6 +30,9 @@ public class DataConstants {
 
 		/** 用户Token过期 */
 		public static final String USER_TOKEN_EXPIRE = "300002";
+
+		/** 重复业务请求 */
+		public static final String REPEAT_BUSINESS_REQ = "";
 	}
 
 	/**
@@ -125,6 +128,21 @@ public class DataConstants {
 
 		/** 船舶保证金编号 */
 		public static final String TYPE_BOND_SHIP = "BOND_SHIP_";
+
+		/** 保证金冻结百分比 */
+		public static final String TYPE_DEPOSIT_PERCENT = "GUARANTY_PERCENT";
+
+		/** 交易服务费百分比 */
+		public static final String TYPE_SERVICE_PERCENT = "SERVICE_PERCENT";
+
+		/** 买家付款折扣百分比 */
+		public static final String TYPE_DISCOUNT_PERCENT = "DISCOUNT_PERCENT";
+
+		/** 卖家货款确认期限 */
+		public static final String TYPE_CONTRACT_AGREEFINALESTIME_LIMIT_TIME = "CONTRACT_AGREEFINALESTIME_LIMIT_TIME";
+
+		/** 已结束合同评价期限 */
+		public static final String TYPE_CONTRACT_EVALUATION_LIMIT_TIME = "CONTRACT_EVALUATIOIN_LIMIT_TIME";
 
 	}
 
@@ -406,7 +424,9 @@ public class DataConstants {
 		/**暂停中的合同**/
 		PAUSEING,
 		/**已结束的合同**/
-		ENDED;
+		ENDED,
+		/**删除**/
+		DELETION;
 
 		public int toValue() {
 			if (this == UNCONFIRMED) {
@@ -417,6 +437,8 @@ public class DataConstants {
 				return 2;
 			} else if (this == ENDED) {
 				return 3;
+			} else if (this == DELETION) {
+				return 4;
 			} else {
 				return 0;
 			}
@@ -431,6 +453,8 @@ public class DataConstants {
 				return PAUSEING;
 			} else if (type == 3) {
 				return ENDED;
+			} else if (type == 4) {
+				return DELETION;
 			} else {
 				return UNCONFIRMED;
 			}
@@ -477,7 +501,7 @@ public class DataConstants {
 
 		/**无**/
 		NOTHING,
-		/**起草中**/
+		/**取消签约**/
 		CANCELED,
 		/**已签约**/
 		CONFIRMED;
@@ -520,7 +544,9 @@ public class DataConstants {
 		/**暂停**/
 		PAUSE,
 		/**结束**/
-		FINISHED;
+		FINISHED,
+		/**删除**/
+		DELETION;
 
 		public int toValue() {
 			if (this == DRAFT) {
@@ -531,6 +557,8 @@ public class DataConstants {
 				return 2;
 			} else if (this == FINISHED) {
 				return 3;
+			} else if (this == DELETION) {
+				return 4;
 			} else {
 				return 0;
 			}
@@ -545,6 +573,8 @@ public class DataConstants {
 				return PAUSE;
 			} else if (type == 3) {
 				return FINISHED;
+			} else if (type == 4) {
+				return DELETION;
 			} else {
 				return DRAFT;
 			}
@@ -1042,6 +1072,71 @@ public class DataConstants {
 			}
 		}
 
+	}
+
+	/**
+	 * 支付结果类型
+	 */
+	public enum PayResultType {
+
+		/**成功**/
+		SUCCESS,
+		/**失败**/
+		FALIED;
+
+		public int toValue() {
+			if (this == SUCCESS) {
+				return 0;
+			} else {
+				return 1;
+			}
+		}
+
+		public static PayResultType convert(int type) {
+			if (type == 0) {
+				return SUCCESS;
+			} else {
+				return FALIED;
+			}
+		}
+
+	}
+
+	/**
+	 * 支付环境类型
+	 */
+	public enum PayEnvType {
+
+		/**正式环境**/
+		RELEASE,
+		/**开发环境**/
+		DEV,
+		/**测试环境**/
+		TEST;
+
+		public int toValue() {
+			if (this == RELEASE) {
+				return 0;
+			} else if (this == DEV) {
+				return 1;
+			} else if (this == TEST) {
+				return 2;
+			} else {
+				return 0;
+			}
+		}
+
+		public static PayEnvType convert(int type) {
+			if (type == 0) {
+				return RELEASE;
+			} else if (type == 1) {
+				return DEV;
+			} else if (type == 2) {
+				return TEST;
+			} else {
+				return RELEASE;
+			}
+		}
 	}
 
 	/**
@@ -1646,18 +1741,18 @@ public class DataConstants {
 
 		public int toValue() {
 			if (this == SYSTEM) {
-				return 0;
-			} else if (this == ACTIVE) {
 				return 1;
+			} else if (this == ACTIVE) {
+				return 2;
 			} else {
-				return 0;
+				return 1;
 			}
 		}
 
 		public static SystemMsgType convert(int type) {
-			if (type == 0) {
+			if (type == 1) {
 				return SYSTEM;
-			} else if (type == 1) {
+			} else if (type == 2) {
 				return ACTIVE;
 			} else {
 				return SYSTEM;
@@ -1689,6 +1784,30 @@ public class DataConstants {
 		TYPE_CONTRACT_ING,
 		/**合同评价**/
 		TYPE_CONTRACT_EVALUATION,
+		/**合同取消**/
+		TYPE_CONTRACT_CANCEL,
+		/**撮合成功**/
+		TYPE_CONTRACT_MAKE_MATCH,
+		/**合同单方起草确认**/
+		TYPE_CONTRACT_SINGLE_DAF_CONFIRM,
+		/**合同起草取消**/
+		TYPE_CONTRACT_DAF_CANCEL,
+		/**合同起草超时**/
+		TYPE_CONTRACT_DAF_TIMEOUT,
+		/**买方付款**/
+		TYPE_CONTRACT_BUYER_PAYFUNDS,
+		/**买家申请合同货物和货款结算**/
+		TYPE_CONTRACT_BUYER_APPLY_FINALESTIMATE,
+		/**卖家同意合同货物和货款结算确认**/
+		TYPE_CONTRACT_SELLER_AGREE_FINALESTIMATE,
+		/**申请仲裁**/
+		TYPE_CONTRACT_APPLY_ARBITRATION,
+		/**仲裁结算**/
+		TYPE_CONTRACT_ARBITRATED_FINALESTIMATE,
+		/**买家预期未付款**/
+		TYPE_CONTRACT_PAYFUNDS_TIMEOUT,
+		/**合同其他情况**/
+		TYPE_CONTRACT_OTHERS,
 		/**保证金金额变动**/
 		TYPE_MONEY_CHANG_GUARANTY,
 		/**货款金额变动**/
@@ -1717,6 +1836,30 @@ public class DataConstants {
 				return 401;
 			} else if (this == TYPE_CONTRACT_EVALUATION) {
 				return 402;
+			} else if (this == TYPE_CONTRACT_CANCEL) {
+				return 403;
+			} else if (this == TYPE_CONTRACT_MAKE_MATCH) {
+				return 404;
+			} else if (this == TYPE_CONTRACT_SINGLE_DAF_CONFIRM) {
+				return 405;
+			} else if (this == TYPE_CONTRACT_DAF_CANCEL) {
+				return 406;
+			} else if (this == TYPE_CONTRACT_DAF_TIMEOUT) {
+				return 407;
+			} else if (this == TYPE_CONTRACT_BUYER_PAYFUNDS) {
+				return 408;
+			} else if (this == TYPE_CONTRACT_BUYER_APPLY_FINALESTIMATE) {
+				return 409;
+			} else if (this == TYPE_CONTRACT_SELLER_AGREE_FINALESTIMATE) {
+				return 410;
+			} else if (this == TYPE_CONTRACT_APPLY_ARBITRATION) {
+				return 411;
+			} else if (this == TYPE_CONTRACT_ARBITRATED_FINALESTIMATE) {
+				return 412;
+			} else if (this == TYPE_CONTRACT_PAYFUNDS_TIMEOUT) {
+				return 413;
+			} else if (this == TYPE_CONTRACT_OTHERS) {
+				return 414;
 			} else if (this == TYPE_MONEY_CHANG_GUARANTY) {
 				return 500;
 			} else if (this == TYPE_MONEY_CHANG_DEPOSIT) {
@@ -1749,6 +1892,30 @@ public class DataConstants {
 				return TYPE_CONTRACT_ING;
 			} else if (type == 402) {
 				return TYPE_CONTRACT_EVALUATION;
+			} else if (type == 403) {
+				return TYPE_CONTRACT_CANCEL;
+			} else if (type == 404) {
+				return TYPE_CONTRACT_MAKE_MATCH;
+			} else if (type == 405) {
+				return TYPE_CONTRACT_SINGLE_DAF_CONFIRM;
+			} else if (type == 406) {
+				return TYPE_CONTRACT_DAF_CANCEL;
+			} else if (type == 407) {
+				return TYPE_CONTRACT_DAF_TIMEOUT;
+			} else if (type == 408) {
+				return TYPE_CONTRACT_BUYER_PAYFUNDS;
+			} else if (type == 409) {
+				return TYPE_CONTRACT_BUYER_APPLY_FINALESTIMATE;
+			} else if (type == 410) {
+				return TYPE_CONTRACT_SELLER_AGREE_FINALESTIMATE;
+			} else if (type == 411) {
+				return TYPE_CONTRACT_APPLY_ARBITRATION;
+			} else if (type == 412) {
+				return TYPE_CONTRACT_ARBITRATED_FINALESTIMATE;
+			} else if (type == 413) {
+				return TYPE_CONTRACT_PAYFUNDS_TIMEOUT;
+			} else if (type == 414) {
+				return TYPE_CONTRACT_OTHERS;
 			} else if (type == 500) {
 				return TYPE_MONEY_CHANG_GUARANTY;
 			} else if (type == 501) {

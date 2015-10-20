@@ -2,6 +2,8 @@
 <html layout:decorator="layouts/company">
 <head>
   <title>用户钱包 - 历史流水</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap-datetimepicker.4.0.0.min.css}" />
 </head>
 <body>
 
@@ -19,64 +21,100 @@
           <i class="fa fa-bar-chart-o fa-fw"></i> 交易记录查询
         </div>
         <div class="panel-body">
-          <div class="row">
-            <form class="form-inline" role="form" method="GET">
+            <form class="form-inline" role="form" method="GET" th:action="@{/company/{id}/wallet/trans/1/(id=${cid})}">
               <div class="form-group">
-                <input type="date" class="form-control" id="startDate" name="startDate" placeholder="开始时间">
+                <label for="startDate">交易时间</label>
+                <div class="controls input-group date" id="startDatePicker">
+                  <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="startDate" name="startDate"
+                         th:value="${#calendars.format(startDate, 'YYYY-MM-dd')}" required="required"/>
+                  <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                </div>
               </div>
               <div class="form-group">
-                <input class="form-control" type="date" id="endDate" name="endDate" placeholder="结束时间">
+                <label>-</label>
+                <div class="controls input-group date" id="endDatePicker">
+                  <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="endDate" name="endDate"
+                         th:value="${#calendars.format(endDate, 'YYYY-MM-dd')}" required="required"/>
+                  <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+                </div>
               </div>
               <div class="form-group">
+                <label for="accountType">交易账户</label>
                 <select id="accountType" name="accountType" class="form-control">
-                  <option value="1">交易保证金账户</option>
-                  <option value="2">货款账户</option>
+                  <option value="-1" th:selected="${accountType == '-1'}">全部</option>
+                  <option value="0" th:selected="${accountType == '0'}">保证金账户</option>
+                  <option value="1"  th:selected="${accountType == '1'}">货款账户</option>
                 </select>
               </div>
-              <div id="actionType" name="actionType" class="form-group">
-                <select class="form-control">
-                  <option value="1">汇入</option>
-                  <option value="2">支出</option>
+              <div class="form-group">
+                <label for="actionType">操作类型</label>
+                <select id="actionType" name="actionType" class="form-control">
+                  <option value="-1" th:selected="${actionType == -1}">全部</option>
+                  <option value="0" th:selected="${actionType == 0}">汇入</option>
+                  <option value="1" th:selected="${actionType == 1}">支出</option>
                 </select>
               </div>
               <button type="submit" class="btn btn-primary">查询</button>
             </form>
-          </div>
 
-          <div class="table-responsive" th:remove="${#list.isEmpty(transactions)}">
-            <table class="table">
+          <p></p>
+          <div class="table-responsive">
+            <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th width="20%">时间</th>
-                  <th width="20%">类型</th>
-                  <th width="15%">金额（元）</th>
-                  <th width="15%">支付方式</th>
-                  <th width="15%">即时余额（元）</th>
-                  <th width="25%">关联合同号</th>
+                  <th width="15%">创建时间</th>
+                  <th width="10%">类型</th>
+                  <th width="10%">金额（元）</th>
+                  <th width="10%">支付方式</th>
+                  <th width="10%">即时余额（元）</th>
+                  <th width="30%">关联合同</th>
+                  <th>更新时间</th>
                 </tr>
               </thead>
               <tbody>
                 <tr th:each="trans : ${transactions}">
-                  <td th:text="${#calendars.format(trans.createdate, 'YYYY年m月d日 HH:MM')}"></td>
-                  <td th:text="${trans.type.text}">汇入交易保证金</td>
+                  <td th:text="${trans.createdate} ? ${#calendars.format(trans.createdate, 'YYYY-MM-dd HH:mm')}">2015-05-01 12:46</td>
+                  <td th:text="${trans.otype.text}">汇入交易保证金</td>
                   <td th:text="${trans.amount}">10000</td>
-                  <td th:text="${trans.payType.text}">网银支付</td>
-                  <td th:text="${trans.accountBalance}">15000</td>
+                  <td th:text="${trans.paytype.text}">网银支付</td>
+                  <td th:text="${trans.balance}">15000</td>
                   <td>
-                    <a href="#" th:text="${trans.contract} ? {trans.contract.no}">56784556677</a>
+                    <a th:if="${trans.oid}" target="_blank" th:href="@{/public/contract/{id}/(id=${trans.oid})}" th:text="${trans.contractname}">56784556677</a>
                   </td>
+                  <td th:text="${trans.updatedate} ? ${#calendars.format(trans.updatedate, 'YYYY-MM-dd HH:mm')}">2015-05-01 12:46</td>
                 </tr>
               </tbody>
+              <tr th:if="${#lists.isEmpty(transactions)}">
+                <td colspan="7">没有查询到相关交易记录</td>
+              </tr>
             </table>
+            <div th:replace="layouts/fragments :: pagingNavBar"></div>
           </div>
 
-          <div class="row" th:if="${list.isEmpty(transactions)}">
-            <p>没有查询到交易记录</p>
-          </div>
         </div>
       </div>
 
     </div>
-  </body>
 
-  </html>
+  <div layout:fragment="additionalScriptFiles">
+    <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+    <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+    <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  </div>
+
+  <script layout:fragment="inlineJavascript">
+    $(document).ready(function() {
+        var today = new Date();
+        $('#startDatePicker').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+        $('#startDatePicker').data("DateTimePicker").maxDate(today);
+        $('#endDatePicker').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+        $('#endDatePicker').data("DateTimePicker").maxDate(today);
+    });
+  </script>
+</body>
+
+</html>

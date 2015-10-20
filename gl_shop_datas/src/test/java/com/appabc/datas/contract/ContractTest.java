@@ -1,5 +1,6 @@
 package com.appabc.datas.contract;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,23 +8,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
+import com.appabc.bean.bo.ContractArbitrationBean;
+import com.appabc.bean.bo.OrderFindAllBean;
+import com.appabc.bean.bo.ProductPropertyContentBean;
 import com.appabc.bean.enums.ContractInfo;
+import com.appabc.bean.enums.ContractInfo.ContractArbitrationStatus;
 import com.appabc.bean.enums.ContractInfo.ContractCancelType;
 import com.appabc.bean.enums.ContractInfo.ContractDisPriceType;
 import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
 import com.appabc.bean.enums.ContractInfo.ContractOperateType;
 import com.appabc.bean.enums.ContractInfo.ContractStatus;
 import com.appabc.bean.enums.ContractInfo.ContractType;
+import com.appabc.bean.enums.ContractInfo.ContractWebCmsTradeType;
 import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
+import com.appabc.bean.enums.OrderFindInfo.OrderFindMatchOpTypeEnum;
+import com.appabc.bean.enums.OrderFindInfo.OrderFindMatchStatusEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderOverallStatusEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderStatusEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
 import com.appabc.bean.pvo.TCalRuleDefinition;
 import com.appabc.bean.pvo.TCalRuleUse;
+import com.appabc.bean.pvo.TContractDisPriceOperation;
+import com.appabc.bean.pvo.TOrderAddress;
 import com.appabc.bean.pvo.TOrderArbitration;
 import com.appabc.bean.pvo.TOrderArbitrationResult;
 import com.appabc.bean.pvo.TOrderCancel;
@@ -31,9 +42,15 @@ import com.appabc.bean.pvo.TOrderCostdetail;
 import com.appabc.bean.pvo.TOrderDisPrice;
 import com.appabc.bean.pvo.TOrderFind;
 import com.appabc.bean.pvo.TOrderFindItem;
+import com.appabc.bean.pvo.TOrderFindMatch;
+import com.appabc.bean.pvo.TOrderFindMatchEx;
 import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderOperations;
+import com.appabc.bean.pvo.TOrderProductInfo;
+import com.appabc.bean.pvo.TOrderProductProperty;
 import com.appabc.common.base.QueryContext;
+import com.appabc.common.utils.DateUtil;
+import com.appabc.common.utils.RandomUtil;
 import com.appabc.datas.AbstractDatasTest;
 import com.appabc.datas.dao.contract.ICalRuleDefinitionDAO;
 import com.appabc.datas.dao.contract.ICalRuleUseDAO;
@@ -45,9 +62,18 @@ import com.appabc.datas.dao.contract.IContractDisPriceDAO;
 import com.appabc.datas.dao.contract.IContractInfoDAO;
 import com.appabc.datas.dao.contract.IContractOperationDAO;
 import com.appabc.datas.exception.ServiceException;
+import com.appabc.datas.service.company.ICompanyRankingService;
+import com.appabc.datas.service.contract.IContractArbitrationService;
+import com.appabc.datas.service.contract.IContractCancelService;
 import com.appabc.datas.service.contract.IContractInfoService;
+import com.appabc.datas.service.order.IOrderAddressService;
 import com.appabc.datas.service.order.IOrderFindItemService;
+import com.appabc.datas.service.order.IOrderFindMatchService;
 import com.appabc.datas.service.order.IOrderFindService;
+import com.appabc.datas.service.order.IOrderProductInfoService;
+import com.appabc.datas.service.order.IOrderProductPropertyService;
+import com.appabc.datas.tool.DataSystemConstant;
+import com.appabc.datas.tool.EveryUtil;
 import com.appabc.tools.bean.MessageInfoBean;
 import com.appabc.tools.utils.MessageSendManager;
 import com.appabc.tools.utils.PrimaryKeyGenerator;
@@ -103,6 +129,27 @@ public class ContractTest extends AbstractDatasTest {
 
 	@Autowired
 	private IContractInfoService iContractInfoService;
+	
+	@Autowired
+	private IOrderProductInfoService iOrderProductInfoService;
+	
+	@Autowired
+	private IOrderProductPropertyService iOrderProductPropertyService;
+	
+	@Autowired
+	private IContractCancelService iContractCancelService;
+	
+	@Autowired
+	private IOrderAddressService iOrderAddressService;
+	
+	@Autowired
+	private ICompanyRankingService iCompanyRankingService;
+	
+	@Autowired
+	private IContractArbitrationService iContractArbitrationService;
+	
+	@Autowired
+	private IOrderFindMatchService iOrderFindMatchService;
 
 	private Map<Integer,Boolean> runningStatus = new HashMap<Integer,Boolean>();
 
@@ -113,8 +160,12 @@ public class ContractTest extends AbstractDatasTest {
 	 */
 	@Override
 	@Test
-	@Rollback(value=true)
+	@Rollback(value=false)
 	public void mainTest() {
+		/*double totalA = 2000.0;
+		double finalB = 1300.0;
+		boolean b = EveryUtil.EqNumNotHalfBetweenAandB(totalA, finalB);
+		log.info(b);*/
 		//testInsert();
 		//testUpdate("ORDERID020204702092014END");
 		//testSelect();
@@ -161,9 +212,177 @@ public class ContractTest extends AbstractDatasTest {
 		testCreateContractByFid("111220140000133","241120140000018");
 		
 		testCreateContractByFid("121220140000148","281120140000024");*/
-		//testCreateContractByFid("221220140000157","241120140000017");
-		//testMakeAndMatchATOrderInfo();
+		//testCreateContractByFid("251220140000180","241120140000017");
+		//testContractArbitractionProcess();
 //		getMatchingNum();
+		//testCancelDraftContract();
+		//testMakeAndMatchATOrderInfo();
+		//testMakeAndMatchATOrderInfoWithCustomService();
+		//testCancelDraftContract();
+		//testToContractArbitration();
+		//testQueryContractListToWebCms();
+		//testFindOrderFindMatchEx();
+//		try {
+//			Thread.sleep(10000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+		//testCaseGetContractArbitrationInfoList();
+		//testCaseGetContractArbitrationInfoListForPagination();
+	}
+	
+	public void testFindOrderFindMatchEx(){
+		String owner = "201505210000034";
+		//iOrderFindMatchService.findOrderFindMatchExInfo(owner, status);
+		List<TOrderFindMatchEx> result = iOrderFindMatchService.findOrderFindMatchExInfo(owner, OrderFindMatchStatusEnum.SUCCESS);
+		log.info(result);
+		List<TOrderFindMatch> res = iOrderFindMatchService.findOrderFindMatchInfo(owner, OrderFindMatchStatusEnum.SUCCESS);
+		log.info(res);
+	}
+	
+	public void testSaveOrderFindMatchInfo(){
+		String target = "201503020000023";
+		String operator = "201501270000021";
+		String fid = "201506050000416";//201505270000403
+		OrderFindAllBean ofabean = new OrderFindAllBean();
+		
+		TOrderFind orderFind = orderFindService.query(fid);
+		ofabean.setOfBean(orderFind);
+		
+		TOrderProductInfo queryEntity = new TOrderProductInfo();
+		queryEntity.setFid(fid);
+		TOrderProductInfo productInfo = this.iOrderProductInfoService.query(queryEntity);
+		ofabean.setOpiBean(productInfo);
+		
+		TOrderProductProperty propis = new TOrderProductProperty();
+		propis.setPpid(Integer.valueOf(productInfo.getId()));
+		List<TOrderProductProperty> result = iOrderProductPropertyService.queryForList(propis);
+		List<ProductPropertyContentBean> ppcList = new ArrayList<ProductPropertyContentBean>();
+		for(TOrderProductProperty t : result){
+			ProductPropertyContentBean e = new ProductPropertyContentBean();
+			e.setPpid(t.getPproid());
+			e.setContent(t.getContent());
+			ppcList.add(e);
+		}
+		ofabean.setPpcList(ppcList);
+		
+		TOrderAddress addressInfo = this.iOrderAddressService.queryByFid(fid);
+		if(addressInfo == null){
+			addressInfo = new TOrderAddress();
+			addressInfo.setCid(orderFind.getCid());
+			addressInfo.setAreacode("130524000000");
+			addressInfo.setAddress("DD镇CC村");
+			addressInfo.setDeep(6.51f);
+			addressInfo.setShippington(2000.63f);
+		}
+		ofabean.setOaBean(addressInfo);
+		TOrderFindMatch tofm = null;
+		try {
+			tofm = iOrderFindMatchService.saveOrderFindMatchInfo(ofabean, target, OrderFindMatchOpTypeEnum.RELEASEORDERFIND, OrderFindMatchStatusEnum.SAVE, operator);
+			log.info(ofabean);
+			log.info(tofm);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			log.info(e);
+		}
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		try {
+			tofm.setOpType(OrderFindMatchOpTypeEnum.TRADEINQUIRY);
+			tofm.setStatus(OrderFindMatchStatusEnum.SUCCESS);
+			ofabean.getOfBean().setUpdatetime(DateUtil.getNowDate());
+			ofabean.getOfBean().setUpdater(operator);
+			iOrderFindMatchService.updateFindMatchInfo(ofabean, tofm);
+			log.info(ofabean);
+			log.info(tofm);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			log.info(e);
+		}
+	}
+	
+	public void testQueryContractListToWebCms(){
+		QueryContext<TOrderInfo> qContext = new QueryContext<TOrderInfo>();
+		qContext.getPage().setPageIndex(1);
+		qContext.addParameter("cid", "201411270000014");
+		qContext.addParameter("type", ContractWebCmsTradeType.PRESENT.getVal());
+		qContext = iContractInfoService.queryContractListOfMineForPaginationToWebCms(qContext);
+		log.info(qContext);
+		log.info(qContext.getQueryResult().getResult());
+	}
+	
+	public void testCaseGetContractArbitrationInfoListForPagination(){
+		QueryContext<ContractArbitrationBean> qContext = new QueryContext<ContractArbitrationBean>();
+		qContext.addParameter("status", ContractArbitrationStatus.REQUEST.getVal());
+		/*qContext.getPage().setPageSize(3);
+		qContext.getPage().setPageIndex(1);*/
+		qContext.getPage().setPageIndex(2);
+		qContext = iContractArbitrationService.getContractArbitrationInfoListForPagination(qContext);
+		log.info(qContext);
+	}
+	
+	public void testCaseGetContractArbitrationInfoList() {
+		
+		List<ContractArbitrationBean> result = iContractArbitrationService.getContractArbitrationInfoForList(ContractArbitrationStatus.SUCCESS);
+		log.info(result);
+		
+	}
+	
+	public void testCaseFinalEstimate() throws ServiceException{
+		String oid = "1020150204203";//1020150204203
+		String cid = ToolsConstant.SYSTEMCID;
+		String cname = ToolsConstant.SYSTEMCNAME;
+		TOrderInfo bean = iContractInfoService.query(oid);
+		Date now = DateUtil.getNowDate();
+		// 更新合同的状态为正常结束
+		bean.setUpdater(cid);
+		bean.setUpdatetime(now);
+		bean.setLifecycle(ContractLifeCycle.NORMAL_FINISHED);
+		bean.setStatus(ContractStatus.FINISHED);
+		iContractInfoService.modify(bean);
+		log.info(" Contract is "+oid+"; finished the Contract. ");
+		
+		// 合同完成结束的操作记录
+		TOrderOperations finishOper = new TOrderOperations();
+		finishOper.setId(iContractInfoService.getKey(DataSystemConstant.CONTRACTOPERATIONID));
+		finishOper.setOid(oid);
+		finishOper.setOperator(cid);
+		finishOper.setOperationtime(now);
+		finishOper.setType(ContractOperateType.CONTRACT_FINISHED);
+		finishOper.setOrderstatus(ContractLifeCycle.NORMAL_FINISHED);
+		finishOper.setOldstatus(ContractLifeCycle.NORMAL_FINISHED);
+		StringBuilder finishMesg = new StringBuilder(cname);
+		finishMesg.append(iContractInfoService.getMessage(DataSystemConstant.MESSAGEKEY_FINISH_CONTRACT_TIPS));
+		finishOper.setResult(finishMesg.toString());
+		finishOper.setRemark(finishMesg.toString());
+		IContractOperationDAO.save(finishOper);
+		// save or update the mine contract with cid or oid.
+		iContractInfoService.contractTimeOutMoveToFinishList(bean, cid);
+		log.info(" Contract is "+oid+"; do the time out move to the finish list. ");
+		// 计算交易成功率.
+		iCompanyRankingService.calculateTradeSuccessRate(bean.getBuyerid());
+		iCompanyRankingService.calculateTradeSuccessRate(bean.getSellerid());
+		log.info(" Contract is "+oid+"; do the rank . ");
+		//买家确认收货,触发条件发送消息告诉买家可以进行评价
+		iContractInfoService.sendSystemXmppMessage(MsgBusinessType.BUSINESS_TYPE_CONTRACT_SELLER_AGREE_FINALESTIMATE, oid, bean.getBuyerid(), SystemMessageContent.getMsgContentOfContractToEvaluation(bean.getRemark()));
+		iContractInfoService.sendSystemXmppMessage(MsgBusinessType.BUSINESS_TYPE_CONTRACT_SELLER_AGREE_FINALESTIMATE, oid, bean.getSellerid(), SystemMessageContent.getMsgContentOfContractToEvaluation(bean.getRemark()));
+	}
+	
+	public void testContractArbitractionProcess(){
+		try {
+			iContractArbitrationService.contractArbitractionProcess(true, "201501080008408", "201411270000014", "国立123公司2014-11-27 20:35:52", 10, 10);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void testQueryGoodsDisPriceHistory(){
+		String oid = "201411250008625";
+		List<TContractDisPriceOperation> result = IContractDisPriceDAO.queryGoodsDisPriceHistroyListWithFullTakeover(oid);
+		this.log.info(result);
 	}
 	
 	public void getMatchingNum(){
@@ -246,6 +465,18 @@ public class ContractTest extends AbstractDatasTest {
 		List<TCalRuleUse> result = ICalRuleUseDAO.queryForList(entity);
 		log.info(result);
 	}
+	
+	public void testToContractArbitration(){
+		String oid = "1020150331352";
+		String cid = "201503300000024";
+		String cname = "测试公司72";
+		try {
+			this.iContractArbitrationService.toContractArbitration(oid, cid, cname, StringUtils.EMPTY);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void testContractArbitrationSave(){
 		TOrderArbitration entity = new TOrderArbitration();
 		entity.setId(prkg.generatorBusinessKeyByBid("ArbitrationResultID"));
@@ -255,7 +486,7 @@ public class ContractTest extends AbstractDatasTest {
 		entity.setDealer("setDealer");
 		entity.setDealresult("setDealresult");
 		entity.setDealtime(new Date());
-		entity.setStatus(1);
+		entity.setStatus(ContractArbitrationStatus.SUCCESS);
 		IContractArbitrationDAO.save(entity);
 	}
 	public void testContractArbitrationUpdate(){
@@ -266,7 +497,7 @@ public class ContractTest extends AbstractDatasTest {
 		entity.setDealer("456");
 		entity.setDealresult("654");
 		entity.setDealtime(new Date());
-		entity.setStatus(2);
+		entity.setStatus(ContractArbitrationStatus.FAILURE);
 		IContractArbitrationDAO.update(entity);
 	}
 	public void testContractArbitrationDelete(){
@@ -279,7 +510,7 @@ public class ContractTest extends AbstractDatasTest {
 		TOrderArbitration entity = IContractArbitrationDAO.query("ARID00016END");
 		log.info(entity);
 		TOrderArbitration query = new TOrderArbitration();
-		query.setStatus(2);
+		query.setStatus(ContractArbitrationStatus.FAILURE);
 		List<TOrderArbitration> result = IContractArbitrationDAO.queryForList(query);
 		log.info(result);
 	}
@@ -429,10 +660,10 @@ public class ContractTest extends AbstractDatasTest {
 		entity.setCanceler("RodJson");
 		entity.setCanceltime(new Date());
 		entity.setReason("各种方面不一样");
-		entity.setBeginamount(200.0f);
-		entity.setEndamount(180.0f);
-		entity.setBeginnum(10000);
-		entity.setEndnum(9999);
+		entity.setBeginamount(200.0);
+		entity.setEndamount(180.0);
+		entity.setBeginnum(10000.0);
+		entity.setEndnum(9999.0);
 		entity.setPunreason("延迟到货");
 		entity.setPunday(2);
 		entity.setRemark("备注");
@@ -585,26 +816,119 @@ public class ContractTest extends AbstractDatasTest {
 		//entity.setFid(fid);
 		entity.setSellerid("sellerid");
 		entity.setBuyerid("buyerid");
-		entity.setPrice(20.0f);
+		entity.setPrice(20.0);
 		entity.setTotalnum(10);
 		entity.setCreatime(now);
 		entity.setCreater("creater");
 		entity.setLimittime(now);
-		entity.setTotalamount(50.0f);
-		entity.setAmount(10.0f);
+		entity.setTotalamount(50.0);
+		entity.setAmount(10.0);
 		entity.setStatus(ContractStatus.enumOf("12"));
 		entity.setOtype(ContractType.enumOf("2"));
 		entity.setUpdater("updater");
 		entity.setUpdatetime(now);
 		entity.setRemark("remark");
-		entity.setAmount(10.0f);
+		entity.setAmount(10.0);
 		IContractInfoDAO.save(entity);
 	}
 
-	public void testMakeAndMatchATOrderInfo(){
+	public void testCancelDraftContract(){
+		String oid = "1020150505387";
+		String cid = "201503300000024";
+		String cname = "admin";
+		try {
+			iContractCancelService.cancelDraftContract(oid, cid, cname, ContractOperateType.CANCEL_CONTRACT);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			log.debug(e);
+		}
+	}
+	
+	public void testMakeAndMatchATOrderInfoWithCustomService(){
+		String fid = "201502040000211";
+		OrderFindAllBean ofabean = new OrderFindAllBean();
+		
+		TOrderFind orderFind = orderFindService.query(fid);
+		orderFind.setId(StringUtils.EMPTY);
+		ofabean.setOfBean(orderFind);
+		
+		TOrderProductInfo queryEntity = new TOrderProductInfo();
+		queryEntity.setFid(fid);
+		TOrderProductInfo productInfo = this.iOrderProductInfoService.query(queryEntity);
+		ofabean.setOpiBean(productInfo);
+		
+		TOrderProductProperty propis = new TOrderProductProperty();
+		propis.setPpid(Integer.valueOf(productInfo.getId()));
+		List<TOrderProductProperty> result = iOrderProductPropertyService.queryForList(propis);
+		List<ProductPropertyContentBean> ppcList = new ArrayList<ProductPropertyContentBean>();
+		for(TOrderProductProperty t : result){
+			ProductPropertyContentBean e = new ProductPropertyContentBean();
+			e.setPpid(t.getPproid());
+			e.setContent(t.getContent());
+			ppcList.add(e);
+		}
+		ofabean.setPpcList(ppcList);
+		
+		TOrderAddress addressInfo = this.iOrderAddressService.queryByFid(fid);
+		if(addressInfo == null){
+			addressInfo = new TOrderAddress();
+			addressInfo.setCid(orderFind.getCid());
+			addressInfo.setAreacode("130524000000");
+			addressInfo.setAddress("21341432");
+			addressInfo.setShippington(200f);
+		}
+		ofabean.setOaBean(addressInfo);
+		
 		TOrderInfo orderInfo;
 		try {
-			orderInfo = iContractInfoService.makeAndMatchATOrderInfo("121220140000149", "241120140000019", ToolsConstant.SCHEDULER, 0, 0);
+			orderInfo = iContractInfoService.makeAndMatchTOrderWithCustomService(ofabean, ofabean.getOfBean().getCid(), "201501150000017" , "admin");
+			//orderInfo = iContractInfoService.makeAndMatchATOrderInfo(ofabean , "201501150000017" , "admin");
+			log.debug(orderInfo);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			log.debug(e);
+		}
+	}
+	
+	public void testMakeAndMatchATOrderInfo(){
+		String fid = "201505290000999";//201505270000403
+		OrderFindAllBean ofabean = new OrderFindAllBean();
+		
+		TOrderFind orderFind = orderFindService.query(fid);
+		ofabean.setOfBean(orderFind);
+		
+		TOrderProductInfo queryEntity = new TOrderProductInfo();
+		queryEntity.setFid(fid);
+		TOrderProductInfo productInfo = this.iOrderProductInfoService.query(queryEntity);
+		ofabean.setOpiBean(productInfo);
+		
+		TOrderProductProperty propis = new TOrderProductProperty();
+		propis.setPpid(Integer.valueOf(productInfo.getId()));
+		List<TOrderProductProperty> result = iOrderProductPropertyService.queryForList(propis);
+		List<ProductPropertyContentBean> ppcList = new ArrayList<ProductPropertyContentBean>();
+		for(TOrderProductProperty t : result){
+			ProductPropertyContentBean e = new ProductPropertyContentBean();
+			e.setPpid(t.getPproid());
+			e.setContent(t.getContent());
+			ppcList.add(e);
+		}
+		ofabean.setPpcList(ppcList);
+		
+		TOrderAddress addressInfo = this.iOrderAddressService.queryByFid(fid);
+		if(addressInfo == null){
+			addressInfo = new TOrderAddress();
+			addressInfo.setCid(orderFind.getCid());
+			addressInfo.setAreacode("130524000000");
+			addressInfo.setAddress("DD镇CC村");
+			addressInfo.setDeep(6.51f);
+			addressInfo.setShippington(2000.63f);
+		}
+		ofabean.setOaBean(addressInfo);
+		
+		TOrderInfo orderInfo;
+		try {
+			orderInfo = iContractInfoService.makeAndMatchATOrderInfo(ofabean , "281120140000026" , "admin");
+			iOrderFindMatchService.vitiateOrderFindMatchInfoByFid(fid);
 			log.debug(orderInfo);
 		} catch (ServiceException e) {
 			e.printStackTrace();
@@ -626,16 +950,15 @@ public class ContractTest extends AbstractDatasTest {
 		String admin = "admin";//ToolsConstant.SCHEDULER
 		
 		Date now = new Date();
-		entity.setId(prkg.generatorBusinessKeyByBid("CONTRACTINFOID"));
 		entity.setFid(of.getId());
 
-		entity.setPrice(of.getPrice());
+		entity.setPrice(of.getPrice().doubleValue());
 		entity.setTotalnum(of.getTotalnum());
 		entity.setCreatime(now);
 		entity.setCreater(admin);
 		entity.setLimittime(of.getLimitime());
-		entity.setTotalamount(of.getPrice()*of.getTotalnum());
-		entity.setAmount(of.getPrice()*of.getTotalnum());
+		entity.setTotalamount(RandomUtil.mulRound(of.getPrice().doubleValue(), of.getTotalnum().doubleValue()));
+		entity.setAmount(0.0);
 		entity.setStatus(ContractInfo.ContractStatus.DRAFT);
 		entity.setOtype(ContractInfo.ContractType.DRAFT);
 		entity.setUpdater(admin);
@@ -652,7 +975,7 @@ public class ContractTest extends AbstractDatasTest {
 		operator.setOperationtime(now);
 		operator.setType(ContractOperateType.MAKE_CONTRACT);
 		operator.setOrderstatus(ContractLifeCycle.DRAFTING);
-		StringBuffer result = new StringBuffer(admin);
+		StringBuilder result = new StringBuilder(admin);
 		result.append("撮合了合同操作");
 		operator.setResult(result.toString());
 		operator.setRemark(result.toString());

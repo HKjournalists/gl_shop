@@ -13,7 +13,8 @@
 /**
  *@brief 所选银行
  */
-@property (nonatomic, copy) NSString *selectBank;
+@property (nonatomic, strong) BankModel *selectBank;
+
 @property (nonatomic, strong, readonly) UITableView *tableView;
 
 /**

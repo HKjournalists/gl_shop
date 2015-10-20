@@ -5,14 +5,13 @@
 @interface HUDHelper : NSObject <MBProgressHUDDelegate>
 {
 @private
-    UIWindow *_window;
     NSMutableArray *_showingHUDs;
     
     MBProgressHUD *_loadingHud;
     
 }
 
-@property (nonatomic, retain) UIWindow *window;
+@property (nonatomic, weak) UIWindow *window;
 
 - (void)addHUD:(MBProgressHUD *)hud;
 - (void)removeHUD:(MBProgressHUD *)hud;

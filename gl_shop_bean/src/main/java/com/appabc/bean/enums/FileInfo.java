@@ -28,21 +28,21 @@ public interface FileInfo extends IBaseEnum{
 		 */
 		FILE_OTYPE_COMPANY("1","企业图片"),
 		/**
-		 * 卸货地址图片
+		 * 企业卸货地址图片
 		 */
-		FILE_OTYPE_ADDRESS("2","卸货地址图片"),
+		FILE_OTYPE_ADDRESS("2","企业卸货地址图片"),
 		/**
-		 * 交易中商品的卸货地址图片
+		 * 询单卸货地址图片
 		 */
-		FILE_OTYPE_ADDRESS_ORDER("3","交易中商品的卸货地址图片"),
+		FILE_OTYPE_ADDRESS_ORDER("3","询单卸货地址图片"),
 		/**
 		 * 企业提款人认证图片
 		 */
 		FILE_OTYPE_BANK("4","企业提款人认证图片"),
 		/**
-		 * 询单或合同中的商品图片
+		 * 询单的货物图片
 		 */
-		FILE_OTYPE_PRODUCT_ORDER("5","询单或合同中的商品图片");
+		FILE_OTYPE_PRODUCT_ORDER("5","询单的货物图片");
 		
 		
 		private String val;

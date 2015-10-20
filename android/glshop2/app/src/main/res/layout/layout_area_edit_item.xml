@@ -1,0 +1,146 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_area_item"
+        android:orientation="vertical"
+        android:padding="0dp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <!-- 数量 -->
+
+            <LinearLayout
+                android:id="@+id/ll_item_select_area"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:background="@drawable/selector_item_bg"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <ImageView
+                    android:id="@+id/iv_item_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:background="@drawable/ic_star_mark"
+                    android:contentDescription="@null"
+                    android:duplicateParentState="true" />
+
+                <TextView
+                    android:id="@+id/tv_item_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:duplicateParentState="true"
+                    android:text="交易港口" />
+
+                <TextView
+                    android:id="@+id/tv_item_area"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:duplicateParentState="true"
+                    android:gravity="right"
+                    android:singleLine="true"
+                    android:text="靖江港" />
+
+                <ImageView
+                    android:id="@+id/iv_item_select_port"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_btn_more"
+                    android:contentDescription="@null"
+                    android:duplicateParentState="true" />
+            </LinearLayout>
+
+            <!-- 价格 -->
+
+            <View
+                style="@style/item_devider_line"
+                android:layout_marginLeft="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:background="@drawable/ic_star_mark"
+                    android:contentDescription="@null"
+                    android:duplicateParentState="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:duplicateParentState="true"
+                    android:singleLine="true"
+                    android:text="@string/business_product_portprice" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:duplicateParentState="true"
+                    android:singleLine="true"
+                    android:text="@string/product_unit_price"
+                    android:textColor="@color/gray" />
+
+                <EditText
+                    android:id="@+id/et_area_price"
+                    style="@style/edittext"
+                    android:layout_width="120dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:hint="请输入"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_more_area" />
+
+        <!-- 删除 -->
+
+        <RelativeLayout
+            android:id="@+id/rl_edit_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_area_item_edit"
+            android:clickable="true"
+            android:visibility="invisible" >
+
+            <ImageView
+                android:id="@+id/iv_area_item_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/ic_area_item_delete" />
+        </RelativeLayout>
+    </FrameLayout>
+
+    <View
+        android:id="@+id/ll_item_middle"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@drawable/bg_area_item_middle" />
+
+</LinearLayout>

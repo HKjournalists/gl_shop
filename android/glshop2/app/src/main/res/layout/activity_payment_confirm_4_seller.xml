@@ -1,0 +1,331 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <include layout="@layout/layout_buy_summary_info" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <!-- 货物与货款实际确认 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:gravity="center_vertical"
+                    android:text="实收金额确认：" />
+
+                <FrameLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:background="@drawable/selector_item_top"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_bound_yellow"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/buy_item_padding"
+                        android:text="合同记载：" />
+                </FrameLayout>
+
+                <View style="@style/item_devider_line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@drawable/selector_item_middle"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="合同单价(单位：元/吨):" />
+
+                    <TextView
+                        android:id="@+id/tv_ori_unit_price"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="60" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@drawable/selector_item_middle"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="合同总量(单位：吨):" />
+
+                    <TextView
+                        android:id="@+id/tv_ori_amount"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="60" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@drawable/selector_item_bottom"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="合同货物总价(单位：元):" />
+
+                    <TextView
+                        android:id="@+id/tv_ori_total_money"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="3600"
+                        android:textColor="@color/red" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- 申请仲裁 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical" >
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:background="@drawable/selector_item_top"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_bound_orange"
+                        android:contentDescription="@null" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="@dimen/buy_item_padding"
+                        android:text="实际货物确认后经双方协商，买家确认实付货款如下：" />
+                </FrameLayout>
+
+                <View style="@style/item_devider_line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@drawable/selector_item_middle"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="合同单价(单位：元/吨):" />
+
+                    <TextView
+                        android:id="@+id/tv_final_unit_price"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="60" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@drawable/selector_item_middle"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="合同总量(单位：吨):" />
+
+                    <TextView
+                        android:id="@+id/tv_final_amount"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="60" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:background="@drawable/selector_item_middle"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="合同货物总价(单位：元):" />
+
+                    <TextView
+                        android:id="@+id/tv_final_total_money"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="3600" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/selector_item_middle"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <View
+                        style="@style/item_devider_line"
+                        android:layout_width="@dimen/buy_item_padding" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="【最终货款】"
+                        android:textColor="@color/gray" />
+
+                    <View
+                        style="@style/item_devider_line"
+                        android:layout_height="2px"
+                        android:background="@drawable/devider_line_dot_h" />
+                </LinearLayout>
+                <LinearLayout
+                    android:background="@drawable/selector_item_middle"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ff1515"
+                        android:text="最终成交价格(单位：元):" />
+
+                    <TextView
+                        android:id="@+id/tv_last_total_money"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textColor="#ff1515"
+                        android:text="0" />
+                </LinearLayout>
+                <View style="@style/item_devider_line" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:background="@drawable/selector_item_middle"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding"
+                    android:text="确认以上实收货物总价"
+                    android:textColor="@color/red" />
+
+                <View style="@style/item_devider_line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:background="@drawable/selector_item_middle"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <Button
+                        android:id="@+id/btn_seller_confirm"
+                        style="@style/button_small_white"
+                        android:text="确认并同意"
+                        android:textColor="@color/orange" />
+                </LinearLayout>
+
+                <View style="@style/item_devider_line" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:background="@drawable/selector_item_middle"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding"
+                    android:text="实际货物与合同加载差别太大，无法交易"
+                    android:textColor="@color/red" />
+
+                <View style="@style/item_devider_line" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/buy_item_height"
+                    android:background="@drawable/selector_item_bottom"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/buy_item_padding"
+                    android:paddingRight="@dimen/buy_item_padding" >
+
+                    <Button
+                        android:id="@+id/btn_seller_apply_arbitrate"
+                        style="@style/button_small_white"
+                        android:text="申请平台仲裁"
+                        android:textColor="@color/orange" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

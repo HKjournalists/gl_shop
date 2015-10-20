@@ -3,21 +3,15 @@
  */
 package com.appabc.tools.xmpp;
 
-import java.io.File;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javapns.back.PushNotificationManager;
-import javapns.back.SSLConnectionHelper;
-import javapns.data.Device;
-import javapns.data.PayLoad;
-
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.appabc.bean.enums.PushInfo.ConfigStatusEnum;
 import com.appabc.bean.enums.PushInfo.ConfigTypeEnum;
@@ -41,7 +35,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @version     : 1.0
  * Create Date  : 2014年10月29日 下午9:17:55
  */
-public abstract class BaseXmppPush implements IXmppPush {
+@Repository
+public abstract class BaseXmppPush{
 	
 	private Logger logger =  Logger.getLogger(this.getClass());
 	
@@ -53,6 +48,8 @@ public abstract class BaseXmppPush implements IXmppPush {
 	private TPushConfig androidConfig; // Android账号配置信息
 	
 	private IosConnectionConfigBean iosConfig; // IOS服务器配置信息
+	
+//	private String defultCertificatePath = "/push.p12"; // IOS密钥文件
 	
 	/**
 	 * 单个用户推送
@@ -70,47 +67,52 @@ public abstract class BaseXmppPush implements IXmppPush {
 	/* (non-Javadoc)单个用户推送
 	 * @see com.appabc.tools.xmpp.IXmppPush#pushToSingle(com.appabc.tools.bean.PushInfoBean, com.appabc.bean.pvo.TUser)
 	 */
-	@Override
 	public boolean pushToSingle(PushInfoBean piBean, TUser user) {
 		
 		boolean tf = false; // 返回结果
-		if(user != null && piBean != null){
+		if(user != null && piBean != null && StringUtils.isNotEmpty(user.getClientid())){
 			TPushResult pr = new TPushResult(); // 推送结果
 			pr.setPushtarget(user.getClientid());
 			ObjectMapper mapper = new ObjectMapper();
 			String msgcontent = null;
 			Map<String, Object> resultMap = null;
 			try {
-				msgcontent  = mapper.writeValueAsString(piBean);
 				if(user.getClienttype() != null) {
 					if(ClientTypeEnum.CLIENT_TYPE_ANDROID.equals(user.getClienttype())) { // Android推送
+						msgcontent  = mapper.writeValueAsString(piBean);
 						resultMap = doAnroidXmppPushSingle(this.getAndroidConfig(), user.getClientid(), msgcontent, piBean.getPushType(), piBean.getOffline(), piBean.getOfflineExpireTime());
 					}else if(ClientTypeEnum.CLIENT_TYPE_IOS.equals(user.getClienttype())) { // IOS推送
-						resultMap  = doIphoneXmppPushSingle(this.getIosConfig(), user.getClientid(), msgcontent);
+						IOSPush ip = new IOSPush();
+						resultMap  = ip.doIphoneXmppPushSingle(this.getIosConfig(), user.getClientid(), piBean, user.getUsername());
+						msgcontent = resultMap.get("content")+"";
 					}else{
 						pr.setResultcontent("消息推送失败，未知终端username="+user.getUsername());
-						logger.debug("消息推送失败，未知终端username="+user.getUsername());
+						logger.info("消息推送失败，未知终端username="+user.getUsername());
 					}
 					
 					pr.setClienttype(user.getClienttype());
+					
+					logger.info("push end……");
 				}else{
 					pr.setResultcontent("消息推送失败，未知终端username="+user.getUsername());
-					logger.debug("消息推送失败，未知终端username="+user.getUsername());
+					logger.info("消息推送失败，未知终端username="+user.getUsername());
 				}
 			} catch (Exception e) {
 				pr.setRemark("系统内部错误");
 				pr.setResultcontent("消息推送失败，errorMessage=" + e.getMessage());
-				logger.debug("消息推送失败，errorMessage=" + e.getMessage());
+				logger.info("消息推送失败，errorMessage=" + e.getMessage());
 				e.printStackTrace();
 			}
 			
-			if(resultMap != null && resultMap.get("result") != null && resultMap.get("result").toString().equalsIgnoreCase("ok")){
-				tf = true;
+			if(resultMap != null){
 				pr.setResultcontent(resultMap.toString());
+				if(resultMap.get("result") != null && resultMap.get("result").toString().equalsIgnoreCase("ok")){
+					tf = true;
+				}
 			}
 			
 			pr.setMsgcontent(msgcontent);
-			pr.setMsgtype(MsgTypeEnum.enumOf(piBean.getPushType()));
+			pr.setMsgtype(piBean.getPushType() != null ? MsgTypeEnum.enumOf(piBean.getPushType()) : null);
 			pr.setPushtype(PushTypeEnum.PUSH_TYPE_SINGLE);
 			pr.setMsgtitle(piBean.getBusinessType().getText()); // 类型中 文名
 			pr.setPushstatus(tf ? 1:0);
@@ -124,14 +126,12 @@ public abstract class BaseXmppPush implements IXmppPush {
 			logger.error("push error，user="+user+" ,piBean="+piBean);
 		}
 		
-		
 		return tf;
 	}
 	
 	/* (non-Javadoc)批量推送
 	 * @see com.appabc.tools.xmpp.IXmppPush#pushToSingle(com.appabc.tools.bean.PushInfoBean, java.util.List)
 	 */
-	@Override
 	public boolean pushToList(PushInfoBean piBean, List<TUser> userList) {
 		if(CollectionUtils.isNotEmpty(userList) && piBean != null){
 			for(TUser user : userList){
@@ -142,48 +142,6 @@ public abstract class BaseXmppPush implements IXmppPush {
 			logger.error("push error，userList="+userList+" ,piBean="+piBean);
 			return false;
 		}
-	}
-	
-	/**
-	 * IOS推送
-	 * @param icc
-	 * @param deviceToken
-	 * @param content
-	 * @return
-	 */
-	private Map<String, Object> doIphoneXmppPushSingle (IosConnectionConfigBean icc, String deviceToken, String content) {
-		Map<String, Object> result = new HashMap<String, Object>();
-		if (StringUtils.isNotEmpty(deviceToken) && StringUtils.isNotEmpty(content) && icc != null) {
-			try {
-				PayLoad payLoad = new PayLoad();
-				payLoad.addAlert(content); //push的内容
-				payLoad.addBadge(1); //图标小红圈的数值
-				payLoad.addSound("default"); //铃音
-
-				PushNotificationManager pushManager = PushNotificationManager.getInstance();
-				pushManager.addDevice("iphone", deviceToken);
-				
-				pushManager.initializeConnection(icc.getHost(), icc.getPort(), icc.getCertificatePath(),
-						icc.getCertificatePassword(), SSLConnectionHelper.KEYSTORE_TYPE_PKCS12);// 初始化TCP连接
-
-				Device client = pushManager.getDevice("iphone");
-				pushManager.sendNotification(client, payLoad); // 推送消息
-				pushManager.stopConnection();
-				pushManager.removeDevice("iphone");
-				
-				result.put("result", "ok");
-			} catch (Exception e) {
-				e.printStackTrace();
-				result.put("result", "error");
-				result.put("errorMsg", e.getMessage());
-			}
-		}else{
-			result.put("result", "error");
-			result.put("errorMsg", "IosConnectionConfigBean="+icc+" , deviceToken="+deviceToken+" , content="+content);
-		}
-
-		return result;
-
 	}
 	
 	/**
@@ -262,7 +220,36 @@ public abstract class BaseXmppPush implements IXmppPush {
 		}
 	*/
 		
-		File f = new File(BaseXmppPush.class.getResource("/").getPath()); 
-		System.out.println(f.getPath()); 
+//		BaseXmppPush push = new GeTuiXmppPush();
+//		if(1==1){
+//			String path = push.getIOSPushFilePath();
+//			return;
+//		}
+		
+		
+//		String deviceToken = "8af4f09634a3b4f7682f5f48761ed73248f73291b809df4eacdf1a8ab7ff64cd";
+		
+//		IosConnectionConfigBean icc = new IosConnectionConfigBean();
+//		icc.setCertificatePassword("123321");
+//		icc.setCertificatePath(push.getIOSPushFilePath());
+//		icc.setHost("gateway.sandbox.push.apple.com");
+//		icc.setPort(2195);
+//		
+//		PushInfoBean piBean = new PushInfoBean();
+//		piBean.setBusinessId("43");
+//		piBean.setBusinessType(MsgBusinessType.BUSINESS_TYPE_COMPANY_AUTH);
+//		piBean.setCid("201501150000017");
+//		
+//		Map<String, Object> params = new HashMap<String, Object>();
+//		params.put("contractid", "201411270000014");
+//		params.put("fid", "201411270000014");
+//		
+//		piBean.setParams(params);
+//		
+//		push.doIphoneXmppPushSingle(icc, deviceToken, piBean);
+//		
+//		System.out.println("==========end");
 	}
+	
+	
 }

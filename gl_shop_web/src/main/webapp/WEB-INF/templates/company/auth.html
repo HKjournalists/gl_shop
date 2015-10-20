@@ -2,9 +2,10 @@
 <html layout:decorator="layouts/company">
 <head>
   <title>用户资料 - 身份状态</title>
+  <link rel="stylesheet" th:href="@{/static/js/fancybox/jquery.fancybox.css}" type="text/css" media="screen" />
 </head>
 <body>
-  
+
   <h4 layout:fragment="contentNavTitle">
     <i class="fa fa-fw fa-wrench"></i> 用户资料 / 身份状态  </h4>
 
@@ -21,30 +22,36 @@
           <table class="table table-bordered">
             <tr>
               <th width="20%">平台认证</th>
-              <td th:text="${company.authstatus}">已认证</td>
-              <td><a href="">查看认证资料</a></td>
+              <td>
+                <span th:text="${company.authstatus.text}">已认证</span>
+                <a th:if="${not #lists.isEmpty(company_full_info.authImgList)}" id="showAuthImage" href="#authImages">查看认证资料</a>
+              </td>
+              <th>认证审核人员</th>
+              <td th:text="${auth.author}">龚天然</td>
+            </tr>
+            <tr>
+            	<td colspan="4">
+            		<div th:each="bean : ${authLogs}">
+            			<span th:text="${bean.authstatus == null} ? ${#calendars.format(bean.createdate, 'YYYY-MM-dd hh:mm:ss')} + '&nbsp;&nbsp;&nbsp;' + ${bean.authresult} : ${#calendars.format(bean.createdate, 'YYYY-MM-dd hh:mm:ss')}+'&nbsp;&nbsp;&nbsp;用户提交认证'"></span><BR>
+            			<span th:text="${bean.authdate} ? ${#calendars.format(bean.authdate, 'YYYY-MM-dd hh:mm:ss')} + '&nbsp;&nbsp;&nbsp;' + ${bean.author} +'进行了审核，结果：'+ ${bean.authresult}"></span>。&nbsp;&nbsp;&nbsp;
+            			<span th:if="${not #strings.isEmpty(bean.remark)}" th:text="'原因：' + ${bean.remark}"></span>
+            		</div>
+            	</td>
             </tr>
           </table>
         </div>
-        <div class="list-group">
-          <div class="list-group-item">
-            2014年9月16日 15:06:59 张三催促用户提交认证信息
-          </div>
-          <div class="list-group-item">
-            2014年9月17日 15:06:59 用户提交认证信息
-          </div>
-          <div class="list-group-item">
-            2014年9月17日 15:06:59 驳回y用户认证申请，原因：用户提交信息虚假
-          </div>
-          <div class="list-group-item">
-            2014年9月17日 15:06:59 李四审核用户认证信息通过
-          </div>
-          <div class="list-group-item">
-            2014年9月17日 15:06:59 用户重新提交认证信息
+
+        <div id="authImages" style="display: none">
+          <div th:each="img : ${company_full_info.authImgList}">
+            <a class="fancybox" rel="gallery1" th:href="@{${img.url}}"><img class="col-sm-3" th:src="@{${img.thumbnailSmall}}" /></a>
           </div>
         </div>
+
+        <div th:fragment="layout/fragments :: serviceLogs">
+
+        </div>
       </div>
-    </div> 
+    </div>
 
     <div class="panel panel-primary">
       <div class="panel-heading">
@@ -54,13 +61,12 @@
         <div class="table-responsive">
           <table class="table table-bordered">
             <tr>
-              <th width="20%">交易保证金</th>
-              <td th:text="${company.authstatus}">已缴纳</td>
-              <td>当前余额 10000000</td>
+              <th width="20%">交易保证金余额（元）</th>
+              <td th:text="${guaranty}">10000</td>
             </tr>
           </table>
         </div>
-        <div class="list-group">
+        <div class="list-group" style="display: none">
           <div class="list-group-item">
             2014年9月16日 15:06:59 张三催促用户缴纳保证金
           </div>
@@ -69,9 +75,21 @@
           </div>
         </div>
       </div>
-    </div> 
+    </div>
 
   </div>
+  <div layout:fragment="additionalScriptFiles">
+    <script type="text/javascript" th:src="@{/static/js/fancybox/jquery.fancybox.pack.js}"></script>
+  </div>
+  <script layout:fragment="inlineJavascript">
+    $(document).ready(function() {
+      $('#showAuthImage').click(function() {
+        $('#authImages').show();
+        $(this).hide();
+      });
+		  $(".fancybox").fancybox();
+    });
+  </script>
 </body>
 
 </html>

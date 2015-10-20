@@ -1,11 +1,11 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
+import java.util.Date;
+
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.common.base.bean.BaseBean;
-
-import java.util.Date;
 
 public class TCompanyInfo extends BaseBean {
     /**
@@ -41,7 +41,7 @@ public class TCompanyInfo extends BaseBean {
     /**
      * 认证状态(是否认证)
      */
-    private CompanyAuthStatus authstatus;
+    private AuthRecordStatus authstatus;
 
     /**
      * 处理是否禁用、禁言（预留状态）
@@ -173,38 +173,18 @@ public class TCompanyInfo extends BaseBean {
 		this.companyImgIds = companyImgIds == null ? null : companyImgIds.trim();
 	}
 
-	/**
-	 * authstatus
-	 *
-	 * @return  the authstatus
-	 * @since   1.0.0
-	*/
-
-	public CompanyAuthStatus getAuthstatus() {
+	public AuthRecordStatus getAuthstatus() {
 		return authstatus;
 	}
 
-	/**
-	 * @param authstatus the authstatus to set
-	 */
-	public void setAuthstatus(CompanyAuthStatus authstatus) {
+	public void setAuthstatus(AuthRecordStatus authstatus) {
 		this.authstatus = authstatus;
 	}
-
-	/**
-	 * bailstatus
-	 *
-	 * @return  the bailstatus
-	 * @since   1.0.0
-	*/
 
 	public CompanyBailStatus getBailstatus() {
 		return bailstatus;
 	}
 
-	/**
-	 * @param bailstatus the bailstatus to set
-	 */
 	public void setBailstatus(CompanyBailStatus bailstatus) {
 		this.bailstatus = bailstatus;
 	}

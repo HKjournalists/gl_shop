@@ -40,11 +40,10 @@ public class UserController extends BaseController<TUser> {
 
 	/**
 	 * 用户注册
-	 * @param request,response
-	 * @author Bill huang
-	 * @return Object
-	 * @exception
-	 * @since 1.0.0
+	 * @param request
+	 * @param response
+	 * @param user
+	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/register", method=RequestMethod.POST)
@@ -74,7 +73,7 @@ public class UserController extends BaseController<TUser> {
 		}
 		
 		if(this.userService.isExistUsername(user.getUsername())){
-			return this.buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "用户已被注册");
+			return this.buildFailResult(ErrorCode.USER_ALREADY_EXISTS, "该用户已被注册");
 		}
 		
 		try {
@@ -132,14 +131,15 @@ public class UserController extends BaseController<TUser> {
 		if(map.get("code").equals(1)) { // 用户状态异常
 			return this.buildFailResult(ErrorCode.USER_STATUS_ERROR, map.get("errStr").toString());
 		}else if(!user.getPassword().equalsIgnoreCase(oldPassword)) {
-			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "原始密码错误");
+			return this.buildFailResult(ErrorCode.ORIGINAL_PWD_ERROR, "原始密码错误");
 		}else if(newPassword.equalsIgnoreCase(user.getPassword())){
-			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "新密码不能和原始密码相同");
+			return this.buildFailResult(ErrorCode.NEW_PWD_EQ_ORI_PWD, "新密码不能和原始密码相同");
 		}
 		
 		user.setPassword(newPassword);
 		try {
 			this.userService.modify(user);
+			vcm.delSmsCode(user.getPhone()); // 清除验证码
 		} catch (Exception e) {
 			e.printStackTrace();
 			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
@@ -175,7 +175,7 @@ public class UserController extends BaseController<TUser> {
 		user.setUsername(userName);
 		user = this.userService.query(user);
 		if(user == null){
-			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "该用户不存在");
+			return this.buildFailResult(ErrorCode.USER_DOES_NOT_EXIST, "该用户不存在");
 		}
 		// 短信验证码检查
 		String smsCode = vcm.getSmsCode(user.getPhone());
@@ -188,19 +188,35 @@ public class UserController extends BaseController<TUser> {
 		Map<String, Object> map = UserAuthUtil.checkStatus(user.getStatus().getVal());
 		if(map.get("code").equals(1)) { // 用户状态异常
 			return this.buildFailResult(ErrorCode.USER_STATUS_ERROR, map.get("errStr").toString());
-		}else if(newPassword.equalsIgnoreCase(user.getPassword())){
-			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "新密码不能和旧密码相同");
+//		}else if(newPassword.equalsIgnoreCase(user.getPassword())){
+//			return this.buildFailResult(ErrorCode.NEW_PWD_EQ_ORI_PWD, "新密码不能和旧密码相同");
 		}
 		
 		user.setPassword(newPassword);
 		try {
 			this.userService.modify(user);
+			vcm.delSmsCode(user.getPhone()); // 清除验证码
 		} catch (Exception e) {
 			e.printStackTrace();
 			return buildFailResult(HttpApplicationErrorCode.RESULT_ERROR_CODE,e.getMessage());
 		}
 		
 		return this.buildSuccessRetJson("新密码已设置成功", "");
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/checkUsername")
+	public Object checkUsername(HttpServletRequest request,
+			HttpServletResponse response) {
+		String userName = request.getParameter("username");
+		
+		if(StringUtils.isEmpty(userName)){
+			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "用户名不能为空");
+		}else if(this.userService.isExistUsername(userName)){
+			return this.buildFailResult(ErrorCode.USER_ALREADY_EXISTS, "该用户已被注册");
+		}else{
+			return buildSuccessResult(userName+"此用户名可以使用");
+		}
 	}
 
 }

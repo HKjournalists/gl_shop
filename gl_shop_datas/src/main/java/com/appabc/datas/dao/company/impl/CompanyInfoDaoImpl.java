@@ -3,29 +3,35 @@
  */
 package com.appabc.datas.dao.company.impl;
 
-import com.appabc.bean.bo.CompanyAllInfo;
-import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
-import com.appabc.bean.enums.AuthRecordInfo.AuthRecordType;
-import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
-import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
-import com.appabc.bean.enums.CompanyInfo.CompanyType;
-import com.appabc.bean.pvo.TCompanyInfo;
-import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.dao.BaseJdbcDao;
-import com.appabc.datas.dao.company.ICompanyInfoDao;
-import com.appabc.tools.utils.PrimaryKeyGenerator;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import com.appabc.bean.bo.CompanyAllInfo;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordType;
+import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
+import com.appabc.bean.pvo.TCompanyInfo;
+import com.appabc.common.base.MultiTypeBeanPropertySqlParameterSource;
+import com.appabc.common.base.QueryContext;
+import com.appabc.common.base.dao.BaseJdbcDao;
+import com.appabc.datas.cms.vo.task.TaskType;
+import com.appabc.datas.dao.company.ICompanyInfoDao;
+import com.appabc.tools.utils.PrimaryKeyGenerator;
 
 /**
  * @Description : 公司信息DAO实现
@@ -45,10 +51,17 @@ public class CompanyInfoDaoImpl extends BaseJdbcDao<TCompanyInfo> implements ICo
 	private static final String UPDATESQL = " update T_COMPANY_INFO set CNAME = :cname, MARK = :mark, CONTACT = :contact, CPHONE = :cphone, CTYPE = :ctype, AUTHSTATUS = :authstatus, STATUS = :status, CREATEDATE = :createdate, UPDATEDATE = :updatedate, UPDATER = :updater,TEL = :tel, BAILSTATUS = :bailstatus  where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_COMPANY_INFO WHERE ID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_COMPANY_INFO WHERE ID = :id ";
+	private static final String COUNT_SQL = "SELECT COUNT(0) cou FROM T_COMPANY_INFO WHERE 1=1";
 
 	//根据企业ID查询已认证通过的企业详情
-	private static final String SELECT_AUTH_COPN_INFO = " select ar.AUTHID,ar.IMGID,ar.AUTHSTATUS as AR_AUTHSTATUS,ci.ID,ci.CNAME,ci.MARK,ci.CONTACT,ci.CPHONE,ci.TEL,ci.CTYPE,ci.AUTHSTATUS,ci.BAILSTATUS,ci.CREATEDATE from T_COMPANY_INFO ci LEFT JOIN T_AUTH_RECORD  ar ON ci.ID=ar.CID ";
-
+	private static final String SELECT_AUTH_COPN_INFO = " select ci.*,ar.AUTHID,ar.IMGID,ar.AUTHSTATUS from "
+														+" (SELECT ID,CNAME,MARK,CONTACT,CPHONE,TEL,CTYPE,STATUS,CREATEDATE,UPDATEDATE,UPDATER,BAILSTATUS FROM T_COMPANY_INFO WHERE ID=?) as ci "
+														+" LEFT JOIN T_AUTH_RECORD ar ON ci.ID = ar.CID AND  ar.TYPE = ? AND ci.id = ? ORDER BY ar.CREATEDATE DESC LIMIT 0,1";
+	// 新添加的用户，需要放任务后台任务列表中的记录
+	private static final String QUERY_NEW_TASK_LIST = "SELECT tci.* FROM T_COMPANY_INFO tci WHERE NOT EXISTS ( SELECT st.OBJECT_ID FROM SYS_TASKS st WHERE tci.ID = st.OBJECT_ID  AND st.TYPE = ? )  AND tci.AUTHSTATUS=0";
+	// 新失效的用户，需要删除的后台任务列表
+	private static final String QUERY_INVALID_TASK_LIST = "SELECT tci.* FROM T_COMPANY_INFO tci WHERE EXISTS ( SELECT st.OBJECT_ID FROM SYS_TASKS st WHERE tci.ID = st.OBJECT_ID  AND st.TYPE = ? ) AND tci.AUTHSTATUS !=0";
+	
 	@Autowired
 	private PrimaryKeyGenerator pkg;
 
@@ -63,6 +76,7 @@ public class CompanyInfoDaoImpl extends BaseJdbcDao<TCompanyInfo> implements ICo
 	}
 
 	public void update(TCompanyInfo entity) {
+		entity.setUpdatedate(Calendar.getInstance().getTime());
 		super.update(UPDATESQL, entity);
 	}
 
@@ -119,20 +133,18 @@ public class CompanyInfoDaoImpl extends BaseJdbcDao<TCompanyInfo> implements ICo
 	/* (non-Javadoc)根据企业ID查询已认证通过的企业详情
 	 * @see com.appabc.datas.dao.company.ICompanyInfoDao#queryAuthCompanyInfo(java.lang.String)
 	 */
-	public CompanyAllInfo queryAuthCompanyInfo(String cid,AuthRecordStatus authRecordStatus) {
+	public CompanyAllInfo queryAuthCompanyInfo(String cid) {
 
 		StringBuffer sql = new StringBuffer(SELECT_AUTH_COPN_INFO);
 		/*****过滤条件******************************/
-		sql.append("WHERE ar.AUTHSTATUS=? AND ar.TYPE=? AND ci.id=? order by ar.CREATEDATE DESC limit 0,1");
-		Object params[] = {authRecordStatus.getVal(),AuthRecordType.AUTH_RECORD_TYPE_COMPANY.getVal(), cid};
-
+		Object params[] = {cid, AuthRecordType.AUTH_RECORD_TYPE_COMPANY.getVal(), cid};
 		List<CompanyAllInfo> oaiList = this.getJdbcTemplate().query(sql.toString(), params, new RowMapper<CompanyAllInfo>() {
 			public CompanyAllInfo mapRow(ResultSet rs,
 										 int rowNum) throws SQLException {
 				CompanyAllInfo t = new CompanyAllInfo();
 
 				t.setId(rs.getString("ID"));
-				t.setAuthstatus(CompanyAuthStatus.enumOf(rs.getString("AUTHSTATUS")));
+				t.setAuthstatus(AuthRecordStatus.enumOf(rs.getString("AUTHSTATUS")));
 				t.setBailstatus(CompanyBailStatus.enumOf(rs.getString("BAILSTATUS")));
 				t.setCname(rs.getString("CNAME"));
 				t.setContact(rs.getString("CONTACT"));
@@ -156,7 +168,20 @@ public class CompanyInfoDaoImpl extends BaseJdbcDao<TCompanyInfo> implements ICo
 		return null;
 
 	}
-
+	
+	@Override
+	public TCompanyInfo queryAuthCmpInfo(String cid) {
+		
+		StringBuffer sql = new StringBuffer(SELECT_AUTH_COPN_INFO);
+		/*****过滤条件******************************/
+		List<Object> args = new ArrayList<Object>();
+		args.add(cid);
+		args.add(AuthRecordType.AUTH_RECORD_TYPE_COMPANY.getVal());
+		args.add(cid);
+		
+		return super.query(sql.toString(), args);
+	}
+	
 	private static class CompanyRowMapper implements RowMapper<TCompanyInfo> {
 		@Override
 		public TCompanyInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -164,7 +189,7 @@ public class CompanyInfoDaoImpl extends BaseJdbcDao<TCompanyInfo> implements ICo
 
 			t.setId(rs.getString("ID"));
 			t.setCname(rs.getString("CNAME"));
-			t.setAuthstatus(CompanyAuthStatus.enumOf(rs.getString("AUTHSTATUS")));
+			t.setAuthstatus(AuthRecordStatus.enumOf(rs.getString("AUTHSTATUS")));
 			t.setContact(rs.getString("CONTACT"));
 			t.setCphone(rs.getString("CPHONE"));
 			t.setCreatedate(rs.getTimestamp("CREATEDATE"));
@@ -177,6 +202,80 @@ public class CompanyInfoDaoImpl extends BaseJdbcDao<TCompanyInfo> implements ICo
 			t.setBailstatus(CompanyBailStatus.enumOf(rs.getString("BAILSTATUS")));
 			return t;
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.dao.company.ICompanyInfoDao#queryCount(com.appabc.bean.pvo.TCompanyInfo)
+	 */
+	@Override
+	public int queryCount(TCompanyInfo entity) {
+		SqlParameterSource paramSource = new MultiTypeBeanPropertySqlParameterSource(entity);
+		Number number = super.getNamedParameterJdbcTemplate().queryForObject(dynamicJoinSqlWithEntity(entity, new StringBuilder(COUNT_SQL)).toString(), paramSource, Integer.class);  
+	    return (number != null ? number.intValue() : 0);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.dao.company.ICompanyInfoDao#queryCmpInfoByUserPhone(java.lang.String)  
+	 */
+	@Override
+	public TCompanyInfo queryCmpInfoByUserPhone(String phone) {
+		StringBuilder sql = new StringBuilder(" SELECT TCI.* FROM T_USER TU LEFT JOIN T_COMPANY_INFO TCI ON TCI.ID = TU.CID WHERE 1 = 1 ");
+		if(!StringUtils.isEmpty(phone)){
+			sql.append(" AND PHONE = ?  ");
+		}
+		List<TCompanyInfo> res = this.queryForList(sql.toString(), Collections.singletonList(phone));
+		return CollectionUtils.isEmpty(res) ? null : res.get(0);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.dao.company.ICompanyInfoDao#queryCmpInfoListByUserPhones(java.lang.String)  
+	 */
+	@Override
+	public List<TCompanyInfo> queryCmpInfoListByUserPhones(String phones) {
+		StringBuilder sql = new StringBuilder(" SELECT TU.USERNAME,TU.PHONE,TCI.* FROM T_USER TU LEFT JOIN T_COMPANY_INFO TCI ON TCI.ID = TU.CID WHERE 1 = 1 ");
+		if(StringUtils.isNotEmpty(phones)){
+			sql.append(" AND PHONE in ( "+phones+" )  ");
+		}
+		List<TCompanyInfo> res = getJdbcTemplate().query(sql.toString(), new RowMapper<TCompanyInfo>() {
+
+			@Override
+			public TCompanyInfo mapRow(ResultSet rs, int rowNum)
+					throws SQLException {
+				TCompanyInfo t = new TCompanyInfo();
+
+				t.setId(rs.getString("ID"));
+				t.setCname(rs.getString("CNAME"));
+				t.setAuthstatus(AuthRecordStatus.enumOf(rs.getString("AUTHSTATUS")));
+				t.setContact(rs.getString("CONTACT"));
+				t.setCphone(rs.getString("PHONE"));
+				t.setCreatedate(rs.getTimestamp("CREATEDATE"));
+				t.setCtype(CompanyType.enumOf(rs.getString("CTYPE")));
+				t.setMark(rs.getString("MARK"));
+				t.setStatus(rs.getString("STATUS"));
+				t.setUpdatedate(rs.getTimestamp("UPDATEDATE"));
+				t.setUpdater(rs.getString("UPDATER"));
+				t.setTel(rs.getString("TEL"));
+				t.setBailstatus(CompanyBailStatus.enumOf(rs.getString("BAILSTATUS")));
+				return t;
+			}
+			
+		});
+		return res;
+	}
+
+	public List<TCompanyInfo> queryNewListForTask() {
+		StringBuilder sql = new StringBuilder(QUERY_NEW_TASK_LIST);
+		List<Object> args = new ArrayList<Object>();
+		args.add(TaskType.UrgeVerify.getValue());
+		return super.queryForList(sql.toString(), args);
+	}
+	
+	@Override
+	public List<TCompanyInfo> queryInvalidListForTask() {
+		StringBuilder sql = new StringBuilder(QUERY_INVALID_TASK_LIST);
+		List<Object> args = new ArrayList<Object>();
+		args.add(TaskType.UrgeVerify.getValue());
+		return super.queryForList(sql.toString(), args);
 	}
 
 }

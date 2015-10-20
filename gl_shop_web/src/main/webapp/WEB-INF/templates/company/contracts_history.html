@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/company">
+<head>
+  <title>交易行为 - 历史交易</title>
+</head>
+<body>
+
+  <h4 layout:fragment="contentNavTitle">
+    <i class="fa fa-fw fa-wrench"></i> 交易行为 - 历史交易
+  </h4>
+
+  <div layout:fragment="pageContent">
+    <div th:replace="company/fragments :: contract_history_tab" class="nav nav-tabs"></div>
+
+    <p></p>
+    <div class="nav-tab-content">
+    <div class="tab-pane fade in active">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>序号</th>
+            <th>结束时间</th>
+		    <th>合同名称</th>
+		    <th>当前状态</th>
+		    <th>操作</th>
+          </thead>
+          <tbody th:each="bean, status : ${caibList}">
+          <tr>
+          <td><span th:text="${status.index+1}"></span></td>
+            <td th:text="${bean.orderInfo.updatetime} ? ${#calendars.format(bean.orderInfo.updatetime, 'YYYY-MM-dd')}">2014年9月19日13:51</td>
+            <td ><span th:text="${bean.orderInfo.remark}"></span></td>
+            <td>已结束<span th:text="${bean.statusRemark}"></span></td>
+            <td><a th:href="@{/public/contract/{id}/(id=${bean.orderInfo.id})}" target="_blank">查看详情</a></td>
+          </tr>
+          <!-- 
+           -->
+          <tr>
+          	<td colspan="5">
+          		<u><span th:id="'a_'+${bean.orderInfo.id}" href="#" th:onclick="'opview('+${bean.orderInfo.id}+')'" style="cursor: pointer; font-size: 10px;"> 点击展开</span></u>
+          		<div th:id="'div_'+${bean.orderInfo.id}" style="display: none;"><BR>
+          		<p th:each="op : ${bean.opList}" th:text="${op.operationtime} ? ${#calendars.format(op.operationtime, 'YYYY-MM-dd HH:mm:ss')}+'&nbsp;&nbsp;'+${op.result}"></p>
+				</div>
+          	</td>
+          </tr>
+          </tbody>
+          <tr th:if="${#lists.isEmpty(caibList)}">
+            <td colspan="5">暂时没有数据</td>
+          </tr>
+        </table>
+      </div>
+      <div th:replace="layouts/fragments :: pagingNavBar"></div>
+    </div>
+  </div>
+
+  </div>
+  
+  <div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+  <script th:src="@{/static/js/product-info.js}"></script>
+</div>
+
+<script layout:fragment="inlineJavascript">
+
+function opview(contractid){
+	var divId = "div_"+contractid;
+	var aId = "a_"+contractid;
+	if(document.getElementById(divId).style.display=='none'){
+		document.getElementById(divId).style.display='';
+		document.getElementById(aId).innerHTML='点击隐藏';
+	}else{
+		document.getElementById(divId).style.display='none';
+		document.getElementById(aId).innerHTML='点击展开';
+	}
+}
+
+</script>
+</body>
+
+</html>

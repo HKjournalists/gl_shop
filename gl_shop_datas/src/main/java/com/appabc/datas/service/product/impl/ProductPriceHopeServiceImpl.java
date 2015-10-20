@@ -3,18 +3,20 @@
  */
 package com.appabc.datas.service.product.impl;
 
-import com.appabc.bean.pvo.TProductPriceHope;
-import com.appabc.common.base.QueryContext;
-import com.appabc.datas.dao.product.IProductPriceHopeDao;
-import com.appabc.datas.service.product.IProductPriceHopeService;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import com.appabc.bean.pvo.TProductPriceHope;
+import com.appabc.common.base.QueryContext;
+import com.appabc.datas.dao.product.IProductPriceHopeDao;
+import com.appabc.datas.service.product.IProductPriceHopeService;
 
 /**
  * @Description : 商品预测SERVICE实现类
@@ -73,6 +75,13 @@ public class ProductPriceHopeServiceImpl implements IProductPriceHopeService{
 	 */
 	public List<Map<String, Object>> queryHopePrice(String area, String pcode) {
 		return this.productPriceHopeDao.queryHopePrice(area, pcode);
+	}
+	
+	@Override
+	public List<TProductPriceHope> queryListByDay(TProductPriceHope entity, Date day) {
+		entity.setStarttime(null);
+		entity.setEndtime(null);
+		return this.productPriceHopeDao.queryListByDay(entity, day);
 	}
 
 }

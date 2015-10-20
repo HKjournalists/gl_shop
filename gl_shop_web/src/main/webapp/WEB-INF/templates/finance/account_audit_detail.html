@@ -13,8 +13,9 @@
 
   <div th:replace="finance/fragments :: account_audit_tabs"></div>
 
-    <div class="nav-tab-content">
-      <div class="well">
+    <p></p>
+    <div class="panel panel-primary">
+      <div class="panel-body">
         <div class="table-responsive">
           <table class="table table-bordered">
             <tr>
@@ -31,18 +32,22 @@
             </tr>
           </table>
         </div>
-        <div th:each="img : ${account.vImgList}" class="row">
-          <div class="col-sm-5">
-            <img th:src="@{${img.url}}" />
+      </div>
+      <div class="container">
+          <div th:each="img : ${account.vImgList}" class="row">
+              <div class="col-sm-8">
+                <img th:src="@{${img.url}}" width="600" />
+              </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-5">
-            <ul>
-              <li th:text="${account.remark}">未通过的理由</li>
-            </ul>
+          <div class="row" th:if="${account.remark}">
+              <div class="col-sm-8">
+                  未通过理由：
+                  <span th:text="${account.remark}">未通过的理由</span>
+              </div>
           </div>
-        </div>
+      </div>
+      <div class="panel-footer text-center">
+        <a class="btn btn-primary" th:href="@{/finance/account_audit/finished/1/}">返回</a>
       </div>
     </div>
 

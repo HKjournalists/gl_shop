@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * @Description : 企业联系人CONTROLLER
@@ -51,7 +52,7 @@ public class ContactController extends BaseController<TCompanyContact> {
 	@ResponseBody
 	@RequestMapping(value = "/getList",method=RequestMethod.GET)
 	public Object getContactList(HttpServletRequest request,HttpServletResponse response) {
-		String cid = request.getParameter("cid");
+		String cid = this.getCurrentUserCid(request);
 		if(StringUtils.isEmpty(cid)){
 			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业ID不能为空");
 		}
@@ -74,7 +75,8 @@ public class ContactController extends BaseController<TCompanyContact> {
 	public Object saveContact(HttpServletRequest request,HttpServletResponse response) {
 		
 		String contactList = request.getParameter("contactList"); // 企业联系人信息，json格式
-		String cid = request.getParameter("cid"); // 企业ID
+//		String cid = request.getParameter("cid"); // 企业ID
+		String cid = getCurrentUserCid(request); // 企业ID
 		if(StringUtils.isEmpty(contactList)){
 			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "联系人信息不能为空");
 		}else if(StringUtils.isEmpty(cid)){
@@ -89,19 +91,21 @@ public class ContactController extends BaseController<TCompanyContact> {
 		Gson gson = new Gson();
 		int num = 0;
 		for(JsonElement je : jsonArray){ // 企业联系人信息
-			ccBean = gson.fromJson(je, TCompanyContact.class);
-			if(ccBean.getStatus() == CompanyInfo.ContactStatus.CONTACT_STATUS_DEFULT.getVal()){ // 默认联系人信息检查
-				if(StringUtils.isEmpty(ccBean.getCname())){
-					this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "默认联系人姓名不能为空");
-				}else if(StringUtils.isEmpty(ccBean.getCphone())){
-					this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "默认联系人手机不能为空");
-				}
+			
+			if(num > 0) break; // 企业联系人修改为一个
+			
+			try {
+				ccBean = gson.fromJson(je, TCompanyContact.class);
+			} catch (JsonSyntaxException e1) {
+				e1.printStackTrace();
+				this.buildFailResult(ErrorCode.RESULT_ERROR_CODE, "数据格式错误");
 			}
-			if(num == 0){ // 第一个为默认联系人
-				ccBean.setStatus(CompanyInfo.ContactStatus.CONTACT_STATUS_DEFULT.getVal());
-			}else{
-				ccBean.setStatus(CompanyInfo.ContactStatus.CONTACT_STATUS_OTHER.getVal());
+			if(StringUtils.isEmpty(ccBean.getCname())){
+				this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "默认联系人姓名不能为空");
+			}else if(StringUtils.isEmpty(ccBean.getCphone())){
+				this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "默认联系人手机不能为空");
 			}
+			ccBean.setStatus(CompanyInfo.ContactStatus.CONTACT_STATUS_DEFULT.getVal());
 			if(!StringUtils.isEmpty(ccBean.getId())){
 				try {
 					this.companyContactService.modify(ccBean);
@@ -111,7 +115,7 @@ public class ContactController extends BaseController<TCompanyContact> {
 				}
 			}else{
 				ccBean.setCid(cid);
-				ccBean.setCreater(this.getCurrentUserId(request));
+				ccBean.setCreater(this.getCurrentUserName(request));
 				ccBean.setCreatetime(Calendar.getInstance().getTime());
 				try {
 					this.companyContactService.add(ccBean);

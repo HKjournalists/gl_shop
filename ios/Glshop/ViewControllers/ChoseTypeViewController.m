@@ -28,13 +28,9 @@ static NSString *listResueIdentify = @"listCell";
     
     [self sureSelecedMark];
     
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(cancelPresent)];
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:globe_cancel_str style:UIBarButtonItemStylePlain target:self action:@selector(cancelPresent)];
     self.navigationItem.leftBarButtonItem = item;
-    
-//    UIBarButtonItem *rightItem = [[UIBarButtonItem alloc] initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(doneAction)];
-//    self.navigationItem.rightBarButtonItem = rightItem;
 
-    
     _listView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     _listView.dataSource = self;
     _listView.delegate = self;
@@ -110,9 +106,6 @@ static NSString *listResueIdentify = @"listCell";
                     model = _datas[_lastSeleced];
                 }
                 _publicModel.pid = model.goodChildId;
-                
-//                DLog(@"%@",[[SynacObject goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid].propreDicArray JSONString]);
-//                _publicModel.productPropertys = [[SynacObject goodsChildModlelFor:_publicModel.ptype deepId:_publicModel.pid].propreDicArray JSONString];
             
             }
                 break;
@@ -123,8 +116,6 @@ static NSString *listResueIdentify = @"listCell";
                     model = _datas[_lastSeleced];
                 }
                 _publicModel.pid = model.goodChildId;
-                
-//                _publicModel.productPropertys = [[[SynacInstance sharedInstance] goodsChildStone:_publicModel.pid].propreDicArray JSONString];
             }
                 break;
             default:
@@ -157,9 +148,10 @@ static NSString *listResueIdentify = @"listCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:listResueIdentify];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.textLabel.font = UFONT_16;
     if (_productType == stoneType) {
         GoodChildModel *model = self.datas[indexPath.row];
-        cell.textLabel.text = model.goodChildPname;
+        cell.textLabel.text = [model combineNameWithUnit];
     }else if (_productType == sendsSubType) {
         GoodsModel *model = self.datas[indexPath.row];
         cell.textLabel.text = model.goodsName;

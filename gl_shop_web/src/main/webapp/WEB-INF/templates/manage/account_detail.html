@@ -19,7 +19,7 @@
 				<div class="form-group">
 					<label for="userName" class="col-sm-2 control-label">用户名</label>
 					<div class="controls col-sm-4">
-						<input pattern="\w{4,20}" class="form-control" type="text" id="userName" name="userName" th:value="${user.userName}" placeholder="用户名" required="required" title="用户名不正确，请输入0-9数字和a-z大小写字母，至少为4个字符" />
+						<input pattern="\w{4,20}" class="form-control" type="text" id="userName" name="userName" th:readonly="${#strings.equals('edit', type)} ? 'readonly'" th:value="${user.userName}" placeholder="用户名" required="required" title="用户名不正确，请输入0-9数字和a-z大小写字母，至少为4个字符" />
 					</div>
 					<div class="col-sm-6 help-inline">
                         <div class="error" role="alert" data-validation-message-for="userName"></div>
@@ -35,7 +35,7 @@
                     </div>
 				</div>
 				<div class="form-group" th:if="${#strings.equals(type, 'create')}">
-					<label for="passord" class="col-sm-2 control-label">密码</label>
+					<label for="password" class="col-sm-2 control-label">密码</label>
 					<div class="col-sm-4">
                         <input pattern=".{8,20}" type="password" class="form-control" id="password" name="password" th:value="${user.password}" placeholder="输入密码" required="required" title="密码长度8-20个字符" />
 					</div>
@@ -44,7 +44,7 @@
                     </div>
 				</div>
                 <div class="form-group" th:if="${#strings.equals(type, 'create')}">
-					<label for="confirmPassord" class="col-sm-2 control-label">确认密码</label>
+					<label for="confirmPassword" class="col-sm-2 control-label">确认密码</label>
 					<div class="col-sm-4">
                         <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" th:value="${user.password}" placeholder="确认密码" required="required" title="两次密码不一致" />
 					</div>
@@ -61,7 +61,7 @@
                         </div>
 					</div>
 				</div>
-				
+
 				<hr />
                 <div class="form-group">
                     <label class="col-sm-2 control-label">客服</label>
@@ -100,10 +100,7 @@
                     <label class="col-sm-2 control-label">合同管理</label>
                     <div class="checkbox col-sm-10">
                         <label class="cb-inline">
-                            <input type="checkbox" id="contractMatch" name="userPermissions" value="41" th:checked="${permissions.contains(41)} ? 'checked'" />撮合交流
-                        </label>
-                        <label class="cb-inline">
-                            <input type="checkbox" id="contractGenerateConfirm" name="userPermissions" value="42" th:checked="${permissions.contains(42)} ? 'checked'" />生成/确认合同
+                            <input type="checkbox" id="contractOperation" name="userPermissions" value="41" th:checked="${permissions.contains(41)} ? 'checked'" />合同操作（撮合、生成/确认合同）
                         </label>
                     </div>
 				</div>
@@ -131,10 +128,10 @@
                             <input type="checkbox" id="remittanceProcess" name="userPermissions" value="83" th:checked="${permissions.contains(83)} ? 'checked'" />汇入款项处理
                         </label>
                         <label class="cb-inline">
-                            <input type="checkbox" id="payProcess" name="userPermissions" value="84" th:checked="${permissions.contains(84)} ? 'checked'" />支出款项处理
+                            <input type="checkbox" id="withdrawProcess" name="userPermissions" value="84" th:checked="${permissions.contains(84)} ? 'checked'" />提现处理
                         </label>
                     </div>
-				</div>	
+				</div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">财务审核</label>
                     <div class="checkbox col-sm-10">
@@ -142,13 +139,13 @@
                             <input type="checkbox" id="remittanceAudit" name="userPermissions" value="101" th:checked="${permissions.contains(101)} ? 'checked'" />汇入款项审核
                         </label>
                         <label class="cb-inline">
-                            <input type="checkbox" id="payAudit" name="userPermissions" value="102" th:checked="${permissions.contains(102)} ? 'checked'" />支出款项审核
+                            <input type="checkbox" id="withdrawCashout" name="userPermissions" value="102" th:checked="${permissions.contains(102)} ? 'checked'" />提现打款
                         </label>
                         <label class="cb-inline">
                             <input type="checkbox" id="specialFundProcess" name="userPermissions" value="103" th:checked="${permissions.contains(103)} ? 'checked'" />特殊款项处理
                         </label>
                     </div>
-				</div>	
+				</div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">系统管理</label>
                     <div class="checkbox col-sm-10">
@@ -158,15 +155,46 @@
                         <label class="cb-inline">
                             <input type="checkbox" id="specialConditionProcess" name="userPermissions" value="10002" th:checked="${permissions.contains(10002)} ? 'checked'" />特殊情况处理
                         </label>
+                        <label class="cb-inline">
+                            <input type="checkbox" id="bannerAdvertisementConfigure" name="userPermissions" value="10003" th:checked="${permissions.contains(10003)} ? 'checked'" />Banner广告图配置
+                        </label>
+                        <label class="cb-inline">
+                            <input type="checkbox" id="bannerAdvertisementConfigure" name="userPermissions" value="10004" th:checked="${permissions.contains(10004)} ? 'checked'" />行情地域配置
+                        </label>
                     </div>
-				</div>	
+				</div>
+				<div class="form-group">
+                    <label class="col-sm-2 control-label">常用工具</label>
+                    <div class="checkbox col-sm-10">
+                        <label class="cb-inline">
+                            <input type="checkbox" id="systemMessageSend" name="userPermissions" value="105" th:checked="${permissions.contains(105)} ? 'checked'" />系统消息
+                        </label>
+                        <label class="cb-inline">
+                            <input type="checkbox" id="shortMessageSend" name="userPermissions" value="104" th:checked="${permissions.contains(104)} ? 'checked'" />短信工具
+                        </label>
+                        <label class="cb-inline">
+                            <input type="checkbox" id="validateCodeManage" name="userPermissions" value="106" th:checked="${permissions.contains(106)} ? 'checked'" />验证码管理
+                        </label>
+                    </div>
+				</div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">数据</label>
+                    <div class="checkbox col-sm-10">
+                        <label class="cb-inline">
+                            <input type="checkbox" id="dataUserAllCount" name="userPermissions" value="201" th:checked="${permissions.contains(201)} ? 'checked'" />用户整体数据
+                        </label>
+                        <label class="cb-inline">
+                            <input type="checkbox" id="dataUserSingleCount" name="userPermissions" value="202" th:checked="${permissions.contains(202)} ? 'checked'" />单个用户数据
+                        </label>
+                    </div>
+				</div>
 				<hr />
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="submit" name="mode" value="save" class="btn btn-primary">保存</button>
                         <button type="submit" name="mode" value="saveContinue" class="btn" th:if="${#strings.equals(type, 'create')}">保存并继续创建帐号</button>
                     </div>
-				</div>	
+				</div>
 			</form>
 		</div>
 	</div>

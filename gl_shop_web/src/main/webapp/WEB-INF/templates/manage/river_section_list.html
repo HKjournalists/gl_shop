@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/manage">
+<head>
+<title>系统管理 - 人员管理</title>
+</head>
+<body>
+    <h4 layout:fragment="contentNavTitle">
+        <i class="fa fa-fw fa-wrench"></i> 系统参数 - 行情地域配置
+        <input class="btn btn-primary text-center" type="button" value="添加" onclick="addShow();"/>&nbsp;
+    </h4>
+	
+	<div layout:fragment="pageContent">
+	<div class="nav-tab-content">
+    <div class="tab-pane fade in active">
+      <div class="table-responsive">
+      <form id="form_riversection" th:action="@{/manage/code/riversection/add}" method="post">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th width="10%">排序</th>
+			<th width="35%">当前地域</th>
+			<th width="25%">当前状态</th>
+			<th width="25%">操作</th>
+          </tr>
+          </thead>
+          <tbody>
+		    <tr th:each="bean: ${rsList}">
+				<td th:id="${'td_'+bean.id}" th:text="${bean.orderno}"></td>
+				<td th:text="${bean.name}"></td>
+				<td th:style="${bean.ishidden==0?'color: green; font-weight:bold;':'color: red'}" th:text="${bean.ishidden==1?'已停用':'已启用'}"></td>
+				<td>
+					<input type="button" th:value="${bean.ishidden==0?'停用':'启用'}" th:onclick="'mdyStatus('+${bean.id}+','+${bean.ishidden==0?1:0}+',\''+${bean.name}+'\')'" class="btn btn-primary text-center"/>
+					<input type="button" value="删除" th:onclick="'mdyStatus('+${bean.id}+',2,\''+${bean.name}+'\')'" class="btn btn-primary text-center"/>
+					<input type="button" value="排序" th:onclick="'editOrderNo('+${bean.id}+')'" class="btn btn-primary text-center"/>
+				</td>
+			</tr>
+			
+			<!-- add tr -->
+			<tr id="tr_add" style="display: none;">
+				<td ><input id="orderon" name="orderno" maxlength="10" class="form-control" readonly="readonly" th:value="${lastNum+1}"></td>
+				<td><input id="riverSectionName" name="riverSectionName" maxlength="24" class="form-control"></td>
+				<td>
+					<select class="form-control" name="ishidden" id="ishidden">
+		                <option value="0">启用</option>
+		                <option value="1">停用</option>
+		              </select>
+				</td>
+				<td>
+					<input type="submit" value="保存" class="btn btn-primary text-center"/>
+					<input type="button" value="取消" onclick="$('#tr_add').hide();$('#riverSectionName').val('');$('#ishidden').val(0);" class="btn btn-primary text-center"/>
+				</td>
+			</tr>
+		</tbody>
+        </table>
+        </form>
+      </div>
+		<div align="center" id="div_order_operation" hidden="hidden">
+			<input type="button" value="排序保存" onclick="saveOrder()" class="btn btn-primary text-center"/>
+			<input type="button" value="排序取消" onclick="conseOrder()" class="btn btn-primary text-center"/>
+		</div>
+    </div>
+  </div>
+  </div>
+	
+</body>
+
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+  <script th:src="@{/static/js/product-info.js}"></script>
+</div>
+
+<script layout:fragment="inlineJavascript">
+var contextPath = /*[[@{/}]]*/ '/';
+
+// 修改状态
+function mdyStatus(id, status, rsname){
+	
+	var strMsg;
+	switch(status) {
+	case 0: strMsg = "请确认是否启用【"+rsname+"】，启用后该地段将在客户端显示。"; break;
+	case 1: strMsg = "请确认是否停用【"+rsname+"】，停用后该地段将在客户端不显示。"; break;
+	case 2: strMsg = "请确认是否删除【"+rsname+"】，删除后将不可恢复。"; break;
+	default: return;
+	}
+	
+	if(confirm(strMsg)) {
+		window.location.href=contextPath+"manage/code/riversection/mdyStatus?id="+id+"&status="+status; 
+	}
+	
+}
+
+var orArr = new Array();
+
+// 排序
+function editOrderNo(id){
+	
+	if($('#tr_add').is(":hidden") == false){
+		alert("请先保存或取消添加项。");
+		return;
+	}
+	
+	var odVal = $('#td_'+id).html();
+	if(odVal.indexOf('<input') > -1){
+		odVal = $('#order_'+id).val();
+		$('#td_'+id).html($('#hisVal_'+id).val()); // 还原原始数据
+		removeArr(id);
+	}else{
+		// 排序编辑框
+		var editHtml='<input name="ordernos" id="order_'+id+'" value="'+odVal+'" onkeyup="this.value=this.value.replace(/\\D/g,\'\')" class="form-control" maxlength="10" />';
+		// 对应记录ID
+		editHtml += '<input  hidden="hidden" name="ids" value="'+id+'" />';
+		// 原始值，取消时还原用
+		editHtml += '<input  hidden="hidden" id="hisVal_'+id+'" value="'+odVal+'" />';
+		
+		$('#td_'+id).html(editHtml);
+		orArr.push(id);
+		$('#order_'+id).focus();
+	}
+	//alert(orArr);
+	
+	//var strArr = echeArr(orArr);
+	
+	if(orArr.length == 0){
+		$('#div_order_operation').hide();
+	}else{
+		$('#div_order_operation').show();
+	}
+}
+
+// 排序框编辑和还原
+
+// 删除数组中的数据，val为值
+function removeArr(val){
+	for(var i=0; i<orArr.length; i++){
+		if(val == orArr[i]){
+			orArr.splice(i,1);
+			break;
+		}
+	}
+}
+
+// 取消排序保存
+function conseOrder(){
+	window.location.href=contextPath+"manage/code/riversection/list";
+}
+
+// 排序保存
+function saveOrder(){
+	document.getElementById('form_riversection').action = contextPath+"manage/code/riversection/update_orderno";
+	document.getElementById('form_riversection').submit();
+}
+
+// 添加项显示
+function addShow(){
+	if($('#div_order_operation').is(":hidden") == false){
+		alert("请先保存或取消排序。");
+		return;
+	}
+	$('#tr_add').show();
+	$('#riverSectionName').focus();
+}
+
+</script>
+</body>
+
+</html>

@@ -11,5 +11,25 @@
   <li role="presentation" th:class="${#strings.contains(url, '/account_audit/finished/')} ? 'active'"><a th:href="@{/finance/account_audit/finished/1/}">已审核帐号</a></li>
 </ul>
 </div>
+
+<div th:fragment="withdraw_acct_selector(urlType, acctType)" class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+    <th:block th:switch="${acctType}">
+      <th:block id="btnTxt" th:case="null">全部</th:block>
+      <th:block id="btnTxt" th:case="'GUARANTY'}">保证金账户</th:block>
+      <th:block id="btnTxt" th:case="'DEPOSIT'}">货款账户</th:block>
+    </th:block>
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu pull-right" role="menu">
+    <li><a th:href="@{/finance/withdraw/{type}/1/(type=${urlType})}">全部</a>
+    </li>
+    <li><a th:href="@{/finance/withdraw/{type}/1/?acctType=GUARANTY(type=${urlType})}">保证金账户</a>
+    </li>
+    <li><a th:href="@{/finance/withdraw/{type}/1/?acctType=DEPOSIT(type=${urlType})}">货款账户</a>
+    </li>
+  </ul>
+</div>
+
 </body>
 </html>

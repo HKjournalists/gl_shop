@@ -87,7 +87,7 @@ public class TCompanyShipping extends BaseBean {
     /**
      * 船体材料
      */
-    private Float smateriall;
+    private String smateriall;
 
     /**
      * 更新时间
@@ -214,15 +214,15 @@ public class TCompanyShipping extends BaseBean {
         this.sover = sover;
     }
 
-    public Float getSmateriall() {
-        return smateriall;
-    }
+    public String getSmateriall() {
+		return smateriall;
+	}
 
-    public void setSmateriall(Float smateriall) {
-        this.smateriall = smateriall;
-    }
+	public void setSmateriall(String smateriall) {
+		this.smateriall = smateriall;
+	}
 
-    public Date getUpdatedate() {
+	public Date getUpdatedate() {
         return updatedate;
     }
 

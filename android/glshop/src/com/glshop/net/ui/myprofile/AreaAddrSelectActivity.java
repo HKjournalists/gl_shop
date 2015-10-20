@@ -122,6 +122,20 @@ public class AreaAddrSelectActivity extends BasicActivity implements OnItemClick
 		handleErrorAction(respInfo);
 	}
 
+	@Override
+	protected void showErrorMsg(RespInfo respInfo) {
+		if (respInfo != null) {
+			switch (respInfo.respMsgType) {
+			case GlobalMessageType.ProfileMessageType.MSG_GET_TRADE_ADDR_LIST_FAILED:
+				showToast(R.string.error_req_get_list);
+				break;
+			default:
+				super.showErrorMsg(respInfo);
+				break;
+			}
+		}
+	}
+
 	private boolean loadAreaList(String areaCode) {
 		//updateDataStatus(DataStatus.LOADING);
 		ArrayList<AreaInfoModel> data = (ArrayList<AreaInfoModel>) mSysCfgLogic.getChildAreaInfo(areaCode);

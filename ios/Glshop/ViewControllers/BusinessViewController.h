@@ -10,4 +10,6 @@
 
 @interface BusinessViewController : BaseViewController
 
+@property (nonatomic, strong) NSMutableDictionary *requestParams;
+
 @end

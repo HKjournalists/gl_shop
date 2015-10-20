@@ -36,7 +36,7 @@
               <th>银行汇款流水号</th>
               <td th:text="${remittance.bankSerialNumber}">1234567890983748</td>
               <th>汇款录入人</th>
-              <td th:text="${remittance.creator.userName}">张三</td>
+              <td th:text="${remittance.creator.realName}">张三</td>
             </tr>
           </table>
         </div>
@@ -58,10 +58,8 @@
               <td width="30%" th:text="${remittance.remitter}">张思</td>
             </tr>
             <tr>
-              <th width="20%">合同编号</th>
-              <td th:text="${remittance.contractId}">201404159280</td>
-              <th width="20%">公司名称</th>
-              <td th:text="${remittance.company}">江苏国立有限公司</td>
+              <th>公司名称</th>
+              <td colspan="3" th:text="${remittance.company}">江苏国立有限公司</td>
             </tr>
             <tr>
               <th width="20%">其他信息</th>
@@ -86,18 +84,15 @@
               <th width="15%">用户ID</th>
               <th width="20%">保证金账户余额</th>
               <th width="20%">货款账户余额</th>
-              <th width="20%">是否点击我已付款</th>
-              <th width="20%">点击我已付款时间</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="remit : ${possibleTargest}">
-              <td><input type="radio" name="cid" th:value="${remit.company.id}" th:attr="data-attr='' + ${remit.company.id} + ',' + ${remit.company.ctype.text} + ',' + ${remit.remittance.amount} + ',' + ${remit.company.cname}" /></td>
+              <td><input type="radio" name="cid" th:value="${remit.company.id}" th:attr="data-attr='' + ${remit.company.id} + ',' + (${remit.company.ctype} ? ${remit.company.ctype.text} : '未知') + ',' + ${remit.remittance.amount} + ',' + ${remit.company.cname}" />
+                <span th:text="${remit.company.cname}">江苏国立网络科技有限公司</span></td>
               <td><a th:href="@{/company/{cid}/info/(cid=${remit.company.id})}" target="_blank" th:text="${remit.company.id}">2323443242</a></td>
-              <td th:text="${remit.balance.amount}">54390</td>
-              <td th:text="${remit.guaranty.amount}">100000</td>
-              <td th:text="${remit.requestRemitTime} ? '是' : '否'">是</td>
-              <td th:text="${remit.requestRemitTime} ? ${#calendars.format(remit.requestRemitTime, 'yyyy年M月d日 HH:mm')} : ''">2014-12-16 19：07</td>
+              <td th:text="${remit.guaranty.amount}">54390</td>
+              <td th:text="${remit.balance.amount}">100000</td>
             </tr>
             </tbody>
           </table>
@@ -108,6 +103,7 @@
             <thead>
             <tr>
               <th width="25%">用户ID</th>
+              <th width="25%">用户名称</th>
               <th width="20%">用户类型</th>
               <th width="20%">需变更账户类型</th>
               <th width="20%">需系统增加金额</th>
@@ -116,6 +112,7 @@
             <tbody>
             <tr>
               <td><div id="company">123459o8830300</div></td>
+              <td><div id="companyName">江苏国立网络技术有限公司</div></td>
               <td><div id="companyType">船舶</div></td>
               <td>
                 <select name="walletType" id="walletType">
@@ -137,7 +134,7 @@
       <div class="panel-body">
         <div class="list-group">
           <div class="list-group-item">
-            2014年9月16日 15:06:59 张三催促用户提交认证信息
+            暂无该用户服务记录。
           </div>
         </div>
         <textarea id="serviceLog" name="serviceLog" rows="5" cols="80" placeholder="请输入处理意见"></textarea>
@@ -181,6 +178,7 @@ $(document).ready(function() {
         $('#company').html(res[0]);
         $('#companyType').html(res[1]);
         $('#amount').html(res[2]);
+        $('#companyName').html(res[3]);
         $('#selectedTarget').show();
     });
 

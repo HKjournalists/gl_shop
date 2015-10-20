@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/finance">
+<head>
+  <title>财务处理 - 提现打款</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap-datetimepicker.4.0.0.min.css}" />
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 财务处理 - 提现打款 </h4>
+
+<div layout:fragment="pageContent">
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 提现请求
+      </div>
+      <div class="panel-body" th:object="${withdraw_request}">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover table-striped">
+            <tr>
+              <th width="20%">用户手机号码</th>
+              <td><a th:href="@{/company/{id}/info/(id=*{cid})}" th:text="*{phone}" target="_blank">18666662520</a></td>
+              <th width="20%">提现类型</th>
+              <td width="30%" th:text="*{passtype.text}">保证金还是货款账户？</td>
+            </tr>
+            <tr>
+              <th width="20%">提现金额（元）</th>
+              <td th:text="*{amount}">50000</td>
+              <th width="20%">申请提现时间</th>
+              <td th:text="*{#calendars.format(createtime, 'YYYY年M月d日 HH:mm')}">2014年3月16日 16:25</td>
+            </tr>
+            <tr>
+              <th width="20%">当前保证金余额（元）</th>
+              <td th:text="${guaranty.amount}">19000</td>
+              <th width="20%">当前货款余额（元）</th>
+              <td th:text="${deposit.amount}">30000</td>
+            </tr>
+            <tr>
+              <th width="20%">收款人姓名</th>
+              <td th:text="${bank.carduser}">张三</td>
+              <th width="20%">开户行</th>
+              <td th:text="${bank_code.name}">招商银行</td>
+            </tr>
+            <tr>
+              <th width="20%">支行名称</th>
+              <td th:text="${bank.bankname}">科技园支行</td>
+              <th width="20%">银行卡号</th>
+              <td th:text="${bank.bankcard}">43434300939989898938888</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="serviceLogs" class="panel panel-primary" th:if="${not #lists.isEmpty(service_logs)}">
+      <div class="panel-heading">
+        <i class="fa fa-comment fa-fw"></i> 服务日志
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          <div class="list-group-item" th:each="log : ${service_logs}" th:text="${#calendars.format(log.createTime, 'YYYY-MM-dd HH:mm')} + ' ' + ${log.operator.realName} + '：' + ${log.content}">
+            2015-05-15 16:02 管理员：已经核对无误。
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <form id="withdrawForm" role="form" class="form-horizontal" method="post" th:action="@{/finance/withdraw/cashout/detail/{id}/audit/__/(id=${withdraw_request.id})}">
+    <div id="cashoutPanel" class="panel panel-primary" style="display: none">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 站外打款记录登记
+      </div>
+      <div class="panel-body" th:object="${withdraw_request}">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">用户手机号</label>
+          <div class="controls col-sm-4">
+            <label th:text="*{phone}" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">提现类型</label>
+          <div class="controls col-sm-4">
+            <label th:text="*{passtype.text}">保证金还是货款？</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="amount" class="col-sm-2 control-label">汇款金额</label>
+          <div class="controls col-sm-4">
+            <input class="form-control" type="text" id="amount" name="amount" required placeholder="请输入汇款金额" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="withdrawDate" class="col-sm-2 control-label">汇款时间</label>
+          <div class="controls col-sm-4">
+            <div class="controls input-group date" id="datetimePicker">
+              <input class="form-control" type="text" data-date-format="YYYY-MM-DD HH:mm" id="withdrawDate" name="withdrawDate" required="required" />
+              <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="choicesButtonBar" class="panel panel-primary">
+      <div class="panel-body text-center">
+          <button id="btnSucceed" data-action="succeed" type="button" class="btn btn-primary">核对无误</button>
+          <button id="btnFail" data-action="fail" type="button" class="btn btn-default">核对有误</button>
+      </div>
+    </div>
+
+    <div id="currentServiceLog" class="panel panel-primary" style="display: none">
+      <div class="panel-heading">
+        <i class="fa fa-comment fa-fw"></i> 服务记录
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-10">
+            <textarea name="log" placeholder="请输入服务记录" cols="100" rows="6"></textarea>
+          </div>
+        </div>
+        <div id="failHint" class="container" style="display: none">
+            <div class="row">
+              <div class="col-md-3">提示</div>
+            </div>
+            <div class="row">
+              <ol>
+                <li>提交核对有误，系统会自动给用户发APP站内系统消息进行告知；</li>
+                <li>用户会提现失败，对应的账户金额会系统自动返还。</li>
+              </ol>
+            </div>
+        </div>
+      </div>
+      <div class="panel-footer text-center">
+        <button type="submit" class="btn btn-primary">提交</button>
+      </div>
+    </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="confirmDialog" tabindex="-1" role="dialog" aria-labelledby="orderRequestMatch" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="resultTitle">提现请求核对</h4>
+        </div>
+        <div class="modal-body">
+          <p id="dialogContent">确认核对误？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button id="btnDialogOk" type="button" class="btn btn-primary">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Modal end -->
+
+  </form>
+
+</div>
+
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/is.min.js}"></script>
+</div>
+
+<script layout:fragment="inlineJavascript">
+var actionURL = /*[[@{/finance/withdraw/cashout/detail/{id}/audit/__/(id=${withdraw_request.id})}]]*/ '/finance/withdraw/cashout/detail/123/audit/__/';
+var returnURL = /*[[@{/finance/withdraw/cashout/1/}]]*/ '/finance/withdraw/cashout/1/';
+
+$(document).ready(function() {
+  var validator = $('#withdrawForm').validate({
+    rules: {
+        'log': {
+            required: true,
+        }
+    },
+    messages: {
+        'log': "请输入服务记录"
+    },
+    submitHandler: function(form) {
+      $.post($('#withdrawForm').attr('action'), $('#withdrawForm').serialize(), function(data) {
+        alert('提现请求处理完毕');
+        window.location.href = returnURL;
+      });
+    }
+  });
+
+  $('#datetimePicker').datetimepicker({
+    defaultDate: new Date(),
+    format: 'YYYY-MM-DD HH:mm'
+  });
+  $('#datetimePicker').data("DateTimePicker").maxDate(new Date());
+
+  $('#btnSucceed,#btnFail').click(function() {
+    $('#dialogContent').html('确认' + $(this).html() + '？');
+    $('#btnSucceed,#btnFail').prop('disabled', true);
+    var action = $(this).data('action');
+    var url = actionURL.replace('__', action);
+    $('#withdrawForm').attr('action', url);
+    $('#confirmDialog').modal('show');
+    $('#btnDialogOk').click(function() {
+      $('#choicesButtonBar').hide();
+      $('#confirmDialog').modal('hide');
+      $('#serviceLogs').hide();
+      $('#currentServiceLog').show();
+      if ('fail' === action) {
+        $('input[name="amount"]').rules('remove', 'number min max');
+        $('#failHint').show();
+      } else {
+        $('#cashoutPanel').show();
+        $('input[name="amount"]').rules('add', {
+          number: true,
+          min: /*[[${withdraw_request.amount}]]*/ 100,
+          max: /*[[${withdraw_request.amount}]]*/ 100,
+          messages: {
+            required: '请确认是否按照提现请求汇款',
+            number: '请确认是否按照提现请求汇款',
+            min: '请确认是否按照提现请求汇款',
+            max: '请确认是否按照提现请求汇款',
+          }
+        });
+      }
+    });
+  });
+});
+</script>
+</body>
+
+</html>

@@ -15,5 +15,6 @@
 @property (nonatomic, copy) NSString *riverSectionName;
 @property (nonatomic, copy) NSString *riverSectionPcode;
 @property (nonatomic, copy) NSString *riverSectionVal;
+@property (nonatomic, copy) NSString *riverOrderno;
 
 @end

@@ -9,6 +9,7 @@ package com.appabc.pay.dao.impl;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import com.appabc.bean.enums.PurseInfo.DeviceType;
 import com.appabc.bean.enums.PurseInfo.PayDirection;
 import com.appabc.bean.enums.PurseInfo.PayWay;
+import com.appabc.bean.enums.PurseInfo.PurseType;
 import com.appabc.bean.enums.PurseInfo.TradeType;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
@@ -41,7 +43,7 @@ public class PassbookPayDAOImpl extends BaseJdbcDao<TPassbookPay> implements
 	private static final String DELETE_SQL = " DELETE FROM T_PASSBOOK_PAY WHERE PID = :id ";
 	private static final String SELECT_SQL = " SELECT PID,PASSID,OID,OTYPE,PAYNO,NAME,AMOUNT,NEEDAMOUNT,DIRECTION,PAYTYPE,PAYTIME,STATUS,CREATEDATE,UPDATEDATE,CREATOR,DEVICES,REMARK,BALANCE,PPID FROM T_PASSBOOK_PAY ";
 	
-	private static final String SELECT_SQL_BYPAGINATION = " SELECT PAY.PID AS PID,PAY.PASSID AS PASSID,PAY.OID AS OID,PAY.OTYPE AS OTYPE,PAY.PAYNO AS PAYNO,PAY.NAME AS NAME,PAY.AMOUNT AS AMOUNT,PAY.NEEDAMOUNT AS NEEDAMOUNT,PAY.DIRECTION AS DIRECTION,PAY.PAYTYPE AS PAYTYPE,PAY.PAYTIME AS PAYTIME,PAY.STATUS AS STATUS,PAY.CREATEDATE AS CREATEDATE,PAY.UPDATEDATE AS UPDATEDATE,PAY.CREATOR AS CREATOR,PAY.DEVICES AS DEVICES,PAY.REMARK AS REMARK,PAY.BALANCE AS BALANCE,PAY.PPID AS PPID FROM T_PASSBOOK_PAY PAY LEFT JOIN T_PASSBOOK_INFO INFO ON INFO.PASSID = PAY.PASSID ";
+	private static final String SELECT_SQL_LEFTJOIN_PASSBOOKINFO = " SELECT PAY.PID AS PID,PAY.PASSID AS PASSID,PAY.OID AS OID,OI.REMARK AS CONTRACTNAME,PAY.OTYPE AS OTYPE,PAY.PAYNO AS PAYNO,PAY.NAME AS NAME,PAY.AMOUNT AS AMOUNT,PAY.NEEDAMOUNT AS NEEDAMOUNT,PAY.DIRECTION AS DIRECTION,PAY.PAYTYPE AS PAYTYPE,PAY.PAYTIME AS PAYTIME,PAY.STATUS AS STATUS,PAY.CREATEDATE AS CREATEDATE,PAY.UPDATEDATE AS UPDATEDATE,PAY.CREATOR AS CREATOR,PAY.DEVICES AS DEVICES,PAY.REMARK AS REMARK,PAY.BALANCE AS BALANCE,PAY.PPID AS PPID FROM T_PASSBOOK_PAY PAY LEFT JOIN T_PASSBOOK_INFO INFO ON INFO.PASSID = PAY.PASSID LEFT JOIN T_ORDER_INFO OI ON OI.OID=PAY.OID ";
 	
 	private String dynamicJoinSqlWithEntity(TPassbookPay entity,StringBuilder sql){
 		if(entity == null || sql == null || sql.length() <= 0){
@@ -153,15 +155,23 @@ public class PassbookPayDAOImpl extends BaseJdbcDao<TPassbookPay> implements
 	public QueryContext<TPassbookPay> queryListForPagination(
 			QueryContext<TPassbookPay> qContext) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(SELECT_SQL_BYPAGINATION);
+		sql.append(SELECT_SQL_LEFTJOIN_PASSBOOKINFO);
 		sql.append(" WHERE 1 = 1 ");
-		addNameParamerSqlWithProperty(sql, "cid", "INFO.CID", qContext.getParameters().get("cid"));
-		addNameParamerSqlWithProperty(sql, "type", "INFO.PASSTYPE", qContext.getParameters().get("type"));
-		addNameParamerSqlWithProperty(sql, "direction", "PAY.DIRECTION", qContext.getParameters().get("direction"));
-		sql.append(" ORDER BY PAY.PAYTIME DESC ");
-		return super.queryListForPagination(sql.toString(), qContext);
+		List<Object> args = new ArrayList<Object>();
+		addStandardSqlWithParameter(sql, "INFO.CID", qContext.getParameter("cid"), args);
+		addStandardSqlWithParameter(sql, "INFO.PASSTYPE", qContext.getParameter("type"), args);
+		addStandardSqlWithParameter(sql, "PAY.OTYPE", qContext.getParameter("oType"), args);
+		addStandardSqlWithParameter(sql, "PAY.DIRECTION", qContext.getParameter("direction"), args);
+		//操作开始时间  操作结束时间
+		QueryContext.DateQueryEntry dateQueryEntry = (QueryContext.DateQueryEntry)qContext.getParameter("paytime");
+		if(dateQueryEntry != null){			
+			addStandardSqlWithDateQuery(sql, "PAY.PAYTIME", dateQueryEntry.getStartDate(), dateQueryEntry.getEndDate());
+		}
+		sql.append(" ORDER BY PAY.PAYTIME DESC, PAY.PID DESC ");
+		qContext.setParamList(args);
+		return super.queryListForPaginationForStandardSQL(sql.toString(), qContext);
 	}
-
+	
 	/* (non-Javadoc)  
 	 * @see org.springframework.jdbc.core.RowMapper#mapRow(java.sql.ResultSet, int)  
 	 */
@@ -174,8 +184,8 @@ public class PassbookPayDAOImpl extends BaseJdbcDao<TPassbookPay> implements
 		entity.setOtype(TradeType.enumOf(rs.getString("OTYPE")));
 		entity.setPayno(rs.getString("PAYNO"));
 		entity.setName(rs.getString("NAME"));
-		entity.setAmount(rs.getFloat("AMOUNT"));
-		entity.setNeedamount(rs.getFloat("NEEDAMOUNT"));
+		entity.setAmount(rs.getDouble("AMOUNT"));
+		entity.setNeedamount(rs.getDouble("NEEDAMOUNT"));
 		entity.setDirection(PayDirection.enumOf(rs.getInt("DIRECTION")));
 		entity.setPaytype(PayWay.enumOf(rs.getString("PAYTYPE")));
 		entity.setPaytime(rs.getTimestamp("PAYTIME"));
@@ -185,10 +195,54 @@ public class PassbookPayDAOImpl extends BaseJdbcDao<TPassbookPay> implements
 		entity.setCreator(rs.getString("CREATOR"));
 		entity.setDevices(DeviceType.enumOf(rs.getString("DEVICES")));
 		entity.setRemark(rs.getString("REMARK"));
-		entity.setBalance(rs.getFloat("BALANCE"));
+		entity.setBalance(rs.getDouble("BALANCE"));
 		entity.setPpid(rs.getString("PPID"));
+		entity.setPpid(rs.getString("PPID"));
+		try { entity.setContractname(rs.getString("CONTRACTNAME")); } catch (SQLException e) {}
 		
 		return entity;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.dao.IPassbookPayDAO#getPayRecordListWithOid(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, java.lang.String, com.appabc.bean.enums.PurseInfo.PayDirection)  
+	 */
+	@Override
+	public List<TPassbookPay> getPayRecordListWithOid(String cid,
+			PurseType type, String oid, PayDirection payDirection) {
+		if(StringUtils.isEmpty(oid)){
+			return null;
+		}
+		StringBuilder sql = new StringBuilder(SELECT_SQL_LEFTJOIN_PASSBOOKINFO);
+		sql.append(" WHERE 1 = 1 ");
+		List<Object> args = new ArrayList<Object>();
+		this.addStandardSqlWithParameter(sql, "INFO.CID", cid, args);
+		this.addStandardSqlWithParameter(sql, "PAY.OID", oid, args);
+		this.addStandardSqlWithParameter(sql, "PAY.DIRECTION", payDirection, args);
+		if(StringUtils.isNotEmpty(cid) && type != null){
+			this.addStandardSqlWithParameter(sql, "INFO.PASSTYPE", type.getVal(), args);
+		}else if(StringUtils.isNotEmpty(cid) && type == null){
+			sql.append(" AND ( INFO.PASSTYPE = '"+PurseType.GUARANTY.getVal()+"' OR INFO.PASSTYPE = '"+PurseType.DEPOSIT.getVal()+"' )");
+		}
+		sql.append(" ORDER BY PAY.PAYTIME DESC, PAY.OID DESC ");
+		return super.queryForList(sql.toString(), args);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.dao.IPassbookPayDAO#queryPayListWithParams(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, java.lang.String, com.appabc.bean.enums.PurseInfo.TradeType, com.appabc.bean.enums.PurseInfo.PayDirection)  
+	 */
+	@Override
+	public List<TPassbookPay> queryPayListWithParams(String cid,
+			PurseType pType, String oid, TradeType tType, PayDirection direction) {
+		StringBuilder sql = new StringBuilder(SELECT_SQL_LEFTJOIN_PASSBOOKINFO);
+		sql.append(" WHERE 1 = 1 ");
+		List<Object> args = new ArrayList<Object>();
+		this.addStandardSqlWithParameter(sql, "INFO.CID", cid, args);
+		this.addStandardSqlWithParameter(sql, "INFO.PASSTYPE", pType.getVal(), args);
+		this.addStandardSqlWithParameter(sql, "PAY.OID", oid, args);
+		this.addStandardSqlWithParameter(sql, "PAY.DIRECTION", direction.getVal(), args);
+		this.addStandardSqlWithParameter(sql, "PAY.OTYPE", tType.getVal(), args);
+		sql.append(" ORDER BY PAY.PAYTIME DESC, PAY.OID DESC ");
+		return super.queryForList(sql.toString(), args);
 	}
 
 }

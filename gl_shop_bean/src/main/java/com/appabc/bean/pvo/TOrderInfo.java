@@ -31,12 +31,12 @@ public class TOrderInfo extends BaseBean {
     /**
      * 价格
      */
-    private Float price;
+    private Double price;
 
     /**
      * 数量
      */
-    private float totalnum;
+    private double totalnum;
 
     /**
      * 生成时间
@@ -56,12 +56,17 @@ public class TOrderInfo extends BaseBean {
     /**
      * 总金额（可能与单价乘以数量的总和不一样）
      */
-    private Float totalamount;
+    private Double totalamount;
 
     /**
      * 支付金额
      */
-    private Float amount;
+    private Double amount;
+    
+    /**
+     * 结算价格
+     * */
+    private Double settleamount;
 
     /**
      * 订单状态(订单的进行中的状态)
@@ -154,19 +159,19 @@ public class TOrderInfo extends BaseBean {
         this.buyerid = buyerid == null ? null : buyerid.trim();
     }
 
-    public Float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
-    public float getTotalnum() {
+    public double getTotalnum() {
         return totalnum;
     }
 
-    public void setTotalnum(float totalnum) {
+    public void setTotalnum(double totalnum) {
         this.totalnum = totalnum;
     }
 
@@ -194,19 +199,19 @@ public class TOrderInfo extends BaseBean {
         this.limittime = limittime;
     }
 
-    public Float getTotalamount() {
+    public Double getTotalamount() {
         return totalamount;
     }
 
-    public void setTotalamount(Float totalamount) {
+    public void setTotalamount(Double totalamount) {
         this.totalamount = totalamount;
     }
 
-    public Float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
@@ -270,5 +275,23 @@ public class TOrderInfo extends BaseBean {
 	 */
 	public void setOtype(ContractType otype) {
 		this.otype = otype;
+	}
+
+	/**  
+	 * settleamount  
+	 *  
+	 * @return  the settleamount  
+	 * @since   1.0.0  
+	*/  
+	
+	public Double getSettleamount() {
+		return settleamount;
+	}
+
+	/**  
+	 * @param settleamount the settleamount to set  
+	 */
+	public void setSettleamount(Double settleamount) {
+		this.settleamount = settleamount;
 	}
 }

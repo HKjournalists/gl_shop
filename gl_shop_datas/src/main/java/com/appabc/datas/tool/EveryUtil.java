@@ -1,6 +1,15 @@
 package com.appabc.datas.tool;
 
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.appabc.bean.bo.CompanyEvaluationInfo;
 import com.appabc.bean.pvo.TOrderFind;
+import com.appabc.common.utils.MessagesUtil;
+import com.appabc.common.utils.RandomUtil;
+import com.appabc.datas.service.contract.IContractInfoService;
 
 /**
  * @Description : 
@@ -49,6 +58,37 @@ public class EveryUtil {
 		clone.setMoreAreaInfos(tof.getMoreAreaInfos());
 		clone.setMoreAreaList(tof.getMoreAreaList());
 		return clone;
+	}
+	
+	public static void convertAndEncryptCompanyEvaluationInfo(List<CompanyEvaluationInfo> result,IContractInfoService iContractInfoService,String loginUserId){
+		String evaluationTips = MessagesUtil.getMessage(DataSystemConstant.MESSAGEKEY_CONTRACT_DEFAULT_EVALUATION_TIPS, Locale.forLanguageTag("datas"));
+		String evaluationTipsStand = MessagesUtil.getMessage(DataSystemConstant.MESSAGEKEY_CONTRACT_MINI_EVALUATION_TIPS, Locale.forLanguageTag("datas"));
+		String anonymityUName = MessagesUtil.getMessage(DataSystemConstant.MESSAGEKEY_CONTRACT_EVALUATION_ANONYMITYUNAME_TIPS, Locale.forLanguageTag("datas"));
+		for(CompanyEvaluationInfo bean : result){
+			if((!StringUtils.isEmpty(bean.getEvaluation())) && bean.getEvaluation().contains(evaluationTips)){
+				bean.setEvaluation(evaluationTipsStand);
+			}
+			if(StringUtils.isEmpty(loginUserId)){
+				bean.setCname(anonymityUName);
+				continue;
+			}
+			boolean bool = iContractInfoService.isOldCustomer(bean.getCid(), loginUserId);
+			if(!bool){
+				bean.setCname(anonymityUName);
+				continue;
+			}
+		}
+			
+	}
+	
+	public static boolean EqNumNotHalfBetweenAandB(double totalA,double finalB){
+		if(totalA > 0.0 && finalB > 0.0){
+			boolean f = finalB < RandomUtil.mulRound(totalA, 0.5);
+			boolean f1 = finalB > totalA;
+			return f || f1;
+		}else{
+			return false;
+		}
 	}
 	
 }

@@ -25,9 +25,9 @@
   <tr th:each="remit : ${remittances}">
     <td th:text="${remit.amount}">52938</td>
     <td th:text="${remit.remitterAccount}">62999999999999</td>
-    <td th:text="${remit.creator.userName}">王五</td>
+    <td th:text="${remit.creator.realName}">王五</td>
     <td th:text="${#calendars.format(remit.createTime, 'YYYY年M月d日 HH:mm')}">2014年3月16日 16:25</td>
-    <td th:text="${remit.processor.userName}">王五</td>
+    <td th:text="${remit.processor.realName}">王五</td>
     <td th:text="${#calendars.format(remit.updateTime, 'YYYY年M月d日 HH:mm')}">2014年3月16日 16:35</td>
     <td><a th:href="@{/finance/remittance/audit/detail/{rid}/(rid=${remit.id})}">开始审核</a></td>
   </tr>

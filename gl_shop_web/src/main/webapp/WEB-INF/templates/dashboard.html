@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+<title>我的工作台</title>
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 工作台
+</h4>
+
+<div layout:fragment="pageContent">
+  <div class="panel panel-primary">
+    <div class="panel-heading">更新日志</div>
+    <div class="panel-body">
+      <div>2015-06-23</div>
+      <ol>
+        <li>修复撮合合同中，点击可撮合对象，合同草稿中的买家和卖家都会变成撮合对象。</li>
+        <li>修复计算总价时，由于浮点数精度原因造成的小数位数问题。</li>
+      </ol>
+      <div>2015-06-04</div>
+      <ol>
+        <li>对仲裁时，isTrade参数的判断从Math.floor，直接用仲裁总价“!=”0来判断</li>
+        <li>修复供求发布时，商品销售量单位没有正确设置</li>
+        <li>发布供求时，商品属性不在填充默认值，用“无”代替</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

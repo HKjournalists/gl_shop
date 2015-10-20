@@ -8,24 +8,24 @@
     <li th:class="${#strings.contains(url, '/tasks/sales/')} ? 'active'">
       <a href="#"><i class="fa fa-wrench fa-fw"></i> 站内销售 <i class="fa arrow"></i></a>
       <ul id="sales" class="nav nav-second-level">
-        <li><a th:href="@{/tasks/sales/verify/}">催促认证</a></li>
-        <li><a th:href="@{/tasks/sales/deposit/}">催缴保证金</a></li>
-        <li><a th:href="@{/tasks/sales/pubinfo/}">代发信息请求</a></li>
+        <li sec:authorize="hasRole('ROLE_PROMPT_VERIFY')"><a th:href="@{/tasks/sales/verify/need/1/}" th:class="${#strings.contains(url, '/tasks/sales/verify/')} ? 'active'">催促认证</a></li>
+        <li sec:authorize="hasRole('ROLE_PROMPT_DEPOSIT')"><a th:href="@{/tasks/sales/deposit/need/1/}" th:class="${#strings.contains(url, '/tasks/sales/deposit/')} ? 'active'">催缴保证金</a></li>
+        <li sec:authorize="hasRole('ROLE_PUBLISH_INFO')"><a th:href="@{/tasks/sales/pubinfo/}" th:class="${#strings.contains(url, '/sales/pubinfo/')} ? 'active'">代发供求信息</a></li>
         <li><a th:href="@{/tasks/sales/payment/}">催缴货款</a></li>
-        <li><a th:href="@{/tasks/sales/realpay/}">催促实际支付</a></li>
       </ul>
     </li>
   </th:block>
 
-  <th:block sec:authorize="hasAnyRole('ROLE_CONTRACT_MATCH', 'ROLE_CONTRACT_GENERATE_CONFIRM')">
+  <th:block sec:authorize="hasRole('ROLE_CONTRACT_OPERATION')">
     <li th:class="${#strings.contains(url, '/tasks/contract/')} ? 'active'">
       <a href="#"><i class="fa fa-wrench fa-fw"></i> 合同管理 <i class="fa arrow"></i></a>
       <ul id="contract" class="nav nav-second-level">
-        <li><a th:href="@{/tasks/contract/match/}">撮合交流</a></li>
-        <li><a th:href="@{/tasks/contract/genconfirm/}">生成/确认合同</a></li>
+        <li><a th:href="@{/tasks/contract/order_requests/1/}" th:class="${#strings.contains(url, '/order_requests/')} ? 'active'">撮合交流</a></li>
+        <li><a th:href="@{/tasks/contract/generate/step1/}" th:class="${#strings.contains(url, '/contract/generate/')} ? 'active'">生成/确认合同</a></li>
+        <li><a th:href="@{/tasks/contract/arbitrations/pending/1/}">合同仲裁处理</a></li>
+        <li><a href="#">合同结束处理</a></li>
       </ul>
     </li>
-    84299377
   </th:block>
 
   <th:block sec:authorize="hasAnyRole('ROLE_PHONE_DIAL_IN', 'ROLE_PHONE_DIAL_OUT')">
@@ -42,7 +42,7 @@
     <li th:class="${#strings.contains(url, '/tasks/editor/')} ? 'active'">
       <a href="#"><i class="fa fa-wrench fa-fw"></i> 编辑 <i class="fa arrow"></i></a>
       <ul id="market" class="nav nav-second-level">
-        <li sec:authorize="hasRole('ROLE_MARKET_INFO_EDIT')"><a th:href="@{/tasks/editor/marketinfo/}">市场行情编辑</a></li>
+        <li sec:authorize="hasRole('ROLE_MARKET_INFO_EDIT')"><a th:class="${#strings.contains(url, '/marketinfo/')} ? 'active'" th:href="@{/tasks/editor/marketinfo/show/}">市场行情编辑</a></li>
         <li sec:authorize="hasRole('ROLE_VERIFY_INFO_AUDIT')"><a th:class="${#strings.contains(url, 'verify_info_audit')} ? 'active'" th:href="@{/tasks/editor/verify_info_audit/1/}">认证信息审核</a></li>
       </ul>
     </li>

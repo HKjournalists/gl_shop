@@ -4,6 +4,7 @@
 package com.appabc.http.user;
 
 import org.junit.Test;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.appabc.http.AbstractHttpControllerTest;
@@ -19,9 +20,28 @@ import com.appabc.http.AbstractHttpControllerTest;
 public class UserTest2  extends AbstractHttpControllerTest {
 
 	@Test
+	@Rollback(value=false)
 	public void mainTest() {
 //		msmSend();
 //		register();
+//		userLogin();
+	}
+	
+	public void userLogin(){
+		request.setRequestURI("/auth/login");
+        request.setMethod("POST");
+        
+        request.addParameter("username", "15811822330");
+        request.addParameter("password", "8fda92c461e6de06a586a53516ef7735");
+        request.addParameter("clientid", "111222333clientid5566");
+        request.addParameter("clienttype", "0");
+        
+        try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

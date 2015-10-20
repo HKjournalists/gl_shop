@@ -61,6 +61,7 @@
 - (BOOL)isSubviewOfView:(UIView *)view;
 
 - (UIViewController *)firstViewController;
+- (id)findSuperViewOfClass:(Class)aClass;
 - (UIView *)firstResponder;
 
 //frame accessors

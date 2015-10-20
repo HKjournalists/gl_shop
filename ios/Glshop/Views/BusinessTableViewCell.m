@@ -39,45 +39,38 @@
 }
 
 - (void)setOrderModel:(OrderModel *)orderModel {
-    _orderModel = orderModel;
-    
-    NSString *totalStr = [_orderModel.totalnum stringValue];
-    NSString *str = [NSString stringWithFormat:@"%@吨",totalStr];
-    _totalLabel.text = str;
-    _startTimeLabel.text = [_orderModel.starttime substringToIndex:10];
-    _endTimeLabel.text = [_orderModel.endtime substringToIndex:10];
-    _priceLabel.text = [NSString stringWithFormat:@"%.2f元/吨",[_orderModel.price floatValue]];
-    
-    _areaLabel.text = _orderModel.areaFullName;
-    NSString *proTitle;
-    if (_orderModel.ptype.length) {
-        GoodsModel *model = [SynacObject goodsModelForPtype:_orderModel.ptype];
-        GoodChildModel *child = [SynacObject goodsChildModlelFor:_orderModel.ptype deepId:_orderModel.pid];
-        NSString *size = [NSString stringWithFormat:@"%@(%@-%@)",child.sizeModel.name,child.sizeModel.minv,child.sizeModel.maxv];
-        proTitle = [NSString stringWithFormat:@"黄砂.%@.%@mm",model.goodsName,size];
-    }else {
-        GoodChildModel *child = [SynacObject goodsChildStone:_orderModel.pid];
-        NSString *size = [NSString stringWithFormat:@"%@(%@-%@)",child.sizeModel.name,child.sizeModel.minv,child.sizeModel.maxv];
-        proTitle = [NSString stringWithFormat:@"石子.%@mm",size];
-    }
-    _productLabel.text = proTitle;
-    NSNumber *type = [_orderModel.type objectForKey:@"val"];
-    if ([type integerValue] == 1) {
-        _logoImageView.image = [UIImage imageNamed:@"supply-and-demand_icon_qiugou"];
-        if ([[_orderModel.status objectForKey:@"val"] integerValue] != 0) {
-        _logoImageView.image = [UIImage imageNamed:@"supply-and-demand_qiugou_huise"];
+    if (_orderModel != orderModel) {
+        _orderModel = orderModel;
+        
+        float totalStr = [_orderModel.totalnum floatValue];
+        NSString *str = [NSString stringWithFormat:@"%.2f吨",totalStr];
+        _totalLabel.text = str;
+        _startTimeLabel.text = [_orderModel.starttime substringToIndex:10];
+        _endTimeLabel.text = [_orderModel.endtime substringToIndex:10];
+        _priceLabel.text = [NSString stringWithFormat:@"%.2f元/吨",[_orderModel.price floatValue]];
+        
+        _areaLabel.text = _orderModel.areaFullName;
+
+        _productLabel.text = [SynacObject combinProducName:_orderModel.ptype proId:_orderModel.pid];
+        NSNumber *type = [_orderModel.type objectForKey:@"val"];
+        if ([type integerValue] == 1) {
+            _logoImageView.image = [UIImage imageNamed:@"Buy_sell_qiugou"];
+//            if ([[_orderModel.status objectForKey:@"val"] integerValue] != 0) {
+//                _logoImageView.image = [UIImage imageNamed:@"supply-and-demand_qiugou_huise"];
+//            }
+        }else {
+            _logoImageView.image = [UIImage imageNamed:@"Buy_sell_chushou"];
+//            if ([[_orderModel.status objectForKey:@"val"] integerValue] != 0) {
+//                _logoImageView.image = [UIImage imageNamed:@"supply-and-demand_shushou_huise"];
+//            }
         }
-    }else {
-        _logoImageView.image = [UIImage imageNamed:@"supply-and-demand_icon_shushou"];
-        if ([[_orderModel.status objectForKey:@"val"] integerValue] != 0) {
-            _logoImageView.image = [UIImage imageNamed:@"supply-and-demand_shushou_huise"];
+        
+        if ([[_orderModel.status objectForKey:@"val"] integerValue] == 0) {
+            _statusLabel.text = @"有效";
+        }else {
+            _statusLabel.text = @"无效";
         }
-    }
-    
-    if ([[_orderModel.status objectForKey:@"val"] integerValue] == 0) {
-        _statusLabel.text = @"有效";
-    }else {
-        _statusLabel.text = @"无效";
+
     }
 }
 

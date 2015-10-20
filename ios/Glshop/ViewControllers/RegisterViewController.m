@@ -10,6 +10,9 @@
 #import "HLCheckbox.h"
 #import "SettingPasswordViewController.h"
 #import "IQKeyboardManager.h"
+#import "WebViewController.h"
+
+static NSString *const serveProtocalFileName = @"长江电商服务协议-150512版.html";
 
 @interface RegisterViewController () <UITextFieldDelegate>
 
@@ -68,34 +71,36 @@
     _agreeLabel.frame = CGRectMake(_box.vright+2, _box.vtop, 40, _box.vheight);
     [self.view addSubview:_agreeLabel];
     
-    UIButton *proBtn = [UIButton buttonWithTip:@"长江电商用户协议" target:self selector:@selector(showProtocal)];
+    UIButton *proBtn = [UIButton buttonWithTip:@"长江电商服务协议" target:self selector:@selector(showProtocal)];
     [proBtn setTitleColor:ColorWithHex(@"#507daf") forState:UIControlStateNormal];
-    proBtn.frame = CGRectMake(_agreeLabel.vright, _agreeLabel.vtop+1, 150, 20);
+    proBtn.frame = CGRectMake(_agreeLabel.vright-13, _agreeLabel.vtop+0.5, 150, 20);
     proBtn.titleLabel.font = _agreeLabel.font;
     [self.view addSubview:proBtn];
     
-    _nextBtn = [UIButton buttonWithTip:@"下一步" target:self selector:@selector(setPassword)];
+    _nextBtn = [UIFactory createBtn:BlueButtonImageName bTitle:btntitle_next bframe:CGRectZero];
+    [_nextBtn addTarget:self action:@selector(setPassword) forControlEvents:UIControlEventTouchUpInside];
     _nextBtn.frame = CGRectMake(10, proBtn.vbottom+20, self.view.vwidth-20, 40);
     _nextBtn.layer.cornerRadius = 2.5f;
     _nextBtn.enabled = NO;
-    [_nextBtn setTitleColor:ColorWithHex(@"4987D9") forState:UIControlStateDisabled];
-    _nextBtn.backgroundColor = CJBtnColor;
+//    [_nextBtn setTitleColor:ColorWithHex(@"4987D9") forState:UIControlStateDisabled];
     [self.view addSubview:_nextBtn];
     
     __block typeof(self) weakSelf = self;
     _box.tapBlock = ^(BOOL selected) {
         if (weakSelf.phoneTextfield.text.length > 0) {
             
-            weakSelf.nextBtn.enabled = !selected;
+            weakSelf.nextBtn.enabled = selected;
         }
-        weakSelf.agreeLabel.textColor = !selected ? [UIColor blackColor] : ColorWithHex(@"#999999");
+        weakSelf.agreeLabel.textColor = selected ? [UIColor blackColor] : ColorWithHex(@"#999999");
     };
 
 }
 
 #pragma mark - UIActions
 - (void)showProtocal {
-    
+    WebViewController *vc = [[WebViewController alloc] initWithFileName:serveProtocalFileName];
+    vc.title = @"长江电商服务协议";
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 /**

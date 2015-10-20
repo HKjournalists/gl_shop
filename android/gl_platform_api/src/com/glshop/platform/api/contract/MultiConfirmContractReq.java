@@ -62,7 +62,7 @@ public class MultiConfirmContractReq extends BaseRequest<CommonResult> {
 
 	@Override
 	protected String getTypeURL() {
-		return "/contract/validateGoodsInfo";
+		return "/contract/applyOrAgreeOrArbitrateFinalEstimate";
 	}
 
 }

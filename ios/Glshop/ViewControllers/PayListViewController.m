@@ -11,14 +11,23 @@
 #import "IndicateExtionView.h"
 #import "PayListModel.h"
 #import "PayListDetailViewController.h"
+#import "IBActionSheet.h"
 
-@interface PayListViewController () <UITableViewEventDelegate>
+@interface PayListViewController () <UITableViewEventDelegate,IBActionSheetDelegate>
 
 @property (nonatomic, strong)  PayListTableView *payListAllTableView;
 @property (nonatomic, strong)  PayListTableView *payListIncomeTableView;
 @property (nonatomic, strong)  PayListTableView *payListOutTableView;
 
 @property (nonatomic, strong) IndicateExtionView *indicateView;
+
+/**
+ *@brief 为IBActionSheet记录选择的索引，默认为0
+ */
+@property (nonatomic, assign) NSInteger markIndex;
+@property (nonatomic, strong) IBActionSheet *sheet;
+
+@property (nonatomic, strong) UIButton *titleViewBtn;
 
 @end
 
@@ -27,48 +36,34 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.shouldShowFailView = YES;
-    
+    self.title = @"收支明细";
     [self requestNet];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)setTitle:(NSString *)title {
+    [super setTitle:title];
     
-    _indicateView.hidden = NO;
+    _titleViewBtn = [UIButton buttonWithTip:@"收支明细" target:self selector:@selector(showSheet:)];
+    [_titleViewBtn setImage:[UIImage imageNamed:@"supply-and-demand_icon_on"] forState:UIControlStateNormal];
+    [_titleViewBtn setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
+    [_titleViewBtn setImageEdgeInsets:UIEdgeInsetsMake(0, 90, 0, 0)];
+    [_titleViewBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, -30, 0, 0)];
+    _titleViewBtn.frame = CGRectMake(0, 0, 120, 44);
+    self.navigationItem.titleView = _titleViewBtn;
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    _indicateView.hidden = YES;
+- (void)showSheet:(UIButton *)button {
+    if (_sheet.visible) {
+        return;
+    }
     
+    [self indicateArrow];
+    [_sheet showInView:self.view];
 }
-
 - (void)loadSubViews {
-    _indicateView = [[IndicateExtionView alloc] initWithFrame:CGRectMake(self.view.vwidth/2-80, 20, 140, 44) title:@"收支明细"];
-    _indicateView.dir = listDown;
-    _indicateView.weakViewController = self.navigationController;
-    [self.navigationController.view addSubview:_indicateView];
     
-    _indicateView.dir = listDown;
-    __block typeof(self) weakSelf = self;
-    _indicateView.selectBlock = ^(NSInteger index) {
-        if (index == 0) {
-            weakSelf.payListAllTableView.hidden = NO;
-            weakSelf.payListIncomeTableView.hidden = YES;
-            weakSelf.payListOutTableView.hidden = YES;
-        }else if (index == 1) {
-            weakSelf.payListIncomeTableView.hidden = NO;
-            weakSelf.payListAllTableView.hidden = YES;
-            weakSelf.payListOutTableView.hidden = YES;
-        }else {
-            weakSelf.payListOutTableView.hidden = NO;
-            weakSelf.payListAllTableView.hidden = YES;
-            weakSelf.payListIncomeTableView.hidden = YES;
-        }
-        [weakSelf refrush:nil];
-    };
-    _indicateView.dataSource = @[@"全部",@"收入",@"支出",];
+    _sheet = [[IBActionSheet alloc] initWithTitle:@"选择分类" delegate:self cancelButtonTitle:globe_cancel_str destructiveButtonTitle:nil otherButtonTitlesArray:@[@"全部",@"收入",@"支出",]];
+    _sheet.markIndex = _markIndex;
     
     // 我的供求全部列表
     _payListAllTableView = [[PayListTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.vwidth, self.view.vheight-kTopBarHeight) style:UITableViewStylePlain];
@@ -100,6 +95,7 @@
 }
 
 - (void)requestNet {
+    [super requestNet];
     [self refrush:nil];
 }
 
@@ -114,19 +110,14 @@
         isRefresh = YES;
     }
     
-    if (isRefresh && currentTableView.dataArray.count > 0) {
-        self.shouldShowFailView = NO;
-    }else {
-        self.shouldShowFailView = YES;
-    }
-    
     NSString *typeStr = _listType == pay_margin ? @"0" : @"1";
     NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:typeStr,@"type",[NSNumber numberWithInteger:[self currentTableView].pageIndex],@"pageIndex",@10,@"pageSize", nil];
-    if (_indicateView.selectRow == 1) {
+    if (_markIndex == 1) {
         [params setObject:@0 forKey:@"direction"];
-    }else if (_indicateView.selectRow == 2) {
+    }else if (_markIndex == 2) {
         [params setObject:@1 forKey:@"direction"];
     }
+    
     __block typeof(self) this = self;
     [self requestWithURL:bgetPayRecordList
                   params:params
@@ -135,11 +126,7 @@
         kASIResultLog;
         [this handleNetData:responseData];
     } failedBlock:^(ASIHTTPRequest *request) {
-        if (isLoadMore && this.isFirstResponder) {
-            HUD(kNetError);
-        }
         [[currentTableView refreshControl] endRefreshing];
-        this.shouldShowFailView = YES;
     }];
 }
 
@@ -202,6 +189,47 @@
     PayListDetailViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"PayListDetailViewControllerId"];
     vc.payId = model.payId;
     [self.navigationController pushViewController:vc animated:YES];
+}
+
+#pragma mark -
+- (void)actionSheet:(IBActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        self.payListAllTableView.hidden = NO;
+        self.payListIncomeTableView.hidden = YES;
+        self.payListOutTableView.hidden = YES;
+    }else if (buttonIndex == 1) {
+        self.payListIncomeTableView.hidden = NO;
+        self.payListAllTableView.hidden = YES;
+        self.payListOutTableView.hidden = YES;
+    }else if (buttonIndex == 2){
+        self.payListOutTableView.hidden = NO;
+        self.payListIncomeTableView.hidden = YES;
+        self.payListAllTableView.hidden = YES;
+    }
+    if (actionSheet.cancelButtonIndex != buttonIndex) {
+        _markIndex = buttonIndex;
+        [self refrush:nil];
+    }
+}
+
+- (void)actionWillDismiss:(IBActionSheet *)actionSheet {
+    [self indicateArrow];
+}
+
+static int selectFlag = 0;
+- (void)indicateArrow {
+    float duration = 0.25;
+    if (selectFlag) {
+        selectFlag = 0;
+        [UIView animateWithDuration:duration animations:^{
+            [_titleViewBtn.imageView.layer setTransform:CATransform3DIdentity];
+        }];
+    }else {
+        selectFlag = 1;
+        [UIView animateWithDuration:duration animations:^{
+            [_titleViewBtn.imageView.layer setTransform:CATransform3DMakeRotation(-M_PI/1.0000001, 0, 0, 1)];
+        }];
+    }
 }
 
 @end

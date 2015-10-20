@@ -3,14 +3,16 @@
  */
 package com.appabc.tools.utils;
 
-import com.appabc.bean.pvo.TSystemParams;
-import com.appabc.common.utils.RedisHelper;
-import com.appabc.tools.service.system.ISystemParamsService;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.appabc.bean.pvo.TSystemParams;
+import com.appabc.common.utils.RedisHelper;
+import com.appabc.common.utils.SystemConstant;
+import com.appabc.tools.service.system.ISystemParamsService;
 
 /**
  * @Description : 
@@ -23,9 +25,9 @@ import java.util.List;
 @Repository(value="SystemParamsManager")
 public class SystemParamsManager {
 	
-	Logger logger = Logger.getLogger(this.getClass());
+	private Logger logger = Logger.getLogger(this.getClass());
 	
-	private final String PREFIX = "SYS_PARAM_";
+	private final String PREFIX = SystemConstant.CACHE_PARAM_PROFIX;
 	
 	@Autowired
 	private ISystemParamsService systemParamsService;
@@ -41,9 +43,9 @@ public class SystemParamsManager {
 			logger.info(sp.getPname()+ "=" + sp.getPvalue());
 			redisHelper.set(PREFIX + sp.getPname(), sp.getPvalue());
 		}
-				
+		//初始化平台企业信息和平台企业信息的钱包信息.
+		this.systemParamsService.initDataParameters();
 	}
-	
 	
 	public String getString(String paramName){
 		return redisHelper.getString(PREFIX+paramName);
@@ -67,6 +69,10 @@ public class SystemParamsManager {
 	
 	public short getShort(String paramName){
 		return redisHelper.getShort(PREFIX+paramName);
+	}
+
+	public RedisHelper getRedisHelper() {
+		return redisHelper;
 	}
 
 }

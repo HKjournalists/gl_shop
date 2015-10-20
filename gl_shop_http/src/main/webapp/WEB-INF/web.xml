@@ -21,7 +21,7 @@
 		<param-value>develop</param-value>
 	</context-param>
 	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+		<listener-class>com.appabc.http.listener.ContextLoaderListener</listener-class>
 	</listener>
 	<filter>
 		<filter-name>encodingFilter</filter-name>

@@ -7,6 +7,8 @@ import com.appabc.bean.pvo.TOrderDisPrice;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
 import com.appabc.datas.dao.contract.IContractDisPriceDAO;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -140,7 +142,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 	 * @see com.appabc.common.base.dao.IBaseDao#read(java.io.Serializable)
 	 */
 	public TOrderDisPrice query(Serializable id) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE CID = :id  ");
 		return super.query(sql.toString(), id);
@@ -196,10 +198,10 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 		todp.setCanceler(rs.getString("CANCELER"));
 		todp.setCanceltime(rs.getTimestamp("CANCELTIME"));
 		todp.setReason(rs.getString("REASON"));
-		todp.setBeginamount(rs.getFloat("BEGINAMOUNT"));
-		todp.setEndamount(rs.getFloat("ENDAMOUNT"));
-		todp.setBeginnum(rs.getFloat("BEGINNUM"));
-		todp.setEndnum(rs.getFloat("ENDNUM"));
+		todp.setBeginamount(rs.getDouble("BEGINAMOUNT"));
+		todp.setEndamount(rs.getDouble("ENDAMOUNT"));
+		todp.setBeginnum(rs.getDouble("BEGINNUM"));
+		todp.setEndnum(rs.getDouble("ENDNUM"));
 		todp.setPunreason(rs.getString("PUNREASON"));
 		todp.setPunday(rs.getInt("PUNDAY"));
 		todp.setRemark(rs.getString("REMARK"));
@@ -215,7 +217,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 	 * lang.String)
 	 */
 	public List<TOrderDisPrice> queryForList(String contractId) {
-		StringBuffer sql = new StringBuffer();
+		StringBuilder sql = new StringBuilder();
 		sql.append(SELECT_SQL);
 		sql.append(" WHERE LID IN (SELECT LID from T_ORDER_OPERATIONS where OID = ? ) ORDER BY CANCELTIME ASC ");
 		return super.queryForList(sql.toString(),
@@ -244,7 +246,7 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 		this.addStandardSqlWithParameter(sql, " too.LID ", operateId, args);
 		this.addStandardSqlWithParameter(sql, " todp.CID ", disPriceId, args);
 		this.addStandardSqlWithParameter(sql, " todp.TYPE ", disPriceType, args);
-		sql.append(" and too.TYPE in (5 , 6 , 7) ");
+		//sql.append(" and too.TYPE in (5 , 6 , 7) ");
 		sql.append(" ORDER BY too.OPERATIONTIME DESC ");
 		log.info("the sql str is : " + sql);
 		return getJdbcTemplate().query(sql.toString(), args.toArray(),
@@ -279,6 +281,84 @@ public class ContractDisPriceDAOImpl extends BaseJdbcDao<TOrderDisPrice>
 						return bean;
 					}
 				});
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.dao.contract.IContractDisPriceDAO#queryGoodsDisPriceHistroyListWithSampleCheck(java.lang.String)  
+	 */
+	@Override
+	public List<TContractDisPriceOperation> queryGoodsDisPriceHistroyListWithSampleCheck(String oid) {
+		if(StringUtils.isEmpty(oid)){
+			return null;
+		}
+		return this.queryGoodsDisPriceHisList(oid, StringUtils.EMPTY, StringUtils.EMPTY, ContractDisPriceType.SAMPLE_CHECK.getVal());
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.dao.contract.IContractDisPriceDAO#queryGoodsDisPriceHistroyListWithFullTakeover(java.lang.String)  
+	 */
+	@Override
+	public List<TContractDisPriceOperation> queryGoodsDisPriceHistroyListWithFullTakeover(String oid) {
+		if(StringUtils.isEmpty(oid)){
+			return null;
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append(" (SELECT too.LID as LID,too.OID as OID,too.OPERATOR as OPERATOR,too.OPERATIONTIME as OPERATIONTIME,too.TYPE as TYPE, too.RESULT as RESULT,too.PLID as PLID,too.REMARK as REMARK, "); 
+		sql.append(" todp.CID as CID,todp.LID as DLID,todp.TYPE as DTYPE, todp.CANCELER as CANCELER,todp.CANCELTIME as CANCELTIME,todp.REASON as REASON,todp.BEGINAMOUNT as BEGINAMOUNT,todp.ENDAMOUNT as ENDAMOUNT, todp.BEGINNUM as BEGINNUM, ");		 
+		sql.append(" todp.ENDNUM as ENDNUM, todp.PUNREASON as PUNREASON,todp.PUNDAY as PUNDAY,todp.REMARK as DREMARK FROM T_ORDER_OPERATIONS too LEFT JOIN T_ORDER_DIS_PRICE todp ON too.LID = todp.LID WHERE 1 = 1 "); 
+		sql.append(" and too.OID = '"+oid+"'	and todp.TYPE = '"+ContractDisPriceType.FULL_TAKEOVER.getVal()+"' ");
+		sql.append(" ORDER BY too.OPERATIONTIME DESC ) ");		  
+		sql.append(" UNION ALL ");
+		sql.append(" (SELECT too.LID as LID,too.OID as OID,too.OPERATOR as OPERATOR,too.OPERATIONTIME as OPERATIONTIME, too.TYPE as TYPE, too.RESULT as RESULT,too.PLID as PLID,too.REMARK as REMARK, ");
+		sql.append(" todp.CID as CID,todp.LID as DLID,todp.TYPE as DTYPE, todp.CANCELER as CANCELER,todp.CANCELTIME as CANCELTIME, todp.REASON as REASON,todp.BEGINAMOUNT as BEGINAMOUNT,todp.ENDAMOUNT as ENDAMOUNT, todp.BEGINNUM as BEGINNUM, ");  
+		sql.append(" todp.ENDNUM as ENDNUM, todp.PUNREASON as PUNREASON,todp.PUNDAY as PUNDAY,todp.REMARK as DREMARK FROM T_ORDER_OPERATIONS too LEFT JOIN T_ORDER_DIS_PRICE todp ON too.LID = todp.LID WHERE 1 = 1 ");		  
+		sql.append(" and too.OID = '"+oid+"'	and todp.TYPE = '"+ContractDisPriceType.SAMPLE_CHECK.getVal()+"' ");		  
+		sql.append(" ORDER BY too.OPERATIONTIME DESC LIMIT 1) ");		 
+		List<Object> args = new ArrayList<Object>();
+		log.info("the sql str is : " + sql);
+		return getJdbcTemplate().query(sql.toString(), args.toArray(),
+				new RowMapper<TContractDisPriceOperation>() {
+					public TContractDisPriceOperation mapRow(ResultSet rs,
+							int rowNum) throws SQLException {
+						TContractDisPriceOperation bean = new TContractDisPriceOperation();
+
+						bean.setId(rs.getString("LID"));
+						bean.setOid(rs.getString("OID"));
+						bean.setOperator(rs.getString("OPERATOR"));
+						bean.setOperationtime(rs.getTimestamp("OPERATIONTIME"));
+						bean.setType(ContractOperateType.enumOf(rs.getString("TYPE")));
+						bean.setResult(rs.getString("RESULT"));
+						bean.setPlid(rs.getString("PLID"));
+						bean.setRemark(rs.getString("REMARK"));
+
+						bean.setCid(rs.getString("CID"));
+						bean.setDlid(rs.getString("DLID"));
+						bean.setDtype(rs.getInt("DTYPE"));
+						bean.setCanceler(rs.getString("CANCELER"));
+						bean.setCanceltime(rs.getTimestamp("CANCELTIME"));
+						bean.setReason(rs.getString("REASON"));
+						bean.setBeginamount(rs.getFloat("BEGINAMOUNT"));
+						bean.setEndamount(rs.getFloat("ENDAMOUNT"));
+						bean.setBeginnum(rs.getFloat("BEGINNUM"));
+						bean.setEndnum(rs.getFloat("ENDNUM"));
+						bean.setPunreason(rs.getString("PUNREASON"));
+						bean.setPunday(rs.getInt("PUNDAY"));
+						bean.setDremark(rs.getString("DREMARK"));
+
+						return bean;
+					}
+				});
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.dao.contract.IContractDisPriceDAO#queryOrderDisPriceList(java.lang.String, java.lang.String)  
+	 */
+	@Override
+	public List<TOrderDisPrice> queryOrderDisPriceListByOperId(String lid) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(SELECT_SQL);
+		sql.append(" WHERE LID = ?  ORDER BY CANCELTIME ASC ");
+		return super.queryForList(sql.toString(), Collections.singletonList(lid));
 	}
 
 }

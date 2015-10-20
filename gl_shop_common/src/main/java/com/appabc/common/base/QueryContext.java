@@ -3,12 +3,15 @@ package com.appabc.common.base;
 import com.appabc.common.base.bean.BaseBean;
 import com.appabc.common.utils.SystemConstant;
 import com.appabc.common.utils.pagination.PageModel;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
 import java.beans.PropertyDescriptor;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,5 +164,119 @@ public class QueryContext<T extends BaseBean> {
 	
 	public Object getParameter(Object key){
 		return this.parameters.get(key);
+	}
+	
+	public static class DateQueryEntry {
+		
+		public DateQueryEntry(){}
+		
+		public DateQueryEntry(String propertyName,Date startDate,Date endDate){
+			this.propertyName = propertyName;
+			this.startDate = startDate;
+			this.endDate = endDate;
+		}
+		
+		public DateQueryEntry(String propertyName,String dbColumnName,Date startDate,Date endDate){
+			this.propertyName = propertyName;
+			this.dbColumnName = dbColumnName;
+			this.startDate = startDate;
+			this.endDate = endDate;
+		}
+		
+		/**
+		 * need to do date query property name
+		 * */
+		private String propertyName;
+		/**
+		 * need to do date query database column name
+		 * */
+		private String dbColumnName;
+		/**
+		 * the date query start date
+		 * */
+		private Date startDate;
+		/**
+		 * the date query end date
+		 * */
+		private Date endDate;
+		/**  
+		 * propertyName  
+		 *  
+		 * @return  the propertyName  
+		 * @since   1.0.0  
+		 */
+		
+		public String getPropertyName() {
+			return propertyName;
+		}
+		/**  
+		 * @param propertyName the propertyName to set  
+		 */
+		public void setPropertyName(String propertyName) {
+			this.propertyName = propertyName;
+		}
+		/**  
+		 * startDate  
+		 *  
+		 * @return  the startDate  
+		 * @since   1.0.0  
+		 */
+		
+		public Date getStartDate() {
+			return startDate;
+		}
+		/**  
+		 * @param startDate the startDate to set  
+		 */
+		public void setStartDate(Date startDate) {
+			this.startDate = startDate;
+		}
+		/**  
+		 * endDate  
+		 *  
+		 * @return  the endDate  
+		 * @since   1.0.0  
+		 */
+		
+		public Date getEndDate() {
+			Calendar c = Calendar.getInstance();
+			c.setTime(endDate);
+			int h = c.get(Calendar.HOUR_OF_DAY);
+			int m = c.get(Calendar.MINUTE);
+			int s = c.get(Calendar.SECOND);
+			if(h==0&&m==0&&s==0){
+				c.set(Calendar.HOUR_OF_DAY, 23);
+				c.set(Calendar.MINUTE, 59);
+				c.set(Calendar.SECOND, 59);
+				return c.getTime();
+			} else {				
+				return endDate;
+			}
+		}
+		/**  
+		 * @param endDate the endDate to set  
+		 */
+		public void setEndDate(Date endDate) {
+			this.endDate = endDate;
+		}
+
+		/**  
+		 * dbColumnName  
+		 *  
+		 * @return  the dbColumnName  
+		 * @since   1.0.0  
+		 */
+		
+		public String getDbColumnName() {
+			return dbColumnName;
+		}
+
+		/**  
+		 * @param dbColumnName the dbColumnName to set  
+		 */
+		public void setDbColumnName(String dbColumnName) {
+			this.dbColumnName = dbColumnName;
+		}
+		
 	}
 }

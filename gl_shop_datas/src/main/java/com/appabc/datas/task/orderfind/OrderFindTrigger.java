@@ -33,7 +33,7 @@ public class OrderFindTrigger extends BaseCronTrigger {
 		super();
 		this.setName(NAME);
 		this.setGroup(GROUP);
-		this.setCronExpression("0 0/5 * * * ?");
+		this.setCronExpression("0 0/3 * * * ?");
 	}
 	
 	public OrderFindTrigger(String jobName,String jobGroup,String cronExpression) throws ParseException{

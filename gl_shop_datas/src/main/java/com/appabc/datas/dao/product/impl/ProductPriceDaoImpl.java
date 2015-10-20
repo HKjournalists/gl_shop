@@ -3,19 +3,21 @@
  */
 package com.appabc.datas.dao.product.impl;
 
+import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
 import com.appabc.bean.enums.ProductInfo.UnitEnum;
 import com.appabc.bean.pvo.TProductPrice;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
 import com.appabc.datas.dao.product.IProductPriceDao;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
-
-import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @Description :
@@ -34,10 +36,12 @@ public class ProductPriceDaoImpl extends BaseJdbcDao<TProductPrice> implements I
 	private static final String SELECTSQLBYID = " SELECT * FROM T_PRODUCT_PRICE WHERE ID = :id";
 
 	// 获得今日报价和昨天的价格
-	private static final String SELECT_TODAY_AND_YESTERDAY_PRICE_SQL = " select a.PID as pid, a.PNAME as pname,a.PTYPE as ptype,a.todayPrice,b.yesterdayPrice from ((select tpp.PRICE as todayPrice,ti.PNAME,ti.PTYPE,ti.PID from T_PRODUCT_PRICE tpp, T_PRODUCT_INFO ti where TO_DAYS(tpp.datepoint)=TO_DAYS(NOW()) and tpp.AREA=? and ti.PCODE=? and tpp.PID=ti.PID ) as a LEFT JOIN (select tpp.PRICE as yesterdayPrice,ti.PID from T_PRODUCT_PRICE tpp, T_PRODUCT_INFO ti where TO_DAYS(tpp.datepoint)=TO_DAYS(date_sub(current_date(),interval 1 day)) and tpp.AREA=? and ti.PCODE=? and tpp.PID=ti.PID) as b ON a.pid=b.pid) ORDER BY a.PNAME";
-	private static final String SELECT_TODAY_AND_YESTERDAY_PRICE_SQL_BEFORE_DAY = " select a.PID as pid, a.PNAME as pname,a.PTYPE as ptype,a.todayPrice,b.yesterdayPrice from ((select tpp.PRICE as todayPrice,ti.PNAME,ti.PTYPE,ti.PID from T_PRODUCT_PRICE tpp, T_PRODUCT_INFO ti where TO_DAYS(tpp.datepoint)=TO_DAYS(?) and tpp.AREA=? and ti.PCODE=? and tpp.PID=ti.PID ) as a LEFT JOIN (select tpp.PRICE as yesterdayPrice,ti.PID from T_PRODUCT_PRICE tpp, T_PRODUCT_INFO ti where TO_DAYS(tpp.datepoint)=TO_DAYS(date_sub(current_date(),interval 1 day)) and tpp.AREA=? and ti.PCODE=? and tpp.PID=ti.PID) as b ON a.pid=b.pid) ORDER BY a.PNAME";
+//	private static final String SELECT_TODAY_AND_YESTERDAY_PRICE_SQL = " select a.PID as pid, a.PNAME as pname,a.PTYPE as ptype,a.todayPrice,b.yesterdayPrice from ((select tpp.PRICE as todayPrice,ti.PNAME,ti.PTYPE,ti.PID from T_PRODUCT_PRICE tpp, T_PRODUCT_INFO ti where TO_DAYS(tpp.datepoint)=TO_DAYS(NOW()) and tpp.AREA=? and ti.PCODE=? and tpp.PID=ti.PID ) as a LEFT JOIN (select tpp.PRICE as yesterdayPrice,ti.PID from T_PRODUCT_PRICE tpp, T_PRODUCT_INFO ti where TO_DAYS(tpp.datepoint)=TO_DAYS(date_sub(current_date(),interval 1 day)) and tpp.AREA=? and ti.PCODE=? and tpp.PID=ti.PID) as b ON a.pid=b.pid) ORDER BY a.PNAME";
+//	private static final String SELECT_TODAY_AND_YESTERDAY_PRICE_SQL_BEFORE_DAY = " select a.PID as pid, a.PNAME as pname,a.PTYPE as ptype,a.todayPrice,b.yesterdayPrice from ((select tpp.PRICE as todayPrice,ti.PNAME,ti.PTYPE,ti.PID from T_PRODUCT_PRICE tpp, T_PRODUCT_INFO ti where TO_DAYS(tpp.datepoint)=TO_DAYS(?) and tpp.AREA=? and ti.PCODE=? and tpp.PID=ti.PID ) as a LEFT JOIN (select tpp.PRICE as yesterdayPrice,ti.PID from T_PRODUCT_PRICE tpp, T_PRODUCT_INFO ti where TO_DAYS(tpp.datepoint)=TO_DAYS(date_sub(current_date(),interval 1 day)) and tpp.AREA=? and ti.PCODE=? and tpp.PID=ti.PID) as b ON a.pid=b.pid) ORDER BY a.PNAME";
+	private static final String SELECT_MAX_TODAY_BEFORE_DAY_PRICE = "SELECT a.PID AS pid, a.PNAME AS pname, a.PTYPE AS ptype, a.todayPrice, 0 AS yesterdayPrice FROM ( SELECT tpp.datepoint, tpp.PID, tpp.ID, ti.PNAME, ti.PTYPE, tpp.PRICE AS todayPrice FROM T_PRODUCT_PRICE tpp, T_PRODUCT_INFO ti WHERE tpp.datepoint <= NOW() AND tpp.PID = ti.PID AND ti.PCODE = ? AND tpp.AREA = ? ORDER BY tpp.datepoint DESC ) a GROUP BY a.PID";
+	
 	// 今天之前最近的一天
-	private static final String SELECT_MAX_TODAY = "select max(dd.datepoint) DATEPOINT from T_PRODUCT_PRICE as dd where dd.datepoint < NOW()";
+//	private static final String SELECT_MAX_TODAY = "select max(dd.datepoint) DATEPOINT from T_PRODUCT_PRICE as dd where dd.datepoint < NOW()";
 
 	private static final String BASE_SQL = " SELECT * FROM T_PRODUCT_PRICE WHERE 1=1 ";
 
@@ -47,14 +51,14 @@ public class ProductPriceDaoImpl extends BaseJdbcDao<TProductPrice> implements I
 	 */
 	public List<Map<String, Object>> queryTodayPrice(String area, String pcode){
 
-		List<Map<String, Object>> list = this.getJdbcTemplate().queryForList(SELECT_TODAY_AND_YESTERDAY_PRICE_SQL, area, pcode, area, pcode);
+		/*List<Map<String, Object>> list = this.getJdbcTemplate().queryForList(SELECT_TODAY_AND_YESTERDAY_PRICE_SQL, area, pcode, area, pcode);
 		if(list == null || list.size()==0 || list.get(0)==null){
 			Map<String,Object> map = this.getJdbcTemplate().queryForMap(SELECT_MAX_TODAY);
 			if(map != null){
 				list =  this.getJdbcTemplate().queryForList(SELECT_TODAY_AND_YESTERDAY_PRICE_SQL_BEFORE_DAY,map.get("DATEPOINT"), area, pcode, area, pcode);
 			}
-		}
-		return list;
+		}*/
+		return this.getJdbcTemplate().queryForList(SELECT_MAX_TODAY_BEFORE_DAY_PRICE, pcode, area);
 	}
 
 	public void save(TProductPrice entity) {
@@ -78,7 +82,7 @@ public class ProductPriceDaoImpl extends BaseJdbcDao<TProductPrice> implements I
 	}
 
 	public TProductPrice query(TProductPrice entity) {
-		return super.query(dynamicJoinSqlWithEntity(entity,new StringBuilder(BASE_SQL)), entity);
+		return super.query(dynamicJoinSqlWithEntity(entity, new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public TProductPrice query(Serializable id) {
@@ -86,11 +90,7 @@ public class ProductPriceDaoImpl extends BaseJdbcDao<TProductPrice> implements I
 	}
 
 	public List<TProductPrice> queryForList(TProductPrice entity) {
-		StringBuffer sql = new StringBuffer(BASE_SQL);
-		if(entity.getArea() != null && !entity.getArea().isEmpty()){
-			sql.append(" AND AREA = :area");
-		}
-		return super.queryForList(sql.toString(), entity);
+		return super.queryForList(dynamicJoinSqlWithEntity(entity, new StringBuilder(BASE_SQL)), entity);
 	}
 
 	public List<TProductPrice> queryForList(Map<String, ?> args) {
@@ -131,6 +131,19 @@ public class ProductPriceDaoImpl extends BaseJdbcDao<TProductPrice> implements I
 		this.addNameParamerSqlWithProperty(sql, "updater", "UPDATER", bean.getUpdater());
 		this.addNameParamerSqlWithProperty(sql, "updatetime", "UPDATETIME", bean.getUpdatetime());
 		return sql.toString();
+	}
+	
+	@Override
+	public List<TProductPrice> queryListByDay(TProductPrice entity, Date day) {
+		if(entity==null) entity = new TProductPrice();
+		
+		StringBuilder sql = new StringBuilder(BASE_SQL);
+		sql = new StringBuilder(dynamicJoinSqlWithEntity(entity, sql));
+		if(day != null){
+			sql.append(" AND TO_DAYS(DATEPOINT)=TO_DAYS(:datepoint) ");
+			entity.setDatepoint(day);
+		}
+		return super.queryForList(sql.toString(), entity);
 	}
 
 }

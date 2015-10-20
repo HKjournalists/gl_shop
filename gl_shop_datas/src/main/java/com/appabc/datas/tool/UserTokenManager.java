@@ -7,8 +7,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import com.appabc.bean.enums.TokenEnum;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.bean.pvo.TUser;
+import com.appabc.common.base.bean.TokenBean;
 import com.appabc.common.base.bean.UserInfoBean;
 import com.appabc.common.utils.RedisHelper;
 import com.appabc.common.utils.SerializeUtil;
@@ -50,54 +53,58 @@ public class UserTokenManager {
 	 * @return
 	 */
 	public UserInfoBean saveUserToken(TUser user, TCompanyInfo ci){
-		UserInfoBean ut = new UserInfoBean();
-		String userToken = createUserToken(user.getUsername());
-
-		ut.setId(user.getId());
-		ut.setCid(user.getCid());
-		ut.setToken(userToken);
-		ut.setUserName(user.getUsername());
-		ut.setPhone(user.getPhone());
-		ut.setNick(user.getNick());
-		ut.setLogo(ut.getLogo());
-
-		ut.setCname(ci.getCname());
-		ut.setCtype(ci.getCtype() != null ? ci.getCtype().getVal() : null);
-		ut.setAuthstatus(ci.getAuthstatus() != null ? ci.getAuthstatus().getVal() : null);
-
-		ut.setExpTime(getExpTime());
-		ut.setEffTimeLength(systemParamsManager.getInt(SystemConstant.USERTOKEN_EFF_TIME_LENGTH));
-
-		delUserTokenByUser(user.getUsername()); // 删除旧数据
-
-		try {
-			Map<byte[],byte[]> map = this.redisHelper.hgetAll(USERTOKEN_MAP_KEY.getBytes("UTF-8"));
-			if(map==null){
-				map = new HashMap<byte[],byte[]>();
+		
+		UserInfoBean ut = getBeanByUsernameDoNotCheckTime(user.getUsername());
+		if(ut == null || CollectionUtils.isEmpty(ut.getTokenList())) ut = new UserInfoBean();
+		
+		TokenBean tokenBean = createUserToken(user.getUsername());
+		if (tokenBean != null){
+			ut.getTokenList().addFirst(tokenBean);
+			
+			ut.setId(user.getId());
+			ut.setCid(user.getCid());
+			ut.setUserName(user.getUsername());
+			ut.setPhone(user.getPhone());
+			ut.setNick(user.getNick());
+			ut.setLogo(ut.getLogo());
+			
+			ut.setCname(ci.getCname());
+			ut.setCtype(ci.getCtype() != null ? ci.getCtype().getVal() : null);
+			ut.setAuthstatus(ci.getAuthstatus() != null ? ci.getAuthstatus().getVal() : null);
+			
+			try {
+				Map<byte[],byte[]> map = this.redisHelper.hgetAll(USERTOKEN_MAP_KEY.getBytes("UTF-8"));
+				if(map==null){
+					map = new HashMap<byte[],byte[]>();
+				}
+				byte[] bytes = SerializeUtil.serialize(ut);
+				map.put(user.getUsername().getBytes("UTF-8"), bytes);
+				map.put(tokenBean.getToken().getBytes("UTF-8"), bytes);
+				
+				this.redisHelper.hmset(USERTOKEN_MAP_KEY.getBytes("UTF-8"), map);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
 			}
-			byte[] bytes = SerializeUtil.serialize(ut);
-			map.put(user.getUsername().getBytes("UTF-8"), bytes);
-			map.put(userToken.getBytes("UTF-8"), bytes);
-
-			this.redisHelper.hmset(USERTOKEN_MAP_KEY.getBytes("UTF-8"), map);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			
+			return ut;
+		}else{
+			return null;
 		}
-
-		return ut;
 	}
 	
 	/**
 	 * 更新USERTOKEN信息
 	 * @param ut
 	 */
-	public void updateUserToken(UserInfoBean ut) {
+	public void updateUserInfo(UserInfoBean ut) {
 		if(ut == null){
 			logger.error("UserToken is null");
 			return ;
 		}
 		
-		if(StringUtils.isNotEmpty(ut.getToken()) && StringUtils.isNotEmpty(ut.getToken())){
+		TokenBean tokenBean = ut.getTokenList().getFirst();
+		
+		if(tokenBean != null && StringUtils.isNotEmpty(tokenBean.getToken())){
 			try {
 				Map<byte[],byte[]> map = this.redisHelper.hgetAll(USERTOKEN_MAP_KEY.getBytes("UTF-8"));
 				if(map==null){
@@ -105,9 +112,7 @@ public class UserTokenManager {
 				}
 				byte[] bytes = SerializeUtil.serialize(ut);
 				map.put(ut.getUserName().getBytes("UTF-8"), bytes);
-				map.put(ut.getToken().getBytes("UTF-8"), bytes);
-				
-				delUserTokenByUser(ut.getUserName()); // 删除旧数据
+				map.put(tokenBean.getToken().getBytes("UTF-8"), bytes);
 				
 				this.redisHelper.hmset(USERTOKEN_MAP_KEY.getBytes("UTF-8"), map);
 			} catch (UnsupportedEncodingException e) {
@@ -120,7 +125,7 @@ public class UserTokenManager {
 	}
 
 	/**
-	 * 根据用户名获取TOKEN(过期将返回空)
+	 * 根据用户名获取UserInfoBean(过期将返回空)
 	 * @param userName
 	 * @return
 	 */
@@ -131,15 +136,16 @@ public class UserTokenManager {
 				if(bytes != null){
 					UserInfoBean u = (UserInfoBean) SerializeUtil.unserialize(bytes);
 					if(u != null){
-						if(u.getExpTime().before(Calendar.getInstance().getTime())){ // 过期时间小于当前时间时，USERTOKEN过期
+						if(u.getTokenList().getFirst().getExpTime().before(Calendar.getInstance().getTime())){ // 过期时间小于当前时间时，USERTOKEN过期
 							return null;
 						}
 						return u;
 					}
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 		return null;
@@ -158,34 +164,36 @@ public class UserTokenManager {
 					return (UserInfoBean) SerializeUtil.unserialize(bytes);
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e);
 		}
 		
 		return null;
 	}
 
 	/**
-	 * 根据TOKEN获取用户名
+	 * 根据TOKEN值获取UserInfoBean
 	 * @param userToken
 	 * @return
 	 */
-	public UserInfoBean getBeanByToken(String userToken){
+	public UserInfoBean getBeanByToken(String token){
 		try {
-			if(userToken !=  null && this.redisHelper.hexists(USERTOKEN_MAP_KEY.getBytes("UTF-8"), userToken.getBytes("UTF-8"))){
-				byte[] bytes = this.redisHelper.hget(USERTOKEN_MAP_KEY.getBytes("UTF-8"), userToken.getBytes("UTF-8"));
+			if(token !=  null && this.redisHelper.hexists(USERTOKEN_MAP_KEY.getBytes("UTF-8"), token.getBytes("UTF-8"))){
+				byte[] bytes = this.redisHelper.hget(USERTOKEN_MAP_KEY.getBytes("UTF-8"), token.getBytes("UTF-8"));
 				if(bytes != null){
 					UserInfoBean u = (UserInfoBean) SerializeUtil.unserialize(bytes);
 					if(u != null){
-						if(u.getExpTime().before(Calendar.getInstance().getTime())){ // 过期时间小于当前时间时，删除USERTOKEN
+						if(u.getTokenList().getFirst().getExpTime().before(Calendar.getInstance().getTime())){ // 过期时间小于当前时间时，删除USERTOKEN
 							return null;
 						}
 						return u;
 					}
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e);
 		}
 
 		return null;
@@ -204,24 +212,26 @@ public class UserTokenManager {
 					return (UserInfoBean) SerializeUtil.unserialize(bytes);
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e);
 		}
 		
 		return null;
 	}
 
 	/**
-	 * 根据用户名删除USERTOKEN，删除两对键值
+	 * 根据用户名删除userInfo（删除userName对应的Token 以及 tokenList中所有TOKEN）
 	 * @param userName
 	 */
-	public void delUserTokenByUser(String userName){
+	public void delUserInfoByUser(String userName){
 		UserInfoBean ut = getBeanByUsernameDoNotCheckTime(userName);
-		if(ut != null && ut.getToken() != null){
+		if(ut != null){
+			LinkedList<TokenBean> tokenList = ut.getTokenList();
 			try {
+				delTokenList(tokenList);
 				this.redisHelper.hdel(USERTOKEN_MAP_KEY.getBytes("UTF-8"), userName.getBytes("UTF-8"));
-				this.redisHelper.hdel(USERTOKEN_MAP_KEY.getBytes("UTF-8"), ut.getToken().getBytes("UTF-8"));
-				logger.info("DELETE USERTOKEN ; userName="+userName);
+				logger.info("DELETE ALL USERTOKEN ; userName="+userName);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
@@ -229,18 +239,31 @@ public class UserTokenManager {
 	}
 	
 	/**
-	 * 根据TOKEN名删除USERTOKEN，删除两对键值
+	 * 删除一组TOKEN
+	 * @param tokenList
+	 */
+	private void delTokenList(LinkedList<TokenBean> tokenList){
+		if(CollectionUtils.isNotEmpty(tokenList)){
+			for (int i = tokenList.size()-1; i > -1 ; i--) {
+				try {
+					this.redisHelper.hdel(USERTOKEN_MAP_KEY.getBytes("UTF-8"), tokenList.get(i).getToken().getBytes("UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+				logger.info("DELETE TOKEN LIST ; token="+tokenList.get(i).getToken());
+			}
+		}
+		
+	}
+	
+	/**
+	 * 根据TOKEN值删除userInfo（删除userName对应的Token 以及 tokenList中所有TOKEN）
 	 * @param userName
 	 */
-	public void delUserTokenByToken(String token){
+	public void delUserInfoByToken(String token) {
 		UserInfoBean ut = getBeanByTokenDoNotCheckTime(token);
 		if(ut != null && ut.getUserName() != null){
-			try {
-				this.redisHelper.hdel(USERTOKEN_MAP_KEY.getBytes("UTF-8"), token.getBytes("UTF-8"));
-				this.redisHelper.hdel(USERTOKEN_MAP_KEY.getBytes("UTF-8"), ut.getUserName().getBytes("UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+			delUserInfoByUser(ut.getUserName());
 		}
 	}
 
@@ -261,11 +284,32 @@ public class UserTokenManager {
 	 * @param date
 	 * @return
 	 */
-	private String createUserToken(String userName){
+	private TokenBean createUserToken(String userName){
+		TokenBean tokenBean = null;
 		try {
-			return BaseCoder.encryptMD5(userName + Calendar.getInstance());
+			tokenBean = new TokenBean();
+			tokenBean.setUserName(userName);
+			tokenBean.setToken(BaseCoder.encryptMD5(userName + Calendar.getInstance()));
+			tokenBean.setExpTime(getExpTime());
+			tokenBean.setEffTimeLength(systemParamsManager.getInt(SystemConstant.USERTOKEN_EFF_TIME_LENGTH));
 		} catch (Exception e) {
+			logger.error("createUserToken is error."+ e.getMessage());
 			e.printStackTrace();
+		}
+		
+		return tokenBean;
+	}
+	
+	/**
+	 * 根据token获取username
+	 * @param token
+	 * @return
+	 */
+	public String getUsernameByToken(String token){
+		UserInfoBean u = getBeanByToken(token);
+		if(u != null){
+			return u.getUserName();
+		}else{
 			return null;
 		}
 	}
@@ -284,17 +328,42 @@ public class UserTokenManager {
 					UserInfoBean u = (UserInfoBean) SerializeUtil.unserialize(bytes);
 					if(u != null){
 						logger.debug("UserInfoBean="+u);
-						if(u.getExpTime() == null || u.getExpTime().before(Calendar.getInstance().getTime())) { // 过期时间小于当前时间时，USERTOKEN过期
-							logger.info("u.getExpTime()="+u.getExpTime());
+						Date expTime = u.getTokenList().getFirst().getExpTime();
+						if(expTime == null || expTime.before(Calendar.getInstance().getTime())) { // 过期时间小于当前时间时，USERTOKEN过期
+							logger.info("u.getExpTime()="+expTime);
 							logger.info(TokenEnum.TOKEN_STATUS_EXPIRED);
 							logger.info(u);
 							return TokenEnum.TOKEN_STATUS_EXPIRED;
 						}else{
+							
+							// 如果该token为最新的token删除其它token
+							try {
+								UserInfoBean userNameGetInfo = getBeanByUsernameDoNotCheckTime(u.getUserName());
+								if(userNameGetInfo != null && userToken.equals(userNameGetInfo.getTokenList().getFirst().getToken())){
+									LinkedList<TokenBean> tokenList = userNameGetInfo.getTokenList();
+									if(tokenList != null && tokenList.size()>1){
+										TokenBean firstToke = tokenList.getFirst();
+										
+										tokenList.removeFirst(); // 保留第一个，第一个为最新token
+										delTokenList(tokenList);
+										logger.info("The latest token is :"+tokenList.getFirst().getToken()+"\t ,username is :"+tokenList.getFirst().getUserName());
+										
+										// 更新 userName 对应的token list size is 1, and the first token is new token
+										LinkedList<TokenBean> newTokenList = new LinkedList<TokenBean>();
+										newTokenList.add(firstToke);
+										userNameGetInfo.setTokenList(newTokenList);
+										updateUserInfo(userNameGetInfo);
+									}
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							
 							return TokenEnum.TOKEN_STATUS_EXIST;
 						}
 						
 					}else{
-						logger.info("UserInfoBean 反序列化为空；bytes="+bytes);
+						logger.info("UserInfoBean 反序列化为空；");
 					}
 				}else{
 					logger.info("USERTOKEN 不存在 ；userToken="+userToken+"; bytes is null");
@@ -302,8 +371,9 @@ public class UserTokenManager {
 			}else{
 				logger.info("USERTOKEN 不存在 ；userToken="+userToken);
 			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e);
 		}
 		return TokenEnum.TOKEN_STATUS_NOTEXIST;
 	}

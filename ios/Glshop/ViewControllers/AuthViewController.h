@@ -8,10 +8,12 @@
 
 #import "BaseViewController.h"
 #import "AuthModel.h"
+#import "CopyRightModel.h"
 
 @interface AuthViewController : BaseViewController
 
 @property (nonatomic, strong, readonly) UITableView *tableView;
 @property (nonatomic, strong) AuthModel *authModel;
+@property (nonatomic, strong) CopyRightModel *cModel;
 
 @end

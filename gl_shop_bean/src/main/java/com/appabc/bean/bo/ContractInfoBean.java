@@ -3,6 +3,8 @@ package com.appabc.bean.bo;
 import java.util.Date;
 import java.util.List;
 
+import com.appabc.bean.enums.ContractInfo.ContractEvaluationType;
+import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
 import com.appabc.bean.enums.ContractInfo.ContractOperateType;
 import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
 import com.appabc.bean.pvo.TOrderInfo;
@@ -58,9 +60,28 @@ public class ContractInfoBean extends TOrderInfo{
      */
 	private Object buyerStatus;
 	/**
+     * 买家最后一次操作记录的信息
+     */
+	private String buyerLid;
+	private String buyerOperator;
+	private Date buyerOperationtime;
+	private ContractOperateType buyerOperatorType;
+	private ContractLifeCycle buyerOperatorStatus;
+	private ContractLifeCycle buyerOperatorOldStatus;
+	
+	/**
      * 卖家状态
      */
 	private Object sellerStatus;
+	/**
+	 * 卖家最后一次操作记录的信息
+	 * */
+	private String sellerLid;
+	private String sellerOperator;
+	private Date sellerOperationtime;
+	private ContractOperateType sellerOperatorType;
+	private ContractLifeCycle sellerOperatorStatus;
+	private ContractLifeCycle sellerOperatorOldStatus;
 	/**
      * 买家起草状态
      */
@@ -69,6 +90,18 @@ public class ContractInfoBean extends TOrderInfo{
      * 卖家起草状态
      */
 	private Object sellerDraftStatus;
+	/**
+     * 卖家是否评价
+     */
+	private ContractEvaluationType sellerEvaluation;
+	/**
+     * 买家是否评价
+     */
+	private ContractEvaluationType buyerEvaluation;
+	/**
+	 * 仲裁处理信息
+	 * */
+	private Object arbitrationProcessInfo;
 	/**
      * 起草确认期限
      */
@@ -113,7 +146,18 @@ public class ContractInfoBean extends TOrderInfo{
      * 合同结算清单
      */
 	private List<?> finalEstimateList;
-	
+	/**
+     * 我的合同状态(类型)
+     */
+	private Object myContractType;
+	/**
+	 * 买家在合同过程,实际支付的金额
+	 * */
+	private double payFundsAmount;
+	/**
+	 * 合同模板信息
+	 * */
+	private String contractTemplate;
 	/**  
 	 * sampleCheckDisPriceList  
 	 *  
@@ -508,6 +552,330 @@ public class ContractInfoBean extends TOrderInfo{
 	 */
 	public void setAgreeFinalEstimeLimitTime(Date agreeFinalEstimeLimitTime) {
 		this.agreeFinalEstimeLimitTime = agreeFinalEstimeLimitTime;
+	}
+
+	/**  
+	 * arbitrationProcessInfo  
+	 *  
+	 * @return  the arbitrationProcessInfo  
+	 * @since   1.0.0  
+	*/  
+	
+	public Object getArbitrationProcessInfo() {
+		return arbitrationProcessInfo;
+	}
+
+	/**  
+	 * @param arbitrationProcessInfo the arbitrationProcessInfo to set  
+	 */
+	public void setArbitrationProcessInfo(Object arbitrationProcessInfo) {
+		this.arbitrationProcessInfo = arbitrationProcessInfo;
+	}
+
+	/**  
+	 * buyerEvaluation  
+	 *  
+	 * @return  the buyerEvaluation  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractEvaluationType getBuyerEvaluation() {
+		return buyerEvaluation;
+	}
+
+	/**  
+	 * @param buyerEvaluation the buyerEvaluation to set  
+	 */
+	public void setBuyerEvaluation(ContractEvaluationType buyerEvaluation) {
+		this.buyerEvaluation = buyerEvaluation;
+	}
+
+	/**  
+	 * sellerEvaluation  
+	 *  
+	 * @return  the sellerEvaluation  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractEvaluationType getSellerEvaluation() {
+		return sellerEvaluation;
+	}
+
+	/**  
+	 * @param sellerEvaluation the sellerEvaluation to set  
+	 */
+	public void setSellerEvaluation(ContractEvaluationType sellerEvaluation) {
+		this.sellerEvaluation = sellerEvaluation;
+	}
+
+	/**  
+	 * myContractType  
+	 *  
+	 * @return  the myContractType  
+	 * @since   1.0.0  
+	*/  
+	
+	public Object getMyContractType() {
+		return myContractType;
+	}
+
+	/**  
+	 * @param myContractType the myContractType to set  
+	 */
+	public void setMyContractType(Object myContractType) {
+		this.myContractType = myContractType;
+	}
+
+	/**  
+	 * buyerLid  
+	 *  
+	 * @return  the buyerLid  
+	 * @since   1.0.0  
+	*/  
+	
+	public String getBuyerLid() {
+		return buyerLid;
+	}
+
+	/**  
+	 * @param buyerLid the buyerLid to set  
+	 */
+	public void setBuyerLid(String buyerLid) {
+		this.buyerLid = buyerLid;
+	}
+
+	/**  
+	 * buyerOperator  
+	 *  
+	 * @return  the buyerOperator  
+	 * @since   1.0.0  
+	*/  
+	
+	public String getBuyerOperator() {
+		return buyerOperator;
+	}
+
+	/**  
+	 * @param buyerOperator the buyerOperator to set  
+	 */
+	public void setBuyerOperator(String buyerOperator) {
+		this.buyerOperator = buyerOperator;
+	}
+
+	/**  
+	 * buyerOperationtime  
+	 *  
+	 * @return  the buyerOperationtime  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getBuyerOperationtime() {
+		return buyerOperationtime;
+	}
+
+	/**  
+	 * @param buyerOperationtime the buyerOperationtime to set  
+	 */
+	public void setBuyerOperationtime(Date buyerOperationtime) {
+		this.buyerOperationtime = buyerOperationtime;
+	}
+
+	/**  
+	 * buyerOperatorType  
+	 *  
+	 * @return  the buyerOperatorType  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractOperateType getBuyerOperatorType() {
+		return buyerOperatorType;
+	}
+
+	/**  
+	 * @param buyerOperatorType the buyerOperatorType to set  
+	 */
+	public void setBuyerOperatorType(ContractOperateType buyerOperatorType) {
+		this.buyerOperatorType = buyerOperatorType;
+	}
+
+	/**  
+	 * buyerOperatorStatus  
+	 *  
+	 * @return  the buyerOperatorStatus  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractLifeCycle getBuyerOperatorStatus() {
+		return buyerOperatorStatus;
+	}
+
+	/**  
+	 * @param buyerOperatorStatus the buyerOperatorStatus to set  
+	 */
+	public void setBuyerOperatorStatus(ContractLifeCycle buyerOperatorStatus) {
+		this.buyerOperatorStatus = buyerOperatorStatus;
+	}
+
+	/**  
+	 * buyerOperatorOldStatus  
+	 *  
+	 * @return  the buyerOperatorOldStatus  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractLifeCycle getBuyerOperatorOldStatus() {
+		return buyerOperatorOldStatus;
+	}
+
+	/**  
+	 * @param buyerOperatorOldStatus the buyerOperatorOldStatus to set  
+	 */
+	public void setBuyerOperatorOldStatus(ContractLifeCycle buyerOperatorOldStatus) {
+		this.buyerOperatorOldStatus = buyerOperatorOldStatus;
+	}
+
+	/**  
+	 * sellerLid  
+	 *  
+	 * @return  the sellerLid  
+	 * @since   1.0.0  
+	*/  
+	
+	public String getSellerLid() {
+		return sellerLid;
+	}
+
+	/**  
+	 * @param sellerLid the sellerLid to set  
+	 */
+	public void setSellerLid(String sellerLid) {
+		this.sellerLid = sellerLid;
+	}
+
+	/**  
+	 * sellerOperator  
+	 *  
+	 * @return  the sellerOperator  
+	 * @since   1.0.0  
+	*/  
+	
+	public String getSellerOperator() {
+		return sellerOperator;
+	}
+
+	/**  
+	 * @param sellerOperator the sellerOperator to set  
+	 */
+	public void setSellerOperator(String sellerOperator) {
+		this.sellerOperator = sellerOperator;
+	}
+
+	/**  
+	 * sellerOperationtime  
+	 *  
+	 * @return  the sellerOperationtime  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getSellerOperationtime() {
+		return sellerOperationtime;
+	}
+
+	/**  
+	 * @param sellerOperationtime the sellerOperationtime to set  
+	 */
+	public void setSellerOperationtime(Date sellerOperationtime) {
+		this.sellerOperationtime = sellerOperationtime;
+	}
+
+	/**  
+	 * sellerOperatorType  
+	 *  
+	 * @return  the sellerOperatorType  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractOperateType getSellerOperatorType() {
+		return sellerOperatorType;
+	}
+
+	/**  
+	 * @param sellerOperatorType the sellerOperatorType to set  
+	 */
+	public void setSellerOperatorType(ContractOperateType sellerOperatorType) {
+		this.sellerOperatorType = sellerOperatorType;
+	}
+
+	/**  
+	 * sellerOperatorStatus  
+	 *  
+	 * @return  the sellerOperatorStatus  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractLifeCycle getSellerOperatorStatus() {
+		return sellerOperatorStatus;
+	}
+
+	/**  
+	 * @param sellerOperatorStatus the sellerOperatorStatus to set  
+	 */
+	public void setSellerOperatorStatus(ContractLifeCycle sellerOperatorStatus) {
+		this.sellerOperatorStatus = sellerOperatorStatus;
+	}
+
+	/**  
+	 * sellerOperatorOldStatus  
+	 *  
+	 * @return  the sellerOperatorOldStatus  
+	 * @since   1.0.0  
+	*/  
+	
+	public ContractLifeCycle getSellerOperatorOldStatus() {
+		return sellerOperatorOldStatus;
+	}
+
+	/**  
+	 * @param sellerOperatorOldStatus the sellerOperatorOldStatus to set  
+	 */
+	public void setSellerOperatorOldStatus(ContractLifeCycle sellerOperatorOldStatus) {
+		this.sellerOperatorOldStatus = sellerOperatorOldStatus;
+	}
+
+	/**  
+	 * payFundsAmount  
+	 *  
+	 * @return  the payFundsAmount  
+	 * @since   1.0.0  
+	*/  
+	
+	public double getPayFundsAmount() {
+		return payFundsAmount;
+	}
+
+	/**  
+	 * @param payFundsAmount the payFundsAmount to set  
+	 */
+	public void setPayFundsAmount(double payFundsAmount) {
+		this.payFundsAmount = payFundsAmount;
+	}
+
+	/**  
+	 * contractTemplate  
+	 *  
+	 * @return  the contractTemplate  
+	 * @since   1.0.0  
+	*/  
+	
+	public String getContractTemplate() {
+		return contractTemplate;
+	}
+
+	/**  
+	 * @param contractTemplate the contractTemplate to set  
+	 */
+	public void setContractTemplate(String contractTemplate) {
+		this.contractTemplate = contractTemplate;
 	}
 
 }

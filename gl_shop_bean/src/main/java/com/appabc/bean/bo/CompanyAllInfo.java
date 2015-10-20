@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.appabc.bean.enums.CompanyInfo.CompanyAuthStatus;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyBailStatus;
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.pvo.TCompanyAuth;
@@ -57,7 +57,7 @@ public class CompanyAllInfo extends BaseBean {
     /**
      * 认证状态(是否认证)
      */
-    private CompanyAuthStatus authstatus;
+    private AuthRecordStatus authstatus;
 
     /**
      * 固定电话
@@ -161,12 +161,12 @@ public class CompanyAllInfo extends BaseBean {
 		this.ctype = ctype;
 	}
 
-	public CompanyAuthStatus getAuthstatus() {
+	public AuthRecordStatus getAuthstatus() {
 		return authstatus;
 	}
 
-	public void setAuthstatus(CompanyAuthStatus authstatus) {
-		if(authstatus == null){ authstatus = CompanyAuthStatus.AUTH_STATUS_NO;}
+	public void setAuthstatus(AuthRecordStatus authstatus) {
+		if(authstatus == null){ authstatus = AuthRecordStatus.AUTH_STATUS_CHECK_NO;}
 		this.authstatus = authstatus;
 	}
 

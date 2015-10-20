@@ -1,8 +1,8 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.common.base.bean.BaseBean;
-
 import java.util.Date;
+
+import com.appabc.common.base.bean.BaseBean;
 
 public class TProductPriceHope extends BaseBean {
     /**
@@ -46,9 +46,9 @@ public class TProductPriceHope extends BaseBean {
     private Date endtime;
 
     /**
-     * 1周、2周
+     * 1:未来一周、2：未来二周
      */
-    private String timetype;
+    private String timetype; // 1 or 2
 
     /**
      * 地区
@@ -64,6 +64,11 @@ public class TProductPriceHope extends BaseBean {
      * 预测时间
      */
     private Date updatetime;
+    
+    private Date queryStartTime1; // 查询参数用
+    private Date queryEndTime1; // 查询参数用
+    private Date queryStartTime2; // 查询参数用
+    private Date queryEndTime2; // 查询参数用
 
     public Float getBaseprice() {
         return baseprice;
@@ -151,6 +156,38 @@ public class TProductPriceHope extends BaseBean {
 
 	public void setPid(String pid) {
 		this.pid = pid;
+	}
+
+	public Date getQueryStartTime1() {
+		return queryStartTime1;
+	}
+
+	public void setQueryStartTime1(Date queryStartTime1) {
+		this.queryStartTime1 = queryStartTime1;
+	}
+
+	public Date getQueryEndTime1() {
+		return queryEndTime1;
+	}
+
+	public void setQueryEndTime1(Date queryEndTime1) {
+		this.queryEndTime1 = queryEndTime1;
+	}
+
+	public Date getQueryStartTime2() {
+		return queryStartTime2;
+	}
+
+	public void setQueryStartTime2(Date queryStartTime2) {
+		this.queryStartTime2 = queryStartTime2;
+	}
+
+	public Date getQueryEndTime2() {
+		return queryEndTime2;
+	}
+
+	public void setQueryEndTime2(Date queryEndTime2) {
+		this.queryEndTime2 = queryEndTime2;
 	}
     
     

@@ -20,6 +20,8 @@ import redis.clients.jedis.ShardedJedisPool;
  */
 public class RedisHelper {
 	
+	private LogUtil log = LogUtil.getLogUtil(RedisHelper.class);
+	
 	private ShardedJedisPool shardedJedisPool;
 
 	public void setShardedJedisPool(ShardedJedisPool shardedJedisPool) {
@@ -64,7 +66,7 @@ public class RedisHelper {
 		try {
 			return Integer.valueOf(getString(key));
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			log.error(e);
 			return 0;
 		}
 	}
@@ -73,7 +75,7 @@ public class RedisHelper {
 		try {
 			return Long.valueOf(getString(key));
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			log.error(e);
 			return 0;
 		}
 	}
@@ -82,7 +84,7 @@ public class RedisHelper {
 		try {
 			return Float.valueOf(getString(key));
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			log.error(e);
 			return 0;
 		}
 	}
@@ -91,7 +93,7 @@ public class RedisHelper {
 		try {
 			return Double.valueOf(getString(key));
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			log.error(e);
 			return 0.0;
 		}
 	}
@@ -100,7 +102,7 @@ public class RedisHelper {
 		try {
 			return Short.valueOf(getString(key));
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			log.error(e);
 			return 0;
 		}
 	}
@@ -109,7 +111,7 @@ public class RedisHelper {
 		try {
 			return Byte.valueOf(getString(key));
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			log.error(e);
 			return null;
 		}
 	}
@@ -134,6 +136,17 @@ public class RedisHelper {
 	 * @return
 	 */
 	public Long del(String key){
+		ShardedJedis resource = getResource();
+		Long val = resource.del(key);
+		returnResource(resource);
+		return val;
+	}
+	/**
+	 * 删除
+	 * @param key
+	 * @return
+	 */
+	public Long del(byte[] key){
 		ShardedJedis resource = getResource();
 		Long val = resource.del(key);
 		returnResource(resource);

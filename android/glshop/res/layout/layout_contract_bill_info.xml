@@ -184,7 +184,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:background="@drawable/bg_item_single"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:visibility="gone" >
 
         <TextView
             android:layout_width="match_parent"
@@ -288,7 +289,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:background="@drawable/bg_item_single"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:visibility="gone" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -299,7 +301,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/tv_arbitrate_dealtime"
                 android:text="2015-1-1 08:08 " />
 
             <TextView
@@ -391,24 +393,30 @@
             android:paddingRight="@dimen/buy_item_padding" >
 
             <TextView
+                android:id="@+id/tv_bill_datetime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2015-1-1 08:08 " />
+                android:text="2015-1-1 08:08" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
                 android:text="平台对我的结算" />
         </LinearLayout>
 
         <View style="@style/item_devider_line" />
 
+        <!-- 保证金解冻 -->
+
         <LinearLayout
+            android:id="@+id/ll_deposit_unfreeze"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/buy_item_padding"
-            android:paddingRight="@dimen/buy_item_padding" >
+            android:paddingRight="@dimen/buy_item_padding"
+            android:visibility="gone" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -425,12 +433,16 @@
                 android:textColor="@color/red" />
         </LinearLayout>
 
+        <!-- 保证金扣除 -->
+
         <LinearLayout
+            android:id="@+id/ll_deposit_deduct"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/buy_item_padding"
-            android:paddingRight="@dimen/buy_item_padding" >
+            android:paddingRight="@dimen/buy_item_padding"
+            android:visibility="gone" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -446,13 +458,16 @@
                 android:text="-1000"
                 android:textColor="@color/red" />
         </LinearLayout>
+        <!-- 货款返还 -->
 
         <LinearLayout
+            android:id="@+id/ll_deposit_return"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/buy_item_padding"
-            android:paddingRight="@dimen/buy_item_padding" >
+            android:paddingRight="@dimen/buy_item_padding"
+            android:visibility="gone" >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -461,6 +476,84 @@
 
             <TextView
                 android:id="@+id/tv_deposit_return"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="+2000"
+                android:textColor="@color/red" />
+        </LinearLayout>
+
+        <!-- 实收货款 -->
+
+        <LinearLayout
+            android:id="@+id/ll_received_payment"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/buy_item_padding"
+            android:paddingRight="@dimen/buy_item_padding"
+            android:visibility="gone" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="实收货款(单位：元):" />
+
+            <TextView
+                android:id="@+id/tv_received_payment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="+2000"
+                android:textColor="@color/red" />
+        </LinearLayout>
+
+        <!-- 平台手续费 -->
+
+        <LinearLayout
+            android:id="@+id/ll_platform_fees"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/buy_item_padding"
+            android:paddingRight="@dimen/buy_item_padding"
+            android:visibility="gone" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="平台手续费(单位：元):" />
+
+            <TextView
+                android:id="@+id/tv_platform_fees"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="+2000"
+                android:textColor="@color/red" />
+        </LinearLayout>
+
+        <!-- 被违约赔偿 -->
+
+        <LinearLayout
+            android:id="@+id/ll_deposit_equalize"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/buy_item_padding"
+            android:paddingRight="@dimen/buy_item_padding"
+            android:visibility="gone" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="被违约赔偿金额(单位：元):" />
+
+            <TextView
+                android:id="@+id/tv_deposit_equalize"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -479,7 +572,8 @@
         android:background="@drawable/bg_oval_orange"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="@dimen/buy_item_padding" >
+        android:padding="@dimen/buy_item_padding"
+        android:visibility="gone" >
 
         <TextView
             android:layout_width="wrap_content"

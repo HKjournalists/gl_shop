@@ -12,7 +12,7 @@ package com.appabc.common.base.bean;
 public class EmptyResult extends BaseBean {
 
 	/**  
-	 * serialVersionUID:TODO（用一句话描述这个变量表示什么）  
+	 * serialVersionUID:（用一句话描述这个变量表示什么）  
 	 *  
 	 * @since 1.0.0  
 	 */  

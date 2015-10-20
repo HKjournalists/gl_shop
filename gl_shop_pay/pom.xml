@@ -191,6 +191,11 @@
 		  	<artifactId>tomcat-servlet-api</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>com.unionpay.acp</groupId>
+			<artifactId>upacp_sdk</artifactId>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<finalName>gl_shop_pay</finalName>

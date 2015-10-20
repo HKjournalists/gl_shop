@@ -23,7 +23,36 @@ public class PurseTest extends AbstractHttpControllerTest {
 	@Override
 	@Test
 	public void mainTest() {
-		this.testInitializePurseAccount();
+		//loginSimulation("13760434638", "173", "201411270000014");
+		//testGetUnionPayTradeStatus();
+	}
+	
+	public void testGetUnionPayTradeStatus(){
+		request.setRequestURI("/purse/getUnionPayTradeStatus");
+        request.setMethod(HttpMethod.POST.name());
+        request.addParameter("tn", "201503040835248122928");
+        request.addParameter("oid", "2015030400000014163524");
+        try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logUtil.debug(e.getMessage(), e);
+		}
+	}
+	
+	public void testGetUnionPayTnOrderId(){
+		request.setRequestURI("/purse/getUnionPayTnOrderId");
+        request.setMethod(HttpMethod.POST.name());
+        request.addParameter("type", "1");
+        request.addParameter("balance", "90");
+        try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logUtil.debug(e.getMessage(), e);
+		}
 	}
 	
 	public void testGetPurseList(){

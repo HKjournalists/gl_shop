@@ -1,34 +1,48 @@
 <!DOCTYPE html>
 <html layout:decorator="layouts/tasks">
 <head>
-<title>我的工作台 - 认证信息审核</title>
+<title>编辑 - 认证信息审核</title>
 </head>
 <body>
 <h4 layout:fragment="contentNavTitle">
   <i class="fa fa-fw fa-wrench"></i> 编辑 - 认证信息审核
 </h4>
-
-
-<table layout:fragment="tableContent">
-  <thead>
-  <tr>
-    <th>用户</th>
-    <th>注册时间</th>
-    <th>申请认证类型</th>
-    <th>提交认证时间</th>
-    <th>操作</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="task : ${tasks}">
-    <td><a th:href="@{/company/{cid}/info/(cid=${task.taskObject.cid})}" th:text="${task.taskObject.cid}">王五</a></td>
-    <td th:text="${#calendars.format(task.company.createdate, 'YYYY年M月d日')}">wangwu</td>
-    <td th:text="${task.company.ctype.text}">停用</td>
-    <td th:text="${#calendars.format(task.createTime, 'YYYY年M月d日')}">wangwu</td>
-    <td><a th:href="@{/tasks/editor/verify_info_audit/detail/{taskId}/(taskId=${task.id})}">开始处理</a></td>
-  </tr>
-  </tbody>
-</table>
+<div layout:fragment="pageContent">
+<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a th:href="@{#}">认证信息审核</a></li>
+		<li role="presentation"><a th:href="@{/tasks/editor/verify_info_audit/finished/1/}">已审核</a></li>
+	</ul>
+	<div class="nav-tab-content">
+	    <div class="tab-pane fade in active">
+	      <div class="table-responsive">
+	        <table class="table table-bordered table-striped">
+	  <thead>
+	  <tr>
+	    <th>用户</th>
+	    <th>注册时间</th>
+	    <th>申请认证类型</th>
+	    <th>提交认证时间</th>
+	    <th>操作</th>
+	  </tr>
+	  </thead>
+	  <tbody>
+	  <tr th:each="r : ${result}">
+	    <td th:text="${r.username}">2378789797376</td>
+	    <td th:text="${#calendars.format(r.regtime, 'YYYY年M月d日')}">2014年10月3日</td>
+	    <td th:text="${r.ctype} ? ${r.ctype.text}">企业</td>
+	    <td th:text="${#calendars.format(r.createdate, 'YYYY年M月d日 HH:mm')}">2015年1月15日 03:09</td>
+	    <td><a th:href="@{/tasks/editor/verify_info_audit/detail/{id}/(id=${r.id})}">开始处理</a></td>
+	  </tr>
+	  <tr th:if="${#lists.isEmpty(result)}">
+	    <td colspan="5">暂时没有待审核的认证信息</td>
+	  </tr>
+	  </tbody>
+	</table>
+	      </div>
+	      <div th:replace="layouts/fragments :: pagingNavBar"></div>
+	    </div>
+	  </div>
+</div>
 
 </body>
 

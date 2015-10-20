@@ -1,7 +1,9 @@
 package com.appabc.datas.service.contract;
 
+import com.appabc.bean.enums.ContractInfo.ContractLifeCycle;
+import com.appabc.bean.enums.ContractInfo.ContractOperateType;
+import com.appabc.bean.pvo.TOrderInfo;
 import com.appabc.bean.pvo.TOrderOperations;
-import com.appabc.common.base.service.IBaseService;
 import com.appabc.datas.exception.ServiceException;
 
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
  * @Create_Date  : 2014年9月3日 下午2:57:38
  */
 
-public interface IContractOperationService extends IBaseService<TOrderOperations> {
+public interface IContractOperationService extends IContractBaseService<TOrderOperations> {
 	
 	/**
 	 * @Description 确认合同信息
@@ -25,7 +27,7 @@ public interface IContractOperationService extends IBaseService<TOrderOperations
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	TOrderOperations applyOrNotGoodsInfo(String contractId,String type,String operator,String result,String pid);
+	TOrderOperations applyOrNotGoodsInfo(String oid,String type,String operator,String result,String pid);
 	
 	/**
 	 * @Description 验收通过和同意的接口
@@ -35,7 +37,7 @@ public interface IContractOperationService extends IBaseService<TOrderOperations
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	TOrderOperations applyOrPassGoodsInfo(String contractId,String operType,String pid,String operator,String operatorName) throws ServiceException;
+	TOrderOperations applyOrPassGoodsInfo(String oid,String operType,String pid,String cid,String cname) throws ServiceException;
 	
 	/**
 	 * @Description 确认卸货信息
@@ -45,7 +47,7 @@ public interface IContractOperationService extends IBaseService<TOrderOperations
 	 * @throws ServiceException
 	 * @author Bill Huang
 	 * */
-	void confirmUninstallGoods(String contractId,String confirmer,String confirmerName) throws ServiceException;
+	void confirmUninstallGoods(String oid,String cid,String cname) throws ServiceException;
 	
 	/**
 	 * @Description 获取合同变更历史
@@ -55,7 +57,7 @@ public interface IContractOperationService extends IBaseService<TOrderOperations
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	List<?> getContractChangeHistory(String contractId);
+	List<?> getContractChangeHistory(String oid);
 	
 	/**
 	 * @Description 获取合同操作记录
@@ -65,7 +67,7 @@ public interface IContractOperationService extends IBaseService<TOrderOperations
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	List<TOrderOperations> queryForList(String contractId, String type);
+	List<TOrderOperations> queryForList(String oid, String type);
 	
 	/**
 	 * @Description 获取合同操作记录
@@ -75,7 +77,27 @@ public interface IContractOperationService extends IBaseService<TOrderOperations
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	List<TOrderOperations> queryForListWithOIDAndOper(String contractId,String operator);
+	List<TOrderOperations> queryForListWithOIDAndOper(String oid,String cid);
+	
+	/**
+	 * @Description 获取合同操作记录
+	 * @param oid,cid,type,lifeCycle
+	 * @return List<TOrderOperations>
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	List<TOrderOperations> queryForListWithOidAndOperAndTypeAndOrderLifeCycle(String oid,String cid,ContractOperateType type,ContractLifeCycle lifeCycle);
+	
+	/**
+	 * @Description 获取合同操作记录
+	 * @param oid,cid,type
+	 * @return List<TOrderOperations>
+	 * @since 1.0 
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	TOrderOperations queryForListWithOidAndCidAndType(String oid,String cid,ContractOperateType type);
 	
 	/**
 	 * @Description 获取合同操作记录
@@ -85,6 +107,32 @@ public interface IContractOperationService extends IBaseService<TOrderOperations
 	 * @throws null
 	 * @author Bill Huang
 	 * */
-	List<TOrderOperations> queryForList(String contractId);
+	List<TOrderOperations> queryForList(String oid);
+	
+	/**
+	 * @description 根据合同ID和企业ID查询合同的付款记录
+	 * @param oid,cid
+	 * @return boolean
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	boolean getIsContractPayRecord(String oid,String cid);
+	
+	/**
+	 * @description JOB自动取消起草超时确认
+	 * @param oid,cid
+	 * @return boolean
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	void jobAutoDraftConfirmTimeoutFinish(TOrderInfo bean,String cid) throws ServiceException;
+	
+	void jobAutoConfirmGoodsInfoContract(TOrderInfo bean,String cid) throws ServiceException;
+	
+	void jobAutoEvaluationContract(TOrderInfo bean,String cid) throws ServiceException;
+	
+	void jobAutoTimeoutContractPayFundFinish(TOrderInfo bean,String cid,String cname) throws ServiceException;
 	
 }

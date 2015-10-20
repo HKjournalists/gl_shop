@@ -10,21 +10,20 @@
     </div>
     <div class="panel-body">
       <div class="table-responsive">
-        <table class="table">
-          <thead>
+        <table class="table table-bordered">
             <tr>
-              <th width="20%">用户ID</th>
-              <th width="20%">类型</th>
-              <th width="25%">注册时间</th>
-              <th width="25%">最近一次登录</th>
+              <th width="15%">用户手机号码</th>
+              <td th:text="${user.phone}"></td>
+              <th width="15%">名称</th>
+              <td th:text="${company.cname}">江苏国立网络科技有限公司</td>
+              <th width="15%">类型</th>
+              <td th:text="${company.ctype} ? ${company.ctype.text} : '未知'">企业</td>
             </tr>
-          </thead>
-          <tbody>
             <tr>
-              <td th:text="${cid}">123456</td>
-              <td>2014年9月15日 15:06</td>
-              <td th:text="${#calendars.format(company.createdate, 'YYYY年m月d日 HH:MM')}"></td>
-              <td>2014年9月15日</td>
+              <th>注册时间</th>
+              <td th:text="${user.createdate} ? ${#calendars.format(user.createdate, 'YYYY-MM-dd HH:mm')}">2015-05-12 16:44</td>
+              <th>最后登录时间</th>
+              <td colspan="3" th:text="${lastLoginTime} ? ${#calendars.format(lastLoginTime, 'YYYY-MM-dd HH:mm')} : '无'">2015-05-12 16:44</td>
             </tr>
           </tbody>
         </table>
@@ -34,27 +33,39 @@
 
   <div th:fragment="walletinfo" class="row">
 
-    <div class="col-lg-4">
+    <div class="col-md-4">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <i class="fa fa-bar-chart-o fa-fw"></i> 交易保证金账户（单位：元）
         </div>
         <div class="panel-body">
-          <h3 th:text="${balance.amount}">100000</h3>
+          <h3 th:text="${guaranty.amount}">100000</h3>
         </div>
-      </div> 
+      </div>
     </div>
 
-    <div class="col-lg-4">
+    <div class="col-md-4">
       <div class="panel panel-primary">
         <div class="panel-heading">
           <i class="fa fa-bar-chart-o fa-fw"></i> 货款账户（单位：元）
         </div>
         <div class="panel-body">
-          <h3 th:text="${guaranty.amount}">100000</h3>
+          <h3 th:text="${balance.amount}">100000</h3>
         </div>
-      </div> 
+      </div>
     </div>
   </div>
+
+  <div th:fragment="contract_history_tab" class="row">
+      <ul class="nav nav-tabs">
+        <li role="presentation" th:class="${#strings.contains(url, '/contracts/')} ? active"><a th:href="@{/company/{id}/contracts/history/1/(id=${company.id})}">已结束合同</a></li>
+        <li role="presentation" th:class="${#strings.contains(url, '/order_requests/')} ? active"><a th:href="@{/company/{id}/order_requests/history/1/(id=${company.id})}">已失效供求</a></li>
+      </ul>
+  </div>
+
+  <ul th:fragment="contract_progress_tab" class="nav nav-tabs">
+    <li role="presentation" th:class="${#strings.contains(url, '/contracts/')} ? active"><a th:href="@{/company/{id}/contracts/progressing/1/(id=${company.id})}">进行中的合同</a></li>
+    <li role="presentation" th:class="${#strings.contains(url, '/order_requests/')} ? active"><a th:href="@{/company/{id}/order_requests/progressing/1/(id=${company.id})}">有效供求</a></li>
+  </ul>
 </body>
 </html>

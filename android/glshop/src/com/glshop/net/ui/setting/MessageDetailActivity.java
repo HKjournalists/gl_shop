@@ -14,7 +14,7 @@ import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.logic.message.IMessageLogic;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.ui.basic.BasicActivity;
-import com.glshop.net.ui.mycontract.ContractInfoActivity;
+import com.glshop.net.ui.mycontract.ContractInfoActivityV2;
 import com.glshop.platform.api.DataConstants.MessageStatus;
 import com.glshop.platform.api.message.data.model.MessageInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
@@ -151,6 +151,20 @@ public class MessageDetailActivity extends BasicActivity {
 		Logger.e(TAG, "Report message failed");
 	}
 
+	@Override
+	protected void showErrorMsg(RespInfo respInfo) {
+		if (respInfo != null) {
+			switch (respInfo.respMsgType) {
+			case GlobalMessageType.MsgCenterMessageType.MSG_GET_MESSAGE_INFO_FAILED:
+				showToast(R.string.error_req_get_info);
+				break;
+			default:
+				super.showErrorMsg(respInfo);
+				break;
+			}
+		}
+	}
+
 	private void updateUI() {
 		Logger.i(TAG, "Info = " + info);
 		mTvTime.setText(info.dateTime);
@@ -173,6 +187,18 @@ public class MessageDetailActivity extends BasicActivity {
 		case TYPE_CONTRACT_SIGN:
 		case TYPE_CONTRACT_ING:
 		case TYPE_CONTRACT_EVALUATION:
+		case TYPE_CONTRACT_CANCEL:
+		case TYPE_CONTRACT_MAKE_MATCH:
+		case TYPE_CONTRACT_SINGLE_DAF_CONFIRM:
+		case TYPE_CONTRACT_DAF_CANCEL:
+		case TYPE_CONTRACT_DAF_TIMEOUT:
+		case TYPE_CONTRACT_BUYER_PAYFUNDS:
+		case TYPE_CONTRACT_BUYER_APPLY_FINALESTIMATE:
+		case TYPE_CONTRACT_SELLER_AGREE_FINALESTIMATE:
+		case TYPE_CONTRACT_APPLY_ARBITRATION:
+		case TYPE_CONTRACT_ARBITRATED_FINALESTIMATE:
+		case TYPE_CONTRACT_PAYFUNDS_TIMEOUT:
+		case TYPE_CONTRACT_OTHERS:
 			mBtnAction.setVisibility(View.VISIBLE);
 			mBtnAction.setText(getString(R.string.message_action_contract_info));
 			break;
@@ -210,9 +236,22 @@ public class MessageDetailActivity extends BasicActivity {
 		case TYPE_CONTRACT_SIGN:
 		case TYPE_CONTRACT_ING:
 		case TYPE_CONTRACT_EVALUATION:
+		case TYPE_CONTRACT_CANCEL:
+		case TYPE_CONTRACT_MAKE_MATCH:
+		case TYPE_CONTRACT_SINGLE_DAF_CONFIRM:
+		case TYPE_CONTRACT_DAF_CANCEL:
+		case TYPE_CONTRACT_DAF_TIMEOUT:
+		case TYPE_CONTRACT_BUYER_PAYFUNDS:
+		case TYPE_CONTRACT_BUYER_APPLY_FINALESTIMATE:
+		case TYPE_CONTRACT_SELLER_AGREE_FINALESTIMATE:
+		case TYPE_CONTRACT_APPLY_ARBITRATION:
+		case TYPE_CONTRACT_ARBITRATED_FINALESTIMATE:
+		case TYPE_CONTRACT_PAYFUNDS_TIMEOUT:
+		case TYPE_CONTRACT_OTHERS:
 			if (StringUtils.isNotEmpty(info.businessID)) {
-				intent = new Intent(this, ContractInfoActivity.class);
+				intent = new Intent(this, ContractInfoActivityV2.class);
 				intent.putExtra(GlobalAction.ContractAction.EXTRA_KEY_CONTRACT_ID, info.businessID);
+				intent.putExtra(GlobalAction.ContractAction.EXTRA_KEY_IS_GET_CONTRACT_MODEL, true);
 				startActivity(intent);
 			}
 			break;

@@ -86,3 +86,10 @@ to do task:
 T_OFFLINE_PAY  creattime--->createtime
 T_PASSBOOK_PAY patytime--->paytime
 add BALANCE字段
+
+
+2 Tool项目打包成schedule项目
+a,mvn install 运行 gl_shop_tools
+b,将我们所有项目的打成jar放到schedule\lib目录
+c,将schedule整个用压缩软件压缩schedule.zip.
+d,到服务器上面unzip解压，运行bin\startup.sh

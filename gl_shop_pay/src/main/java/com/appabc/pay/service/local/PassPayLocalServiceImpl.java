@@ -9,11 +9,15 @@ package com.appabc.pay.service.local;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
+import com.appabc.bean.enums.MsgInfo.MsgType;
 import com.appabc.bean.enums.PurseInfo.BusinessType;
 import com.appabc.bean.enums.PurseInfo.DeviceType;
 import com.appabc.bean.enums.PurseInfo.ExtractStatus;
@@ -21,6 +25,7 @@ import com.appabc.bean.enums.PurseInfo.OnOffLine;
 import com.appabc.bean.enums.PurseInfo.PayDirection;
 import com.appabc.bean.enums.PurseInfo.PayWay;
 import com.appabc.bean.enums.PurseInfo.PurseType;
+import com.appabc.bean.enums.PurseInfo.RequestType;
 import com.appabc.bean.enums.PurseInfo.TradeStatus;
 import com.appabc.bean.enums.PurseInfo.TradeType;
 import com.appabc.common.base.QueryContext;
@@ -28,23 +33,31 @@ import com.appabc.common.base.bean.BaseBean;
 import com.appabc.common.base.service.BaseService;
 import com.appabc.common.utils.DateUtil;
 import com.appabc.common.utils.MessagesUtil;
+import com.appabc.common.utils.ObjectUtil;
+import com.appabc.common.utils.RandomUtil;
 import com.appabc.common.utils.SystemConstant;
 import com.appabc.pay.bean.OInfo;
 import com.appabc.pay.bean.TAcceptBank;
 import com.appabc.pay.bean.TOfflinePay;
 import com.appabc.pay.bean.TPassbookDraw;
+import com.appabc.pay.bean.TPassbookDrawEx;
 import com.appabc.pay.bean.TPassbookInfo;
 import com.appabc.pay.bean.TPassbookPay;
 import com.appabc.pay.bean.TPassbookThirdCheck;
+import com.appabc.pay.bean.TPayThirdOrgInfo;
 import com.appabc.pay.exception.ServiceException;
 import com.appabc.pay.service.IPassPayService;
+import com.appabc.pay.util.CodeConstant;
 import com.appabc.pay.util.PaySystemConstant;
+import com.appabc.pay.util.UPSDKUtil;
+import com.appabc.pay.util.UPSDKUtil.responseStatus;
 import com.appabc.tools.bean.MessageInfoBean;
 import com.appabc.tools.bean.SMSTemplate;
 import com.appabc.tools.utils.GuarantStatusCheck;
 import com.appabc.tools.utils.MessageSendManager;
 import com.appabc.tools.utils.PrimaryKeyGenerator;
 import com.appabc.tools.utils.SystemMessageContent;
+import com.unionpay.acp.sdk.SDKUtil;
 
 /**
  * @Description : 
@@ -67,10 +80,14 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	
 	private IPassbookPayService iPassbookPayService;
 	
+	private IPayThirdInfoService iPayThirdInfoService;
+	
 	private IPassbookInfoService iPassbookInfoService;
 	
 	private IPassbookDrawService iPassbookDrawService;
 	
+	private IPayThirdRecordService iPayThirdRecordService;
+
 	private IPassbookThirdCheckService iPassbookThirdCheckService;
 
 	private PrimaryKeyGenerator PKGenerator;
@@ -78,6 +95,24 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	private MessageSendManager mesgSender;
 	
 	private GuarantStatusCheck gsCheck;
+	
+	/**  
+	 * iPayThirdRecordService  
+	 *  
+	 * @return  the iPayThirdRecordService  
+	 * @since   1.0.0  
+	*/  
+	
+	public IPayThirdRecordService getiPayThirdRecordService() {
+		return iPayThirdRecordService;
+	}
+
+	/**  
+	 * @param iPayThirdRecordService the iPayThirdRecordService to set  
+	 */
+	public void setiPayThirdRecordService(IPayThirdRecordService iPayThirdRecordService) {
+		this.iPayThirdRecordService = iPayThirdRecordService;
+	}
 	
 	/**  
 	 * iPayInfoService  
@@ -243,6 +278,24 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	}
 	
 	/**  
+	 * iPayThirdInfoService  
+	 *  
+	 * @return  the iPayThirdInfoService  
+	 * @since   1.0.0  
+	*/  
+	
+	public IPayThirdInfoService getiPayThirdInfoService() {
+		return iPayThirdInfoService;
+	}
+
+	/**  
+	 * @param iPayThirdInfoService the iPayThirdInfoService to set  
+	 */
+	public void setiPayThirdInfoService(IPayThirdInfoService iPayThirdInfoService) {
+		this.iPayThirdInfoService = iPayThirdInfoService;
+	}
+	
+	/**  
 	 * mesgSender  
 	 *  
 	 * @return  the mesgSender  
@@ -292,8 +345,8 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		}
 		mi.setSendPushMsg(true);
 		float shouldGuarantNum = gsCheck.getGuarantStatus(cid);
-		float totalGuarantyUsed = this.getGuarantyTotal(cid);
-		boolean isGuarantyEnough = shouldGuarantNum != 0 && totalGuarantyUsed != 0 && shouldGuarantNum <= totalGuarantyUsed;
+		float totalGuarantUsed = this.getGuarantyTotal(cid);
+		boolean isGuarantyEnough = shouldGuarantNum != 0 && totalGuarantUsed != 0 && shouldGuarantNum <= totalGuarantUsed;
 		mi.addParam("isGuarantyEnough", isGuarantyEnough);
 		mi.addParam("balance", guarantyBalance);
 	}
@@ -304,9 +357,9 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		}
 		mi.setSendPushMsg(isPushMesg);
 		if(type == null){
-			float shouldGuarantNum = gsCheck.getGuarantStatus(cid);
+			float shouldGuarantyNum = gsCheck.getGuarantStatus(cid);
 			float totalGuarantyUsed = this.getGuarantyTotal(cid);
-			boolean isGuarantyEnough = shouldGuarantNum != 0 && totalGuarantyUsed != 0 && shouldGuarantNum <= totalGuarantyUsed;
+			boolean isGuarantyEnough = shouldGuarantyNum != 0 && totalGuarantyUsed != 0 && shouldGuarantyNum <= totalGuarantyUsed;
 			mi.addParam("isGuarantyEnough", isGuarantyEnough);
 			//if the account is deposit, so to do something
 			TPassbookInfo info = this.getPurseAccountInfo(cid, PurseType.GUARANTY);
@@ -316,9 +369,9 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		}
 		//if the account is guaranty, so to do something
 		if(type == PurseType.GUARANTY){
-			float shouldGuarantNum = gsCheck.getGuarantStatus(cid);
+			float shouldGuarantyNum = gsCheck.getGuarantStatus(cid);
 			float totalGuarantyUsed = this.getGuarantyTotal(cid);
-			boolean isGuarantyEnough = shouldGuarantNum != 0 && totalGuarantyUsed != 0 && shouldGuarantNum <= totalGuarantyUsed;
+			boolean isGuarantyEnough = shouldGuarantyNum != 0 && totalGuarantyUsed != 0 && shouldGuarantyNum <= totalGuarantyUsed;
 			mi.addParam("isGuarantyEnough", isGuarantyEnough);
 			//if the account is deposit, so to do something
 			TPassbookInfo info = this.getPurseAccountInfo(cid, type);
@@ -379,30 +432,31 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		if (StringUtils.isEmpty(cid)) {
 			return false;
 		}
+		Date now = DateUtil.getNowDate();
 		if(type == null){
 			TPassbookInfo depositInfo = new TPassbookInfo();
 			depositInfo.setId(getKey(PaySystemConstant.PASSBOOKINFOBID));
 			depositInfo.setCid(cid);
-			depositInfo.setAmount(0f);
+			depositInfo.setAmount(0.0);
 			depositInfo.setPasstype(PurseType.DEPOSIT);
-			depositInfo.setCreatetime(DateUtil.getNowDate());
+			depositInfo.setCreatetime(now);
 			iPassbookInfoService.add(depositInfo);
 			
 			TPassbookInfo guarantyInfo = new TPassbookInfo();
 			guarantyInfo.setId(getKey(PaySystemConstant.PASSBOOKINFOBID));
 			guarantyInfo.setCid(cid);
-			guarantyInfo.setAmount(0f);
+			guarantyInfo.setAmount(0.0);
 			guarantyInfo.setPasstype(PurseType.GUARANTY);
-			guarantyInfo.setCreatetime(DateUtil.getNowDate());
+			guarantyInfo.setCreatetime(now);
 			iPassbookInfoService.add(guarantyInfo);
 			return true;
 		}else{
 			TPassbookInfo entity = new TPassbookInfo();
 			entity.setId(getKey(PaySystemConstant.PASSBOOKINFOBID));
 			entity.setCid(cid);
-			entity.setAmount(0f);
+			entity.setAmount(0.0);
 			entity.setPasstype(type);
-			entity.setCreatetime(DateUtil.getNowDate());
+			entity.setCreatetime(now);
 			iPassbookInfoService.add(entity);
 			return true;
 		}
@@ -450,19 +504,69 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		return iAcceptBankService.queryForList(tab);
 	}
 
+	@Transactional(propagation=Propagation.REQUIRES_NEW,readOnly=false,rollbackFor=Exception.class)
+	public void reportToUnionPayTradeResult(String oid) throws ServiceException {
+		if(StringUtils.isEmpty(oid)){
+			throw new ServiceException(CodeConstant.PARAMETER_IS_NULL,StringUtils.EMPTY);
+		}
+		TPayThirdOrgInfo bean = getiPayThirdInfoService().query(oid);
+		if(bean == null){
+			throw new ServiceException(CodeConstant.PARAMETER_IS_NULL,StringUtils.EMPTY);
+		}
+		Map<String, String> params = UPSDKUtil.setUpTradeQueryParams(bean.getOid(),bean.getTnTime());
+		Map<String, String> resmap = UPSDKUtil.submitData(params,UPSDKUtil.sdkConfig.getAppRequestUrl());
+		if(bean != null && !ObjectUtil.isEmpty(resmap)){
+			getiPayThirdRecordService().savePayThirdOrgRecord(bean.getOid(), SDKUtil.coverMap2String(resmap),RequestType.REQUEST);
+			bean.setQueryId(resmap.get("queryId"));
+			bean.setPayno(resmap.get("traceNo"));
+			bean.setRemark(resmap.get("respMsg"));
+			if(responseStatus.enumOf(resmap.get("respCode")) == responseStatus.ZEROZERO && bean.getStatus() != TradeStatus.SUCCESS){
+				bean.setStatus(TradeStatus.SUCCESS);
+				//here need to do some business
+				TPassbookInfo pbInfo = iPassbookInfoService.query(bean.getPassid());
+				depositAccountOnline(pbInfo.getCid(), pbInfo.getPasstype(), bean.getAmount(), bean.getPayno());
+			} else {
+				bean.setStatus(TradeStatus.FAILURE);
+			}
+			getiPayThirdInfoService().modify(bean);
+		}
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW,readOnly=false,rollbackFor=Exception.class)
+	public void unionPaybackNotifyBusinessResp(String oid,Map<String, String> valideData){
+		if(StringUtils.isEmpty(oid) || ObjectUtil.isEmpty(valideData)){ 
+			return ;
+		}
+		TPayThirdOrgInfo bean = getiPayThirdInfoService().query(oid);
+		if(bean != null && bean.getStatus() != TradeStatus.SUCCESS){
+			bean.setQueryId(valideData.get("queryId"));
+			bean.setPayno(valideData.get("traceNo"));
+			bean.setRemark(valideData.get("respMsg"));
+			if(responseStatus.enumOf(valideData.get("respCode")) == responseStatus.ZEROZERO && bean.getStatus() != TradeStatus.SUCCESS){
+				bean.setStatus(TradeStatus.SUCCESS);
+				//here need to do some business
+				TPassbookInfo pbInfo = iPassbookInfoService.query(bean.getPassid());
+				depositAccountOnline(pbInfo.getCid(), pbInfo.getPasstype(), bean.getAmount(), bean.getPayno());
+			} else {
+				bean.setStatus(TradeStatus.FAILURE);
+			}
+			getiPayThirdInfoService().modify(bean);
+		}
+	}
+	
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#depositAccountOnline(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, float, java.lang.String)  
 	 */
 	@Override
 	public boolean depositAccountOnline(String cid, PurseType type,
-			float balance, String payNo) {
+			double balance, String payNo) {
 		return this.depositAccountOnline(cid, type, balance, payNo, true);
 	}
 	
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#depositAccountOnline(java.lang.String, java.lang.String, float, java.lang.String)  
 	 */
-	public boolean depositAccountOnline(String cid, PurseType type, float balance,
+	public boolean depositAccountOnline(String cid, PurseType type, double balance,
 			String payNo,boolean sendGuarantPushMesgToClient) {
 		if (StringUtils.isEmpty(payNo) || StringUtils.isEmpty(cid)
 				|| type == null || balance <= 0) {
@@ -474,61 +578,40 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		TPassbookInfo tpbi = iPassbookInfoService.query(tPurseInfo);
 		
 		String passId = tpbi.getId();
-		TPassbookThirdCheck entity = new TPassbookThirdCheck();
-		entity.setPayno(payNo);
-		entity.setPassid(passId);
-		List<TPassbookThirdCheck> result = this.iPassbookThirdCheckService.queryForList(entity);
-		if(result!=null && result.size()>0){
-			entity = result.get(0);
-			entity.setStatus(TradeStatus.SUCCESS);
-			iPassbookThirdCheckService.modify(entity);
-		}else{
-			entity.setId(getKey(PaySystemConstant.PURSETHIRDCHECKID));
-			entity.setPassid(passId);
-			entity.setPayno(payNo);
-			entity.setOtype(TradeType.DEPOSIT);
-			entity.setPatytime(DateUtil.getNowDate());
-			//entity.setName("");
-			entity.setAmount(balance);
-			entity.setDirection(PayDirection.INPUT);
-			entity.setPaytype(PayWay.NETBANK_PAY);
-			entity.setStatus(TradeStatus.SUCCESS);
-			entity.setDevices(DeviceType.MOBILE);
-			iPassbookThirdCheckService.add(entity);
-			//save the Passbook Info
-			tpbi.setAmount(tpbi.getAmount()+balance);
-			iPassbookInfoService.modify(tpbi);
-			//save the pay
-			//savePursePay(passId, cid, payNo, StringUtils.EMPTY, StringUtils.EMPTY, balance, tpbi.getAmount(), PayDirection.INPUT, TradeType.DEPOSIT, PayWay.NETBANK_PAY, TradeStatus.SUCCESS.getVal());
-			TPassbookPay payEntity = new TPassbookPay();
-			payEntity.setId(getKey(PaySystemConstant.PURSEPAYID));
-			payEntity.setPassid(passId);
-			//payEntity.setOid("");
-			payEntity.setOtype(TradeType.DEPOSIT);
-			payEntity.setPayno(payNo);
-			//payEntity.setName("");
-			payEntity.setAmount(balance);
-			payEntity.setNeedamount(balance);
-			payEntity.setDirection(PayDirection.INPUT);
-			payEntity.setPaytype(PayWay.NETBANK_PAY);
-			payEntity.setPaytime(DateUtil.getNowDate());
-			payEntity.setStatus(TradeStatus.SUCCESS.getVal());
-			payEntity.setCreatedate(DateUtil.getNowDate());
-			payEntity.setCreator(cid);
-			payEntity.setDevices(DeviceType.MOBILE);
-			payEntity.setBalance(tpbi.getAmount());
-			iPassbookPayService.add(payEntity);
-			
-			//充值保证金或者货款账户类型
-			SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(type.getText(),DateUtil.getNowDate(),TradeType.DEPOSIT.getText(),"+"+balance);
-			MessageInfoBean mi = new MessageInfoBean(type == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,tpbi.getId(),cid,content);
-			mi.setSendSystemMsg(true);
-			mi.setSendShotMsg(true);
-			mi.setSmsTemplate(SMSTemplate.getTemplateWallet(type.getText(), DateUtil.getNowDate(), TradeType.DEPOSIT.getText(), "+"+balance));
-			//检查和推送消息,账户的余额信息和以及额度的比较
-			this.checkAccountSetParamsToPushMessage(mi, cid, type,sendGuarantPushMesgToClient);
-			getMesgSender().msgSend(mi);
-		}
+		//save the Passbook Info
+		tpbi.setAmount(RandomUtil.addRound(tpbi.getAmount(),balance));
+		iPassbookInfoService.modify(tpbi);
+		//save the pay
+		//savePursePay(passId, cid, payNo, StringUtils.EMPTY, StringUtils.EMPTY, balance, tpbi.getAmount(), PayDirection.INPUT, TradeType.DEPOSIT, PayWay.NETBANK_PAY, TradeStatus.SUCCESS.getVal());
+		TPassbookPay payEntity = new TPassbookPay();
+		payEntity.setId(getKey(PaySystemConstant.PURSEPAYID));
+		payEntity.setPassid(passId);
+		//payEntity.setOid("");
+		payEntity.setOtype(TradeType.DEPOSIT);
+		payEntity.setPayno(payNo);
+		//payEntity.setName("");
+		payEntity.setAmount(balance);
+		payEntity.setNeedamount(balance);
+		payEntity.setDirection(PayDirection.INPUT);
+		payEntity.setPaytype(PayWay.NETBANK_PAY);
+		payEntity.setPaytime(DateUtil.getNowDate());
+		payEntity.setStatus(TradeStatus.SUCCESS.getVal());
+		payEntity.setCreatedate(DateUtil.getNowDate());
+		payEntity.setCreator(cid);
+		payEntity.setDevices(DeviceType.MOBILE);
+		payEntity.setBalance(tpbi.getAmount());
+		iPassbookPayService.add(payEntity);
+		
+		//充值保证金或者货款账户类型
+		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(type.getText(),DateUtil.getNowDate(),TradeType.DEPOSIT.getText(),"+"+RandomUtil.round(balance));
+		MessageInfoBean mi = new MessageInfoBean(type == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,tpbi.getId(),cid,content);
+		mi.setSendSystemMsg(true);
+		mi.setSendShotMsg(true);
+		mi.setMsgType(MsgType.MSG_TYPE_003);
+		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(type.getText(), DateUtil.getNowDate(), TradeType.DEPOSIT.getText(), "+"+RandomUtil.round(balance)));
+		//检查和推送消息,账户的余额信息和以及额度的比较
+		this.checkAccountSetParamsToPushMessage(mi, cid, type,sendGuarantPushMesgToClient);
+		getMesgSender().msgSend(mi);
 		return true;
 	}
 
@@ -547,8 +630,8 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		bean.setCreatetime(DateUtil.getNowDate());
 		bean.setStatus(TradeStatus.REQUEST);
 		bean.setBtype(BusinessType.DEPOSIT);
-		bean.setAmount(0f);
-		bean.setTotal(0f);
+		bean.setAmount(0.0);
+		bean.setTotal(0.0);
 		iOfflinePayService.add(bean);
 		return true;
 	}
@@ -558,14 +641,14 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	 */
 	@Override
 	public boolean depositAccountOffline(String cid, PurseType type,
-			float balance, String payNo) {
+			double balance, String payNo) {
 		return this.depositAccountOffline(cid,type,balance,payNo,true);
 	}
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#depositAccountOffline(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, float, java.lang.String)  
 	 */
 	public boolean depositAccountOffline(String cid, PurseType type,
-			float balance, String payNo,boolean sendGuarantPushMesgToClient) {
+			double balance, String payNo,boolean sendGuarantPushMesgToClient) {
 		if (StringUtils.isEmpty(payNo) || StringUtils.isEmpty(cid)
 				|| type == null || balance <= 0) {
 			return false;
@@ -575,7 +658,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		tPurseInfo.setPasstype(type);
 		TPassbookInfo tpbi = iPassbookInfoService.query(tPurseInfo);
 		//save the Passbook Info
-		tpbi.setAmount(tpbi.getAmount()+balance);
+		tpbi.setAmount(RandomUtil.addRound(tpbi.getAmount(),balance));
 		iPassbookInfoService.modify(tpbi);
 		
 		//save the pay 
@@ -600,11 +683,12 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		iPassbookPayService.add(payEntity);
 		//savePursePay(tpbi.getId(), cid, payNo, StringUtils.EMPTY, StringUtils.EMPTY, balance, tpbi.getAmount(), PayDirection.INPUT, TradeType.DEPOSIT, PayWay.BANK_DEDUCT, TradeStatus.SUCCESS.getVal());
 		//充值保证金或者货款账户类型
-		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(type.getText(),DateUtil.getNowDate(),TradeType.DEPOSIT.getText(),"+"+balance);
+		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(type.getText(),now,TradeType.DEPOSIT.getText(),"+"+RandomUtil.round(balance));
 		MessageInfoBean mi = new MessageInfoBean(type == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,tpbi.getId(),cid,content);
 		mi.setSendSystemMsg(true);
 		mi.setSendShotMsg(true);
-		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(type.getText(), DateUtil.getNowDate(), TradeType.DEPOSIT.getText(), "+"+balance));
+		mi.setMsgType(MsgType.MSG_TYPE_003);
+		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(type.getText(), now, TradeType.DEPOSIT.getText(), "+"+RandomUtil.round(balance)));
 		//检查和推送消息,账户的余额信息和以及额度的比较
 		this.checkAccountSetParamsToPushMessage(mi, cid, type,sendGuarantPushMesgToClient);
 		getMesgSender().msgSend(mi);
@@ -637,7 +721,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	 * @see com.appabc.pay.service.IPassPayService#depositThirdOrgRecord(java.lang.String, java.lang.String, float, java.lang.String)  
 	 */
 	public boolean depositThirdOrgRecord(String cid, PurseType type,
-			float balance, String payNo) {
+			double balance, String payNo) {
 		if(type == null || StringUtils.isEmpty(payNo) || balance <= 0){
 			return false;
 		}
@@ -683,6 +767,17 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	}
 
 	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#getPayRecordListWithOid(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, java.lang.String, com.appabc.bean.enums.PurseInfo.PayDirection)  
+	 */
+	@Override
+	public List<TPassbookPay> getPayRecordListWithOid(String cid, PurseType type, String oid, PayDirection payDirection) {
+		if(StringUtils.isEmpty(oid)){
+			return null;
+		}
+		return iPassbookPayService.getPayRecordListWithOid(cid, type, oid, payDirection);
+	}
+	
+	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#payRecordList(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, com.appabc.bean.enums.PurseInfo.PayDirection)  
 	 */
 	public List<TPassbookPay> payRecordList(String cid, PurseType type,
@@ -708,14 +803,14 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	}
 
 	public TPassbookDraw extractCashRequest(String cid, PurseType type,
-			Float balance, String acceptId) {
+			Double balance, String acceptId) {
 		return this.extractCashRequest(cid, type, balance, acceptId, true);
 	}
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#extractCashRequest(java.lang.String, java.lang.String, java.lang.Float, java.lang.String)  
 	 */
 	public TPassbookDraw extractCashRequest(String cid, PurseType type,
-			Float balance, String acceptId,boolean sendGuarantPushMesgToClient) {
+			Double balance, String acceptId,boolean sendGuarantPushMesgToClient) {
 		//String acceptId,Float balance,String cid,String result
 		if(type == null || StringUtils.isEmpty(acceptId) || balance <= 0){
 			return null;
@@ -729,30 +824,30 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		}
 		Date now = DateUtil.getNowDate();
 		//提款申请,将提款账户里面钱冻结到平台账户里面，扣款操作
-		entity.setAmount(entity.getAmount()-balance);
+		entity.setAmount(RandomUtil.subRound(entity.getAmount(),balance));
 		iPassbookInfoService.modify(entity);
 		//提款申请,将提款账户里面钱冻结到平台账户里面，扣款生成流水
-		TPassbookPay pay = new TPassbookPay();
-		pay.setId(getKey(PaySystemConstant.PURSEPAYID));
-		pay.setPassid(entity.getId());
-		pay.setOtype(TradeType.EXTRACT_CASH_GELATION);
-		pay.setName(cid);
-		pay.setAmount(balance);
-		pay.setNeedamount(balance);
-		pay.setDirection(PayDirection.OUTPUT);
-		pay.setPaytype(PayWay.PLATFORM_DEDUCT);
-		pay.setPaytime(now);
-		pay.setStatus(String.valueOf(ExtractStatus.REQUEST.getVal()));
-		pay.setCreatedate(DateUtil.getNowDate());
-		pay.setCreator(cid);
-		pay.setDevices(DeviceType.MOBILE);
-		pay.setBalance(entity.getAmount());
-		iPassbookPayService.add(pay);
+		TPassbookPay outputPay = new TPassbookPay();
+		outputPay.setId(getKey(PaySystemConstant.PURSEPAYID));
+		outputPay.setPassid(entity.getId());
+		outputPay.setOtype(TradeType.EXTRACT_CASH_GELATION);
+		outputPay.setName(cid);
+		outputPay.setAmount(balance);
+		outputPay.setNeedamount(balance);
+		outputPay.setDirection(PayDirection.OUTPUT);
+		outputPay.setPaytype(PayWay.PLATFORM_DEDUCT);
+		outputPay.setPaytime(now);
+		outputPay.setStatus(String.valueOf(ExtractStatus.REQUEST.getVal()));
+		outputPay.setCreatedate(now);
+		outputPay.setCreator(cid);
+		outputPay.setDevices(DeviceType.MOBILE);
+		outputPay.setBalance(entity.getAmount());
+		iPassbookPayService.add(outputPay);
 		
 		//提款申请,将提款账户里面钱冻结到平台账户里面，平台收款
 		String destAccountId = type == PurseType.GUARANTY ? MessagesUtil.getMessage(SystemConstant.PLATFORMPURSEGUARANTYFLAG) : MessagesUtil.getMessage(SystemConstant.PLATFORMPURSEDEPOSITFLAG);
 		TPassbookInfo destAccount = iPassbookInfoService.query(destAccountId);
-		destAccount.setAmount(destAccount.getAmount()+balance);
+		destAccount.setAmount(RandomUtil.addRound(destAccount.getAmount(),balance));
 		iPassbookInfoService.modify(destAccount);
 		
 		//this.savePursePayOutInputLine(entity.getId(), destAccount.getId(), cid, destAccount.getCid(), entity.getAmount(), destAccount.getAmount(), StringUtils.EMPTY, String.valueOf(ExtractStatus.REQUEST.getVal()), TradeType.EXTRACT_CASH_GELATION, PayWay.PLATFORM_DEDUCT, balance);
@@ -771,7 +866,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		inputPay.setCreator(destAccount.getCid());
 		inputPay.setDevices(DeviceType.MOBILE);
 		inputPay.setBalance(destAccount.getAmount());
-		inputPay.setPpid(pay.getId());
+		inputPay.setPpid(outputPay.getId());
 		iPassbookPayService.add(inputPay);
 		
 		//提款申请,生成提款记录到提现记录表
@@ -785,11 +880,12 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		iPassbookDrawService.add(draw);
 		
 		//消息通知
-		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(entity.getPasstype().getText(),DateUtil.getNowDate(),TradeType.EXTRACT_CASH_GELATION.getText(),"-"+draw.getAmount());
+		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(entity.getPasstype().getText(),now,TradeType.EXTRACT_CASH_GELATION.getText(),"-"+RandomUtil.round(draw.getAmount()));
 		MessageInfoBean mi = new MessageInfoBean(entity.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,draw.getId(),entity.getCid(),content);
 		mi.setSendSystemMsg(true);
 		mi.setSendShotMsg(true);
-		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(entity.getPasstype().getText(),DateUtil.getNowDate(),TradeType.EXTRACT_CASH_GELATION.getText(),"-"+draw.getAmount()));
+		mi.setMsgType(MsgType.MSG_TYPE_003);
+		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(entity.getPasstype().getText(),now,TradeType.EXTRACT_CASH_GELATION.getText(),"-"+RandomUtil.round(draw.getAmount())));
 		//检查和推送消息,账户的余额信息和以及额度的比较
 		this.checkAccountSetParamsToPushMessage(mi, cid, type,sendGuarantPushMesgToClient);
 		getMesgSender().msgSend(mi);
@@ -822,12 +918,13 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 			//提款申请审核失败,将冻结的钱返回给用户，
 			draw.setStatus(ExtractStatus.FAILURE);
 			pay.setOtype(TradeType.EXTRACT_CASH_FAILURE);
+			pay.setUpdatedate(DateUtil.getNowDate());
 			pay.setStatus(String.valueOf(ExtractStatus.FAILURE.getVal()));
 			
 			//提款申请审核失败,将冻结的钱返回给用户，从平台账户扣钱给申请用户
 			Date now = DateUtil.getNowDate();
 			TPassbookInfo sourAccount = iPassbookInfoService.query(pay.getPassid());
-			sourAccount.setAmount(sourAccount.getAmount()-draw.getAmount());
+			sourAccount.setAmount(RandomUtil.subRound(sourAccount.getAmount(),draw.getAmount()));
 			iPassbookInfoService.modify(sourAccount);
 			
 			//提款申请审核失败,将冻结的钱返回给用户，从平台账户扣钱给申请用户并生成流水
@@ -852,7 +949,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 			//提款申请审核失败,将冻结的钱返回给用户，从平台账户扣钱给申请用户
 			TPassbookPay pPay = iPassbookPayService.query(pay.getPpid());
 			TPassbookInfo destAccount = iPassbookInfoService.query(pPay.getPassid());
-			destAccount.setAmount(destAccount.getAmount()+draw.getAmount());
+			destAccount.setAmount(RandomUtil.addRound(destAccount.getAmount(),draw.getAmount()));
 			iPassbookInfoService.modify(destAccount);
 			
 			//提款申请审核失败,将冻结的钱返回给用户，从平台账户扣钱给申请用户并生成流水
@@ -874,13 +971,14 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 			iPassbookPayService.add(inputPay);
 			
 			//消息通知
-			SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.EXTRACT_CASH_FAILURE.getText(),"-"+draw.getAmount());
+			SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),now,TradeType.EXTRACT_CASH_FAILURE.getText(),""+RandomUtil.round(draw.getAmount()));
 			MessageInfoBean mi = new MessageInfoBean(destAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,draw.getId(),destAccount.getCid(),content);
 			mi.setSendSystemMsg(true);
 			mi.setSendShotMsg(true);
-			mi.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.EXTRACT_CASH_FAILURE.getText(),"-"+draw.getAmount()));
+			mi.setMsgType(MsgType.MSG_TYPE_003);
+			mi.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),now,TradeType.EXTRACT_CASH_FAILURE.getText(),""+RandomUtil.round(draw.getAmount())));
 			//检查和推送消息,账户的余额信息和以及额度的比较
-			this.checkAccountSetParamsToPushMessage(mi, cid, destAccount.getPasstype(),sendGuarantPushMesgToClient);
+			this.checkAccountSetParamsToPushMessage(mi, destAccount.getCid(), destAccount.getPasstype(),sendGuarantPushMesgToClient);
 			getMesgSender().msgSend(mi);
 		}
 		//提款申请审核，提款修改申请处理记录
@@ -899,6 +997,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		TPassbookDraw draw = iPassbookDrawService.query(tid);
 		TPassbookPay pay = iPassbookPayService.query(draw.getPid());
 		TPassbookInfo info = iPassbookInfoService.query(pay.getPassid());
+		String targetPassId = null;
 		Date now = DateUtil.getNowDate();
 		if(draw.getAmount() > info.getAmount()){
 			return false;
@@ -906,16 +1005,19 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		draw.setStatus(ExtractStatus.DEDUCT);
 		pay.setOtype(TradeType.EXTRACT_CASH_SUCCESS);
 		pay.setStatus(String.valueOf(ExtractStatus.SUCCESS.getVal()));
+		pay.setUpdatedate(DateUtil.getNowDate());
 		if(StringUtils.isNotEmpty(pay.getPpid())){
 			TPassbookPay p = iPassbookPayService.query(pay.getPpid());
+			targetPassId = p.getPassid();
 			p.setOtype(TradeType.EXTRACT_CASH_SUCCESS);
 			p.setStatus(String.valueOf(ExtractStatus.SUCCESS.getVal()));
+			p.setUpdatedate(DateUtil.getNowDate());
 			iPassbookPayService.modify(p);
 		}
 		iPassbookPayService.modify(pay);
 		iPassbookDrawService.modify(draw);
 		//提款申请审核成功,将冻结的钱通过银行打给用户，从平台账户扣钱..
-		info.setAmount(info.getAmount()-draw.getAmount());
+		info.setAmount(RandomUtil.subRound(info.getAmount(),draw.getAmount()));
 		iPassbookInfoService.modify(info);
 		//提款申请审核成功,将冻结的钱通过银行打给用户，从平台账户扣钱..并生成流水
 		TPassbookPay outputPay = new TPassbookPay();
@@ -935,13 +1037,17 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		outputPay.setPpid(pay.getId());
 		iPassbookPayService.add(outputPay);
 		//
-		//提款申请成功变动变动
-		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(info.getPasstype().getText(),DateUtil.getNowDate(),TradeType.EXTRACT_CASH_SUCCESS.getText(),"-"+draw.getAmount());
-		MessageInfoBean mi = new MessageInfoBean(info.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,draw.getId(),info.getCid(),content);
-		mi.setSendSystemMsg(true);
-		mi.setSendShotMsg(true);
-		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(info.getPasstype().getText(),DateUtil.getNowDate(),TradeType.EXTRACT_CASH_SUCCESS.getText(),"-"+draw.getAmount()));
-		getMesgSender().msgSend(mi);
+		if(StringUtils.isNotEmpty(targetPassId)){
+			TPassbookInfo target = iPassbookInfoService.query(targetPassId);
+			//提款申请成功变动变动
+			SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(info.getPasstype().getText(),now,TradeType.EXTRACT_CASH_SUCCESS.getText(),""+RandomUtil.round(draw.getAmount()));
+			MessageInfoBean mi = new MessageInfoBean(info.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,draw.getId(),target.getCid(),content);
+			mi.setSendSystemMsg(true);
+			mi.setSendShotMsg(true);
+			mi.setMsgType(MsgType.MSG_TYPE_003);
+			mi.setSmsTemplate(SMSTemplate.getTemplateWallet(info.getPasstype().getText(),now,TradeType.EXTRACT_CASH_SUCCESS.getText(),""+RandomUtil.round(draw.getAmount())));
+			getMesgSender().msgSend(mi);
+		}
 		return true;
 	}
 
@@ -968,14 +1074,14 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#depositToGuaranty(java.lang.String, java.lang.Float)  
 	 */
-	public boolean depositToGuaranty(String cid, Float balance) {
+	public boolean depositToGuaranty(String cid, Double balance) {
 		return this.depositToGuaranty(cid, balance, true);
 	}
 	
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#depositToGuaranty(java.lang.String, java.lang.Float)  
 	 */
-	public boolean depositToGuaranty(String cid, Float balance,boolean sendGuarantPushMesgToClient) {
+	public boolean depositToGuaranty(String cid, Double balance,boolean sendGuarantPushMesgToClient) {
 		if(StringUtils.isEmpty(cid) || balance <= 0){
 			return false;
 		}
@@ -991,17 +1097,19 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		guarantyAccount.setPasstype(PurseType.GUARANTY);
 		guarantyAccount = iPassbookInfoService.query(guarantyAccount);
 		
-		guarantyAccount.setAmount(guarantyAccount.getAmount()+balance);
-		depositAccount.setAmount(depositAccount.getAmount()-balance);
+		guarantyAccount.setAmount(RandomUtil.addRound(guarantyAccount.getAmount(),balance));
+		depositAccount.setAmount(RandomUtil.subRound(depositAccount.getAmount(),balance));
 		iPassbookInfoService.modify(guarantyAccount);
 		iPassbookInfoService.modify(depositAccount);
 		
+		Date now = DateUtil.getNowDate();
 		//货款充值保证金账户,货款账户扣除
-		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoneyOther(DateUtil.getNowDate(),balance);
+		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoneyOther(now,balance.floatValue());
 		MessageInfoBean mi = new MessageInfoBean(MsgBusinessType.BUSINESS_TYPE_MONEY_CHANGE,depositAccount.getId(),cid,content);
 		mi.setSendSystemMsg(true);
 		mi.setSendShotMsg(true);
-		mi.setSmsTemplate(SMSTemplate.getTemplateWalletDespositToGuaranty(DateUtil.getNowDate(),balance));
+		mi.setMsgType(MsgType.MSG_TYPE_003);
+		mi.setSmsTemplate(SMSTemplate.getTemplateWalletDespositToGuaranty(DateUtil.getNowDate(),balance.floatValue()));
 		//检查和推送消息,账户的余额信息和以及额度的比较
 		this.checkAccountSetParamsToPushMessage(mi, cid, null,sendGuarantPushMesgToClient);
 		getMesgSender().msgSend(mi);
@@ -1019,46 +1127,143 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		this.checkAccountSetParamsToPushMessage(mi, cid, guarantyAccount.getPasstype(),sendGuarantPushMesgToClient);
 		getMesgSender().msgSend(mi1);*/
 		
-		Date now = DateUtil.getNowDate();
-		TPassbookPay pay = new TPassbookPay();
-		pay.setId(getKey(PaySystemConstant.PURSEPAYID));
-		pay.setPassid(guarantyAccount.getId());
-		pay.setOtype(TradeType.DEPOSIT_GUARANTY);
-		pay.setAmount(balance);
-		pay.setNeedamount(balance);
-		pay.setDirection(PayDirection.INPUT);
-		pay.setPaytype(PayWay.PLATFORM_DEDUCT);
-		pay.setPaytime(now);
-		pay.setStatus(TradeStatus.SUCCESS.getVal());
-		pay.setCreatedate(now);
-		pay.setCreator(cid);
-		pay.setDevices(DeviceType.MOBILE);
-		pay.setBalance(guarantyAccount.getAmount());
-		iPassbookPayService.add(pay);
+		TPassbookPay inPay = new TPassbookPay();
+		inPay.setId(getKey(PaySystemConstant.PURSEPAYID));
+		inPay.setPassid(guarantyAccount.getId());
+		inPay.setOtype(TradeType.DEPOSIT_GUARANTY);
+		inPay.setAmount(balance);
+		inPay.setNeedamount(balance);
+		inPay.setDirection(PayDirection.INPUT);
+		inPay.setPaytype(PayWay.PLATFORM_DEDUCT);
+		inPay.setPaytime(now);
+		inPay.setStatus(TradeStatus.SUCCESS.getVal());
+		inPay.setCreatedate(now);
+		inPay.setCreator(cid);
+		inPay.setDevices(DeviceType.MOBILE);
+		inPay.setBalance(guarantyAccount.getAmount());
+		iPassbookPayService.add(inPay);
 		
-		TPassbookPay pay1 = new TPassbookPay();
-		pay1.setId(getKey(PaySystemConstant.PURSEPAYID));
-		pay1.setPassid(depositAccount.getId());
-		pay1.setOtype(TradeType.DEPOSIT_GUARANTY);
-		pay1.setAmount(balance);
-		pay1.setNeedamount(balance);
-		pay1.setDirection(PayDirection.OUTPUT);
-		pay1.setPaytype(PayWay.PLATFORM_DEDUCT);
-		pay1.setPaytime(now);
-		pay1.setStatus(TradeStatus.SUCCESS.getVal());
-		pay1.setCreatedate(now);
-		pay1.setCreator(cid);
-		pay1.setDevices(DeviceType.MOBILE);
-		pay1.setBalance(depositAccount.getAmount());
-		iPassbookPayService.add(pay1);
+		TPassbookPay outPay = new TPassbookPay();
+		outPay.setId(getKey(PaySystemConstant.PURSEPAYID));
+		outPay.setPassid(depositAccount.getId());
+		outPay.setOtype(TradeType.DEPOSIT_GUARANTY);
+		outPay.setAmount(balance);
+		outPay.setNeedamount(balance);
+		outPay.setDirection(PayDirection.OUTPUT);
+		outPay.setPaytype(PayWay.PLATFORM_DEDUCT);
+		outPay.setPaytime(now);
+		outPay.setStatus(TradeStatus.SUCCESS.getVal());
+		outPay.setCreatedate(now);
+		outPay.setCreator(cid);
+		outPay.setDevices(DeviceType.MOBILE);
+		outPay.setBalance(depositAccount.getAmount());
+		iPassbookPayService.add(outPay);
 		return true;
 	}
 
 	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#transferAccounts(java.lang.String, java.lang.String, float, com.appabc.bean.enums.PurseInfo.PurseType, java.lang.String)  
+	 */
+	@Override
+	public boolean transferAccounts(String sourPassId, String destPassId,
+			double balance, TradeType tradeType, String oid) {
+		return this.transferAccounts(sourPassId, destPassId, tradeType, tradeType, balance, oid);
+	}
+	
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#transferAccounts(java.lang.String, java.lang.String, com.appabc.bean.enums.PurseInfo.TradeType, com.appabc.bean.enums.PurseInfo.TradeType, float, java.lang.String)  
+	 */
+	public boolean transferAccounts(String sourPassId, String destPassId,
+			TradeType sType, TradeType dType, double balance, String oid) {
+		if (StringUtils.isEmpty(sourPassId) || StringUtils.isEmpty(destPassId)
+				|| balance <= 0){
+			return false;
+		}
+		boolean sendGuarantPushMesgToClient = true;
+		if(sType == null){
+			sType = TradeType.PAYMENT_FOR_GOODS;
+		}
+		if(dType == null){
+			dType = TradeType.PAYMENT_FOR_GOODS;
+		}
+		TPassbookInfo sourAccount = iPassbookInfoService.query(sourPassId);
+		TPassbookInfo destAccount = iPassbookInfoService.query(destPassId);
+		if(sourAccount.getAmount()<balance){
+			return false;
+		}
+		Date now = DateUtil.getNowDate();
+		//modify the sour account
+		sourAccount.setAmount(RandomUtil.subRound(sourAccount.getAmount(),balance));
+		iPassbookInfoService.modify(sourAccount);
+		//save the in put pay line
+		TPassbookPay outPay = new TPassbookPay();
+		outPay.setId(getKey(PaySystemConstant.PURSEPAYID));
+		outPay.setPassid(sourAccount.getId());
+		outPay.setOtype(sType);
+		outPay.setOid(oid);
+		outPay.setAmount(balance);
+		outPay.setNeedamount(balance);
+		outPay.setDirection(PayDirection.OUTPUT);
+		outPay.setPaytype(PayWay.PLATFORM_DEDUCT);
+		outPay.setPaytime(now);
+		outPay.setStatus(TradeStatus.SUCCESS.getVal());
+		outPay.setCreatedate(now);
+		outPay.setCreator(sourAccount.getCid());
+		outPay.setDevices(DeviceType.MOBILE);
+		outPay.setBalance(sourAccount.getAmount());
+		iPassbookPayService.add(outPay);
+		//modify the dest account
+		destAccount.setAmount(RandomUtil.addRound(destAccount.getAmount(),balance));
+		iPassbookInfoService.modify(destAccount);
+		//save the out put pay line
+		TPassbookPay inPay = new TPassbookPay();
+		inPay.setId(getKey(PaySystemConstant.PURSEPAYID));
+		inPay.setPassid(destAccount.getId());
+		inPay.setOtype(dType);
+		inPay.setOid(oid);
+		inPay.setAmount(balance);
+		inPay.setNeedamount(balance);
+		inPay.setDirection(PayDirection.INPUT);
+		inPay.setPaytype(PayWay.PLATFORM_DEDUCT);
+		inPay.setPaytime(now);
+		inPay.setStatus(TradeStatus.SUCCESS.getVal());
+		inPay.setCreatedate(now);
+		inPay.setCreator(destAccount.getCid());
+		inPay.setDevices(DeviceType.MOBILE);
+		inPay.setBalance(destAccount.getAmount());
+		iPassbookPayService.add(inPay);
+		
+		//转账操作,源账户扣除
+		SystemMessageContent content1 = SystemMessageContent.getMsgContentOfMoney(sourAccount.getPasstype().getText(),now,sType.getText(),"-"+RandomUtil.round(balance));
+		MessageInfoBean mi1 = new MessageInfoBean(sourAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,sourAccount.getId(),sourAccount.getCid(),content1);
+		mi1.setSendSystemMsg(true);
+		mi1.setSendShotMsg(true);
+		mi1.setSmsTemplate(SMSTemplate.getTemplateWallet(sourAccount.getPasstype().getText(),now,sType.getText(),"-"+RandomUtil.round(balance)));
+		/*if(sourAccount.getPasstype() == PurseType.GUARANTY && sendGuarantPushMesgToClient){
+			checkGuarantEnoughPushMessage(mi1, sourAccount.getCid(), sourAccount.getAmount());
+		}*/
+		this.checkAccountSetParamsToPushMessage(mi1, sourAccount.getCid(), sourAccount.getPasstype(),sendGuarantPushMesgToClient);
+		getMesgSender().msgSend(mi1);
+		//转账操作,目标账户扣除
+		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),now,dType.getText(),"+"+RandomUtil.round(balance));
+		MessageInfoBean mi = new MessageInfoBean(destAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,destAccount.getId(),destAccount.getCid(),content);
+		mi.setSendSystemMsg(true);
+		mi.setSendShotMsg(true);
+		mi.setMsgType(MsgType.MSG_TYPE_003);
+		/*if(destAccount.getPasstype() == PurseType.GUARANTY && sendGuarantPushMesgToClient){
+			checkGuarantEnoughPushMessage(mi, destAccount.getCid(), destAccount.getAmount());
+		}*/
+		this.checkAccountSetParamsToPushMessage(mi, destAccount.getCid(), destAccount.getPasstype(),sendGuarantPushMesgToClient);
+		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),now,dType.getText(),"+"+RandomUtil.round(balance)));
+		getMesgSender().msgSend(mi);
+		return true;
+	}
+	
+	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#transferAccounts(java.lang.String, java.lang.String, java.lang.Float, java.lang.String)  
 	 */
 	public boolean transferAccounts(String sourPassId, String destPassId,
-			Float balance, PurseType type) {
+			Double balance, PurseType type) {
 		return this.transferAccounts(sourPassId, destPassId, balance, TradeType.PAYMENT_FOR_GOODS);
 	}
 
@@ -1066,7 +1271,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	 * @see com.appabc.pay.service.IPassPayService#transferAccounts(java.lang.String, java.lang.String, java.lang.Float, com.appabc.bean.enums.PurseInfo.PurseType, com.appabc.bean.enums.PurseInfo.TradeType)  
 	 */
 	public boolean transferAccounts(String sourPassId, String destPassId,
-			Float balance, TradeType tradeType) {
+			Double balance, TradeType tradeType) {
 		return this.transferAccounts(sourPassId, destPassId, balance, tradeType, true);
 	}
 	
@@ -1074,7 +1279,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	 * @see com.appabc.pay.service.IPassPayService#transferAccounts(java.lang.String, java.lang.String, java.lang.Float, com.appabc.bean.enums.PurseInfo.PurseType, com.appabc.bean.enums.PurseInfo.TradeType)  
 	 */
 	public boolean transferAccounts(String sourPassId, String destPassId,
-			Float balance, TradeType tradeType,boolean sendGuarantPushMesgToClient) {
+			Double balance, TradeType tradeType,boolean sendGuarantPushMesgToClient) {
 		if (StringUtils.isEmpty(sourPassId) || StringUtils.isEmpty(destPassId)
 				|| balance <= 0){
 			return false;
@@ -1089,65 +1294,66 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		}
 		Date now = DateUtil.getNowDate();
 		//modify the sour account
-		sourAccount.setAmount(sourAccount.getAmount()-balance);
+		sourAccount.setAmount(RandomUtil.subRound(sourAccount.getAmount(),balance));
 		iPassbookInfoService.modify(sourAccount);
 		//save the in put pay line
-		TPassbookPay inputPay = new TPassbookPay();
-		inputPay.setId(getKey(PaySystemConstant.PURSEPAYID));
-		inputPay.setPassid(sourAccount.getId());
-		inputPay.setOtype(tradeType);
-		inputPay.setAmount(balance);
-		inputPay.setNeedamount(balance);
-		inputPay.setDirection(PayDirection.INPUT);
-		inputPay.setPaytype(PayWay.PLATFORM_DEDUCT);
-		inputPay.setPaytime(now);
-		inputPay.setStatus(TradeStatus.SUCCESS.getVal());
-		inputPay.setCreatedate(now);
-		inputPay.setCreator(sourAccount.getCid());
-		inputPay.setDevices(DeviceType.MOBILE);
-		inputPay.setBalance(sourAccount.getAmount());
-		iPassbookPayService.add(inputPay);
+		TPassbookPay outPay = new TPassbookPay();
+		outPay.setId(getKey(PaySystemConstant.PURSEPAYID));
+		outPay.setPassid(sourAccount.getId());
+		outPay.setOtype(tradeType);
+		outPay.setAmount(balance);
+		outPay.setNeedamount(balance);
+		outPay.setDirection(PayDirection.OUTPUT);
+		outPay.setPaytype(PayWay.PLATFORM_DEDUCT);
+		outPay.setPaytime(now);
+		outPay.setStatus(TradeStatus.SUCCESS.getVal());
+		outPay.setCreatedate(now);
+		outPay.setCreator(sourAccount.getCid());
+		outPay.setDevices(DeviceType.MOBILE);
+		outPay.setBalance(sourAccount.getAmount());
+		iPassbookPayService.add(outPay);
 		//modify the dest account
-		destAccount.setAmount(destAccount.getAmount()+balance);
+		destAccount.setAmount(RandomUtil.addRound(destAccount.getAmount(),balance));
 		iPassbookInfoService.modify(destAccount);
 		//save the out put pay line
-		TPassbookPay outputPay = new TPassbookPay();
-		outputPay.setId(getKey(PaySystemConstant.PURSEPAYID));
-		outputPay.setPassid(destAccount.getId());
-		outputPay.setOtype(tradeType);
-		outputPay.setAmount(balance);
-		outputPay.setNeedamount(balance);
-		outputPay.setDirection(PayDirection.OUTPUT);
-		outputPay.setPaytype(PayWay.PLATFORM_DEDUCT);
-		outputPay.setPaytime(now);
-		outputPay.setStatus(TradeStatus.SUCCESS.getVal());
-		outputPay.setCreatedate(now);
-		outputPay.setCreator(destAccount.getCid());
-		outputPay.setDevices(DeviceType.MOBILE);
-		outputPay.setBalance(destAccount.getAmount());
-		iPassbookPayService.add(outputPay);
+		TPassbookPay inPay = new TPassbookPay();
+		inPay.setId(getKey(PaySystemConstant.PURSEPAYID));
+		inPay.setPassid(destAccount.getId());
+		inPay.setOtype(tradeType);
+		inPay.setAmount(balance);
+		inPay.setNeedamount(balance);
+		inPay.setDirection(PayDirection.INPUT);
+		inPay.setPaytype(PayWay.PLATFORM_DEDUCT);
+		inPay.setPaytime(now);
+		inPay.setStatus(TradeStatus.SUCCESS.getVal());
+		inPay.setCreatedate(now);
+		inPay.setCreator(destAccount.getCid());
+		inPay.setDevices(DeviceType.MOBILE);
+		inPay.setBalance(destAccount.getAmount());
+		iPassbookPayService.add(inPay);
 		
 		//转账操作,源账户扣除
-		SystemMessageContent content1 = SystemMessageContent.getMsgContentOfMoney(sourAccount.getPasstype().getText(),DateUtil.getNowDate(),tradeType.getText(),"-"+balance);
+		SystemMessageContent content1 = SystemMessageContent.getMsgContentOfMoney(sourAccount.getPasstype().getText(),now,tradeType.getText(),"-"+RandomUtil.round(balance));
 		MessageInfoBean mi1 = new MessageInfoBean(sourAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,sourAccount.getId(),sourAccount.getCid(),content1);
 		mi1.setSendSystemMsg(true);
 		mi1.setSendShotMsg(true);
-		mi1.setSmsTemplate(SMSTemplate.getTemplateWallet(sourAccount.getPasstype().getText(),DateUtil.getNowDate(),tradeType.getText(),"-"+balance));
+		mi1.setSmsTemplate(SMSTemplate.getTemplateWallet(sourAccount.getPasstype().getText(),now,tradeType.getText(),"-"+RandomUtil.round(balance)));
 		/*if(sourAccount.getPasstype() == PurseType.GUARANTY && sendGuarantPushMesgToClient){
 			checkGuarantEnoughPushMessage(mi1, sourAccount.getCid(), sourAccount.getAmount());
 		}*/
 		this.checkAccountSetParamsToPushMessage(mi1, sourAccount.getCid(), sourAccount.getPasstype(),sendGuarantPushMesgToClient);
 		getMesgSender().msgSend(mi1);
 		//转账操作,目标账户扣除
-		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),DateUtil.getNowDate(),tradeType.getText(),"+"+balance);
+		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),now,tradeType.getText(),"+"+RandomUtil.round(balance));
 		MessageInfoBean mi = new MessageInfoBean(destAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,destAccount.getId(),destAccount.getCid(),content);
 		mi.setSendSystemMsg(true);
 		mi.setSendShotMsg(true);
+		mi.setMsgType(MsgType.MSG_TYPE_003);
 		/*if(destAccount.getPasstype() == PurseType.GUARANTY && sendGuarantPushMesgToClient){
 			checkGuarantEnoughPushMessage(mi, destAccount.getCid(), destAccount.getAmount());
 		}*/
 		this.checkAccountSetParamsToPushMessage(mi, destAccount.getCid(), destAccount.getPasstype(),sendGuarantPushMesgToClient);
-		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),DateUtil.getNowDate(),tradeType.getText(),"+"+balance));
+		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),now,tradeType.getText(),"+"+RandomUtil.round(balance)));
 		getMesgSender().msgSend(mi);
 		return true;
 	}
@@ -1155,14 +1361,14 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#guarantyToGelation(java.lang.String, float, java.lang.String)  
 	 */
-	public boolean guarantyToGelation(String cid, float balance, String oid) {
+	public boolean guarantyToGelation(String cid, double balance, String oid) {
 		return this.guarantyToGelation(cid, balance, oid, true);
 	}
 	
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#guarantyToGelation(java.lang.String, float, java.lang.String)  
 	 */
-	public boolean guarantyToGelation(String cid, float balance, String oid,boolean sendGuarantPushMesgToClient) {
+	public boolean guarantyToGelation(String cid, double balance, String oid,boolean sendGuarantPushMesgToClient) {
 		if (StringUtils.isEmpty(cid) || StringUtils.isEmpty(oid)
 				|| balance <= 0){
 			return false;
@@ -1176,7 +1382,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 			return false;
 		}
 		Date now = DateUtil.getNowDate();
-		guarantyAccount.setAmount(guarantyAccount.getAmount()-balance);
+		guarantyAccount.setAmount(RandomUtil.subRound(guarantyAccount.getAmount(),balance));
 		iPassbookInfoService.modify(guarantyAccount);
 		
 		TPassbookPay outputPay = new TPassbookPay();
@@ -1196,7 +1402,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		outputPay.setBalance(guarantyAccount.getAmount());
 		iPassbookPayService.add(outputPay);
 		
-		destAccount.setAmount(destAccount.getAmount()+balance);
+		destAccount.setAmount(RandomUtil.addRound(destAccount.getAmount(),balance));
 		iPassbookInfoService.modify(destAccount);
 		
 		TPassbookPay inputPay = new TPassbookPay();
@@ -1215,23 +1421,25 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		inputPay.setDevices(DeviceType.MOBILE);
 		inputPay.setBalance(destAccount.getAmount());
 		iPassbookPayService.add(inputPay);
+		
 		//guarantyToGelation操作,源账户扣除
-		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(guarantyAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.GELATION_GUARANTY.getText(),"-"+balance);
+		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(guarantyAccount.getPasstype().getText(),now,TradeType.GELATION_GUARANTY.getText(),"-"+RandomUtil.round(balance));
 		MessageInfoBean mi = new MessageInfoBean(guarantyAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,guarantyAccount.getId(),guarantyAccount.getCid(),content);
 		mi.setSendSystemMsg(true);
 		mi.setSendShotMsg(true);
-		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(guarantyAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.GELATION_GUARANTY.getText(),"-"+balance));
+		mi.setMsgType(MsgType.MSG_TYPE_003);
+		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(guarantyAccount.getPasstype().getText(),now,TradeType.GELATION_GUARANTY.getText(),"-"+RandomUtil.round(balance)));
 		/*if(guarantyAccount.getPasstype() == PurseType.GUARANTY && sendGuarantPushMesgToClient){
 			checkGuarantEnoughPushMessage(mi, guarantyAccount.getCid(), guarantyAccount.getAmount());
 		}*/
 		this.checkAccountSetParamsToPushMessage(mi, guarantyAccount.getCid(), guarantyAccount.getPasstype(),sendGuarantPushMesgToClient);
 		getMesgSender().msgSend(mi);
 		
-		SystemMessageContent content1 = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.GELATION_GUARANTY.getText(),"+"+balance);
+		SystemMessageContent content1 = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),now,TradeType.GELATION_GUARANTY.getText(),"+"+RandomUtil.round(balance));
 		MessageInfoBean mi1 = new MessageInfoBean(destAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,destAccount.getId(),destAccount.getCid(),content1);
 		mi1.setSendSystemMsg(true);
 		mi1.setSendShotMsg(true);
-		mi1.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.GELATION_GUARANTY.getText(),"+"+balance));
+		mi1.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),now,TradeType.GELATION_GUARANTY.getText(),"+"+RandomUtil.round(balance)));
 		getMesgSender().msgSend(mi1);
 		return true;
 	}
@@ -1239,14 +1447,14 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#guarantyToUngelation(java.lang.String, float, java.lang.String)  
 	 */
-	public boolean guarantyToUngelation(String cid, float balance, String oid) {
+	public boolean guarantyToUngelation(String cid, double balance, String oid) {
 		return this.guarantyToUngelation(cid, balance, oid, true);
 	}
 	
 	/* (non-Javadoc)  
 	 * @see com.appabc.pay.service.IPassPayService#guarantyToUngelation(java.lang.String, float, java.lang.String)  
 	 */
-	public boolean guarantyToUngelation(String cid, float balance, String oid,boolean sendGuarantPushMesgToClient) {
+	public boolean guarantyToUngelation(String cid, double balance, String oid,boolean sendGuarantPushMesgToClient) {
 		if (StringUtils.isEmpty(cid) || StringUtils.isEmpty(oid) || balance <= 0){
 			return false;
 		}
@@ -1259,8 +1467,9 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 			return false;
 		}
 		Date now = DateUtil.getNowDate();
-		guarantyAccount.setAmount(guarantyAccount.getAmount()+balance);
+		guarantyAccount.setAmount(RandomUtil.addRound(guarantyAccount.getAmount(),balance));
 		iPassbookInfoService.modify(guarantyAccount);
+		
 		TPassbookPay inPay = new TPassbookPay();
 		inPay.setId(getKey(PaySystemConstant.PURSEPAYID));
 		inPay.setPassid(guarantyAccount.getId());
@@ -1278,8 +1487,9 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		inPay.setBalance(guarantyAccount.getAmount());
 		iPassbookPayService.add(inPay);
 		
-		destAccount.setAmount(destAccount.getAmount()-balance);
+		destAccount.setAmount(RandomUtil.subRound(destAccount.getAmount(),balance));
 		iPassbookInfoService.modify(destAccount);
+		
 		TPassbookPay outPay = new TPassbookPay();
 		outPay.setId(getKey(PaySystemConstant.PURSEPAYID));
 		outPay.setPassid(destAccount.getId());
@@ -1296,23 +1506,25 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		outPay.setDevices(DeviceType.MOBILE);
 		outPay.setBalance(destAccount.getAmount());
 		iPassbookPayService.add(outPay);
+		
 		//guarantyToGelation操作,源账户扣除
-		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(guarantyAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.UNGELATION_GUARANTY.getText(),"+"+balance);
+		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(guarantyAccount.getPasstype().getText(),now,TradeType.UNGELATION_GUARANTY.getText(),"+"+RandomUtil.round(balance));
 		MessageInfoBean mi = new MessageInfoBean(guarantyAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,guarantyAccount.getId(),guarantyAccount.getCid(),content);
 		mi.setSendSystemMsg(true);
 		mi.setSendShotMsg(true);
+		mi.setMsgType(MsgType.MSG_TYPE_003);
 		/*if(guarantyAccount.getPasstype() == PurseType.GUARANTY && sendGuarantPushMesgToClient){
 			checkGuarantEnoughPushMessage(mi, guarantyAccount.getCid(), guarantyAccount.getAmount());
 		}*/
 		this.checkAccountSetParamsToPushMessage(mi, guarantyAccount.getCid(), guarantyAccount.getPasstype(),sendGuarantPushMesgToClient);
-		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(guarantyAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.UNGELATION_GUARANTY.getText(),"+"+balance));
+		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(guarantyAccount.getPasstype().getText(),now,TradeType.UNGELATION_GUARANTY.getText(),"+"+RandomUtil.round(balance)));
 		getMesgSender().msgSend(mi);
 		
-		SystemMessageContent content1 = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.UNGELATION_GUARANTY.getText(),"-"+balance);
+		SystemMessageContent content1 = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),now,TradeType.UNGELATION_GUARANTY.getText(),"-"+RandomUtil.round(balance));
 		MessageInfoBean mi1 = new MessageInfoBean(destAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,destAccount.getId(),destAccount.getCid(),content1);
 		mi1.setSendSystemMsg(true);
 		mi1.setSendShotMsg(true);
-		mi1.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.UNGELATION_GUARANTY.getText(),"-"+balance));
+		mi1.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),now,TradeType.UNGELATION_GUARANTY.getText(),"-"+RandomUtil.round(balance)));
 		getMesgSender().msgSend(mi1);
 		return true;
 	}
@@ -1321,7 +1533,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	 * @see com.appabc.pay.service.IPassPayService#guarantyToDeduct(java.lang.String, java.lang.String, java.lang.Float)  
 	 */
 	public boolean guarantyToDeduct(String sourPassId, String destPassId,
-			Float balance) {
+			Double balance) {
 		return this.guarantyToDeduct(sourPassId, destPassId, balance, true);
 	}
 	
@@ -1329,7 +1541,7 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	 * @see com.appabc.pay.service.IPassPayService#guarantyToDeduct(java.lang.String, java.lang.String, java.lang.Float)  
 	 */
 	public boolean guarantyToDeduct(String sourPassId, String destPassId,
-			Float balance,boolean sendGuarantPushMesgToClient) {
+			Double balance,boolean sendGuarantPushMesgToClient) {
 		if (StringUtils.isEmpty(sourPassId) || StringUtils.isEmpty(destPassId)
 				|| balance <= 0){
 			return false;
@@ -1340,29 +1552,12 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 			return false;
 		}
 		Date now = DateUtil.getNowDate();
-		sourAccount.setAmount(sourAccount.getAmount()-balance);
+		sourAccount.setAmount(RandomUtil.subRound(sourAccount.getAmount(),balance));
 		iPassbookInfoService.modify(sourAccount);
-		TPassbookPay inPay = new TPassbookPay();
-		inPay.setId(getKey(PaySystemConstant.PURSEPAYID));
-		inPay.setPassid(sourAccount.getId());
-		inPay.setOtype(TradeType.VIOLATION_DEDUCTION);
-		inPay.setAmount(balance);
-		inPay.setNeedamount(balance);
-		inPay.setDirection(PayDirection.INPUT);
-		inPay.setPaytype(PayWay.PLATFORM_DEDUCT);
-		inPay.setPaytime(now);
-		inPay.setStatus(TradeStatus.SUCCESS.getVal());
-		inPay.setCreatedate(now);
-		inPay.setCreator(sourAccount.getCid());
-		inPay.setDevices(DeviceType.MOBILE);
-		inPay.setBalance(sourAccount.getAmount());
-		iPassbookPayService.add(inPay);
 		
-		destAccount.setAmount(destAccount.getAmount()+balance);
-		iPassbookInfoService.modify(destAccount);
 		TPassbookPay outPay = new TPassbookPay();
 		outPay.setId(getKey(PaySystemConstant.PURSEPAYID));
-		outPay.setPassid(destAccount.getId());
+		outPay.setPassid(sourAccount.getId());
 		outPay.setOtype(TradeType.VIOLATION_DEDUCTION);
 		outPay.setAmount(balance);
 		outPay.setNeedamount(balance);
@@ -1371,27 +1566,48 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		outPay.setPaytime(now);
 		outPay.setStatus(TradeStatus.SUCCESS.getVal());
 		outPay.setCreatedate(now);
-		outPay.setCreator(destAccount.getCid());
+		outPay.setCreator(sourAccount.getCid());
 		outPay.setDevices(DeviceType.MOBILE);
-		outPay.setBalance(destAccount.getAmount());
+		outPay.setBalance(sourAccount.getAmount());
 		iPassbookPayService.add(outPay);
+		
+		destAccount.setAmount(RandomUtil.addRound(destAccount.getAmount(),balance));
+		iPassbookInfoService.modify(destAccount);
+		
+		TPassbookPay inPay = new TPassbookPay();
+		inPay.setId(getKey(PaySystemConstant.PURSEPAYID));
+		inPay.setPassid(destAccount.getId());
+		inPay.setOtype(TradeType.VIOLATION_DEDUCTION);
+		inPay.setAmount(balance);
+		inPay.setNeedamount(balance);
+		inPay.setDirection(PayDirection.INPUT);
+		inPay.setPaytype(PayWay.PLATFORM_DEDUCT);
+		inPay.setPaytime(now);
+		inPay.setStatus(TradeStatus.SUCCESS.getVal());
+		inPay.setCreatedate(now);
+		inPay.setCreator(destAccount.getCid());
+		inPay.setDevices(DeviceType.MOBILE);
+		inPay.setBalance(destAccount.getAmount());
+		iPassbookPayService.add(inPay);
+		
 		//guarantyToDeduct操作,源账户扣除
-		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(sourAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.VIOLATION_DEDUCTION.getText(),"-"+balance);
+		SystemMessageContent content = SystemMessageContent.getMsgContentOfMoney(sourAccount.getPasstype().getText(),now,TradeType.VIOLATION_DEDUCTION.getText(),"-"+RandomUtil.round(balance));
 		MessageInfoBean mi = new MessageInfoBean(sourAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,sourAccount.getId(),sourAccount.getCid(),content);
 		mi.setSendSystemMsg(true);
 		mi.setSendShotMsg(true);
-		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(sourAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.VIOLATION_DEDUCTION.getText(),"-"+balance));
+		mi.setMsgType(MsgType.MSG_TYPE_003);
+		mi.setSmsTemplate(SMSTemplate.getTemplateWallet(sourAccount.getPasstype().getText(),now,TradeType.VIOLATION_DEDUCTION.getText(),"-"+RandomUtil.round(balance)));
 		/*if(sourAccount.getPasstype() == PurseType.GUARANTY && sendGuarantPushMesgToClient){
 			checkGuarantEnoughPushMessage(mi, sourAccount.getCid(), sourAccount.getAmount());
 		}*/
 		this.checkAccountSetParamsToPushMessage(mi, sourAccount.getCid(), sourAccount.getPasstype(),sendGuarantPushMesgToClient);
 		getMesgSender().msgSend(mi);
 		
-		SystemMessageContent content1 = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.VIOLATION_DEDUCTION.getText(),"+"+balance);
+		SystemMessageContent content1 = SystemMessageContent.getMsgContentOfMoney(destAccount.getPasstype().getText(),now,TradeType.VIOLATION_DEDUCTION.getText(),"+"+RandomUtil.round(balance));
 		MessageInfoBean mi1 = new MessageInfoBean(destAccount.getPasstype() == PurseType.GUARANTY ? MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_GUARANTY : MsgBusinessType.BUSINESS_TYPE_MONEY_CHANG_DEPOSIT,destAccount.getId(),destAccount.getCid(),content1);
 		mi1.setSendSystemMsg(true);
 		mi1.setSendShotMsg(true);
-		mi1.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),DateUtil.getNowDate(),TradeType.VIOLATION_DEDUCTION.getText(),"+"+balance));
+		mi1.setSmsTemplate(SMSTemplate.getTemplateWallet(destAccount.getPasstype().getText(),now,TradeType.VIOLATION_DEDUCTION.getText(),"+"+RandomUtil.round(balance)));
 		/*if(destAccount.getPasstype() == PurseType.GUARANTY && sendGuarantPushMesgToClient){
 			checkGuarantEnoughPushMessage(mi1, destAccount.getCid(), destAccount.getAmount());
 		}*/
@@ -1434,9 +1650,9 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 		if(StringUtils.isEmpty(cid)){
 			return 0;
 		}
-		float total = 0;
+		Double total = 0.0;
 		TPassbookInfo info = this.getPurseAccountInfo(cid, PurseType.GUARANTY);
-		total += info.getAmount().floatValue();
+		total = RandomUtil.addRound(total, info.getAmount());
 		
 		TPassbookPay outEntity = new TPassbookPay();
 		outEntity.setOtype(TradeType.GELATION_GUARANTY);
@@ -1465,11 +1681,11 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 					}
 				}
 				if(flag){
-					total += tpp.getAmount().doubleValue();
+					total = RandomUtil.addRound(total, tpp.getAmount());
 				}
 			}
 		}
-		return total;
+		return total.floatValue();
 	}
 
 	/* (non-Javadoc)  
@@ -1506,6 +1722,62 @@ public class PassPayLocalServiceImpl extends BaseService<BaseBean> implements IP
 	public QueryContext<TOfflinePay> getOfflinePayList(
 			QueryContext<TOfflinePay> qContext) {
 		return iOfflinePayService.queryListForPagination(qContext);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#getContractPayFundsAmount(java.lang.String, java.lang.String)  
+	 */
+	public double getContractPayFundsAmount(String cid, String oid) {
+		if (StringUtils.isEmpty(cid) || StringUtils.isEmpty(oid)){
+			return 0;
+		}
+		List<TPassbookPay> res = this.getPayListWithParams(cid,PurseType.DEPOSIT,oid,TradeType.PAYMENT_FOR_GOODS,PayDirection.OUTPUT);
+		double f = 0f;
+		if(CollectionUtils.isNotEmpty(res)){
+			for(TPassbookPay p : res){
+				f = RandomUtil.addRound(f, p.getAmount());
+			}
+		}
+		return f;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#getPayListWithParams(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, java.lang.String, com.appabc.bean.enums.PurseInfo.TradeType, com.appabc.bean.enums.PurseInfo.PayDirection)  
+	 */
+	@Override
+	public List<TPassbookPay> getPayListWithParams(String cid, PurseType pType,
+			String oid, TradeType tType, PayDirection direction) {
+		if(StringUtils.isEmpty(cid) || StringUtils.isEmpty(oid) || pType == null || tType == null){
+			return null;
+		}
+		return iPassbookPayService.getPayListWithParams(cid, pType, oid, tType, direction);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#getGuarantyToGelationRecord(java.lang.String, java.lang.String)  
+	 */
+	@Override
+	public TPassbookPay getGuarantyToGelationRecord(String oid, String cid) {
+		if (StringUtils.isEmpty(cid) || StringUtils.isEmpty(oid)){
+			return null;
+		}
+		List<TPassbookPay> res = iPassbookPayService.getPayListWithParams(cid, PurseType.GUARANTY, oid, TradeType.GELATION_GUARANTY, PayDirection.OUTPUT);
+		if(CollectionUtils.isEmpty(res)){
+			return null;
+		}
+		return res.get(0);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#extractCashRequestListEx(com.appabc.common.base.QueryContext)  
+	 */
+	@Override
+	public QueryContext<TPassbookDrawEx> extractCashRequestListEx(
+			QueryContext<TPassbookDrawEx> qContext) {
+		if(qContext == null){
+			return null;
+		}
+		return this.iPassbookDrawService.extractCashRequestListEx(qContext);
 	}
 
 }

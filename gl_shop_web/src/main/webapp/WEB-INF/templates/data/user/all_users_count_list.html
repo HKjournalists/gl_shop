@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/data">
+<head>
+  <title>数据 - 用户整体数据</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/content.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap-datetimepicker.4.0.0.min.css}" />
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 数据 - 用户整体数据
+</h4>
+<div layout:fragment="pageContent">
+
+	<div class="panel panel-default">
+      <div class="panel-body">
+        <div class="form-inline">
+            <div class="form-group">
+             <label for="pcode" class="control-label">日期范围</label>
+            <div class="controls input-group date" id="fromDatePicker">
+              <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="starttime" name="starttime" required="required" style="width: 100px"/>
+              <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+            </div>
+            <label class="control-label">至</label>
+            <div class="input-group date" id="toDatePicker">
+              <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="endtime" name="endtime" required="required" style="width: 100px"/>
+              <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+            </div>
+			<input class="btn btn-primary text-center" type="button" value="查询" onclick="query();"/>&nbsp;
+			<input class="btn btn-primary text-center" type="button" value="重置" onclick="$('#starttime').val('');$('#endtime').val('');"/>&nbsp;
+			<input class="btn btn-primary text-center" type="button" value="导出" onclick="exportData();"/>
+            <span id="salesTimeFrame-error" class="col-sm-offset-3 error"></span>
+            </div>
+        </div>
+      </div>
+     </div>
+
+  <div class="nav-tab-content">
+    <div class="tab-pane fade in active">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>日期</th>
+		    <th>已注册用户</th>
+		    <th>已认证用户</th>
+		    <th>已缴纳保证金用户</th>
+		    <th>出售类询单数</th>
+		    <th>购买类询单数</th>
+		    <th>进行中的合同数</th>
+		    <th>已结束合同数</th>
+		    <th>当天登录用户数</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="bean : ${resList}">
+            <td th:text="${bean.createDate} ? ${#calendars.format(bean.createDate, 'YYYY-MM-dd')}">2014年9月19日13:51</td>
+            <td th:text="${bean.allUserNum}"></td>
+            <td th:text="${bean.authUserNum}"></td>
+            <td th:text="${bean.bailUserNum}"></td>
+            <td th:text="${bean.sellGoodsNum}"></td>
+            <td th:text="${bean.buyGoodsNum}"></td>
+            <td th:text="${bean.contractIngNum}"></td>
+            <td th:text="${bean.contractEndNum}"></td>
+            <td th:text="${bean.loginUserNum}"></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(resList)}">
+            <td colspan="9">暂时没有数据</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div th:replace="layouts/fragments :: pagingNavBar"></div>
+    </div>
+  </div>
+</div>
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+  <script th:src="@{/static/js/product-info.js}"></script>
+</div>
+
+<script layout:fragment="inlineJavascript">
+var contextPath = /*[[@{/}]]*/ '/';
+
+var today = new Date();
+var datetimePickerOpts = {
+    defaultDate: today,
+    format: 'YYYY-MM-DD',
+    maxDate: today
+};
+
+$('#fromDatePicker').datetimepicker(datetimePickerOpts);
+$('#toDatePicker').datetimepicker(datetimePickerOpts);
+
+$('#starttime').val(/*[[${starttime}]]*/);
+$('#endtime').val(/*[[${endtime}]]*/);
+
+$('#fromDatePicker').on('dp.change', function(e) {
+    var fromDate = $('#fromDatePicker').data('DateTimePicker').date();
+    var toDate = $('#toDatePicker').data('DateTimePicker').date();
+    $('#toDatePicker').data('DateTimePicker').minDate(fromDate);
+});
+
+$('#toDatePicker').on('dp.change', function(e) {
+    var fromDate = $('#fromDatePicker').data('DateTimePicker').date();
+    var toDate = $('#toDatePicker').data('DateTimePicker').date();
+    $('#fromDatePicker').data('DateTimePicker').maxDate(toDate);
+});
+
+function query(){
+	var starttime = $('#starttime').val();
+	var endtime = $('#endtime').val();
+	if(starttime != '' && endtime != ''){
+		var queryPath = contextPath+"data/user/all/count/1/?starttime="+starttime+"&endtime="+endtime;
+		window.location=queryPath;
+	}
+}
+
+function exportData(){
+	window.open(contextPath+"data/user/all/download/csv");
+}
+</script>
+</body>
+
+</html>

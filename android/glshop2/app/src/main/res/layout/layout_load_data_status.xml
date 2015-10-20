@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 数据加载状态视图Layout(包括正在加载、加载为空、加载失败) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_load_data_status"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+              android:visibility="gone"
+    android:orientation="vertical" >
+
+    <!-- 正在加载 -->
+
+    <LinearLayout
+        android:id="@+id/ll_loading_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateDrawable="@drawable/progress_refreshing" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_data"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <!-- 加载失败 -->
+
+    <LinearLayout
+        android:id="@+id/ll_load_data_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_load_data_error"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/load_data_error"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+    <!-- 加载为空 -->
+
+    <LinearLayout
+        android:id="@+id/ll_empty_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/iv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_empty_data"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:id="@+id/tv_empty_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginRight="18dp"
+            android:text="@string/load_data_empty"
+            android:textColor="@color/gray" />
+    </LinearLayout>
+
+</LinearLayout>

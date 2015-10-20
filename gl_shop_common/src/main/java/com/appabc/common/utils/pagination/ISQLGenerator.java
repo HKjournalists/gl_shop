@@ -1,4 +1,7 @@
 package com.appabc.common.utils.pagination;
+
+import java.util.Date;
+
 /**
  * @Description : 
  * @Copyright   : GL. All Rights Reserved
@@ -19,4 +22,13 @@ public interface ISQLGenerator {
 	 * SELECT COUNT(1) FROM T_ACCEPT_BANK
 	 * */
 	String generateCountSql(String sql);
+	
+	/**
+	 * convert the start Date and end Date to where d bewteen d1 and d2;
+	 * eg:
+	 * mysql  is : UNIX_TIMESTAMP(PAYTIME) BETWEEN UNIX_TIMESTAMP('2015-03-12 15:00:00') AND UNIX_TIMESTAMP('2015-05-13 17:00:00')
+	 * oracle is : update between to_date('2007-07-07 00:00:00','yyyy-mm-dd hh24:mi:ss') and to_date('2007-09-07 00:00:00','yyyy-mm-dd hh24:mi:ss') 
+	 * 
+	 * */
+	String convertDateToWhereCauseSql(String dbColumnName,Date start,Date end);
 }

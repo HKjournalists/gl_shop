@@ -44,15 +44,16 @@ public class SmsValidateCodeController extends BaseController<TUser> {
 		String phone = request.getParameter("phone");
 //		String userName = request.getParameter("userName");
 		String sendType = request.getParameter("sendType"); // 发送类型
-		if(StringUtils.isNotEmpty(sendType) && sendType.equals(SmsSendTypeEnum.SEND_TYPE_REGISTER.getVal())){ // 注册类型
-			if(this.userService.isExistUsername(phone)){
-				return this.buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "此手机号码已经注册过，请换个手机号码注册");
-			}
-		}
-		
 		if(StringUtils.isNotEmpty(phone)) {
+			boolean isexist = this.userService.isExistUsername(phone);
+			if(isexist == true && StringUtils.isNotEmpty(sendType) && sendType.equals(SmsSendTypeEnum.SEND_TYPE_REGISTER.getVal())){// 注册类型
+				return this.buildFailResult(ErrorCode.USER_ALREADY_EXISTS, "此手机号码已经注册过，请换个手机号码注册");
+			}else if(isexist == false && (StringUtils.isEmpty(sendType) || sendType.equals(SmsSendTypeEnum.SEND_TYPE_COMMON.getVal()))){// 其它类型
+				return this.buildFailResult(ErrorCode.USER_DOES_NOT_EXIST, "此手机号不存在，未注册");
+			}
+			
 			if(vcm.sendSmsCode(phone)) {
-				return this.buildSuccessResult("发送成功", "");
+				return this.buildSuccessResult("手机验证码发送成功");
 			} else {
 				return this.buildFailResult(ErrorCode.SMS_SEND_FAIL, "验证码发送失败");
 			}
@@ -96,7 +97,7 @@ public class SmsValidateCodeController extends BaseController<TUser> {
 		user.setUsername(userName);
 		user = this.userService.query(user);
 		if(user == null){
-			return this.buildFailResult(ErrorCode.GENERIC_ERROR_CODE, "该用户不存在");
+			return this.buildFailResult(ErrorCode.USER_DOES_NOT_EXIST, "该用户不存在");
 		}else if(StringUtils.isEmpty(user.getPhone())) {
 			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "该用户手机号为空");
 		}

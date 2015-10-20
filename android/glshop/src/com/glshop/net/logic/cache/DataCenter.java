@@ -195,7 +195,8 @@ public final class DataCenter {
 					if (isCoverData(dataType, reqType)) {
 						list.addAll(data);
 					} else {
-						for (Object o : data) {
+						for (int i = data.size() - 1; i >= 0; i--) {
+							Object o = data.get(i);
 							if (!list.contains(o)) {
 								list.add(0, o);
 							} else {
@@ -211,10 +212,12 @@ public final class DataCenter {
 	}
 
 	private boolean isCoverData(int dataType, DataReqType reqType) {
+		//做一个新的处理，原来的缓存对比代码有问题,刷新直接清除以前老的数据。
 		boolean isCoverModel = false;
 		if (reqType == DataReqType.REFRESH) {
+			isCoverModel = true;
 			if (dataType == DataType.FINDBUY_BUYER_LIST || dataType == DataType.FINDBUY_SELLER_LIST || dataType == DataType.MY_BUY_LIST || dataType == DataType.UFM_CONTRACT_LIST
-					|| dataType == DataType.ONGOING_CONTRACT_LIST || dataType == DataType.ENDED_CONTRACT_LIST) {
+					|| dataType == DataType.ONGOING_CONTRACT_LIST || dataType == DataType.ENDED_CONTRACT_LIST || dataType == DataType.MESSAGE_LIST) {
 				isCoverModel = true;
 			}
 		}

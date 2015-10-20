@@ -26,4 +26,18 @@ public interface IPublicCodesService extends IBaseService<TPublicCodes> {
 	 */
 	public List<TPublicCodes> queryListByCode(String code, Integer ishidden);
 
+	/**
+	 * 获取最大值
+	 * @param entity
+	 * @return
+	 */
+	String getMaxValue(TPublicCodes entity);
+	
+	/**
+	 * 查询删除除删除属性外的数据(ISHIDDEN != 2)
+	 * @param code
+	 * @return
+	 */
+	List<TPublicCodes> queryListInNoDel(String code);
+
 }

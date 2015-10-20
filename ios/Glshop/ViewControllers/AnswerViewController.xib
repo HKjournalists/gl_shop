@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AnswerViewController">
+            <connections>
+                <outlet property="answerLabel" destination="VIo-ed-qEv" id="iYy-Nc-hAG"/>
+                <outlet property="qusionLabel" destination="xoN-7u-gZM" id="tKs-gt-fcn"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="--------------" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xoN-7u-gZM">
+                    <rect key="frame" x="8" y="16" width="304" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="304" id="2Qe-lv-Y3e"/>
+                        <constraint firstAttribute="height" constant="21" id="wVb-WD-OPZ"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f5B-9l-iLY">
+                    <rect key="frame" x="8" y="45" width="304" height="1"/>
+                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="304" id="Iz6-j3-PAM"/>
+                        <constraint firstAttribute="height" constant="0.5" id="uoK-pv-7o5"/>
+                    </constraints>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VIo-ed-qEv">
+                    <rect key="frame" x="8" y="53" width="304" height="30"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="VIo-ed-qEv" secondAttribute="trailing" constant="8" id="3ax-iZ-M6d"/>
+                <constraint firstItem="xoN-7u-gZM" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="16" id="7aS-JX-FJ7"/>
+                <constraint firstItem="VIo-ed-qEv" firstAttribute="top" secondItem="f5B-9l-iLY" secondAttribute="bottom" constant="7.5" id="Ds4-zB-swr"/>
+                <constraint firstAttribute="bottom" relation="lessThanOrEqual" secondItem="VIo-ed-qEv" secondAttribute="bottom" constant="485" id="JUV-ot-hbH"/>
+                <constraint firstItem="f5B-9l-iLY" firstAttribute="top" secondItem="xoN-7u-gZM" secondAttribute="bottom" constant="8" id="M7E-sN-pGj"/>
+                <constraint firstItem="xoN-7u-gZM" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="W4Y-6p-6tC"/>
+                <constraint firstItem="VIo-ed-qEv" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="hHi-kQ-tJn"/>
+                <constraint firstItem="f5B-9l-iLY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="vZa-zZ-POU"/>
+            </constraints>
+            <point key="canvasLocation" x="226" y="225"/>
+        </view>
+    </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>

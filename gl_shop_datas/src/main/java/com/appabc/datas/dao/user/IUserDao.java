@@ -22,5 +22,11 @@ public interface IUserDao extends IBaseDao<TUser>{
 	 */
 	public TUser queryByNameAndPass(String username, String password);
 	
+	/**
+	 * 统计用户数
+	 * @param entity
+	 * @return
+	 */
+	public int queryCount(TUser entity);
 		
 }

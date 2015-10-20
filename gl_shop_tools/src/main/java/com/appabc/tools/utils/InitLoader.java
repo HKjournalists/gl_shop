@@ -17,13 +17,15 @@ public class InitLoader {
 	
 	@Autowired
 	private SystemParamsManager systemParamsManager;
+	@Autowired
+	private AreaManager areaManager;
 	
 	
 	public void init(){
 		logger.info("============加载系统配置开始=============");
 		systemParamsManager.initSystemParam();
-		
 		logger.info("============加载系统配置结束=============");
+		areaManager.initPublicCodes();
 	}
 	
 	

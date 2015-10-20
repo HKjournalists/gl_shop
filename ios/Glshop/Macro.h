@@ -13,6 +13,8 @@
 
 #define ColorWithHex(hexStr) [Utilits colorWithHexString:hexStr]
 
+#define GLTextCommenColor RGB(100, 100, 100, 1)
+
 //颜色和透明度设置
 #define RGBA(r,g,b,a)               [UIColor colorWithRed:(float)r/255.0f green:(float)g/255.0f blue:(float)b/255.0f alpha:a]
 #define  strFormatForInt(i) [NSString stringWithFormat:@"%d", (int)i]
@@ -29,7 +31,7 @@
 
 #define FommatString(a,b) [NSString stringWithFormat:@"%@%@",a,b];
 
-#define HUD(string)  [[HUDHelper sharedInstance] tipMessage:string delay:2.0]
+#define HUD(string)  [[HUDHelper sharedInstance] tipMessage:string delay:1.2]
 
 #ifdef DEBUG
 #define DebugLog(fmt, ...) NSLog((@"[%s Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
@@ -44,7 +46,6 @@
 #define SYSTEM_VERSION_LESS_THAN(version) ([[[UIDevice currentDevice] systemVersion] compare:version options:NSNumericSearch] == NSOrderedAscending)
 
 #define IOS7  ([[[UIDevice currentDevice] systemVersion] floatValue]>=7.0)
-#define IOS7Y ([[[UIDevice currentDevice] systemVersion] floatValue]>= 7.0 ? 20  : 0)
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)//屏高
 #define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)//屏宽
 
@@ -71,10 +72,16 @@
 #define Device_WIDTH ((([UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationPortrait) || ([UIApplication sharedApplication].statusBarOrientation == UIInterfaceOrientationPortraitUpsideDown)) ? [[UIScreen mainScreen] bounds].size.width : [[UIScreen mainScreen] bounds].size.height)
 
 
+#define AppStoreBundleID @"com.jiangsuguoli.glshopappstore"
+#define EnterpriseBundleID @"com.jiangsuguoli.glshopapp"
+
+
 #pragma mark -
-#pragma mark -  系统控件默认高度
+#pragma mark -  系统控件默认值
 #define kStatusBarHeight        (20.f)
 #define kNavagtionBarHeight     (44.f)
+
+#define kCellLeftEdgeInsets     (15.f)
 
 #define kTopBarHeight           (64.f)
 
@@ -84,6 +91,11 @@
 
 #define kEnglishKeyboardHeight  (216.f)
 #define kChineseKeyboardHeight  (252.f)
+
+#pragma mark - Font
+#define FontSystem(x) [UIFont systemFontOfSize:x]
+#define FontBoldSystem(x) [UIFont boldSystemFontOfSize:x]
+#define kCellTextLabelFont [UIFont systemFontOfSize:15.f]
 
 #pragma mark - 图片
 // PNG JPG 图片路径
@@ -97,5 +109,7 @@
 #define IMAGE(NAME, EXT)        [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:(NAME) ofType:(EXT)]]
 
 #define Strong @property (nonatomic, strong)
+
+#define FomartObj @"%@"
 
 #endif

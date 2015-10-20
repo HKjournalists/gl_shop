@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_contract_status_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical" >
+
+    <Button
+        android:id="@+id/btn_buyer_status"
+        style="@style/ContractStatus_Status_Buyer_Bg"
+        android:text="买家状态"
+        android:textSize="@dimen/sp13" />
+
+    <ImageView style="@style/ContractStatus_Devider_Small_Circle" />
+
+    <Button
+        android:id="@+id/btn_seller_status"
+        style="@style/ContractStatus_Status_Seller_Bg"
+        android:text="卖家状态"
+        android:textSize="@dimen/sp13" />
+
+</LinearLayout>

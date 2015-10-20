@@ -13,5 +13,6 @@
 
 @property (nonatomic, weak) PublicInfoModel *publicModel;
 @property (nonatomic, strong, readonly) UITableView *tableView;
+@property (nonatomic, strong) NSArray *sections;
 
 @end

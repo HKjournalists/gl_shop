@@ -39,8 +39,22 @@ typedef NS_ENUM(NSInteger, OrderStatus)
 
 @interface BrowseViewController : BaseViewController
 
+/**
+ *@brief 订单id
+ *@discussion 根据此id查询详细信息
+ */
 @property (nonatomic, copy) NSString *orderId;
 @property (nonatomic, strong,readonly) PublicInfoModel *publicModel;
+/**
+ *@brief 订单状态
+ *@discussion 过期、无效交易已完成、无效用户已取消的订单显示删除按钮
+ */
 @property (nonatomic, assign) OrderStatus orderStatus;
+
+/**
+ *@brief 0 代表不是 1代表是从我的供求进入
+ *@discussion 从我的供求查看详细不显示交易询盘，显示取消发布、修改信息、删除等按钮
+ */
+@property (nonatomic, assign) NSInteger fromMySupply; //
 
 @end

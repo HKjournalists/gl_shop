@@ -48,8 +48,8 @@ public class ProductPriceHopeTest extends AbstractDatasTest {
 
 			e.setArea("RS001");
 			e.setBaseprice(price+10);
-			e.setStarttime(DateUtil.getFirstDayOfNWeek(hopeWeek));
-			e.setEndtime(DateUtil.getLastDayOfNWeek(hopeWeek));
+			e.setStarttime(DateUtil.getFirstDayOfNWeek(null, hopeWeek));
+			e.setEndtime(DateUtil.getLastDayOfNWeek(null, hopeWeek));
 			e.setPid(pi.getId());
 			e.setPricemax(price+20);
 			e.setPricemin(price+1);
@@ -95,6 +95,19 @@ public class ProductPriceHopeTest extends AbstractDatasTest {
 		List<Map<String, Object>> list = this.productPriceHopeService.queryHopePrice("RS001", "G002");
 		System.out.println(list);
 	}
+	
+	public void testQueryListByDay(){
+		TProductPriceHope entity = new TProductPriceHope();
+		entity.setArea("RS001");
+		entity.setPid("201411200000029");
+		
+		Date day = DateUtil.strToDate("2014-11-17 10:18:14", DateUtil.FORMAT_YYYY_MM_DD_HH_MM);
+		
+		List<TProductPriceHope> pphList = productPriceHopeService.queryListByDay(entity, day);
+		System.out.println(pphList);
+		System.out.println(pphList.size());
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see com.appabc.datas.AbstractDatasTest#mainTest()
@@ -105,6 +118,7 @@ public class ProductPriceHopeTest extends AbstractDatasTest {
 	public void mainTest() {
 //		testHopePrice();
 //		testAdd();
+//		testQueryListByDay();
 
 	}
 

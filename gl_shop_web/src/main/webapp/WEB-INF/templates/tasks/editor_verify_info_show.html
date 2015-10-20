@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+  <title>编辑 - 认证信息查看</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 编辑 - 认证信息查看
+</h4>
+
+<div layout:fragment="pageContent">
+
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    <input type="hidden" id="ctype" th:value="${company.ctype}">
+    <input type="hidden" id="authstatus" th:value="${auth.authstatus}">
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 认证基本信息
+    </div>
+    <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <tr>
+              <th width="25%">手机号码</th>
+              <th width="25%">申请认证类型</th>
+              <th width="25%">申请提交时间</th>
+              <th width="25%">认证状态</th>
+            </tr>
+            <tr>
+              <td th:text="${user.phone}">18666662520</td>
+              <td th:text="${company.ctype.text}">企业</td>
+              <td th:text="${#calendars.format(auth.createdate, 'YYYY年M月d日 HH:mm')}">2014年11月30日 11:39</td>
+              <td th:text="${company.authstatus.text}">通过</td>
+            </tr>
+          </table>
+        </div>
+        <table>
+        <tr>
+        <td  th:each="img : ${auth_images}" class="row">
+        <div  th:if="${#strings.equals('0', img.fstyle.val)}" class="col-sm-3">
+	        <a th:href="${img.fullpath}" target="_blank"><img th:src="@{${img.fullpath}}" width="200" height="200" title="点击放大查看"/></a><br>&nbsp;
+        </div>
+        </td>
+        </tr>
+        </table>
+    </div>
+  </div>
+
+  <div id="companyInfoDiv" class="panel panel-primary" style="display: none">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 用户资料
+    </div>
+    <div class="panel-body">
+    <!-- 个人 begin -->
+	<div th:fragment="personDiv" id="personDiv" style="display: none;">
+		<table>
+			<tr> <td align="right"><b>身份证号</b>&nbsp;&nbsp;</td><td th:text="${personBean.identification}"></td> </tr>
+			<tr> <td align="right"><b>姓名</b>&nbsp;&nbsp;</td><td th:text='${personBean.cpname}'></td> </tr>
+			<tr> <td align="right"><b>性别</b>&nbsp;&nbsp;</td><td th:text='${personBean.sex.text}'></td> </tr>
+			<!--  <tr> <td align="right"><b>民族</b>&nbsp;&nbsp;</td><td></td> </tr>  -->
+			<tr> <td align="right"><b>出生日期</b>&nbsp;&nbsp;</td><td th:text='${personBean.birthday}'></td> </tr>
+			<tr> <td align="right"><b>住址</b>&nbsp;&nbsp;</td><td th:text='${personBean.address}'></td> </tr>
+			<tr> <td align="right"><b>签发机关</b>&nbsp;&nbsp;</td><td th:text='${personBean.issuingauth}'></td> </tr>
+			<tr> <td align="right"><b>有效时间范围</b>&nbsp;&nbsp;</td><td><span th:text='${personBean.effstarttime}'></span>至<span th:text='${personBean.effendtime}'></span></td> </tr>
+		</table>
+	</div>
+	<!-- 个人 end -->
+    <!-- 企业 begin -->
+	<div th:fragment="companyDiv" id="companyDiv" style="display: none;">
+		<table>
+			<tr> <td align="right"><b>企业名称</b>&nbsp;&nbsp;</td><td th:text="${companyBean.cname}"></td> </tr>
+			<tr> <td align="right"><b>注册号</b>&nbsp;&nbsp;</td><td th:text="${companyBean.regno}"></td> </tr>
+			<tr> <td align="right"><b>注册地址</b>&nbsp;&nbsp;</td><td th:text="${companyBean.address}"></td> </tr>
+			<tr> <td align="right"><b>法定代表人</b>&nbsp;&nbsp;</td><td th:text="${companyBean.lperson}"></td> </tr>
+			<!--  <tr> <td align="right"><b>注册资本（万元）</b>&nbsp;&nbsp;</td><td th:text="${companyBean.}"></td> </tr> -->
+			<!--  <tr> <td align="right"><b>实收资本（万元）</b>&nbsp;&nbsp;</td><td th:text="${companyBean.}"></td> </tr> -->
+			<tr> <td align="right"><b>公司类型</b>&nbsp;&nbsp;</td><td th:text="${companyBean.ctype}"></td> </tr>
+			<tr> <td align="right"><b>成立日期</b>&nbsp;&nbsp;</td><td th:text="${companyBean.rdate}"></td> </tr>
+			<tr> <td align="right"><b>登记机构</b>&nbsp;&nbsp;</td><td th:text="${companyBean.orgid}"></td> </tr>
+		</table>
+	</div>
+	<!-- 企业 end -->
+    <!-- 船舶 begin -->
+	<div th:fragment="shipDiv" id="shipDiv" style="display: none;">
+		<table>
+			<tr> <td align="right"><b>船舶名称</b>&nbsp;&nbsp;</td><td th:text="${shipBean.sname}"></td> </tr>
+			<tr> <td align="right"><b>船舶登记号</b>&nbsp;&nbsp;</td><td th:text="${shipBean.sno}"></td> </tr>
+			<tr> <td align="right"><b>船籍港</b>&nbsp;&nbsp;</td><td th:text="${shipBean.pregistry}"></td> </tr>
+			<tr> <td align="right"><b>船舶检验机构</b>&nbsp;&nbsp;</td><td th:text="${shipBean.sorg}"></td> </tr>
+			<tr> <td align="right"><b>船舶所有人</b>&nbsp;&nbsp;</td><td th:text="${shipBean.sowner}"></td> </tr>
+			<tr> <td align="right"><b>船舶经营人</b>&nbsp;&nbsp;</td><td th:text="${shipBean.sbusinesser}"></td> </tr>
+			<tr> <td align="right"><b>船舶种类</b>&nbsp;&nbsp;</td><td th:text="${shipBean.stype}"></td> </tr>
+			<tr> <td align="right"><b>船舶建成日期</b>&nbsp;&nbsp;</td><td th:text="${shipBean.screatetime}"></td> </tr>
+			<tr> <td align="right"><b>总吨位（吨）</b>&nbsp;&nbsp;</td><td th:text="${shipBean.stotal}"></td> </tr>
+			<tr> <td align="right"><b>载重（吨）</b>&nbsp;&nbsp;</td><td th:text="${shipBean.sload}"></td> </tr>
+			<tr> <td align="right"><b>船长（米）</b>&nbsp;&nbsp;</td><td th:text="${shipBean.slength}"></td> </tr>
+			<tr> <td align="right"><b>船宽（米）</b>&nbsp;&nbsp;</td><td th:text="${shipBean.swidth}"></td> </tr>
+			<tr> <td align="right"><b>型深（米）</b>&nbsp;&nbsp;</td><td th:text="${shipBean.sdeep}"></td> </tr>
+			<tr> <td align="right"><b>满载吃水（米）</b>&nbsp;&nbsp;</td><td th:text="${shipBean.sover}"></td> </tr>
+			<tr> <td align="right"><b>船体材料</b>&nbsp;&nbsp;</td><td th:text="${shipBean.smateriall}"></td> </tr>
+		</table>
+	</div>
+	<!-- 船舶 end -->
+
+    </div>
+    
+  </div>
+
+  <div id="failLogDiv" class="panel panel-primary" style="display:none;">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 服务记录
+    </div>
+    <div class="panel-body">
+      <p id="remark" th:text="${auth.remark}"></p>
+    </div>
+  </div>
+</div>
+
+<script layout:fragment="inlineJavascript">
+
+if($('#authstatus').val()=='AUTH_STATUS_CHECK_YES'){
+		$('#companyInfoDiv').show();
+	if($('#ctype').val()=='COMPANY_TYPE_PERSONAL'){
+		$('#personDiv').show();
+	}else if($('#ctype').val()=='COMPANY_TYPE_ENTERPRISE'){
+		$('#companyDiv').show();
+	}else if($('#ctype').val()=='COMPANY_TYPE_SHIP'){
+		$('#shipDiv').show();
+	}
+}else{
+	$('#failLogDiv').show();
+}
+
+</script>
+</body>
+
+</html>

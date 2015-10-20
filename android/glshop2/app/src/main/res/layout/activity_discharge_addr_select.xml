@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <!-- 新增地址 -->
+
+    <LinearLayout
+        android:id="@+id/ll_item_add_address"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/selector_item_add"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/buy_item_padding"
+        android:paddingRight="@dimen/buy_item_padding" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/buy_item_padding"
+            android:background="@drawable/ic_area_add" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/buy_item_padding"
+            android:layout_weight="1"
+            android:text="@string/add_discharge_addr"
+            android:textColor="@color/orange" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/buy_item_padding"
+            android:background="@drawable/selector_btn_more" />
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+
+    <include layout="@layout/layout_load_data_status" />
+
+    <LinearLayout
+        android:id="@+id/ll_addr_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/buy_item_padding"
+            android:text="请选择您的常用卸货地址"
+            android:textColor="@color/gray"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/lv_addr_list"
+            style="@style/listview_common"
+            android:background="@color/white" />
+    </LinearLayout>
+
+</LinearLayout>

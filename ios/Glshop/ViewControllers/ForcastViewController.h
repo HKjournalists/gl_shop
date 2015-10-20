@@ -10,4 +10,6 @@
 
 @interface ForcastViewController : BaseViewController
 
+@property BOOL isSend;
+
 @end

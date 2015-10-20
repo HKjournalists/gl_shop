@@ -139,6 +139,11 @@ public interface GlobalAction {
 		public static final String EXTRA_KEY_PRODUCT_INFO = "extra_key_product_info";
 
 		/**
+		 * 货物规格ID
+		 */
+		public static final String EXTRA_KEY_PRODUCT_SPEC_ID = "extra_key_product_spec_id";
+
+		/**
 		 * 交易地域编号
 		 */
 		public static final String EXTRA_KEY_TRADE_AREA_CODE = "extra_key_trade_area_code";
@@ -199,11 +204,16 @@ public interface GlobalAction {
 		 * 合同信息
 		 */
 		public static final String EXTRA_KEY_CONTRACT_INFO = "extra_key_contract_info";
-		
+
 		/**
 		 * 合同模板信息
 		 */
 		public static final String EXTRA_KEY_CONTRACT_MODEL_INFO = "extra_key_contract_model_info";
+
+		/**
+		 * 是否获取合同模板信息
+		 */
+		public static final String EXTRA_KEY_IS_GET_CONTRACT_MODEL = "extra_key_is_get_contract_model";
 
 		/**
 		 * 账单结算信息
@@ -313,11 +323,17 @@ public interface GlobalAction {
 		 * 企业介绍信息
 		 */
 		public static final String EXTRA_KEY_COMPANY_INTRO_INFO = "extra_key_company_intro_info";
+		/**
+		 * 企业介绍信息
+		 */
+		public static final String EXTRA_KEY_COMPANY_TYPE_INFO = "extra_key_company_type_info";
 
 		/**
 		 * 用户认证信息详情
 		 */
 		public static final String EXTRA_KEY_USER_AUTH_INFO = "extra_key_user_auth_info";
+		
+		public static final String EXTRA_KEY_USER_INFO = "extra_key_user_info";
 
 	}
 

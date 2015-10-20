@@ -15,5 +15,12 @@ import com.appabc.common.base.service.IBaseService;
  * Create Date  : 2014年9月25日 下午9:27:19
  */
 public interface ICompanyAuthService extends IBaseService<TCompanyAuth> {
+	
+	/**
+	 * 根据认证记录查询
+	 * @param authid
+	 * @return
+	 */
+	public TCompanyAuth queryByAuthid(int authid);
 
 }

@@ -39,7 +39,7 @@
             }
             if (i == 2) {
                 [btn setImage:[UIImage imageNamed:@"Buy_sell_icon_shaixuan"] forState:UIControlStateNormal];
-                
+                [btn setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
             }
             [btn setTitle:titles[i] forState:UIControlStateNormal];
             btn.frame = CGRectMake(0+i*320/3, 2, 320/3, BarHeight-4);
@@ -77,9 +77,9 @@
 }
 
 - (void)choseIndex:(UIButton *)button {
-    [button setSelected:YES];
     NSInteger index = [self.btnArray indexOfObject:button];
     if (index < 2) {
+        [button setSelected:YES];
         self.selctedIndex = index;
     }
     if (_selctedIndex != 2) {

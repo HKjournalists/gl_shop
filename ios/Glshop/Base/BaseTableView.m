@@ -16,10 +16,19 @@
     if (self) {
         _pageIndex = 1;
         _dataArray = [NSArray array];
-        _refreshControl = [[ODRefreshControl alloc] initInScrollView:self];
+//        _refreshControl = [[ODRefreshControl alloc] initInScrollView:self];
         [self _initView];
     }
     return self;
+}
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+    _pageIndex = 1;
+    _dataArray = [NSArray array];
+//    _refreshControl = [[ODRefreshControl alloc] initInScrollView:self];
+    [self _initView];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -73,7 +82,7 @@
 
 - (void)_stopLoadMore {
     
-#warning 待完善
+//#warning 待完善
     if (self.dataArray.count > 0) {
         _moreButton.hidden = NO;
         [_moreButton setTitle:@"上拉加载..." forState:UIControlStateNormal];

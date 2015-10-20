@@ -19,13 +19,12 @@ import com.appabc.bean.bo.SyncDataBean;
 import com.appabc.bean.bo.SyncInfoBean;
 import com.appabc.bean.bo.SysParam;
 import com.appabc.bean.enums.SyncInfo.SyncType;
-import com.appabc.bean.pvo.TBankInfo;
+import com.appabc.bean.pvo.TPublicCodes;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.SystemConstant;
-import com.appabc.datas.service.codes.IPublicCodesService;
 import com.appabc.datas.service.product.IProductInfoService;
-import com.appabc.datas.service.system.IBankInfoService;
 import com.appabc.http.utils.HttpApplicationErrorCode;
+import com.appabc.tools.service.codes.IPublicCodesService;
 import com.appabc.tools.utils.SystemParamsManager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -47,8 +46,6 @@ public class SyncController extends BaseController<SyncInfoBean> {
 	
 	@Autowired
 	private IPublicCodesService publicCodesService;
-	@Autowired
-	private IBankInfoService bankInfoService;
 	@Autowired
 	private IProductInfoService productInfoService;
 	@Autowired
@@ -75,6 +72,7 @@ public class SyncController extends BaseController<SyncInfoBean> {
 		boolean isSyncArea = false;
 		boolean isSyncBanks = false;
 		boolean isSyncSysParams = false;
+		boolean isSyncAreaProvinceControl = false;
 		
 		SyncInfoBean si = new SyncInfoBean();
 		String typeInfo  = request.getParameter("typeInfo"); // JSON格式
@@ -120,6 +118,9 @@ public class SyncController extends BaseController<SyncInfoBean> {
 					}else if(syncType.equals(SyncType.SYNC_TYPE_SYS_PARAM)
 							&& !timeStamp.equals(spm.getString(SystemConstant.SYNC_SYS_PARAM_TIME))){ // 系统参数
 						isSyncSysParams = true;
+					}else if(syncType.equals(SyncType.SYNC_AREA_PROVINCE_CONTROL)
+							&& !timeStamp.equals(spm.getString(SystemConstant.SYNC_AREA_PROVINCE_CONTROL_TIME))){ // 区域省份控制
+						isSyncAreaProvinceControl = true;
 					}
 						
 				}
@@ -135,20 +136,21 @@ public class SyncController extends BaseController<SyncInfoBean> {
 			isSyncArea = true;
 			isSyncBanks = true;
 			isSyncSysParams = true;
+			isSyncAreaProvinceControl = true;
 		}
 		
 		SyncDataBean sd;
 		
 		if(isSyncRiverSection){
 			sd = new SyncDataBean();
-			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_RIVER_SECTION));
+			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_RIVER_SECTION, 0));
 			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_RIVER_SECTION_TIME)); // 更新时间
 			si.setRiverSection(sd);
 		}
 		
 		if(isSyncGoodsType){
 			sd = new SyncDataBean();
-			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_GOODS_TYPE));
+			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_GOODS_TYPE, 0));
 			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_GOODS_TYPE_TIME)); // 更新时间
 			si.setGoods(sd);
 		}
@@ -162,14 +164,14 @@ public class SyncController extends BaseController<SyncInfoBean> {
 		
 		if(isSyncArea){
 			sd = new SyncDataBean();
-			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_AREA));
+			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_AREA, null)); // 全部地域信息
 			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_AREA_TIME)); // 更新时间
 			si.setArea(sd);
 		}
 		
 		if(isSyncBanks){
 			sd = new SyncDataBean();
-			sd.setData(bankInfoService.queryForList(new TBankInfo()));
+			sd.setData(publicCodesService.queryListByCode(SystemConstant.CODE_BANK, null));
 			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_BANKS_TIME)); // 更新时间
 			si.setBanks(sd);
 		}
@@ -181,7 +183,29 @@ public class SyncController extends BaseController<SyncInfoBean> {
 			si.setSysParam(sd);
 		}
 		
+		if(isSyncAreaProvinceControl){
+			sd = new SyncDataBean();
+			TPublicCodes entity = new TPublicCodes();
+			entity.setCode(SystemConstant.CODE_AREA);
+			entity.setPcode("0");
+			entity.setIshidden(0);
+			
+			sd.setData(spleAreaCodes(publicCodesService.queryForList(entity))); // 用户显示的省份CODE
+			sd.setTimeStamp(spm.getString(SystemConstant.SYNC_AREA_PROVINCE_CONTROL_TIME)); // 更新时间
+			si.setAreaProvinceControl(sd);;
+		}
+		
 		return si;
+	}
+	
+	private String spleAreaCodes(List<TPublicCodes> pcList){
+		StringBuilder str = new StringBuilder();
+		for (int i = 0; i < pcList.size(); i++) {
+			if(i>0) str.append(",");
+			str.append(pcList.get(i).getVal());
+		}
+		
+		return str.toString();
 	}
 	
 	
@@ -227,6 +251,26 @@ public class SyncController extends BaseController<SyncInfoBean> {
 		bi = new SysParam();
 		bi.setPname(SystemConstant.GUARANTY_PERCENT);
 		bi.setPvalue(this.spm.getString(SystemConstant.GUARANTY_PERCENT));
+		biList.add(bi);
+		
+		bi = new SysParam();
+		bi.setPname(SystemConstant.SERVICE_PERCENT);
+		bi.setPvalue(this.spm.getString(SystemConstant.SERVICE_PERCENT));
+		biList.add(bi);
+		
+		bi = new SysParam();
+		bi.setPname(SystemConstant.DISCOUNT_PERCENT);
+		bi.setPvalue(this.spm.getString(SystemConstant.DISCOUNT_PERCENT));
+		biList.add(bi);
+		
+		bi = new SysParam();
+		bi.setPname(SystemConstant.CONTRACT_EVALUATIOIN_LIMIT_TIME);
+		bi.setPvalue(this.spm.getString(SystemConstant.CONTRACT_EVALUATIOIN_LIMIT_TIME));
+		biList.add(bi);
+		
+		bi = new SysParam();
+		bi.setPname(SystemConstant.CUSTOMER_SERVICE_TEL);
+		bi.setPvalue(this.spm.getString(SystemConstant.CUSTOMER_SERVICE_TEL));
 		biList.add(bi);
 		
 		return biList;

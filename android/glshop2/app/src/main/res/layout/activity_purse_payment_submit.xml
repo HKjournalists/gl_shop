@@ -1,0 +1,151 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/activity_common_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <!-- 需支付货款金额 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_top"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="需支付货款金额(单位：元)"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_to_pay_money"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="9999.9"
+                    android:textColor="@color/red" />
+            </LinearLayout>
+
+            <View style="@style/item_devider_line" />
+
+            <!-- 货款账户余额 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buy_item_height"
+                android:background="@drawable/selector_item_bottom"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/buy_item_padding"
+                android:paddingRight="@dimen/buy_item_padding" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="货款账户余额(单位：元)"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_aviable_money"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="9999.9"
+                    android:textColor="@color/gray" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginBottom="@dimen/buy_item_padding"
+                android:layout_marginTop="@dimen/buy_item_padding"
+                android:gravity="center_vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="短信验证码发送至:"
+                    android:textColor="@color/gray" />
+
+                <TextView
+                    android:id="@+id/tv_phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="18666668888"
+                    android:textColor="@color/blue"
+                    android:textSize="@dimen/sp18" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="@dimen/buy_item_padding"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/et_sms_verify_code"
+                    style="@style/sms_verifycode_edittext"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_weight="1"
+                    android:hint="@string/input_verifycode_hint" />
+
+                <Button
+                    android:id="@+id/btn_get_sms_verfiycode"
+                    style="@style/button_send_smscode"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_marginLeft="@dimen/buy_item_padding"
+                    android:layout_weight="1.2"
+                    android:text="@string/get_sms_verifycode_init" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="@dimen/buy_item_padding"
+                android:gravity="center_vertical" >
+
+                <EditText
+                    android:id="@+id/et_input_pwd"
+                    style="@style/edittext"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_weight="1"
+                    android:hint="@string/input_password_hint"
+                    android:inputType="textPassword"
+                    android:textColorHint="@color/gray" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/common_edit_height"
+                    android:layout_marginLeft="@dimen/buy_item_padding"
+                    android:layout_weight="1.2" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_submit"
+                style="@style/button_orange"
+                android:layout_marginTop="@dimen/buy_item_padding"
+                android:text="确认支付" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

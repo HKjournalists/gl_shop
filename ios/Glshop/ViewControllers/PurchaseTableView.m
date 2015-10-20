@@ -7,11 +7,11 @@
 //
 
 #import "PurchaseTableView.h"
-#import "BusinessTableViewCell.h"
+#import "MySupplyTableViewCell.h"
 
 @implementation PurchaseTableView
 
-static NSString *cellIdentify = @"buyCellIdentify";
+static NSString *cellIdentify = @"supplyCellIdentify";
 
 #pragma mark -
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -27,9 +27,9 @@ static NSString *cellIdentify = @"buyCellIdentify";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    BusinessTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentify];
+    MySupplyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentify];
     if (!cell) {
-        cell = [[[NSBundle mainBundle] loadNibNamed:@"BusinessTableViewCell" owner:self options:nil]lastObject];
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"MySupplyTableViewCell" owner:self options:nil]lastObject];
     }
     cell.orderModel = self.dataArray[indexPath.section];
     

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 个人资料中显示卸货地址信息Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/buy_item_padding" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_item_top"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/buy_item_padding"
+        android:paddingRight="@dimen/buy_item_padding" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/my_discharge_address" />
+
+            <Button
+                android:id="@+id/btn_addr_mgr"
+                style="@style/button_small_orange"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/manager" />
+        </RelativeLayout>
+
+        <View style="@style/item_devider_line" />
+
+        <TextView
+            android:id="@+id/tv_default_addr_detail"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:text="详细地址信息"
+            android:textColor="@color/blue" />
+
+        <LinearLayout
+            android:id="@+id/ll_addr_pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/iv_item_addr_pic_1"
+                android:layout_width="@dimen/image_thumbnail_width"
+                android:layout_height="@dimen/image_thumbnail_heigh"
+                android:background="@drawable/ic_default_pic"
+                android:contentDescription="@null" />
+
+            <ImageView
+                android:id="@+id/iv_item_addr_pic_2"
+                android:layout_width="@dimen/image_thumbnail_width"
+                android:layout_height="@dimen/image_thumbnail_heigh"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/ic_default_pic"
+                android:contentDescription="@null" />
+
+            <ImageView
+                android:id="@+id/iv_item_addr_pic_3"
+                android:layout_width="@dimen/image_thumbnail_width"
+                android:layout_height="@dimen/image_thumbnail_heigh"
+                android:background="@drawable/ic_default_pic"
+                android:contentDescription="@null" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 卸货地港口水深度 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_port_water_depth"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/unit_m_v3"
+        glshop:itemTitle="@string/business_discharge_port_water_depth"
+        glshop:showItemClickIcon="false"
+        glshop:showItemIcon="false" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 可停泊载重船吨位 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_shipping_ton"
+        style="@style/BuyTextItem.Bottom"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/unit_ton_v3"
+        glshop:itemTitle="@string/business_discharge_shipping_ton"
+        glshop:showItemClickIcon="false"
+        glshop:showItemIcon="false" />
+
+</LinearLayout>

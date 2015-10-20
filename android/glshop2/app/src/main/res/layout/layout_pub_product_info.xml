@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 显示货物详细信息Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <!-- 货物信息 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_type"
+        style="@style/BuyTextItem.Top"
+        glshop:itemContent="@string/product_type_sand"
+        glshop:itemTitle="货物信息"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 货物规格 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_spec"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="粗砂(3.1–3.7)"
+        glshop:itemTitle="货物规格"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 货物颜色 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_color"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="灰色"
+        glshop:itemTitle="@string/product_color"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 货物产地 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_area"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="晋江"
+        glshop:itemTitle="@string/product_area"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 含泥量 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_sediment_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/product_unit_percent"
+        glshop:itemTitle="@string/product_sediment_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 泥块含量 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_sediment_block_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/product_unit_percent"
+        glshop:itemTitle="@string/product_sediment_block_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 含水率 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_water_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/product_unit_percent"
+        glshop:itemTitle="@string/product_water_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 表观密度 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_appearance_density"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/product_unit_density"
+        glshop:itemTitle="@string/product_appearance_density"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 堆积密度 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_stacking_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/product_unit_density"
+        glshop:itemTitle="@string/product_stacking_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 坚固性指标 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_product_sturdiness_perc"
+        style="@style/BuyTextItem.Middle"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/product_unit_percent"
+        glshop:itemTitle="@string/product_sturdiness_percentage"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 备注说明 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_item_bottom"
+        android:orientation="vertical"
+        android:padding="10dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="备注" />
+
+        <TextView
+            android:id="@+id/tv_product_remarks_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:gravity="top"
+            android:text="备注说明"
+            android:textColor="@color/blue" />
+    </LinearLayout>
+
+</LinearLayout>

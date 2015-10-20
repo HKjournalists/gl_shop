@@ -5,6 +5,7 @@ import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.bean.BaseBean;
 import com.appabc.common.base.bean.EmptyResult;
 import com.appabc.common.base.bean.UserInfoBean;
+import com.appabc.common.base.exception.BaseException;
 import com.appabc.common.base.exception.BusinessException;
 import com.appabc.common.utils.*;
 import com.appabc.common.utils.pagination.PageModel;
@@ -23,7 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -91,17 +91,15 @@ public abstract class BaseController<T extends BaseBean> {
 		final String USERTOKEN_MAP_KEY = "TOKEN_MAP";
 		String userToken = request.getHeader(SystemConstant.ACCESS_TOKEN);
 		if(StringUtils.isEmpty(userToken)){
-			throw new BusinessException(ErrorCode.USER_UNLOGINE_RROR,"user is un login,please login first.");
+			throw new BusinessException(ErrorCode.USER_UNLOGINE_ERROR,"user is un login,please login first.");
 		}
+		byte[] bytes = null;
 		try {
-			byte[] bytes = this.redisHelper.hget(USERTOKEN_MAP_KEY.getBytes("UTF-8"), userToken.getBytes("UTF-8"));
-			if(bytes != null){
-				u =  (UserInfoBean) SerializeUtil.unserialize(bytes);
-			}else{
-				throw new BusinessException(ErrorCode.USER_UNLOGINE_RROR,"get login user info throw the error,please login again.");
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			bytes = this.redisHelper.hget(USERTOKEN_MAP_KEY.getBytes("UTF-8"), userToken.getBytes("UTF-8"));
+			u =  (UserInfoBean) SerializeUtil.unserialize(bytes);
+		} catch (Exception e) {
+			log.error(e);
+			throw new BusinessException(ErrorCode.USER_UNLOGINE_ERROR,"get login user info throw the error,please login again.");
 		}
 		return u;
 	}
@@ -154,7 +152,9 @@ public abstract class BaseController<T extends BaseBean> {
 		CheckResult result = null;
 		if(ex instanceof BusinessException){
 			result = new CheckResult(((BusinessException) ex).getErrorCode(), ex.getMessage());
-		}else{
+		} else if(ex instanceof BaseException){
+			result = new CheckResult(((BaseException) ex).getErrorCode(), ex.getMessage());
+		} else {
 			result = new CheckResult(ErrorCode.GENERIC_EXCEPTION_CODE, SystemConstant.EXCEPTIONMESSAGE);
 		}
 		mav.addObject(SystemConstant.ERRORCODE,result);
@@ -317,7 +317,7 @@ public abstract class BaseController<T extends BaseBean> {
 	 * @since 1.0.0
 	 */
 	public FilterResult buildFilterResultWithArray(Collection<?> c,
-			String[] filterPropertyNames) {
+			String... filterPropertyNames) {
 		if (CollectionUtils.isEmpty(c)) {
 			return new FilterResult();
 		}
@@ -528,6 +528,55 @@ public abstract class BaseController<T extends BaseBean> {
 			return Object.class;
 		}
 		return (Class) params[index];
+	}
+	
+	/**
+	 * @Description : 获取配置消息根据CODE
+	 * @param code
+	 * @return String
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	public String getMessage(String code){
+		if(StringUtils.isEmpty(code)){
+			return StringUtils.EMPTY;
+		}
+		return MessagesUtil.getMessage(code, MessagesUtil.locale);
+	}
+	
+	/**
+	 * @Description : 获取配置消息根据CODE和local
+	 * @param code;localTag
+	 * @return String
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
+	public String getMessage(String code,String localTag){
+		if(StringUtils.isEmpty(code)){
+			return StringUtils.EMPTY;
+		}
+		Locale l = null;
+		if(StringUtils.isNotEmpty(localTag)){
+			l = Locale.forLanguageTag(localTag);
+		} else {
+			l = MessagesUtil.locale;
+		}
+		return MessagesUtil.getMessage(code, l);
+	}
+	
+	public int getBusinessExceptionErrorCode(BaseException se,int defaultCode){
+		if(se == null){
+			return defaultCode;
+		}
+		return se.getErrorCode()!=ErrorCode.GENERIC_ERROR_CODE ? se.getErrorCode() : defaultCode;
+	}
+	
+	public CheckResult getBuildFailureResult(BaseException se,int defaultCode,String...defaultMesg){
+		int errorCode = getBusinessExceptionErrorCode(se, defaultCode);
+		String _defaultMesg = defaultMesg != null && defaultMesg.length > 0 ? defaultMesg[0] : StringUtils.EMPTY;
+		return buildFailResult(errorCode, se == null ? _defaultMesg : se.getMessage());
 	}
 
 }

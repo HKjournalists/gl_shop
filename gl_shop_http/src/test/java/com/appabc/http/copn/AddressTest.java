@@ -27,7 +27,26 @@ public class AddressTest extends AbstractHttpControllerTest {
 //		loginSimulation("", "", "");
 //		queryList();
 //		getInfo();
+//		addAddress();
 		
+	}
+	
+	public void addAddress(){
+		request.setRequestURI("/copn/address/add");
+		request.setMethod("POST");
+		
+		/***企业信息*********************/
+		request.addParameter("cid", "CompanyInfoId000000811102014END"); // 企业ID
+		request.addParameter("status", "a"); // 是否为默认
+		request.addParameter("address", "深圳"); // 是否为默认
+		
+		
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void queryList(){

@@ -67,5 +67,15 @@ public class CompanyPersonalServiceImpl implements ICompanyPersonalService{
 			QueryContext<TCompanyPersonal> qContext) {
 		return this.companyPersonalDao.queryListForPagination(qContext);
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.company.ICompanyPersonalService#queryByAuthid(int)
+	 */
+	@Override
+	public TCompanyPersonal queryByAuthid(int authid) {
+		TCompanyPersonal entity = new TCompanyPersonal();
+		entity.setAuthid(authid);
+		return query(entity);
+	}
 
 }

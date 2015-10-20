@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_dialog_top"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/buy_item_padding" >
+
+            <!-- 对话框Icon -->
+
+            <ImageView
+                android:id="@+id/dialog_iv_tip_ic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_tip_warning"
+                android:contentDescription="@null" />
+
+            <!-- 对话框正文内容 -->
+
+            <TextView
+                android:id="@+id/dialog_tv_content"
+                style="@style/dialog_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/dialog_context_info"
+                android:textColor="@color/gray" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_dialog_bottom"
+            android:gravity="center_vertical" >
+
+            <!-- 确认按钮 -->
+
+            <Button
+                android:id="@+id/dialog_btn_confirm"
+                style="@style/button_orange"
+                android:layout_margin="6dp"
+                android:text="@string/dialog_context_ok"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

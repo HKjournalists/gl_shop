@@ -154,4 +154,28 @@ public class PassbookInfoServiceImpl extends BaseService<TPassbookInfo>
 		this.iPassbookInfoDAO = iPassbookInfoDAO;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.appabc.pay.service.local.IPassbookInfoService#queryCountAllUsersGuaranty()
+	 */
+	@Override
+	public int queryCountAllUsersGuaranty() {
+		return this.iPassbookInfoDAO.queryCountAllUsersGuaranty();
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.local.IPassbookInfoService#queryNewListForTask()  
+	 */
+	@Override
+	public List<TPassbookInfo> queryNewListForTask() {
+		return this.iPassbookInfoDAO.queryNewListForTask();
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.local.IPassbookInfoService#queryInvalidListForTask()  
+	 */
+	@Override
+	public List<TPassbookInfo> queryInvalidListForTask() {
+		return this.iPassbookInfoDAO.queryInvalidListForTask();
+	}
+	
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 显示求购数量及单价Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:glshop="http://schemas.android.com/apk/res/com.glshop.net"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <!-- 交易数量 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_trade_amount_single_area"
+        style="@style/BuyTextItem.Top"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/product_unit_ton"
+        glshop:itemTitle="@string/business_product_purchases"
+        glshop:showItemIcon="true" />
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 到港单价 -->
+
+    <com.glshop.net.ui.basic.view.listitem.BuyTextItemView
+        android:id="@+id/ll_item_unit_price"
+        style="@style/BuyTextItem.Bottom"
+        glshop:itemContent="0"
+        glshop:itemSecondTitle="@string/product_unit_price"
+        glshop:itemTitle="@string/business_product_portprice"
+        glshop:showItemIcon="true" />
+
+</LinearLayout>

@@ -1,7 +1,8 @@
 package com.appabc.datas.dao.company.impl;
 
-import com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus;
 import com.appabc.bean.enums.AcceptBankInfo.AcceptBankStatus;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
+import com.appabc.bean.enums.CompanyInfo;
 import com.appabc.bean.pvo.TAuthRecord;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.QueryContext;
@@ -39,7 +40,7 @@ public class AcceptBankDAOImpl extends BaseJdbcDao<TAcceptBank> implements IAcce
 	private static final String DELETE_SQL = " DELETE FROM T_ACCEPT_BANK WHERE ID = :id ";
 	private static final String SELECT_SQL = " SELECT ab.ID,ab.CID,ab.AUTHID,ab.BANKCARD,ab.BANKACCOUNT,ab.CARDUSER," +
 			"ab.CARDUSERID,ab.BANKTYPE,ab.BANKNAME,ab.ADDR,ab.REMARK,ab.CREATETIME,ab.UPDATETIME,ab.CREATOR," +
-			"ab.STATUS,ab.AUTHSTATUS, ci.cname FROM T_ACCEPT_BANK ab, T_COMPANY_INFO ci WHERE ab.cid=ci.id ";
+			"ab.STATUS,ab.AUTHSTATUS, ci.cname, ci.ctype FROM T_ACCEPT_BANK ab, T_COMPANY_INFO ci WHERE ab.cid=ci.id ";
 
 	private String dynamicJoinSqlWithEntity(TAcceptBank entity,StringBuilder sql){
 		if(entity==null||sql==null||sql.length()<=0){
@@ -175,10 +176,11 @@ public class AcceptBankDAOImpl extends BaseJdbcDao<TAcceptBank> implements IAcce
 		bean.setUpdatetime(rs.getTimestamp("UPDATETIME"));
 		bean.setCreator(rs.getString("CREATOR"));
 		bean.setStatus(AcceptBankStatus.enumOf(rs.getInt("STATUS")));
-		bean.setAuthstatus(AcceptAuthStatus.enumOf(rs.getInt("AUTHSTATUS")));
+		bean.setAuthstatus(AuthRecordStatus.enumOf(rs.getInt("AUTHSTATUS")+""));
 
 		ci.setId(cid);
 		ci.setCname(rs.getString("cname"));
+		ci.setCtype(CompanyInfo.CompanyType.enumOf(rs.getString("ctype")));
 		bean.setCompany(ci);
 
 		TAuthRecord ar = new TAuthRecord();
@@ -191,9 +193,9 @@ public class AcceptBankDAOImpl extends BaseJdbcDao<TAcceptBank> implements IAcce
 	public QueryContext<TAcceptBank> queryListForAuditFinished(QueryContext<TAcceptBank> queryContext) {
 		StringBuilder sb = new StringBuilder(SELECT_SQL.length() * 2);
 		TAcceptBank ab = new TAcceptBank();
-		ab.setAuthstatus(AcceptAuthStatus.AUTH_STATUS_CHECK_YES);
+		ab.setAuthstatus(AuthRecordStatus.AUTH_STATUS_CHECK_ING);
 		Map<String, Object> params = new HashMap<>();
-		params.put("authstatus", ab.getAuthstatus());
+		params.put("authstatus", ab.getAuthstatus().getVal());
 		queryContext.setBeanParameter(ab);
 		queryContext.setParameters(params);
 		sb.append(SELECT_SQL + " and ab.authstatus<>:authstatus ");

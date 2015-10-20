@@ -453,6 +453,48 @@ public interface PurseInfo extends IBaseEnum{
 		
 	}
 	
+	public enum RequestType implements PurseInfo {
+		
+		REQUEST(0,"request"),
+		
+		RESPONSE(1,"response");
+		
+		private int val;
+		
+		private String text;
+		
+		private RequestType(int value,String text){
+			this.val = value;
+			this.text = text;
+		}
+		
+		public int getVal(){
+			return val;
+		}
+		
+		public String getText(){
+			return text;
+		}
+		
+		public static RequestType enumOf(int value){
+			for (RequestType os : values()) {
+				if (os.val == value) {
+					return os;
+				}
+			}
+			return null;
+		}
+		
+		public static String getText(int value) {
+			RequestType oo = enumOf(value);
+			if(oo != null){
+				return oo.text;
+			}
+			return null;
+	    }
+		
+	}
+	
 	public enum OnOffLine implements PurseInfo {
 		/**线上*/
 		ONLINE("0","线上"),
@@ -487,6 +529,56 @@ public interface PurseInfo extends IBaseEnum{
 		
 		public static String getText(String value) {
 			OnOffLine oo = enumOf(value);
+			if(oo != null){
+				return oo.text;
+			}
+			return null;
+	    }
+		
+	}
+	
+	/**
+	 * 功能描述:支付机构
+	 * @author Bill.Huang
+	 * <p>2015-04-22 上午10:21:14<p>
+	 * <p>修改历史 ：(修改人，修改时间，修改原因/内容)</p>
+	 */
+	public enum PayInstitution implements PurseInfo{
+		
+		/**银联支付*/
+		UNIONPAY("0","银联支付"),
+		
+		/**中金支付*/
+		ZHONGJINPAY("1","中金支付");
+		
+		private String val;
+		
+		private String text;
+		
+		private PayInstitution(String value,String text){
+			this.val = value;
+			this.text = text;
+		}
+		
+		public String getVal(){
+			return val;
+		}
+		
+		public String getText(){
+			return text;
+		}
+		
+		public static PayInstitution enumOf(String value){
+			for (PayInstitution os : values()) {
+				if (StringUtils.equalsIgnoreCase(os.val,value)) {
+					return os;
+				}
+			}
+			return null;
+		}
+		
+		public static String getText(String value) {
+			PayInstitution oo = enumOf(value);
 			if(oo != null){
 				return oo.text;
 			}

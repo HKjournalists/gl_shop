@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+  <title>合同管理 - 仲裁处理 - 详细信息</title>
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 合同管理 - 仲裁处理 - 详细信息</h4>
+ 
+<div layout:fragment="pageContent">
+	<div class="panel panel-primary">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 合同信息
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <tr>
+            <th>合同摘要</th>
+            <th width="30%">提交仲裁时间</th>
+          </tr>
+          <tr>
+            <td><a th:href="@{/public/contract/{id}/(id=${contract.id})}" th:text="${contract.remark}">求购黄砂50吨</a></td>
+            <td th:text="${#calendars.format(arbitration.createtime, 'YYYY-MM-dd HH:mm')}">2015-03-24 12:24</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 合同双方
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <tr>
+            <th>买家手机号码</th>
+            <th width="20%">买家类型</th>
+            <th>卖家手机号码</th>
+            <th width="20%">卖家类型</th>
+          </tr>
+          <tr>
+            <td th:text="${buyer.phone}">18666662520</td>
+            <td th:text="${buyerCompany.ctype.text}">企业</td>
+            <td th:text="${seller.phone}">13813804762</td>
+            <td th:text="${sellerCompany.ctype.text}">企业</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 合同及申请仲裁价格
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <tr>
+            <th>合同签订价格（单位：元）</th>
+            <th width="20%" th:text="${#numbers.formatDecimal(contract.price,1,2)}">49.50</th>
+            <th>买家提交价格（单位：元）</th>
+            <th width="20%" th:text="${price} ? ${#numbers.formatDecimal(price.endamount,1,2)} : '0'">43.00</th>
+          </tr>
+          <tr>
+            <th>合同签订数量（单位：<span th:text="${order_request.unit} ? ${order_request.unit.text}">吨</span>）</th>
+            <th th:text="${#numbers.formatDecimal(order_request.totalnum,1,2)}">2000</th>
+            <th>买家提交数量（单位：<span th:text="${order_request.unit} ? ${order_request.unit.text}">吨</span>）</th>
+            <th th:text="${price} ? ${#numbers.formatDecimal(price.endnum,1,2)} : '0'">1500</th>
+          </tr>
+          <tr>
+            <th>合同签订总价（单位：元）</th>
+            <th th:text="${#numbers.formatDecimal(contract.totalamount,1,2)}">99000</th>
+            <th>买家提交总价（单价：元）</th>
+            <th th:text="${price} ? ${#numbers.formatDecimal((price.endamount * price.endnum),1,2)} : '0'">64500</th>
+          </tr>
+          <tr>
+          	 <th colspan="2">&nbsp;</th>
+          	 <th>买家提交最终价格（单位:元）</th>
+          	 <th class="task-warn" th:text="${contract !=null} and ${contract.settleamount} ? ${#numbers.formatDecimal(contract.settleamount,1,2)} : '0'">64500</th>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 平台仲裁价格
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <tr>
+            <th width="30%">平台仲裁单价（单位：元）</th>
+            <td colspan="3">
+              <div class="form-group">
+              <div class="col-sm-3" th:text="${arPrice} ? ${#numbers.formatDecimal(arPrice.endamount,1,2)} : '0'">
+                <input class="form-control" type="text" id="arbitrationPrice" name="arbitrationPrice" required="required" value="0" />
+              </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>平台仲裁数量（单位：<span th:text="${order_request.unit} ? ${order_request.unit.text}">吨</span>）</th>
+            <td colspan="3">
+              <div class="col-sm-3" th:text="${arPrice} ? ${#numbers.formatDecimal(arPrice.endnum,1,2)} : '0'">
+                <input class="form-control" type="text" id="arbitrationAmount" name="arbitrationAmount" required="required" value="0" />
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <th>平台仲裁总价（单位：元）</th>
+            <td>
+              <div class="col-sm-3" th:text="${arPrice} ? ${#numbers.formatDecimal((arPrice.endamount * arPrice.endnum),1,2)} : '0'">
+                <input class="form-control" type="text" id="arbitrationTotalPrice" name="arbitrationTotalPrice" readonly="readonly" value="0" />
+              </div>
+            </td>
+            <th>仲裁最终结算总价（单位：元）</th>
+            <td>
+              <div class="col-sm-9 task-warn" th:text="${contract !=null} and ${contract.amount} ? ${#numbers.formatDecimal(contract.amount,1,2)} : '0'">
+                <input class="form-control" type="text" id="amount" name="amount" value="0" />
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 合同双方账单
+    </div>
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <tr>
+            <th width="20%">买家交易保证金解冻</th>
+            <th th:text="'+' + ${#numbers.formatDecimal(buyerGuaranty.amount,1,2)}">+1500</th>
+            <th width="20%">卖家交易保证金解冻</th>
+            <th th:text="'+' + ${#numbers.formatDecimal(sellerGuaranty.amount,1,2)}">+1500</th>
+          </tr>
+          <tr>
+            <th>买家货款返还</th>
+            <th id="buyerReturn" th:text="${arPrice} ? ${#numbers.formatDecimal((contract.totalamount - contract.amount),1,2)} : '0'">900</th>
+            <th>卖家实收货款</th>
+            <th id="sellerEarn" th:text="${arPrice} ? ${#numbers.formatDecimal(contract.amount,1,2)} : '0'">1600</th>
+          </tr>
+          <tr>
+          	<th>仲裁处理人</th>
+          	<th th:text="${arbitration.dealer}">ROOT</th>
+          	<th>仲裁处理时间</th>
+          	<th th:text="${#calendars.format(arbitration.dealtime, 'YYYY-MM-dd HH:mm')}">2015-03-24 12:24</th>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 仲裁备注
+    </div>
+    <div class="panel-body">
+      <div class="form-group">
+        <div class="col-sm-10">
+          <textarea id="note" name="note" rows="5" placeholder="请输入仲裁备注" cols="80" th:text="${arbitration.dealresult}" disabled="disabled"></textarea>
+        </div>
+      </div>
+      <!-- <div class="form-group">
+        <div class="col-sm-10">
+          <ul>
+            <li>仲裁的单价及数量需要小于等于合同签订记载项；</li>
+            <li>若协商，本单交易不成交，将仲裁数值设置为0即可。</li>
+          </ul>
+        </div>
+      </div> -->
+      <!-- <div class="form-group">
+        <div class="col-sm-10">
+          <button id="btnSubmit" type="button" class="btn btn-primary text-center">提交</button>
+        </div>
+      </div> -->
+    </div>
+  </div>
+  
+</div> 
+  
+</body>
+</html>

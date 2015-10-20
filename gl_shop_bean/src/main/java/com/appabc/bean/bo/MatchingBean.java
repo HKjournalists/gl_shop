@@ -3,6 +3,8 @@
  */
 package com.appabc.bean.bo;
 
+import java.util.Date;
+
 import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.enums.OrderFindInfo.MatchingTypeEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderTypeEnum;
@@ -33,6 +35,8 @@ public class MatchingBean extends BaseBean {
 	private String username; // 用户名
 	private String phone; // 用户电话
 	private MatchingTypeEnum matchingtype; // 撮合对象类型
+	private Date fItemTime; //交易询盘时间
+	private Date fPulishTime; //询单发布时间
 	
 	public String getItemid() {
 		return itemid;
@@ -93,6 +97,38 @@ public class MatchingBean extends BaseBean {
 	}
 	public void setMatchingtype(MatchingTypeEnum matchingtype) {
 		this.matchingtype = matchingtype;
+	}
+	/**  
+	 * fItemTime  
+	 *  
+	 * @return  the fItemTime  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getfItemTime() {
+		return fItemTime;
+	}
+	/**  
+	 * @param fItemTime the fItemTime to set  
+	 */
+	public void setfItemTime(Date fItemTime) {
+		this.fItemTime = fItemTime;
+	}
+	/**  
+	 * fPulishTime  
+	 *  
+	 * @return  the fPulishTime  
+	 * @since   1.0.0  
+	*/  
+	
+	public Date getfPulishTime() {
+		return fPulishTime;
+	}
+	/**  
+	 * @param fPulishTime the fPulishTime to set  
+	 */
+	public void setfPulishTime(Date fPulishTime) {
+		this.fPulishTime = fPulishTime;
 	}
 	
 }

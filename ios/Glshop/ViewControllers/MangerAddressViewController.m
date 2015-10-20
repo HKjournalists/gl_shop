@@ -29,17 +29,6 @@
     [self requestNet];
 }
 
--(void)viewDidLayoutSubviews
-{
-    if ([self.addressListView respondsToSelector:@selector(setSeparatorInset:)]) {
-        [self.addressListView setSeparatorInset:UIEdgeInsetsMake(0,0,0,0)];
-    }
-    
-    if ([self.addressListView respondsToSelector:@selector(setLayoutMargins:)]) {
-        [self.addressListView setLayoutMargins:UIEdgeInsetsMake(0,0,0,0)];
-    }
-}
-
 - (void)loadSubViews {
     _addressListView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
     _addressListView.dataSource = self;
@@ -99,6 +88,8 @@
         UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
         cell.imageView.image = [UIImage imageNamed:@"information_icon_add"];
         cell.textLabel.text = @"新增交易地址";
+        cell.textLabel.textColor = C_BLACK;
+        cell.textLabel.font = UFONT_16_B;
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         
         return cell;
@@ -109,7 +100,8 @@
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identify];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            cell.textLabel.font = [UIFont systemFontOfSize:13.5];
+            cell.textLabel.font = [UIFont systemFontOfSize:FONT_14];
+            cell.textLabel.textColor = C_BLACK;
         }
         AddressPublicModel *model = self.addressArray[indexPath.row];
         if (indexPath.row == 0 && [[model.status objectForKey:@"val"] integerValue] == 1) {
@@ -151,18 +143,6 @@
     return view;
 }
 
-
--(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
-        [cell setSeparatorInset:UIEdgeInsetsZero];
-    }
-    
-    if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
-        [cell setLayoutMargins:UIEdgeInsetsZero];
-    }
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
@@ -176,6 +156,10 @@
     }
 
 
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 

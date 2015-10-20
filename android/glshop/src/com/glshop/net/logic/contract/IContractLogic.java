@@ -34,7 +34,7 @@ public interface IContractLogic extends ILogic {
 	 * 获取进行中和已结束的合同详情
 	 * @param contractId
 	 */
-	public void getContractInfo(String invoker, String contractId);
+	public void getContractInfo(String invoker, String contractId, boolean isGetModel);
 
 	/**
 	 * 获取已结束的合同详情
@@ -97,7 +97,7 @@ public interface IContractLogic extends ILogic {
 	/**
 	 * 多取消合同
 	 */
-	public void multiCancelContract(String contractId, ContractCancelType type);
+	public void multiCancelContract(String inovker, String contractId, ContractCancelType type);
 
 	/**
 	 * 同意取消合同

@@ -1,6 +1,7 @@
 package check;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import base.BaseTestCase;
@@ -23,6 +24,7 @@ import com.glshop.platform.api.profile.data.model.AuthInfoModel;
 import com.glshop.platform.api.profile.data.model.CompanyIntroInfoModel;
 import com.glshop.platform.api.profile.data.model.ContactInfoModel;
 import com.glshop.platform.api.profile.data.model.ImageInfoModel;
+import com.glshop.platform.api.util.ImageInfoUtils;
 
 /**
  * @Description : 企业资料信息测试用例
@@ -58,9 +60,7 @@ public class ProfileAllTestCase extends BaseTestCase {
 			AuthInfoModel info = new AuthInfoModel();
 			// 设置基本参数
 			info.profileType = ProfileType.COMPANY;
-			ImageInfoModel imageAuth = new ImageInfoModel();
-			imageAuth.cloudId = "14";
-			info.authImgInfo = imageAuth;
+			info.profileImgList = ImageInfoUtils.getImageInfo(Arrays.asList("14"));
 
 			// 添加企业介绍信息
 			CompanyIntroInfoModel introInfo = new CompanyIntroInfoModel();

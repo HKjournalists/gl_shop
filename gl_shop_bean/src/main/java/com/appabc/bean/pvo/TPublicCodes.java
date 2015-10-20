@@ -1,5 +1,7 @@
 package com.appabc.bean.pvo;
 
+import java.util.Date;
+
 import com.appabc.common.base.bean.BaseBean;
 
 public class TPublicCodes extends BaseBean {
@@ -34,9 +36,13 @@ public class TPublicCodes extends BaseBean {
     private Integer orderno;
     
     /**
-     * 隐藏(0显示，1隐藏)
+     * 隐藏(0显示（启用），1隐藏（停用）, 2删除（不再使用）)
      */
     private Integer ishidden;
+    
+    private String updater;
+    
+    private Date updatetime;
 
     public Integer getIshidden() {
 		return ishidden;
@@ -85,4 +91,20 @@ public class TPublicCodes extends BaseBean {
     public void setPcode(String pcode) {
         this.pcode = pcode == null ? null : pcode.trim();
     }
+
+	public String getUpdater() {
+		return updater;
+	}
+
+	public void setUpdater(String updater) {
+		this.updater = updater;
+	}
+
+	public Date getUpdatetime() {
+		return updatetime;
+	}
+
+	public void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
+	}
 }

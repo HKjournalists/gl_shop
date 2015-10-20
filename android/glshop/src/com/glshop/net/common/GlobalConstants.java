@@ -18,7 +18,7 @@ public final class GlobalConstants {
 	public static final boolean DEBUG_MODE = true;
 
 	/**
-	 * 通用常量定义
+	 * 全局服务器地址常量定义
 	 */
 	public static class Common {
 
@@ -32,37 +32,69 @@ public final class GlobalConstants {
 		 */
 		public static String SERVER_URL_IMAGE = "";
 
+		static {
+			if (DEBUG_MODE) {
+//				SERVER_URL = "http://192.168.1.223:8080/http/"; // 内网开发库
+//				SERVER_URL_IMAGE = "http://192.168.1.223:8080/http/"; // 内网开发库
+				SERVER_URL = "http://www.916816.com/gl_shop_http_test"; // 内网测试库
+				SERVER_URL_IMAGE = "http://www.916816.com/gl_shop_http_test"; // 内网测试库
+			} else {
+				//SERVER_URL = "http://121.40.91.147:8080/gl_shop_http"; // 现网老库(已废弃)
+				//SERVER_URL_IMAGE = "http://121.40.91.147:8080/gl_shop_http"; // 现网老库(已废弃)
+				//SERVER_URL = "http://www.916816.com/gl_shop_http"; // 现网老库(已废弃)
+				SERVER_URL = "http://www.916816.com/gl_shop_http_new"; // 现网新库
+				SERVER_URL_IMAGE = "http://www.916816.com/gl_shop_http_new"; // 现网新库
+				//SERVER_URL = "http://www.916816.com:8081/gl_play"; // 现网银联新库
+				//SERVER_URL_IMAGE = "http://www.916816.com:8081/gl_play"; // 现网银联新库
+			}
+		}
+
+	}
+
+	/**
+	 * 常见通用配置常量
+	 */
+	public interface CfgConstants {
+
 		/**
 		 * 请求默认分页大小
 		 */
 		public static final int PAGE_SIZE = 15;
 
 		/**
+		 * 最大交易单价
+		 */
+		public static final double MAX_UNIT_PRICE = 5000;
+
+		/**
+		 * 最大交易数量
+		 */
+		public static final double MAX_AMOUNT = 50000;
+
+		/**
+		 * 默认消息刷新延时间隔
+		 */
+		public static final long MESSAGE_REFRESH_DELAY_TIME = 1000;
+
+		/**
 		 * 客户端是否检验保证金余额
 		 */
-		public static final boolean VALIDATE_DEPOSIT_STATUS = false;
+		public static final boolean VALIDATE_DEPOSIT_BALANCE = false;
 
 		/**
 		 * 客户端是否检验货款余额
 		 */
-		public static final boolean VALIDATE_PAYMENT_STATUS = false;
+		public static final boolean VALIDATE_PAYMENT_BALANCE = true;
+
+		/**
+		 * 客户端是否检验保证金足够
+		 */
+		public static final boolean VALIDATE_DEPOSIT_ENOUGH = false;
 
 		/**
 		 * 平台客服电话(便于前期上线，暂时硬编码)
 		 */
 		public static final String PLATFORM_CUSTOM_SERVICE_PHONE = "4009616816";
-
-		static {
-			if (DEBUG_MODE) {
-				SERVER_URL = "http://192.168.1.245:8080/gl_shop_http";
-				SERVER_URL_IMAGE = "http://192.168.1.245:8080/uploadFile";
-			} else {
-				//SERVER_URL = "http://121.40.91.147:8080/gl_shop_http";
-				//SERVER_URL_IMAGE = "http://121.40.91.147:8080/gl_shop_http";
-				SERVER_URL = "http://www.916816.com/gl_shop_http";
-				SERVER_URL_IMAGE = "http://www.916816.com/gl_shop_http";
-			}
-		}
 
 	}
 
@@ -149,6 +181,11 @@ public final class GlobalConstants {
 		public static final String COMPANY_NAME = "company_name";
 
 		/**
+		 * 当前登录用户认证状态
+		 */
+		public static final String USER_AUTH_STATUS = "user_auth_status";
+
+		/**
 		 * 当前登录用户保证金状态
 		 */
 		public static final String USER_DEPOSIT_STATUS = "user_deposit_status";
@@ -204,6 +241,11 @@ public final class GlobalConstants {
 		public static final String CUR_VERSION_CODE = "cur_version_code";
 
 		/**
+		 * 当前忽略升级版本编号
+		 */
+		public static final String CUR_IGNORE_VERSION_CODE = "cur_ignore_version_code";
+
+		/**
 		 * 是否已导入本地省市区信息
 		 */
 		public static final String IS_IMPORTED_AREA_CFG = "is_imported_area_cfg";
@@ -223,17 +265,19 @@ public final class GlobalConstants {
 		/**
 		 * 用户服务协议路径
 		 */
-		public static final String USER_SERVICE_PROTOCOL_URL = PROTOCOL_ROOT + "/user_service_protocol_v141009.html";
+		public static final String USER_SERVICE_PROTOCOL_URL = PROTOCOL_ROOT + "/user_service_protocol_v150303.html";
 
 		/**
 		 * 用户认证协议路径
 		 */
-		public static final String USER_AUTH_PROTOCOL_URL = PROTOCOL_ROOT + "/user_auth_protocol_v141009.html";
+		public static final String USER_AUTH_PROTOCOL_URL = PROTOCOL_ROOT + "/user_auth_protocol_v150303.html";
 
 		/**
 		 * 充值协议路径
 		 */
-		public static final String RECHARGE_PROTOCOL_URL = PROTOCOL_ROOT + "/recharge_protocol_v141009.html";
+		public static final String RECHARGE_PROTOCOL_URL = PROTOCOL_ROOT + "/recharge_protocol_v150303.html";
+		
+		public static final String PAY_PROTOCOL_URL = PROTOCOL_ROOT + "/pay_protocl_v141009.html";
 
 	}
 
@@ -257,34 +301,34 @@ public final class GlobalConstants {
 
 		public int toValue() {
 			if (this == SHOP) {
-				return 1;
+				return 0;
 			} else if (this == FIND_BUY) {
-				return 2;
-			} else if (this == MY_BUY) {
-				return 3;
-			} else if (this == MY_CONTRACT) {
-				return 4;
-			} else if (this == MY_PURSE) {
-				return 5;
-			} else if (this == MY_PROFILE) {
-				return 6;
-			} else {
 				return 1;
+			} else if (this == MY_BUY) {
+				return 2;
+			} else if (this == MY_CONTRACT) {
+				return 3;
+			} else if (this == MY_PURSE) {
+				return 4;
+			} else if (this == MY_PROFILE) {
+				return 5;
+			} else {
+				return 0;
 			}
 		}
 
 		public static TabStatus convert(int status) {
-			if (status == 1) {
+			if (status == 0) {
 				return SHOP;
-			} else if (status == 2) {
+			} else if (status == 1) {
 				return FIND_BUY;
-			} else if (status == 3) {
+			} else if (status == 2) {
 				return MY_BUY;
-			} else if (status == 4) {
+			} else if (status == 3) {
 				return MY_CONTRACT;
-			} else if (status == 5) {
+			} else if (status == 4) {
 				return MY_PURSE;
-			} else if (status == 6) {
+			} else if (status == 5) {
 				return MY_PROFILE;
 			} else {
 				return SHOP;
@@ -658,30 +702,6 @@ public final class GlobalConstants {
 				return FOREGROUND;
 			}
 		}
-
-	}
-
-	/**
-	 * 计算公式类型枚举
-	 */
-	public enum ExpressionType {
-
-		/**充值保证金*/
-		RECHARGE,
-		/**冻结保证金*/
-		DEPOSIT;
-
-	}
-
-	/**
-	 * 全局协议类型
-	 */
-	public enum ProtocolUrlConstants {
-
-		/**注册协议*/
-		REGISTER,
-		/**保证金协议*/
-		DEPOSIT;
 
 	}
 

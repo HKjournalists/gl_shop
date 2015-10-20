@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/data">
+<head>
+  <title>数据 - 单个用户数据统计</title>
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 数据 - 用户明细数据统计
+</h4>
+<div layout:fragment="pageContent">
+
+	<div class="panel panel-default">
+      <div class="panel-body">
+        <div class="form-inline">
+            <div class="form-group">
+              <label for="pcode" class="control-label">用户</label>
+              <input id="username" class="form-control" th:value="${username}" onkeyup="queryByusername(this.value);" style="width:115px;" placeholder="用户登录帐号" type="text">&nbsp;&nbsp;
+              <label for="pcode" class="control-label">用户类型</label>
+              <select class="form-control" id="ctype">
+                <option value="">全部</option>
+                <option value="0">企业</option>
+                <option value="1">船舶</option>
+                <option value="2">个人</option>
+              </select>&nbsp;&nbsp;
+              <label for="pcode" class="control-label">认证状态</label>
+              <select class="form-control" id="authstatus">
+                <option value="">全部</option>
+                <option value="0">未认证</option>
+                <option value="1">通过</option>
+                <option value="2">审核中</option>
+              </select>
+              <input type="button" value="导出" onclick="exportData();" class="btn btn-primary text-center"/>
+            </div>
+        </div>
+      </div>
+     </div>
+
+  <div class="nav-tab-content">
+    <div class="tab-pane fade in active">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>用户</th>
+            <th>注册日期</th>
+            <th>名称</th>
+            <th>类型</th>
+            <th>联系人</th>
+            <th>手机</th>
+            <th>座机</th>
+            <th>保证金余额</th>
+            <th>货款余额</th>
+            <th>认证状态</th>
+            <th>购买询单数量</th>
+            <th>出售询单数量</th>
+            <th>进行中的合同数</th>
+            <th>已结束的合同数</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="bean : ${resList}">
+            <td th:text="${bean.username}"></td>
+            <td th:text="${bean.regdate} ? ${#calendars.format(bean.regdate, 'YYYY-MM-dd')}">2014年9月19日13:51</td>
+            <td th:text="${bean.cname}"></td>
+            <div th:if="${bean.ctype} == null">
+            	<td>未知</td>
+            </div>
+			<div th:if="${bean.ctype} != null">
+            	<td th:text="${bean.ctype.text}"></td>
+            </div>
+            <td th:text="${bean.contactname}"></td>
+            <td th:text="${bean.phone}"></td>
+            <td th:text="${bean.tel}"></td>
+            <td th:text="${bean.guaranty}"></td>
+            <td th:text="${bean.deposit}"></td>
+            <td th:text="${bean.authstatus}"></td>
+            <td th:text="${bean.buynum}"></td>
+            <td th:text="${bean.sellnum}"></td>
+            <td th:text="${bean.contractnuming}"></td>
+            <td th:text="${bean.contractnumend}"></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(resList)}">
+            <td colspan="14">暂时没有数据</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div th:replace="layouts/fragments :: pagingNavBar"></div>
+    </div>
+  </div>
+</div>
+
+
+<script layout:fragment="inlineJavascript">
+var contextPath = /*[[@{/}]]*/ '/';
+
+var path = contextPath+"data/user/single/count/1/?1=1";
+
+/***查询条件 begin**********************/
+
+var ctype = /*[[${ctype}]]*/;
+var authstatus = /*[[${authstatus}]]*/;
+
+$('#ctype').val(ctype);
+$('#authstatus').val(authstatus);
+
+$('#ctype').change(function() {
+	ctype = $(this).val();
+	query();
+});
+$('#authstatus').change(function() {
+	authstatus = $(this).val();
+	query();
+});
+
+function queryByusername(val){
+	if(val.length==11 || val.length==0) window.location.href=path+"&username="+val;
+}
+
+function query(){
+	var param = '';
+	if(ctype != null && '' != ctype) param += "&ctype="+ctype;
+	if(authstatus != null && '' != authstatus) param += "&authstatus="+authstatus;
+
+	window.location.href=path+param;
+}
+
+/***查询条件 end**********************/
+
+function exportData(){
+	window.open(contextPath+"data/user/single/download/csv");
+}
+
+</script>
+</body>
+
+</html>

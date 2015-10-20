@@ -19,5 +19,12 @@ import java.util.List;
 public interface ICompanyEvaluationDAO extends IBaseDao<TCompanyEvaluation>{
 
 	List<CompanyEvaluationInfo> queryEvaluationContractList(CompanyEvaluationInfo cei);
+	
+	/**
+	 * 获取被评价信息，返回内容中的用户信息是评价人的
+	 * @param cei
+	 * @return
+	 */
+	List<CompanyEvaluationInfo> queryEvaluationListByCompany(CompanyEvaluationInfo cei);
 
 }

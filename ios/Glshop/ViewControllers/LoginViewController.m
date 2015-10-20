@@ -10,7 +10,6 @@
 #import "ForgetPasswordViewController.h"
 #import "RegisterSuccessViewController.h"
 #import "RegisterViewController.h"
-#import "OpenUDID.h"
 #import "UserModel.h"
 #import "AuthViewController.h"
 
@@ -30,13 +29,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-}
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    [MKNetworkEngine cancelOperationsContainingURLString:bUserLoginPath];
 }
 
 - (void)loadSubViews {
@@ -70,7 +63,7 @@
     
     _switc = [[UISwitch alloc] initWithFrame:CGRectMake(_loginBtn.vleft, _loginBtn.vbottom+15, 40, 25)];
     [_switc addTarget:self action:@selector(switcOn:) forControlEvents:UIControlEventValueChanged];
-    _switc.tintColor = [UIColor orangeColor];
+    _switc.tintColor = [UIColor grayColor];
     _switc.onTintColor = [UIColor orangeColor];
     _switc.on = _passwordTextField.text.length>0 ? YES : NO;
     [self.view addSubview:_switc];
@@ -112,21 +105,24 @@
         HUD(@"请输入密码！");
         return;
     }
+    [_userNameTextField resignFirstResponder];
+    [_passwordTextField resignFirstResponder];
     
+    NSString *pushToken = [Utilits ToGetdeviceToken];
     
-    NSString *udid = [OpenUDID value];
-    NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:_userNameTextField.text,@"username",_passwordTextField.text,@"password",udid,@"clientid",IntToNSNumber(1),@"clienttype", nil];
-    [self requestWithPath:bUserLoginPath
-                   params:param
-               httpMehtod:kHttpPostMethod
-                HUDString:@"正在登入..."
-                  success:^(MKNetworkOperation *operation) {
-                      
-                      NSArray *dicArray = [operation.responseJSON objectForKey:ServiceDataKey];
-                      [self _loginSuccess:dicArray];
-    } error:^(MKNetworkOperation *operation, NSError *error) {
-        HUD(@"登录失败");
+    NSString *append = [NSString stringWithFormat:@"%@%@",_userNameTextField.text,_passwordTextField.text];
+    NSString *securityStr = [append md5];
+    NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:_userNameTextField.text,@"username",securityStr,@"password",pushToken,@"clientid",IntToNSNumber(1),@"clienttype", nil];
+    [self showHUD];
+    __block typeof(self) this = self;
+    [self requestWithURL:bUserLoginPath params:param HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
+        kASIResultLog;
+        NSArray *dicArray = [responseData objectForKey:ServiceDataKey];
+        [this _loginSuccess:dicArray];
+    } failedBlock:^(ASIHTTPRequest *request) {
+       
     }];
+    
 //    [self.navigationController pushViewController:[[CompanyAuthViewController alloc] init] animated:YES];
 
 } // 点击登录
@@ -146,8 +142,7 @@
  *@param datas 服务器返回的数组，包含用户信息
  */
 - (void)_loginSuccess:(NSArray *)datas {
-    // 发送通知，用户已登入
-    [[NSNotificationCenter defaultCenter] postNotificationName:kUserDidLoginNotification object:nil];
+    HUD(@"登录成功");
     // 保存用户信息
     NSDictionary *dic = [NSDictionary dictionary];
     if (datas.count > 0)
@@ -155,6 +150,9 @@
     UserModel *model = [[UserModel alloc] initWithDataDic:dic];
     UserInstance *userInstance = [UserInstance sharedInstance];
     userInstance.user = model;
+    
+    // 发送通知，用户已登入
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUserDidLoginNotification object:nil];
     
     // 保存登入账号和密码
     [[NSUserDefaults standardUserDefaults] setObject:_userNameTextField.text forKey:kUserNamekey];
@@ -167,11 +165,19 @@
     
     // 登录成功，返回主页面
     if (!_skipToAuth) {
-        HUD(@"登录成功");
-        [self.navigationController popViewControllerAnimated:YES];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     }else {
         AuthViewController *vc = [[AuthViewController alloc] init];
         [self.navigationController pushViewController:vc animated:YES];
+    }
+    
+    // 如果有相应的推送消息就进行相应的跳转
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kRemoteNotificationKey]) {
+        DLog(@"%@",[[NSUserDefaults standardUserDefaults] objectForKey:kRemoteNotificationKey]);
+        PushMessageType type = [[PushInstance sharedInstance] pushType];
+        if (type != TYPE_USER_LOGIN_OTHER_DEVICE) {
+            [[PushInstance sharedInstance] handlePushMessage];
+        }
     }
 }
 

@@ -64,9 +64,9 @@
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
     
     <beans profile="develop"> 
-            <context:property-placeholder ignore-resource-not-found="true" location="classpath*:jdbc-config.properties" />
+            <context:property-placeholder ignore-resource-not-found="true" location="classpath*:config-info.properties" />
     </beans>
     <beans profile="production"> 
-            <context:property-placeholder ignore-resource-not-found="true" location="classpath*:jdbc-config.properties" />
+            <context:property-placeholder ignore-resource-not-found="true" location="classpath*:config-info.properties" />
     </beans>
 </beans>

@@ -28,8 +28,8 @@ import java.util.Map;
 @Repository
 public class CompanyAddressDaoImpl extends BaseJdbcDao<TCompanyAddress> implements ICompanyAddressDao {
 
-	private static final String INSERTSQL = " insert into T_COMPANY_ADDRESS (CID, AREACODE, ADDRESS, LONGITUDE, LATITUDE, DEEP, STATUS, REALDEEP) values (:cid, :areacode, :address, :longitude, :latitude, :deep, :status, :realdeep) ";
-	private static final String UPDATESQL = " update T_COMPANY_ADDRESS set CID = :cid,  AREACODE = :areacode, ADDRESS = :address, LONGITUDE = :longitude, LATITUDE = :latitude, DEEP = :deep, STATUS = :status, REALDEEP= :realdeep where ID = :id ";
+	private static final String INSERTSQL = " insert into T_COMPANY_ADDRESS (CID, AREACODE, ADDRESS, LONGITUDE, LATITUDE, DEEP, STATUS, REALDEEP, SHIPPINGTON) values (:cid, :areacode, :address, :longitude, :latitude, :deep, :status, :realdeep, :shippington) ";
+	private static final String UPDATESQL = " update T_COMPANY_ADDRESS set CID = :cid,  AREACODE = :areacode, ADDRESS = :address, LONGITUDE = :longitude, LATITUDE = :latitude, DEEP = :deep, STATUS = :status, REALDEEP= :realdeep, SHIPPINGTON = :shippington where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_COMPANY_ADDRESS WHERE ID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_COMPANY_ADDRESS WHERE ID = :id ";
 
@@ -89,6 +89,7 @@ public class CompanyAddressDaoImpl extends BaseJdbcDao<TCompanyAddress> implemen
 		t.setLongitude(rs.getString("LONGITUDE"));
 		t.setStatus(AddressStatus.enumOf(rs.getInt("STATUS")));
 		t.setRealdeep(rs.getFloat("REALDEEP"));
+		t.setShippington(rs.getFloat("SHIPPINGTON"));
 
 		return t;
 	}
@@ -106,6 +107,7 @@ public class CompanyAddressDaoImpl extends BaseJdbcDao<TCompanyAddress> implemen
 		this.addNameParamerSqlWithProperty(sql, "longitude", "LONGITUDE", bean.getLongitude());
 		this.addNameParamerSqlWithProperty(sql, "status", "STATUS", bean.getStatus());
 		this.addNameParamerSqlWithProperty(sql, "realdeep", "REALDEEP", bean.getRealdeep());
+		this.addNameParamerSqlWithProperty(sql, "shippington", "SHIPPINGTON", bean.getRealdeep());
 		return sql.toString();
 	}
 

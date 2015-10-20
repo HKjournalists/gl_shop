@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:glshop="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/common_bg"
+              android:orientation="vertical">
+
+    <include layout="@layout/activity_common_title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.glshop.net.ui.basic.view.TabIndicator
+            android:id="@+id/tab_pager_indicator"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:background="#ffffff"
+            glshop:footerColor="@color/tab_indicator_text_selected"
+            glshop:footerLineHeight="0dp"
+            glshop:footerTriangleHeight="@dimen/contract_tab_triangle_height"
+            glshop:textColor="@color/tab_indicator_text"
+            glshop:textSizeNormal="@dimen/contract_tab_text_size"
+            glshop:textSizeSelected="@dimen/contract_tab_text_size"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/contract_tab_line_height"
+            android:background="#D9D9D9"/>
+
+        <com.glshop.net.ui.basic.view.CustomViewPager
+            android:id="@+id/msg_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_area_item"
+        android:gravity="center_horizontal"
+        android:paddingBottom="13dp"
+        android:visibility="gone"
+        android:paddingTop="13dp">
+
+        <Button
+            android:id="@+id/btn_del"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_btn_del_msg"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:text="删除"
+            android:textColor="#ff6600"
+            android:textSize="15dp"/>
+
+        <Button
+            android:id="@+id/btn_tag"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/selector_btn_tag_msg"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="10dp"
+            android:text="全部标为已读"
+            android:textColor="#ffffff"
+            android:textSize="15dp"/>
+    </LinearLayout>
+
+</LinearLayout>

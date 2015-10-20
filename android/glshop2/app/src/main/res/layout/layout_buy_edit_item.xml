@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/buy_item_height" >
+
+    <ImageView
+        android:id="@+id/iv_item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="3dp"
+        android:background="@drawable/ic_star_mark"
+        android:contentDescription="@null"
+        android:duplicateParentState="true" />
+
+    <TextView
+        android:id="@+id/tv_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:duplicateParentState="true"
+        android:singleLine="true"
+        android:text="title" />
+
+    <TextView
+        android:id="@+id/tv_item_second_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_weight="1"
+        android:duplicateParentState="true"
+        android:singleLine="true"
+        android:text="(unit)"
+        android:textColor="@color/gray" />
+
+    <EditText
+        android:id="@+id/et_item_content"
+        style="@style/edittext"
+        android:layout_width="@dimen/buy_edit_item_width"
+        android:layout_height="@dimen/common_edit_height"
+        android:background="@drawable/bg_edit_normal"
+        android:hint="@string/data_to_input"
+        android:singleLine="true" />
+
+</LinearLayout>

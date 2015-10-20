@@ -35,12 +35,12 @@ public class TOfflinePay extends BaseBean {
     /**
      * 应收金额
      */
-    private Float total;
+    private Double total;
 
     /**
      * 实际收款金额
      */
-    private Float amount;
+    private Double amount;
 
     /**
      * 线上、线下（主要线下）
@@ -98,19 +98,19 @@ public class TOfflinePay extends BaseBean {
         this.oid = oid == null ? null : oid.trim();
     }
 
-    public Float getTotal() {
+    public Double getTotal() {
         return total;
     }
 
-    public void setTotal(Float total) {
+    public void setTotal(Double total) {
         this.total = total;
     }
 
-    public Float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

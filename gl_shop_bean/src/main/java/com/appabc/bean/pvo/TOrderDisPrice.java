@@ -39,22 +39,22 @@ public class TOrderDisPrice extends BaseBean {
     /**
      * 操作金额起始
      */
-    private Float beginamount;
+    private Double beginamount;
 
     /**
      * 操作金额结束
      */
-    private Float endamount;
+    private Double endamount;
 
     /**
      * 操作数量起始
      */
-    private Float beginnum;
+    private Double beginnum;
 
     /**
      * 操作数量结束
      */
-    private Float endnum;
+    private Double endnum;
 
     /**
      * 处罚原因
@@ -121,35 +121,35 @@ public class TOrderDisPrice extends BaseBean {
         this.reason = reason == null ? null : reason.trim();
     }
 
-    public Float getBeginamount() {
+    public Double getBeginamount() {
         return beginamount;
     }
 
-    public void setBeginamount(Float beginamount) {
+    public void setBeginamount(Double beginamount) {
         this.beginamount = beginamount;
     }
 
-    public Float getEndamount() {
+    public Double getEndamount() {
         return endamount;
     }
 
-    public void setEndamount(Float endamount) {
+    public void setEndamount(Double endamount) {
         this.endamount = endamount;
     }
 
-    public float getBeginnum() {
+    public Double getBeginnum() {
         return beginnum;
     }
 
-    public void setBeginnum(float beginnum) {
+    public void setBeginnum(Double beginnum) {
         this.beginnum = beginnum;
     }
 
-    public float getEndnum() {
+    public Double getEndnum() {
         return endnum;
     }
 
-    public void setEndnum(float endnum) {
+    public void setEndnum(Double endnum) {
         this.endnum = endnum;
     }
 

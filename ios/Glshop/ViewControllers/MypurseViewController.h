@@ -12,5 +12,6 @@
 @interface MypurseViewController : BaseViewController
 
 @property (nonatomic, strong, readonly) MyPurseInfoModel *currentPurse;
+@property (nonatomic, strong, readonly) UISegmentedControl *segment;
 
 @end

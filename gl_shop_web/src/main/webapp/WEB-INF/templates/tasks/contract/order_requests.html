@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+<title>我的工作台 - 撮合交流</title>
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 合同管理 - 撮合交流
+</h4>
+
+<table layout:fragment="tableContent">
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a th:href="@{#}">撮合交流</a></li>
+		<li role="presentation"><a th:href="@{/tasks/contract/order_requests/finished/1/}">已结束撮合列表</a></li>
+	</ul>
+	<input type="hidden" th:value="${applyDate}" id="applyDate">
+	<div class="panel panel-default media">
+      <div class="panel-body">
+        <div class="form-inline">
+            <!-- <div class="form-group">
+              <label for="pcode" class="control-label">撮合人</label>
+              <select class="form-control" id="operator">
+                <option value="0">所有</option>
+                <option value="1">我已处理</option>
+              </select>
+            </div> -->
+            <a id="btnExport" th:href="@{/tasks/contract/order_requests/export/}" class="btn btn-primary text-center pull-right">导出数据</a>
+        </div>
+      </div>
+     </div>
+	
+  <thead>
+  <tr>
+    <th>用户手机号码</th>
+    <th>用户名称</th>
+    <th>企业类型</th>
+    <th>撮合交易内容标题</th>
+    <th>交易保证金</th>
+    <th>被交易询盘次数</th>
+    <th>
+      <select name="applyDate" class=" input-sm">
+        <option value="ALL" th:selected="${'ALL'.equals(applyDate)}">交易询盘时间</option>
+        <option value="DESC" th:selected="${'DESC'.equals(applyDate)}">交易询盘时间从高到低</option>
+        <option value="ASC" th:selected="${'ASC'.equals(applyDate)}">交易询盘时间从低到高</option>
+      </select>
+    </th>
+    <th>撮合次数</th>
+    <th>
+      <select name="creatime" class=" input-sm">
+        <option value="ALL" th:selected="${'ALL'.equals(creatime)}">发布时间</option>
+        <option value="DESC" th:selected="${'DESC'.equals(creatime)}">发布时间从高到低</option>
+        <option value="ASC" th:selected="${'ASC'.equals(creatime)}">发布时间从低到高</option>
+      </select>
+    </th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="task : ${tasks}">
+    <td><a th:href="@{/company/{cid}/info/(cid=${task.company.id})}" target="_blank" th:text="${task.customer.phone}">18666662520</a></td>
+    <td th:text="${task.company.cname} ? ${task.company.cname} : '未知'"></td>
+    <td th:text="${task.company.ctype} ? ${task.company.ctype.text} : '未知'">企业</td>
+    <td><a th:href="@{/public/order_request/{id}/(id=${task.taskObject.id})}" target="_blank" th:class="${task.owner} ? 'task-warn'" th:text="${task.owner} ? '[' + ${task.owner.realName} + '] ' + ${task.taskObject.title} : ${task.taskObject.title}">出售黄沙10吨</a></td>
+    <td th:text="${task.taskObject.guaranty}">100</td>
+    <td th:text="${task.taskObject.applyNum}">3</td>
+    <td th:text="${task.taskObject.applyDate} ? ${#calendars.format(task.taskObject.applyDate, 'YYYY-MM-dd HH:mm')} : ''">2014-12-03 12:35</td>
+    <td th:text="${task.taskObject.matchingnum}">100</td>
+    <td th:text="${#calendars.format(task.taskObject.creatime, 'YYYY-MM-dd HH:mm')}">2014-12-03 12:35</td>
+    <td><a th:if="${currentUser.equals(task.owner)} or ${task.owner == null}" th:href="@{/tasks/contract/order_requests/detail/{task}/possible/1/(task=${task.id},matchType='ALL')}">开始处理</a></td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(tasks)}">
+    <td colspan="6">暂时没有可以撮合的供求信息</td>
+  </tr>
+  </tbody>
+</table>
+
+<script layout:fragment="inlineJavascript">
+$(document).ready(function() {
+	$('select[name=applyDate]').change(function() {
+	  var url = /*[[@{/tasks/contract/order_requests/1/}]]*/;
+	  url += '?applyDate=' + $(this).val();
+	  window.location.href = url;
+	});
+	$('select[name=creatime]').change(function() {
+		  var url = /*[[@{/tasks/contract/order_requests/1/}]]*/;
+		  url += '?creatime=' + $(this).val();
+		  window.location.href = url;
+		});
+});
+</script>
+</body>
+
+</html>

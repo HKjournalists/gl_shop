@@ -33,7 +33,7 @@ public class ContractPayFundsTrigger extends BaseCronTrigger {
 		super();
 		this.setName(NAME);
 		this.setGroup(GROUP);
-		this.setCronExpression("0 0/10 * * * ?");
+		this.setCronExpression("0 0/3 * * * ?");
 	}
 	
 	public ContractPayFundsTrigger(String jobName,String jobGroup,String cronExpression) throws ParseException{

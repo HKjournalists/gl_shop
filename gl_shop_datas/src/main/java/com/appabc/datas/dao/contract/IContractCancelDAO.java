@@ -15,7 +15,15 @@ import java.util.List;
  */
 
 public interface IContractCancelDAO extends IBaseDao<TOrderCancel> {
-	/*通过合同编号获取取消列表信息*/
+	
+	/**
+	 * @description 通过合同编号获取取消列表信息
+	 * @param oid
+	 * @return List<TOrderCancel>
+	 * @since 1.0
+	 * @throws null
+	 * @author Bill Huang
+	 * */
 	List<TOrderCancel> getCancelContractListByOID(String oid);
 	
 }

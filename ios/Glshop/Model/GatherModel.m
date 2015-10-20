@@ -22,4 +22,17 @@
              };
 }
 
+- (void)setAttributes:(NSDictionary *)dataDic {
+    [super setAttributes:dataDic];
+    
+    NSArray *imgDics = [dataDic objectForKey:@"vImgList"];
+    if (imgDics.count) {
+        _imgModel = [[AddressImgModel alloc] initWithDataDic:imgDics.firstObject];
+    }
+}
+
+- (BOOL)isAutush {
+    return [self.authstatus[DataValueKey] integerValue] == 1;
+}
+
 @end

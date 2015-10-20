@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.appabc.bean.pvo.TPublicCodes;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.SystemConstant;
-import com.appabc.datas.service.codes.IPublicCodesService;
+import com.appabc.tools.service.codes.IPublicCodesService;
 
 /**
  * @Description : 公共代码集接口

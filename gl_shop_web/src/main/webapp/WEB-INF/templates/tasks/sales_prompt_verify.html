@@ -1,73 +1,92 @@
 <!DOCTYPE html>
-<html layout:decorator="layouts/task">
+<html layout:decorator="layouts/tasks">
 <head>
 <title>站内销售 - 催促认证</title>
 </head>
 <body>
-	<li layout:fragment="contentNavTitle"><i class="fa fa-paperclip"></i> 站内销售 - 催促认证</li>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 站内销售 - 催促认证列表
+</h4>
 	
-	<div layout:fragment="functionBar" th:remove="null"></div>
 
-	<table layout:fragment="tableContent">
+
+<div layout:fragment="pageContent">
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" th:class="${#strings.contains(url, '/tasks/sales/verify/need/')} ? 'active'"><a th:href="@{/tasks/sales/verify/need/1/}">需催促认证列表</a></li>
+		<li role="presentation" th:class="${#strings.contains(url, '/tasks/sales/verify/no/')} ? 'active'"><a th:href="@{/tasks/sales/verify/no/1/}">不需催促认证列表</a></li>
+	</ul>
+ <div class="table-responsive media">
+		<table layout:fragment="tableContent" class="table table-bordered table-hover table-striped">
 		<thead>
 			<tr>
-				<th>Order #</th>
-				<th>Order Date</th>
-				<th>Order Time</th>
-				<th>Amount (USD)</th>
+				<th>用户手机号码</th>
+				<th>用户姓名</th>
+				<th>
+					<select class="input-sm" id="registtimeorder">
+               			<option value="">注册时间</option>
+               			<option value="1">注册时间从高到低</option>
+               			<option value="0">注册时间从低到高</option>
+              		</select>	
+				</th>
+				<th>最后一次登录时间</th>
+				<th>求购信息数</th>
+				<th>出售信息数</th>
+				<th>提交认证次数</th>
+				<th>客服催促次数</th>
+				<th>
+					<select class="input-sm" id="verifytimeorder">
+               			<option value="">最后一次催促时间</option>
+               			<option value="1">最后一次催促时间从高到低</option>
+               			<option value="0">最后一次催促时间从低到高</option>
+              		</select>
+				</th>
+				<th>操作项</th>
 			</tr>
 		</thead>
-		<tbody>
-			<tr>
-				<td>3326</td>
-				<td>10/21/2013</td>
-				<td>3:29 PM</td>
-				<td>$321.33</td>
-			</tr>
-			<tr>
-				<td>3325</td>
-				<td>10/21/2013</td>
-				<td>3:20 PM</td>
-				<td>$234.34</td>
-			</tr>
-			<tr>
-				<td>3324</td>
-				<td>10/21/2013</td>
-				<td>3:03 PM</td>
-				<td>$724.17</td>
-			</tr>
-			<tr>
-				<td>3323</td>
-				<td>10/21/2013</td>
-				<td>3:00 PM</td>
-				<td>$23.71</td>
-			</tr>
-			<tr>
-				<td>3322</td>
-				<td>10/21/2013</td>
-				<td>2:49 PM</td>
-				<td>$8345.23</td>
-			</tr>
-			<tr>
-				<td>3321</td>
-				<td>10/21/2013</td>
-				<td>2:23 PM</td>
-				<td>$245.12</td>
-			</tr>
-			<tr>
-				<td>3320</td>
-				<td>10/21/2013</td>
-				<td>2:15 PM</td>
-				<td>$5663.54</td>
-			</tr>
-			<tr>
-				<td>3319</td>
-				<td>10/21/2013</td>
-				<td>2:13 PM</td>
-				<td>$943.45</td>
-			</tr>
-		</tbody>
+		 <tbody>
+          <tr th:each="bean : ${resList}">
+            <td><a th:href="@{/company/{cid}/info/(cid=${bean.userid})}" target="_blank" th:class="${#strings.contains(url, '/tasks/sales/verify/need/')} and ${bean.owner} ? 'task-warn'" th:text="${bean.owner} ? '[' + ${bean.owner} + '] ' + ${bean.username} : ${bean.username}"></a></td>
+            <td th:text="${bean.userrealname}"></td>
+            <td th:text="${bean.regdate} ? ${#calendars.format(bean.regdate, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+            <td th:text="${bean.lastlogindate} ? ${#calendars.format(bean.lastlogindate, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+            <td th:text="${bean.buynum}"></td>
+            <td th:text="${bean.sellnum}"></td>
+            <td th:text="${bean.authnum}"></td>
+            <td th:text="${bean.verifynum}"></td>
+            <td th:text="${bean.lastverifydate} ? ${#calendars.format(bean.lastverifydate, 'YYYY-MM-dd HH:mm')}">2014年9月19日13:51</td>
+         	<td th:if="${#strings.contains(url, '/tasks/sales/verify/need/')}"><a th:if="${currentUser.realName.equals(bean.owner)} or ${bean.owner == null}" th:href="@{/tasks/sales/verify/detail/{taskid}/need/(taskid=${bean.taskid})}">开始处理</a></td>
+         	<td th:if="${#strings.contains(url, '/tasks/sales/verify/no/')}"><a th:href="@{/tasks/sales/verify/detail/{userid}/no/(userid=${bean.taskid})}">查看</a></td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(resList)}">
+            <td colspan="14">暂时没有数据</td>
+          </tr>
+          </tbody>
 	</table>
+	</div>
+	<div th:replace="layouts/fragments :: pagingNavBar"></div>  
+	</div>
+	
+<script layout:fragment="inlineJavascript">
+var contextPath =/*[[]]*/;
+var param = '';
+
+var registtimeorder = /*[[${registtimeorder}]]*/;
+var verifytimeorder = /*[[${verifytimeorder}]]*/;
+$('#registtimeorder').val(registtimeorder);
+$('#verifytimeorder').val(verifytimeorder);
+
+$('#registtimeorder').change(function() {
+	registtimeorder = $(this).val();
+	if(registtimeorder != null && '' != registtimeorder) param += "?registtimeorder="+registtimeorder;
+	window.location.href=contextPath+param;
+});
+$('#verifytimeorder').change(function() {
+	verifytimeorder = $(this).val();
+	if(verifytimeorder != null && '' != verifytimeorder) param += "?verifytimeorder="+verifytimeorder;
+	window.location.href=contextPath+param;
+});
+
+</script>
 </body>
 
 </html>

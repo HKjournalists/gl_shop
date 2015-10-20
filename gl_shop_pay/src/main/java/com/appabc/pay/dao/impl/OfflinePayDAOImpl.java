@@ -165,8 +165,8 @@ public class OfflinePayDAOImpl extends BaseJdbcDao<TOfflinePay> implements IOffl
 		bean.setPid(rs.getString("PID"));
 		bean.setOid(rs.getString("OID"));
 		bean.setOtype(PurseType.enumOf(rs.getString("OTYPE")));
-		bean.setTotal(rs.getFloat("TOTAL"));
-		bean.setAmount(rs.getFloat("AMOUNT"));
+		bean.setTotal(rs.getDouble("TOTAL"));
+		bean.setAmount(rs.getDouble("AMOUNT"));
 		bean.setPtype(OnOffLine.enumOf(rs.getString("PTYPE")));
 		bean.setCreater(rs.getString("CREATER"));
 		bean.setCreatetime(rs.getTimestamp("CREATETIME"));

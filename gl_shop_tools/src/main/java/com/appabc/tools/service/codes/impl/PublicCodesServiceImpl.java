@@ -4,6 +4,7 @@
 package com.appabc.tools.service.codes.impl;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.appabc.bean.pvo.TPublicCodes;
 import com.appabc.common.base.QueryContext;
+import com.appabc.common.utils.DateUtil;
+import com.appabc.common.utils.SystemConstant;
 import com.appabc.tools.dao.codes.IPublicCodesDao;
 import com.appabc.tools.service.codes.IPublicCodesService;
+import com.appabc.tools.service.system.ISystemParamsService;
 
 /**
  * @Description : 公共代码SERVICE实现
@@ -31,13 +35,18 @@ public class PublicCodesServiceImpl implements IPublicCodesService{
 	
 	@Autowired
 	private IPublicCodesDao publicCodesDao;
+	@Autowired
+	private ISystemParamsService systemParamsService;
+	
 
 	public void add(TPublicCodes entity) {
 		this.publicCodesDao.save(entity);
+		updateToSystemParamAndCache();
 	}
 
 	public void modify(TPublicCodes entity) {
 		this.publicCodesDao.update(entity);
+		updateToSystemParamAndCache();
 	}
 
 	public void delete(TPublicCodes entity) {
@@ -77,6 +86,23 @@ public class PublicCodesServiceImpl implements IPublicCodesService{
 		entity.setCode(code);
 		entity.setIshidden(ishidden);
 		return this.publicCodesDao.queryForList(entity);
+	}
+	
+	@Override
+	public String getMaxValue(TPublicCodes entity){
+		return this.publicCodesDao.getMaxValue(entity);
+	}
+	
+	@Override
+	public List<TPublicCodes> queryListInNoDel(String code) {
+		return publicCodesDao.queryListInNoDel(code);
+	}
+	
+	/**
+	 * 更新系统参数配置信息表数据和缓存中的数据
+	 */
+	private void updateToSystemParamAndCache(){
+		systemParamsService.updateValueByName(SystemConstant.SYNC_RIVER_SECTION_TIME, DateUtil.DateToStr(Calendar.getInstance().getTime(), DateUtil.FORMAT_YYYY_MM_DD_HH_MM_SS));
 	}
 
 }

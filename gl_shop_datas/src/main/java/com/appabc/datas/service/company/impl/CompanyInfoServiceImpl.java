@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,33 +21,44 @@ import com.appabc.bean.bo.EvaluationInfoBean;
 import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.enums.AuthRecordInfo.AuthRecordType;
 import com.appabc.bean.enums.CompanyInfo;
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.enums.FileInfo;
 import com.appabc.bean.enums.FileInfo.FileOType;
 import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
 import com.appabc.bean.pvo.TAuthRecord;
 import com.appabc.bean.pvo.TCompanyAddress;
 import com.appabc.bean.pvo.TCompanyContact;
-import com.appabc.bean.pvo.TCompanyEvaluation;
 import com.appabc.bean.pvo.TCompanyInfo;
+import com.appabc.bean.pvo.TCompanyRanking;
 import com.appabc.bean.pvo.TCompanyShipping;
 import com.appabc.common.base.QueryContext;
+import com.appabc.common.utils.ErrorCode;
 import com.appabc.common.utils.SystemConstant;
+import com.appabc.datas.cms.service.TaskService;
+import com.appabc.datas.cms.vo.task.Task;
+import com.appabc.datas.cms.vo.task.TaskType;
 import com.appabc.datas.dao.company.ICompanyContactDao;
 import com.appabc.datas.dao.company.ICompanyInfoDao;
+import com.appabc.datas.dao.contract.IContractInfoDAO;
 import com.appabc.datas.exception.ServiceException;
 import com.appabc.datas.service.company.IAuthRecordService;
 import com.appabc.datas.service.company.ICompanyAddressService;
-import com.appabc.datas.service.company.ICompanyEvaluationService;
+import com.appabc.datas.service.company.ICompanyAuthService;
 import com.appabc.datas.service.company.ICompanyInfoService;
+import com.appabc.datas.service.company.ICompanyPersonalService;
+import com.appabc.datas.service.company.ICompanyRankingService;
 import com.appabc.datas.service.company.ICompanyShippingService;
 import com.appabc.datas.service.contract.IContractInfoService;
 import com.appabc.datas.service.system.IUploadImagesService;
 import com.appabc.datas.service.user.IUserService;
-import com.appabc.datas.tool.CompanyUtil;
 import com.appabc.datas.tool.ServiceErrorCode;
 import com.appabc.datas.tool.ViewInfoEncryptUtil;
+import com.appabc.pay.bean.TPassbookInfo;
 import com.appabc.pay.service.IPassPayService;
+import com.appabc.pay.service.local.IPassbookInfoService;
 import com.appabc.tools.bean.MessageInfoBean;
+import com.appabc.tools.utils.AreaManager;
+import com.appabc.tools.utils.GuarantStatusCheck;
 import com.appabc.tools.utils.MessageSendManager;
 import com.appabc.tools.utils.SystemMessageContent;
 import com.appabc.tools.utils.SystemParamsManager;
@@ -74,21 +86,33 @@ public class CompanyInfoServiceImpl implements ICompanyInfoService{
 	@Autowired
 	private SystemParamsManager spm;
 	@Autowired
-	private ICompanyEvaluationService companyEvaluationService;
+	private ICompanyRankingService companyRankingService;
 	@Autowired
 	private IContractInfoService contractInfoService;
+	@Autowired
+	private IContractInfoDAO contractInfoDAO;
 	@Autowired
 	private IUserService userService;
 	@Autowired
 	private IPassPayService passPayLocalService;
 	@Autowired
-	private CompanyUtil companyUtil;
-	@Autowired
-	private ICompanyShippingService companyShippingService;
+	private GuarantStatusCheck guarantStatusCheck;
 	@Autowired
 	private MessageSendManager messageSendManager;
 	@Autowired
 	private IAuthRecordService authRecordService;
+	@Autowired
+	private ICompanyAuthService companyAuthService;
+	@Autowired 
+	private ICompanyShippingService companyShippingService;
+	@Autowired
+	private ICompanyPersonalService CompanyPersonalService;
+	@Autowired
+	private AreaManager areaManager;
+	@Autowired
+	private TaskService taskService;
+	@Autowired
+	private IPassbookInfoService passbookInfoService;
 
 
 	public void add(TCompanyInfo entity) {
@@ -114,6 +138,10 @@ public class CompanyInfoServiceImpl implements ICompanyInfoService{
 	public TCompanyInfo query(Serializable id) {
 		return this.companyInfoDao.query(id);
 	}
+	
+	public TCompanyInfo queryAuthCmpInfo(String id) {
+		return this.companyInfoDao.queryAuthCmpInfo(id);
+	}
 
 	public List<TCompanyInfo> queryForList(TCompanyInfo entity) {
 		return this.companyInfoDao.queryForList(entity);
@@ -133,14 +161,11 @@ public class CompanyInfoServiceImpl implements ICompanyInfoService{
 	 */
 	public CompanyAllInfo queryAuthCompanyInfo(String cid, String requestCid) {
 
-		CompanyAllInfo cai = this.companyInfoDao.queryAuthCompanyInfo(cid, AuthRecordStatus.AUTH_STATUS_CHECK_YES);
-		if(cai == null){ // 未认证通过的企业，获取历史认证信息（已过期，重新认证后原认证信息被设置为已过期）
-			cai = this.companyInfoDao.queryAuthCompanyInfo(cid, AuthRecordStatus.AUTH_STATUS_EXPIRE);
-		}
+		CompanyAllInfo cai = this.companyInfoDao.queryAuthCompanyInfo(cid);
 		if(cai != null){
 			// 认证图片
-			if(StringUtils.isNotEmpty(cai.getAuthimgid())){
-				cai.getAuthImgList().add(uploadImagesService.getViewImgsById(cai.getAuthimgid()));
+			if(StringUtils.isNotEmpty(cai.getAuthid())){
+				cai.getAuthImgList().addAll(uploadImagesService.getViewImgsByOidAndOtype(cai.getAuthid(), FileOType.FILE_OTYPE_COMPANY_AUTH.getVal()));
 			}
 
 			// 企业照片
@@ -162,11 +187,19 @@ public class CompanyInfoServiceImpl implements ICompanyInfoService{
 			caEntity.setCid(cid);
 			caEntity.setStatus(CompanyInfo.AddressStatus.ADDRESS_STATUS_DEFULT);
 			List<TCompanyAddress> caList = this.companyAddressService.queryForList(caEntity);
-			if(caList != null && caList.size()>0 && caList.get(0) != null){
+			if(CollectionUtils.isEmpty(caList)){ // 没有默认卸货地址，随便给一个卸货地址
+				caEntity.setStatus(null);
+				caList = this.companyAddressService.queryForList(caEntity);
+			}
+			if(CollectionUtils.isNotEmpty(caList)){
 				cai.setAddress(caList.get(0).getAddress());
 				cai.setAreacode(caList.get(0).getAreacode());
 				cai.setDeep(caList.get(0).getDeep());
 				cai.setRealdeep(caList.get(0).getRealdeep());
+				cai.setShippington(caList.get(0).getShippington());
+				if(StringUtils.isNotEmpty(caList.get(0).getAreacode())){
+					cai.setAddrAreaFullName(areaManager.getFullAreaName(caList.get(0).getAreacode()));
+				}
 
 				// 卸货地址图片URL
 				cai.setAddressImgList(this.uploadImagesService.getViewImgsByOidAndOtype(caList.get(0).getId(), FileInfo.FileOType.FILE_OTYPE_ADDRESS.getVal()));
@@ -177,11 +210,22 @@ public class CompanyInfoServiceImpl implements ICompanyInfoService{
 
 			// 企业保证金缴纳状态，时时查询，不以企业表中的为准
 			float monay = passPayLocalService.getGuarantyTotal(cid); // 保证金总金额
-			cai.setBailstatus(companyUtil.checkCashDeposit(cai.getCtype(), 0, monay));
+			cai.setBailstatus(guarantStatusCheck.checkCashDeposit(cid, monay));
 
 			if(StringUtils.isNotEmpty(requestCid) && !cid.equals(requestCid)){ // 其它用户查看
 				if(!contractInfoService.isOldCustomer(requestCid, cid)){ // 2个企业未发生过交易，进行企业加密处理
 					ViewInfoEncryptUtil.encryptCompanyInfo(cai);
+				}
+			}
+			
+			// 认证后的信息
+			if(cai.getCtype()!=null && StringUtils.isNotEmpty(cai.getAuthid())){
+				if(CompanyType.COMPANY_TYPE_ENTERPRISE.equals(cai.getCtype())){
+					cai.setCompanyAuth(companyAuthService.queryByAuthid(Integer.parseInt(cai.getAuthid())));
+				}else if(CompanyType.COMPANY_TYPE_SHIP.equals(cai.getCtype())){
+					cai.setShippingAuth(companyShippingService.queryByAuthid(Integer.parseInt(cai.getAuthid())));
+				}else if(CompanyType.COMPANY_TYPE_PERSONAL.equals(cai.getCtype())){
+					cai.setPersonalAuth(CompanyPersonalService.queryByAuthid(Integer.parseInt(cai.getAuthid())));
 				}
 			}
 		}
@@ -245,21 +289,31 @@ public class CompanyInfoServiceImpl implements ICompanyInfoService{
 	/* (non-Javadoc)认证申请
 	 * @see com.appabc.datas.service.company.IAuthRecordService#authApply(com.appabc.bean.pvo.TCompanyInfo, com.appabc.bean.pvo.TAuthRecord, com.appabc.bean.pvo.TCompanyAddress, java.lang.String)
 	 */
-	public void authApply(TCompanyInfo ciBean, TAuthRecord arBean,
+	public void authApply(TCompanyInfo ciBean, String[] authImgids,
 			String addressid, String userid) throws ServiceException {
 
 		if(this.authRecordService.getCountByCidAndAuthstauts(ciBean.getId(), AuthRecordStatus.AUTH_STATUS_CHECK_ING)>0){// 查询是否有认证中的记录
 			throw new ServiceException(ServiceErrorCode.COMPANY_REPEAT_APPLY_ERROR,"请不要重复提交认证信息");
 		}
-		if(this.authRecordService.getCountByCidAndAuthstauts(ciBean.getId(), AuthRecordStatus.AUTH_STATUS_CHECK_YES)>0){// 查询是否有通过的记录
-			throw new ServiceException(ServiceErrorCode.COMPANY_REPEAT_APPLY_ERROR,"已认证通过，不能二次认证");
+		TCompanyInfo ciEntity = this.queryAuthCmpInfo(ciBean.getId());
+		if(ciEntity ==  null){
+			throw new ServiceException(ErrorCode.RESULT_ERROR_CODE,"不存在的企业ID="+ciBean.getId());
+		}
+		if(AuthRecordStatus.AUTH_STATUS_CHECK_YES == ciEntity.getAuthstatus() && (ciEntity.getCtype() == CompanyType.COMPANY_TYPE_ENTERPRISE || ciEntity.getCtype() == CompanyType.COMPANY_TYPE_SHIP)){
+			throw new ServiceException(ServiceErrorCode.COMPANY_REPEAT_APPLY_ERROR,"企业和船舶不能二次认证，已认证类型:"+ciEntity.getCtype().getText());
+		}
+//		if(this.authRecordService.getCountByCidAndAuthstauts(ciBean.getId(), AuthRecordStatus.AUTH_STATUS_CHECK_YES)>0){// 查询是否有通过的记录
+//			throw new ServiceException(ServiceErrorCode.COMPANY_REPEAT_APPLY_ERROR,"已认证通过，不能二次认证");
+//		}
+		if(authImgids==null || authImgids.length==0){
+			throw new ServiceException(ErrorCode.DATA_IS_NOT_COMPLETE,"认证图片信息不能为空");
 		}
 
 		Date date = Calendar.getInstance().getTime();
-
-		ciBean.setAuthstatus(CompanyInfo.CompanyAuthStatus.AUTH_STATUS_ING);
-		ciBean.setBailstatus(CompanyInfo.CompanyBailStatus.BAIL_STATUS_NO);
-		ciBean.setCreatedate(date);
+		
+		ciBean.setCreatedate(ciEntity.getCreatedate());
+		ciBean.setAuthstatus(AuthRecordStatus.AUTH_STATUS_CHECK_ING);
+//		ciBean.setBailstatus(CompanyInfo.CompanyBailStatus.BAIL_STATUS_NO);
 		this.companyInfoDao.update(ciBean);
 
 		if(StringUtils.isNotEmpty(ciBean.getCompanyImgIds())){ // 企业照片关联更新
@@ -269,14 +323,23 @@ public class CompanyInfoServiceImpl implements ICompanyInfoService{
 			}
 		}
 
+		TAuthRecord arBean = new TAuthRecord();
 		arBean.setCid(ciBean.getId());
 		arBean.setType(AuthRecordType.AUTH_RECORD_TYPE_COMPANY);
 		arBean.setAuthstatus(AuthRecordStatus.AUTH_STATUS_CHECK_ING);
 		arBean.setCreatedate(date);
 		this.authRecordService.add(arBean); // 认证记录新增
-
-		if(arBean.getImgid()!=null && arBean.getImgid()>0){ // 认证图片关联,将认证记录ID更新到图片表
-			this.uploadImagesService.updateOtypeAndOid(arBean.getId(), FileInfo.FileOType.FILE_OTYPE_COMPANY_AUTH, arBean.getImgid()+"");
+		
+		// 认证图片ID关联
+		boolean isExistauthImg = false;
+		for (int i = 0; i < authImgids.length; i++) {
+			if(StringUtils.isNotEmpty(authImgids[i])){
+				this.uploadImagesService.updateOtypeAndOid(arBean.getId(), FileInfo.FileOType.FILE_OTYPE_COMPANY_AUTH, authImgids[i]);
+				isExistauthImg = true;
+			}
+		}
+		if(isExistauthImg == false){
+			throw new ServiceException(ErrorCode.DATA_IS_NOT_COMPLETE,"认证图片ID不能为空");
 		}
 
 		// 设置默认卸货地址
@@ -285,11 +348,9 @@ public class CompanyInfoServiceImpl implements ICompanyInfoService{
 //		}
 
 		/*****消息发送********************************/
-
 		MessageInfoBean mi = new MessageInfoBean(MsgBusinessType.BUSINESS_TYPE_COMPANY_AUTH, arBean.getId(), ciBean.getId(), SystemMessageContent.getMsgContentOfCompanyAuthIng());
 		mi.setSendSystemMsg(true);
 		this.messageSendManager.msgSend(mi);
-
 
 	}
 
@@ -297,23 +358,126 @@ public class CompanyInfoServiceImpl implements ICompanyInfoService{
 	 * @see com.appabc.datas.service.company.ICompanyInfoService#getEvaluationByCid(java.lang.String)
 	 */
 	public EvaluationInfoBean getEvaluationByCid(String cid){
-		TCompanyEvaluation ceEntity = new TCompanyEvaluation();
-		ceEntity.setCid(cid);
-		List<TCompanyEvaluation> ceList = companyEvaluationService.queryForList(ceEntity);
-
-		int credit = 0; // 信用分
-		int satisfaction = 0; // 满意度分
-		for(TCompanyEvaluation ce : ceList){
-			credit += ce.getCredit();
-			satisfaction += ce.getSatisfaction();
+		EvaluationInfoBean ei = new EvaluationInfoBean(); 
+		
+		TCompanyRanking crEntity = new TCompanyRanking();
+		crEntity.setCid(cid);
+		TCompanyRanking cr = companyRankingService.query(crEntity);
+		if(cr != null){
+			ei.setAverageCredit(cr.getCredit());
+			ei.setAverageEvaluation(cr.getDegress());
+			ei.setTransactionSuccessRate(cr.getOrderspersent());
+			ei.setTransactionSuccessNum(cr.getOrdersnum());
+		}else{
+			ei.setAverageCredit(0f);
+			ei.setAverageEvaluation(0f);
+			ei.setTransactionSuccessRate(0f);
+			ei.setTransactionSuccessNum(0);
 		}
 
-		int ceSize = ceList.size() == 0? 1 :ceList.size();
-
-		EvaluationInfoBean ei = this.contractInfoService.getTransactionSuccessRate(cid);
-		ei.setAverageCredit((float)credit/ceSize);
-		ei.setAverageEvaluation((float)satisfaction/ceSize);
 		return ei;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.company.ICompanyInfoService#getAuthStatusByCid(java.lang.String)
+	 */
+	@Override
+	public AuthRecordStatus getAuthStatusByCid(String cid) throws ServiceException{
+		if(StringUtils.isNotEmpty(cid)){
+			TCompanyInfo ci = this.queryAuthCmpInfo(cid);
+			if(ci != null){
+				return ci.getAuthstatus();
+			}else{
+				throw new ServiceException("企业不存在,cid="+cid);
+			}
+			
+		}else{
+			throw new ServiceException("企业ID不能为空");
+		}
+		
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.service.company.ICompanyInfoService#queryCmpInfoByUserPhone(java.lang.String)  
+	 */
+	@Override
+	public TCompanyInfo queryCmpInfoByUserPhone(String phone) {
+		return this.companyInfoDao.queryCmpInfoByUserPhone(phone);
+		//return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.company.ICompanyInfoService#queryCount(com.appabc.bean.pvo.TCompanyInfo)
+	 */
+	@Override
+	public int queryCount(TCompanyInfo entity) {
+		if(entity == null) entity = new TCompanyInfo();
+		return this.companyInfoDao.queryCount(entity);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.service.company.ICompanyInfoService#queryCmpInfoListByUserPhones(java.lang.String)  
+	 */
+	@Override
+	public List<TCompanyInfo> queryCmpInfoListByUserPhones(String phones) {
+		return companyInfoDao.queryCmpInfoListByUserPhones(phones);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.service.company.ICompanyInfoService#queryInvalidListForTask()  
+	 */
+	@Override
+	public List<TCompanyInfo> queryInvalidListForTask() {
+		// TODO Auto-generated method stub
+		return companyInfoDao.queryInvalidListForTask();
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.service.company.ICompanyInfoService#queryNewListForTask()  
+	 */
+	@Override
+	public List<TCompanyInfo> queryNewListForTask() {
+		// TODO Auto-generated method stub
+		return companyInfoDao.queryNewListForTask();
+	}
+	@Transactional(rollbackFor = Exception.class)
+	public void jobQueryVerifyListForTask()
+	{
+		// 将新的未认证信息加入任务列表
+		List<TCompanyInfo> ciList = this.queryNewListForTask();
+		Task<?> task = null;
+		for (TCompanyInfo ci : ciList) {
+			task = new Task();
+			task.setCreateTime(Calendar.getInstance().getTime());
+			task.setType(TaskType.UrgeVerify);
+			task.setCompany(this.query(ci.getId()));
+			task.setObjectId(ci.getId());
+			taskService.createTask(task); // 创建任务			
+		}		
+		// 将失效的认证，并在任务列表中的任务删除
+		List<TCompanyInfo> ciInvalidList = this.queryInvalidListForTask();
+		for (TCompanyInfo ci : ciInvalidList) {
+			this.taskService.delByTypeAndObjectId(TaskType.UrgeVerify, ci.getId());
+		}		
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	public void jobQueryDepositListForTask() {
+		// 将新的需要催促缴纳保证金加入任务列表
+		List<TPassbookInfo> pbiList = passbookInfoService.queryNewListForTask();
+		Task<?> task = null;
+		for (TPassbookInfo pbi : pbiList) {
+			task = new Task();
+			task.setCreateTime(Calendar.getInstance().getTime());
+			task.setType(TaskType.UrgeDeposit);
+			task.setCompany(this.query(pbi.getCid()));
+			task.setObjectId(pbi.getId());
+			taskService.createTask(task); // 创建任务
+		}		
+		// 将不需要催促保证金，并在任务列表中的任务删除
+		List<TPassbookInfo> pbiInvalidList = passbookInfoService.queryInvalidListForTask();
+		for (TPassbookInfo pbi : pbiInvalidList) {
+			this.taskService.delByTypeAndObjectId(TaskType.UrgeDeposit, pbi.getId());
+		}		
+	}
 }

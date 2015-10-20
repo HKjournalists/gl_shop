@@ -32,7 +32,6 @@ import com.glshop.net.ui.basic.view.PullRefreshListView;
 import com.glshop.net.ui.basic.view.dialog.menu.BaseMenuDialog.IMenuCallback;
 import com.glshop.net.ui.basic.view.dialog.menu.MenuDialog;
 import com.glshop.net.ui.findbuy.BuyInfoActivity;
-import com.glshop.net.ui.findbuy.PubModeSelectActivity;
 import com.glshop.net.utils.MenuUtil;
 import com.glshop.platform.api.DataConstants.MyBuyFilterType;
 import com.glshop.platform.api.buy.data.model.MyBuySummaryInfoModel;
@@ -70,6 +69,13 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 		setContentView(R.layout.activity_my_buy_list);
 		initView();
 		initData();
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		Logger.e(TAG, "onNewIntent");
+		resetFilterStatus();
 	}
 
 	private void initView() {
@@ -111,6 +117,7 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 
 	@Override
 	protected void onReloadData() {
+		pageIndex = 1;
 		updateDataStatus(DataStatus.LOADING);
 		mBuyLogic.getMyBuys(mFilterType, getCompanyId(), DEFAULT_INDEX, PAGE_SIZE, DataReqType.INIT);
 	}
@@ -149,6 +156,9 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 		case GlobalMessageType.BuyMessageType.MSG_REFRESH_BUY_LIST:
 			onRefresh();
 			break;
+		case GlobalMessageType.BuyMessageType.MSG_REFRESH_BUY_LIST_WITH_RESET_FILTER:
+			resetFilterStatus();
+			break;
 		}
 	}
 
@@ -160,12 +170,14 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 
 			if (type == DataReqType.INIT && size == 0) {
 				updateDataStatus(DataStatus.EMPTY);
+				updateEmptyDataMessage(getString(R.string.load_my_buy_data_empty));
 			} else {
 				updateDataStatus(DataStatus.NORMAL);
 				if (type == DataReqType.REFRESH) {
 					pageIndex = DEFAULT_INDEX;
 					if (BeanUtils.isEmpty(DataCenter.getInstance().getData(DataType.MY_BUY_LIST))) {
 						updateDataStatus(DataStatus.EMPTY);
+						updateEmptyDataMessage(getString(R.string.load_my_buy_data_empty));
 					}
 				}
 				mAdapter.setList(DataCenter.getInstance().getData(DataType.MY_BUY_LIST));
@@ -192,6 +204,20 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 		if (respInfo != null) {
 			updateDataStatus(DataStatus.ERROR);
 			handleErrorAction(respInfo);
+		}
+	}
+
+	@Override
+	protected void showErrorMsg(RespInfo respInfo) {
+		if (respInfo != null) {
+			switch (respInfo.respMsgType) {
+			case GlobalMessageType.BuyMessageType.MSG_GET_MYBUYS_FAILED:
+				showToast(R.string.error_req_get_list);
+				break;
+			default:
+				super.showErrorMsg(respInfo);
+				break;
+			}
 		}
 	}
 
@@ -225,12 +251,6 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 		menuBuyFilter.show();
 	}
 
-	private void pubBuyInfo() {
-		//TODO check user info(auth & purse)
-		Intent intent = new Intent(this, PubModeSelectActivity.class);
-		startActivity(intent);
-	}
-
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		//Logger.e(TAG, "onItemClick & Position = " + (position - mLvMyBuyList.getHeaderViewsCount()));
@@ -238,6 +258,7 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 		Intent intent = new Intent(this, BuyInfoActivity.class);
 		intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_BUY_ID, buyInfo.publishBuyId);
 		intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_VIEW_BUY_INFO_TYPE, ViewBuyInfoType.MYBUY.toValue());
+		intent.putExtra(GlobalAction.BuyAction.EXTRA_KEY_BUY_INFO_TYPE, buyInfo.buyType.toValue());
 		startActivity(intent);
 	}
 
@@ -267,6 +288,11 @@ public class MyBuyListActivity extends BasicActivity implements OnItemClickListe
 	private void restoreFilterIcon() {
 		mDropdownMenu.findViewById(R.id.iv_common_menu_icon).setBackgroundResource(R.drawable.ic_dropdown_menu_down);
 		mDropdownMenu.setEnabled(true);
+	}
+
+	private void resetFilterStatus() {
+		mFilterType = MyBuyFilterType.ALL;
+		onReloadData();
 	}
 
 	@Override

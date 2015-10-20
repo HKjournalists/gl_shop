@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+  <title>合同管理 - 催促保证金</title>
+
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i>
+  <span th:if="${#strings.contains(url, '/tasks/sales/deposit/no/detail/')}">不需</span>催促保证金 - 详情 </h4>
+
+<div layout:fragment="pageContent">
+
+ <form id="urgeDepositInfoForm" role="form" method="post" data-enable-shim="true">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped">
+          <tr>
+            <th width="15%">用户手机号码</th>
+            <td><a th:href="@{/company/{cid}/info/(cid=${uv.userid})}" target="_blank" th:text="${uv.username}"></a></td>
+            <th width="15%">类型</th>
+            <td width="30%" th:text="${uv.companyType}"></td>
+          </tr>
+          <tr>
+         	<th width="15%">用户名称</th>
+            <td width="30%" th:text="${uv.userrealname}"></td>
+            <th width="15%">认证状态</th>
+            <td width="30%" th:text="${uv.authStatus}"></td>
+           
+          
+          </tr>
+       	  <tr>
+       	   <th width="15%">注册时间</th>
+            <td th:text="${uv.regdate} ? ${#calendars.format(uv.regdate, 'YYYY-MM-dd HH:mm')}"></td>
+       	   <th width="15%">最后一次登陆时间</th>
+            <td th:text="${uv.lastlogindate} ? ${#calendars.format(uv.lastlogindate, 'YYYY-MM-dd HH:mm')}"></td>
+       	  </tr>
+           <tr>
+            <th width="15%">求购信息数</th>
+            <td width="30%" th:text="${uv.buynum}"></td>
+            <th width="15%">出售信息数</th>
+            <td th:text="${uv.sellnum}"></td>
+          </tr>
+         
+          <tr>
+          	<th width="15%">当前保证金账户余额</th>
+            <td th:text="${uv.passAmount} ? ${#numbers.formatDecimal(uv.passAmount,1,2)}"></td>
+            <th width="15%">客服催促次数</th>
+            <td th:text="${uv.verifynum}"></td>
+          </tr>
+          <tr>
+            <th width="15%">最近一次催促时间</th>
+            <td colspan="3" width="30%" th:text="${uv.lastverifydate} ? ${#calendars.format(uv.lastverifydate, 'YYYY-MM-dd HH:mm')}"></td>
+          </tr>
+            
+        </table>
+      </div>
+    </div>
+</div>
+
+    <div class="panel panel-primary" th:if="!${#lists.isEmpty(uv.urgeVerifyList)}">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 服务记录
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+         
+          <table class="table table-bordered table-hover table-striped">
+          <tr th:each="list : ${uv.urgeVerifyList}">
+        	  <td width="15%" th:text="${list.owner}+'|'+${#calendars.format(list.createtime, 'YYYY-MM-dd HH:mm')}"></td>
+         	  <td th:text="${list.record}"></td>
+          </tr>
+          </table>       	 
+        </div>
+      </div>
+    </div>
+  <div th:if="${#strings.contains(url, '/tasks/sales/deposit/need/detail/')}">  
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 服务归档
+      </div>
+      <div class="panel-body">
+        <textarea id="record" name="record" rows="5" cols="80" placeholder="请在此输入你的本次服务记录内容……"></textarea>
+     </div>
+    </div>
+     <div class="col-sm-offset-3">
+         <button id="btnDeposit" type="button" class="btn btn-primary">提交</button>
+         <button id="btnNoDeposit" type="button" class="btn btn-default">提交至不需要催促列表</button>
+     </div>
+ </div>	 
+  </form>
+  
+  
+   <!-- Modal -->
+  <div class="modal fade" id="verifyConfirmDialog" tabindex="-1" role="dialog" aria-labelledby="verify" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="accountAudit">催促认证</h4>
+        </div>
+        <div class="modal-body">
+       请 确认是否将用户<span th:text="${uv.username}"></span> 
+          <p id="dialogContent">移至不需要催促保证金列表，确认后将不可恢复！</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button id="btnDialogOk" type="button" class="btn btn-primary">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script layout:fragment="inlineJavascript">
+var deposit_url = /*[[@{/tasks/sales/deposit/need/detail/add/{passid}/(passid=${uv.id})}]]*/;
+var nodeposit_url=/*[[@{/tasks/sales/deposit/no/detail/add/{passid}/{taskid}/(passid=${uv.id},taskid=${uv.taskid})}]]*/
+$('#btnDeposit').click(function() {
+	if ($('textarea[name=record]').val() === '') {
+        alert('提交失败，请先记录本次的服务记录再进行提交。');
+        return;
+    }
+	 $('#urgeDepositInfoForm').attr('action', deposit_url);
+	 $('#urgeDepositInfoForm').submit();
+});
+$('#btnNoDeposit').click(function() {
+	 if ($('textarea[name=record]').val() === '') {
+	        alert('提交失败，请先记录本次的服务记录再进行提交。');
+	        return;
+	    }
+	 $('#dialogContent').html('移至不需要催促保证金列表，确认后将不可恢复！');
+	    $('#verifyConfirmDialog').modal('show');
+	    $('#btnDialogOk').click(function(evt) {
+	    	 $('#urgeDepositInfoForm').attr('action', nodeposit_url);
+			 $('#urgeDepositInfoForm').submit();
+	    });
+});
+</script>  
+
+</body>
+
+</html>

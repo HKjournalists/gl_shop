@@ -6,25 +6,24 @@
  */
 package com.appabc.datas.task.orderfind;
 
-import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
 import com.appabc.bean.enums.OrderFindInfo.OrderOverallStatusEnum;
 import com.appabc.bean.enums.OrderFindInfo.OrderStatusEnum;
 import com.appabc.bean.pvo.TOrderFind;
 import com.appabc.common.utils.DateUtil;
+import com.appabc.datas.cms.service.TaskService;
+import com.appabc.datas.cms.vo.task.Task;
+import com.appabc.datas.cms.vo.task.TaskType;
 import com.appabc.datas.service.order.IOrderFindService;
-import com.appabc.tools.bean.MessageInfoBean;
-import com.appabc.tools.bean.PushInfoBean;
 import com.appabc.tools.schedule.utils.BaseJob;
-import com.appabc.tools.service.user.IToolUserService;
-import com.appabc.tools.utils.MessageSendManager;
-import com.appabc.tools.utils.SystemMessageContent;
 import com.appabc.tools.utils.ToolsConstant;
-import com.appabc.tools.xmpp.IXmppPush;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobExecutionContext;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description :
@@ -37,57 +36,48 @@ import java.util.List;
 
 public class OrderFindJob extends BaseJob {
 
-	private IXmppPush iXmppPush = (IXmppPush)ac.getBean("IXmppPush");
-
-	private IToolUserService iToolUserService = (IToolUserService)ac.getBean("IToolUserService");
-
 	private IOrderFindService iOrderFindService = (IOrderFindService)ac.getBean("IOrderFindService");
+	
+	private TaskService taskService = (TaskService)ac.getBean("taskService");
 
-	private MessageSendManager mesgSender = ac.getBean(MessageSendManager.class);
 	/* (non-Javadoc)
 	 * @see com.appabc.tools.schedule.utils.BaseJob#doExecutionJob(org.quartz.JobExecutionContext)
 	 */
 	@Override
 	public void doExecutionJob(JobExecutionContext context) {
-		TOrderFind entity = new TOrderFind();
-		entity.setStatus(OrderStatusEnum.ORDER_STATUS_YES);
-		try{
-			List<TOrderFind> result = iOrderFindService.queryForList(entity);
-			for(TOrderFind bean : result){
-				Date now = DateUtil.getNowDate();
-				int days = DateUtil.getDifferDayWithTwoDate(bean.getLimitime(), now);
-				if(days>=0){
-					bean.setUpdater(ToolsConstant.SCHEDULER);
-					bean.setUpdatetime(DateUtil.getNowDate());
-					bean.setStatus(OrderStatusEnum.ORDER_STATUS_FAILURE);
-					bean.setOverallstatus(OrderOverallStatusEnum.ORDER_OVERALL_STATUS_INVALID);
-					try{
-						iOrderFindService.modify(bean);
-					}catch(Exception e){
-						logUtil.debug(e.getMessage(), e);
-					}
-
-					String msg = "您的询单"+bean.getTitle()+"已于"+DateUtil.DateToStr(now, DateUtil.FORMAT_YYYY_MM_DD_HH_MM_SS)+"过期失效.";
-					PushInfoBean piBean = new PushInfoBean();
-					piBean.setContent(msg);
-					piBean.setBusinessType(MsgBusinessType.BUSINESS_TYPE_CONTRACT_ING);
-					piBean.setBusinessId(bean.getId());
-					iXmppPush.pushToSingle(piBean, iToolUserService.getUserByCid(bean.getCreater()));
-
-					MessageInfoBean mi = new MessageInfoBean(MsgBusinessType.BUSINESS_TYPE_ORDER_FIND,
-							bean.getId(),
-							bean.getCid(),
-							new SystemMessageContent(msg));
-					mi.setSendSystemMsg(true);
-					mi.setSendPushMsg(true);
-					mesgSender.msgSend(mi);
+		logUtil.info(this.getClass().getName());
+		logUtil.info(context.getTrigger().getName());
+		List<TOrderFind> result = iOrderFindService.getParentOrderFindByStatusAndOverallStatus(OrderStatusEnum.ORDER_STATUS_YES, OrderOverallStatusEnum.ORDER_OVERALL_STATUS_EFFECTIVE);
+		logUtil.info(" the order find num is : " + result != null ? result.size() : 0);
+		Date now = DateUtil.getNowDate();
+		for(TOrderFind bean : result){
+			boolean flag = DateUtil.isTargetGtSourceDate(bean.getEndtime(), now);
+			if(flag){
+				logUtil.info(" the time out order find id is : " + bean.getId());
+				try{
+					iOrderFindService.jobAutoTimeoutOrderFindWithSystem(bean, ToolsConstant.SYSTEMCID);
+				}catch(Exception e){
+					logUtil.debug(e.getMessage(), e);
 				}
 			}
-			logUtil.info(result);
-			logUtil.info(result.size());
-			logUtil.info(context.getTrigger().getName());
-		}catch(Exception e){
-			logUtil.debug(e.getMessage(), e);
 		}
+		logUtil.info(CollectionUtils.isNotEmpty(result) ? result.size() : result);
+		//add the task release out of date.
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("finished", false);
+		List<Task> tasks = taskService.queryForList(params, TaskType.MatchOrderRequest);
+		logUtil.info(" UnFinished the task num is : " + tasks != null ? tasks.size() : 0);
+		for(Task<?> t : tasks){
+			int h = DateUtil.getDifferHoursWithTwoDate(t.getUpdateTime(), now);
+			try{
+				if(h>=24){
+					logUtil.info(" the release task id is : " + t.getId());
+					taskService.releaseTask(t.getId(), TaskType.MatchOrderRequest);
+				}
+			}catch(Exception e){
+				logUtil.debug(e.getMessage(), e);
+			}
+		}
+		logUtil.info(CollectionUtils.isNotEmpty(tasks) ? tasks.size() : tasks);
 	}
 }

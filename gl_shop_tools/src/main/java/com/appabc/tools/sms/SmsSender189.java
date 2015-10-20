@@ -3,6 +3,12 @@
  */
 package com.appabc.tools.sms;
 
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 import com.appabc.bean.bo.MsgSendResultBean;
 import com.appabc.bean.pvo.TShortMessageConfig;
 import com.appabc.common.utils.DateUtil;
@@ -11,12 +17,6 @@ import com.appabc.tools.bean.ShortMsgInfo;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Repository;
-
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Description : 电信189短信发送
@@ -26,7 +26,7 @@ import java.util.Map;
  * @version     : 1.0
  * Create Date  : 2014年9月9日 上午10:06:04
  */
-@Repository
+//@Repository
 public class SmsSender189 extends BaseSmsSender {
 	
 	private Logger logger = Logger.getLogger(this.getClass());

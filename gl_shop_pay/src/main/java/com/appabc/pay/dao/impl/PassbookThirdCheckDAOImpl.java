@@ -159,7 +159,7 @@ public class PassbookThirdCheckDAOImpl extends BaseJdbcDao<TPassbookThirdCheck> 
 		bean.setOtype(TradeType.enumOf(rs.getString("OTYPE")));
 		bean.setPayno(rs.getString("PAYNO"));
 		bean.setName(rs.getString("NAME"));
-		bean.setAmount(rs.getFloat("AMOUNT"));
+		bean.setAmount(rs.getDouble("AMOUNT"));
 		bean.setDirection(PayDirection.enumOf(rs.getInt("DIRECTION")));
 		bean.setPaytype(PayWay.enumOf(rs.getString("PAYTYPE")));
 		bean.setPatytime(rs.getTimestamp("PATYTIME"));

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+  <title>合同管理 - 撮合交流</title>
+
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 催促认证 - 详情 </h4>
+
+<div layout:fragment="pageContent">
+
+ <form id="urgeVerifyInfoForm" role="form" method="post" data-enable-shim="true">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped">
+          <tr>
+            <th width="15%">用户手机号码</th>
+            <td><a th:href="@{/company/{cid}/info/(cid=${uv.userid})}" target="_blank" th:text="${uv.username}"></a></td>
+            <th width="15%">注册时间</th>
+            <td width="30%" th:text="${uv.regdate} ? ${#calendars.format(uv.regdate, 'YYYY-MM-dd HH:mm')}"></td>
+          </tr>
+          <tr>
+            <th width="15%">最后一次登陆时间</th>
+            <td th:text="${uv.lastlogindate} ? ${#calendars.format(uv.lastlogindate, 'YYYY-MM-dd HH:mm')}"></td>
+            <th width="15%">求购信息数</th>
+            <td width="30%" th:text="${uv.buynum}"></td>
+          </tr>
+           <tr>
+            <th width="15%">出售信息数</th>
+            <td th:text="${uv.sellnum}"></td>
+            <th width="15%">提交认证次数</th>
+            <td width="30%" th:text="${uv.authnum}"></td>
+          </tr>
+           <tr>
+            <th width="15%">用户姓名</th>
+            <td><input type="text" class="form-control" th:value="${uv.userrealname}" th:name="userrealname" th:id="userrealname"  placeholder="请输入姓名" /></td>
+            <th width="15%">用户类型</th>
+            <td width="30%"><input type="text" class="form-control" th:value="${uv.usertype}" th:name="usertype" th:id="usertype"  placeholder="请输入用户类型" /></td>
+          </tr>
+           <tr>
+            <th width="15%">客服催促次数</th>
+            <td th:text="${uv.verifynum}"></td>
+            <th width="15%">最近一次催促时间</th>
+            <td width="30%" th:text="${uv.lastverifydate} ? ${#calendars.format(uv.lastverifydate, 'YYYY-MM-dd HH:mm')}"></td>
+          </tr>
+           <tr>
+            <th width="15%">用户注册原因</th>
+            <td colspan="3">
+           
+            	<input type="text" class="form-control" th:value="${uv.registreason}" th:name="registreason" th:id="registreason"  placeholder="请输入" />
+           
+            </td>
+          </tr>
+          <tr>
+            <th width="15%">其他备注信息</th>
+            <td colspan="3"><input type="text" class="form-control" th:value="${uv.remark}" th:name="remark" th:id="remark"  placeholder="请输入" /></td>
+          </tr>        
+        </table>
+      </div>
+    </div>
+</div>
+    <div class="panel panel-primary" th:if="!${#lists.isEmpty(uv.urgeVerifyList)}">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 服务记录
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+         
+          <table class="table table-bordered table-hover table-striped">
+          <tr th:each="list : ${uv.urgeVerifyList}">
+        	  <td width="15%" th:text="${list.owner}+'|'+${#calendars.format(list.createtime, 'YYYY-MM-dd HH:mm')}"></td>
+         	  <td th:text="${list.record}"></td>
+          </tr>
+          </table>       	 
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 服务归档
+      </div>
+      <div class="panel-body">
+        <textarea id="record" name="record" rows="5" cols="80" placeholder="请在此输入你的本次服务记录内容……"></textarea>
+     </div>
+    </div>
+     		<div class="col-sm-offset-3">
+         		 <button id="btnVerify" type="button" class="btn btn-primary">提交</button>
+          		 <button id="btnNotVerify" type="button" class="btn btn-default">提交至不需要催促列表</button>
+         	</div>
+  	 
+  </form>
+  
+  
+   <!-- Modal -->
+  <div class="modal fade" id="verifyConfirmDialog" tabindex="-1" role="dialog" aria-labelledby="verify" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="accountAudit">催促认证</h4>
+        </div>
+        <div class="modal-body">
+       请 确认是否将用户<span th:text="${uv.username}"></span> 
+          <p id="dialogContent">移至不需要催促认证列表，确认后将不可恢复！</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button id="btnDialogOk" type="button" class="btn btn-primary">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script layout:fragment="inlineJavascript">
+var url = /*[[@{/tasks/sales/verify/detail/add/{userid}/{taskid}/(userid=${uv.userid},taskid=${uv.taskid})}]]*/ '/verify/detail/';
+var verify_need = url + '0/';
+var verify_no=url + '1/';
+$('#btnVerify').click(function() {
+	if ($('textarea[name=record]').val() === '') {
+        alert('提交失败，请先记录本次的服务记录再进行提交。');
+        return;
+    }
+	 $('#urgeVerifyInfoForm').attr('action', verify_need);
+	 $('#urgeVerifyInfoForm').submit();
+});
+$('#btnNotVerify').click(function() {
+	 if ($('textarea[name=record]').val() === '') {
+	        alert('提交失败，请先记录本次的服务记录再进行提交。');
+	        return;
+	    }
+	 $('#dialogContent').html('移至不需要催促认证列表，确认后将不可恢复！');
+	    $('#verifyConfirmDialog').modal('show');
+	    $('#btnDialogOk').click(function(evt) {
+			 $('#urgeVerifyInfoForm').attr('action', verify_no);
+			 $('#urgeVerifyInfoForm').submit();
+	    });
+});
+</script>  
+
+</body>
+
+</html>

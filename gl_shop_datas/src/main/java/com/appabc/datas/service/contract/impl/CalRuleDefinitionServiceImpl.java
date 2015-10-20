@@ -2,7 +2,6 @@ package com.appabc.datas.service.contract.impl;
 
 import com.appabc.bean.pvo.TCalRuleDefinition;
 import com.appabc.common.base.QueryContext;
-import com.appabc.common.base.service.BaseService;
 import com.appabc.datas.dao.contract.ICalRuleDefinitionDAO;
 import com.appabc.datas.service.contract.ICalRuleDefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import java.util.Map;
  */
 
 @Service
-public class CalRuleDefinitionServiceImpl extends BaseService<TCalRuleDefinition> implements
+public class CalRuleDefinitionServiceImpl extends ContractBaseService<TCalRuleDefinition> implements
 		ICalRuleDefinitionService {
 
 	@Autowired

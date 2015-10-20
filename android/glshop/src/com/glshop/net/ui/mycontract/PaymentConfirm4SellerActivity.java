@@ -12,13 +12,13 @@ import com.glshop.net.common.GlobalMessageType.ContractMessageType;
 import com.glshop.net.logic.contract.IContractLogic;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.model.TipInfoModel;
-import com.glshop.net.ui.MainActivity;
 import com.glshop.net.ui.basic.view.dialog.BaseDialog.IDialogCallback;
 import com.glshop.net.ui.basic.view.dialog.ConfirmDialog;
-import com.glshop.net.ui.tips.OperatorTipsActivity;
 import com.glshop.platform.api.DataConstants.ContractConfirmType;
 import com.glshop.platform.api.DataConstants.ContractType;
+import com.glshop.platform.api.contract.data.model.NegotiateInfoModel;
 import com.glshop.platform.base.manager.LogicFactory;
+import com.glshop.platform.utils.StringUtils;
 
 /**
  * @Description : 卖家货款确认界面
@@ -67,7 +67,33 @@ public class PaymentConfirm4SellerActivity extends BaseContractInfoActivity {
 	}
 
 	private void initData() {
+		updateBuyInfo();
 
+		if (mContractInfo.finalNegotiateInfo != null) {
+			NegotiateInfoModel negInfo = mContractInfo.finalNegotiateInfo;
+			mTvFinalUnitPrice.setText(StringUtils.getDefaultNumber(negInfo.negUnitPrice));
+			mTvFinalAmount.setText(StringUtils.getDefaultNumber(negInfo.negAmount));
+			mTvFinalTotalMoney.setText(StringUtils.getCashNumber(negInfo.negUnitPrice * negInfo.negAmount));
+		} else {
+			mTvFinalUnitPrice.setText(StringUtils.getDefaultNumber(mContractInfo.unitPrice));
+			mTvFinalAmount.setText(StringUtils.getDefaultNumber(mContractInfo.tradeAmount));
+			mTvFinalTotalMoney.setText(StringUtils.getCashNumber(mContractInfo.tradeAmount * mContractInfo.unitPrice));
+		}
+
+		mTvOriUnitPrice.setText(StringUtils.getDefaultNumber(mContractInfo.unitPrice));
+		mTvOriAmount.setText(StringUtils.getDefaultNumber(mContractInfo.tradeAmount));
+		mTvOriTotalMoney.setText(StringUtils.getCashNumber(mContractInfo.tradeAmount * mContractInfo.unitPrice));
+	}
+
+	private void updateBuyInfo() {
+		TextView tvProductSpec = getView(R.id.tv_buy_product_spec);
+		tvProductSpec.setText(mContractInfo.productName);
+
+		TextView tvUnitPrice = getView(R.id.tv_buy_unit_price);
+		tvUnitPrice.setText(StringUtils.getDefaultNumber(mContractInfo.unitPrice));
+
+		TextView mTvBuyAmount = getView(R.id.tv_buy_amount);
+		mTvBuyAmount.setText(StringUtils.getDefaultNumber(mContractInfo.tradeAmount));
 	}
 
 	@Override
@@ -81,12 +107,6 @@ public class PaymentConfirm4SellerActivity extends BaseContractInfoActivity {
 		case ContractMessageType.MSG_MULTI_COMFIRM_CONTRACT_FAILED:
 			onConfirmFailed(respInfo);
 			break;
-		case ContractMessageType.MSG_APPLY_ARBITARTE_SUCCESS:
-			onArbitarteSuccess(respInfo);
-			break;
-		case ContractMessageType.MSG_APPLY_ARBITARTE_FAILED:
-			onArbitarteFailed(respInfo);
-			break;
 		}
 	}
 
@@ -94,36 +114,19 @@ public class PaymentConfirm4SellerActivity extends BaseContractInfoActivity {
 		closeSubmitDialog();
 		refreshContractList(ContractType.ONGOING, ContractType.ENDED);
 
-		Intent intent = new Intent(this, OperatorTipsActivity.class);
+		Intent intent = new Intent(this, ContractOprResultTipsActivity.class);
 		TipInfoModel tipInfo = new TipInfoModel();
 		tipInfo.operatorTipTitle = getString(R.string.my_contract);
-		tipInfo.operatorTipTypeTitle = getString(R.string.operator_tips_opr_success_title);
-		tipInfo.operatorTipContent = getString(R.string.operator_tips_contract_cancel_success);
+		if (respInfo.intArg1 == ContractConfirmType.PAYMENT_AGREE.toValue()) {
+			tipInfo.operatorTipTypeTitle = getString(R.string.operator_tips_confirm_success_title);
+			tipInfo.operatorTipContent = getString(R.string.operator_tips_contract_confirm_agree_success);
+		} else {
+			tipInfo.operatorTipTypeTitle = getString(R.string.operator_tips_apply_success_title);
+			tipInfo.operatorTipContent = getString(R.string.operator_tips_contract_arbitarte_apply_success);
+		}
 		tipInfo.operatorTipActionText1 = getString(R.string.operator_tips_action_text_view_mycontract);
-		tipInfo.operatorTipActionClass1 = MainActivity.class;
-		tipInfo.operatorTipAction1 = GlobalAction.TipsAction.ACTION_VIEW_MY_CONTRACT;
-		intent.putExtra(GlobalAction.TipsAction.EXTRA_KEY_TIPS_INFO, tipInfo);
-		startActivity(intent);
-		finish();
-	}
 
-	private void onArbitarteSuccess(RespInfo respInfo) {
-		closeSubmitDialog();
-		handleErrorAction(respInfo);
-	}
-
-	private void onArbitarteFailed(RespInfo respInfo) {
-		closeSubmitDialog();
-		refreshContractList(ContractType.ONGOING, ContractType.ENDED);
-
-		Intent intent = new Intent(this, OperatorTipsActivity.class);
-		TipInfoModel tipInfo = new TipInfoModel();
-		tipInfo.operatorTipTitle = getString(R.string.my_contract);
-		tipInfo.operatorTipTypeTitle = getString(R.string.operator_tips_opr_success_title);
-		tipInfo.operatorTipContent = getString(R.string.operator_tips_contract_cancel_success);
-		tipInfo.operatorTipActionText1 = getString(R.string.operator_tips_action_text_view_mycontract);
-		tipInfo.operatorTipActionClass1 = MainActivity.class;
-		tipInfo.operatorTipAction1 = GlobalAction.TipsAction.ACTION_VIEW_MY_CONTRACT;
+		intent.putExtra(GlobalAction.ContractAction.EXTRA_KEY_CONTRACT_ID, mContractInfo.contractId);
 		intent.putExtra(GlobalAction.TipsAction.EXTRA_KEY_TIPS_INFO, tipInfo);
 		startActivity(intent);
 		finish();
@@ -138,7 +141,9 @@ public class PaymentConfirm4SellerActivity extends BaseContractInfoActivity {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.ll_contract_model_info:
-			//TODO
+			Intent intent = new Intent(this, ContractModelInfoActivity.class);
+			intent.putExtra(GlobalAction.ContractAction.EXTRA_KEY_CONTRACT_ID, mContractInfo.contractId);
+			startActivity(intent);
 			break;
 		case R.id.btn_seller_confirm:
 			showConfirmDialog();
@@ -155,13 +160,13 @@ public class PaymentConfirm4SellerActivity extends BaseContractInfoActivity {
 	private void showConfirmDialog() {
 		closeDialog(mConfirmDialog);
 		mConfirmDialog = new ConfirmDialog(this, R.style.dialog);
-		mConfirmDialog.setContent(getString(R.string.confirmed_contract_payment_warning_tip));
+		mConfirmDialog.setContent(getString(R.string.confirmed_contract_seller_confirm_warning_tip));
 		mConfirmDialog.setCallback(new IDialogCallback() {
 
 			@Override
 			public void onConfirm(int type, Object obj) {
 				showSubmitDialog();
-				mContractLogic.multiConfirmContract(mContractId, ContractConfirmType.PAYMENT_APPLY, "", "");
+				mContractLogic.multiConfirmContract(mContractInfo.contractId, ContractConfirmType.PAYMENT_AGREE, "", "");
 			}
 
 			@Override
@@ -181,7 +186,7 @@ public class PaymentConfirm4SellerActivity extends BaseContractInfoActivity {
 			@Override
 			public void onConfirm(int type, Object obj) {
 				showSubmitDialog();
-				mContractLogic.multiConfirmContract(mContractId, ContractConfirmType.PAYMENT_ARBITRATE, "", "");
+				mContractLogic.multiConfirmContract(mContractInfo.contractId, ContractConfirmType.PAYMENT_ARBITRATE, "", "");
 			}
 
 			@Override

@@ -68,7 +68,7 @@
     _phoneTextField.returnKeyType = UIReturnKeyNext;
     [self.view addSubview:_phoneTextField];
     
-    _codeTextfield = [UITextField textFieldWithPlaceHodler:@"请输入验证码" withDelegate:self];
+    _codeTextfield = [UITextField textFieldWithPlaceHodler:sms_input withDelegate:self];
     _codeTextfield.frame = CGRectMake(_phoneTextField.vleft, _phoneTextField.vbottom, backgroundView.vwidth-130, backgroundView.vheight/2);
     _codeTextfield.keyboardType = UIKeyboardTypeNumberPad;
     _codeTextfield.returnKeyType = UIReturnKeyDone;
@@ -77,14 +77,14 @@
     
     // 获取验证码按钮
 //    btnVerifCode = [UIButton buttonWithTip:@"获取验证码" target:self selector:@selector(getCode:)];
-    btnVerifCode = [UIFactory createBtn:@"Buy_sell_publish" bTitle:@"获取验证码" bframe:CGRectZero];
+    btnVerifCode = [UIFactory createBtn:@"Buy_sell_publish" bTitle:sms_get bframe:CGRectZero];
     [btnVerifCode addTarget:self action:@selector(getCode:) forControlEvents:UIControlEventTouchUpInside];
     btnVerifCode.frame = CGRectMake(_codeTextfield.vright+15, _codeTextfield.vtop+6, 100, 30);
     [btnVerifCode setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [btnVerifCode setTitleColor:ColorWithHex(@"#3b70d4") forState:UIControlStateDisabled];
     [self.view addSubview:btnVerifCode];
     
-    UILabel *oldLabel = [UILabel labelWithTitle:@"请输入旧密码"];
+    UILabel *oldLabel = [UILabel labelWithTitle:@"旧密码"];
     oldLabel.textColor = smsLabel.textColor;
     oldLabel.frame = CGRectMake(smsLabel.vleft, backgroundView.vbottom+15, 200, smsLabel.vheight);
     UIImageView *textFieldBG = [[UIImageView alloc] initWithFrame:CGRectMake(0, oldLabel.vbottom, self.view.vwidth, 44)];
@@ -95,10 +95,11 @@
         [self.view addSubview:oldLabel];
         [self.view addSubview:textFieldBG];
         
-        _oldPWTextField = [UITextField textFieldWithPlaceHodler:@"请输入手机号码" withDelegate:self];
+        _oldPWTextField = [UITextField textFieldWithPlaceHodler:@"请输入旧密码" withDelegate:self];
         _oldPWTextField.frame = CGRectMake(_codeTextfield.vleft, textFieldBG.vtop, textFieldBG.vwidth, textFieldBG.vheight);
-        _oldPWTextField.keyboardType = UIKeyboardTypeNumberPad;
+        _oldPWTextField.keyboardType = UIKeyboardAppearanceDefault;
         _oldPWTextField.returnKeyType = UIReturnKeyDone;
+        _oldPWTextField.secureTextEntry = YES;
         [self.view addSubview:_oldPWTextField];
     }
     
@@ -130,19 +131,15 @@
     _rePwTextField.secureTextEntry = YES;
     [self.view addSubview:_rePwTextField];
     
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(smsLabel.vleft, backgroundView1.vbottom+18, 5, 5)];
-    imageView.image = nil;
-    imageView.backgroundColor = [UIColor redColor];
-    [self.view addSubview:imageView];
-    UILabel *fomartLabel = [UILabel labelWithTitle:@"密码为6~12位数字或字符"];
-    fomartLabel.frame = CGRectMake(imageView.vright, backgroundView1.vbottom+10, 200, 20);
+    UILabel *fomartLabel = [UILabel labelWithTitle:@"*密码为6~12位数字或字符"];
+    fomartLabel.frame = CGRectMake(smsLabel.vleft, backgroundView1.vbottom+10, 200, 20);
     [self.view addSubview:fomartLabel];
     
-    UIButton *doneBtn = [UIButton buttonWithTip:@"完成" target:self selector:@selector(resgisteSuccess)];
+    UIButton *doneBtn = [UIFactory createBtn:BlueButtonImageName bTitle:@"完成" bframe:CGRectZero];
+    [doneBtn addTarget:self action:@selector(resgisteSuccess) forControlEvents:UIControlEventTouchUpInside];
     float gap = iPhone4 ? 5 : 25;
     doneBtn.frame = CGRectMake(10, fomartLabel.vbottom+gap, self.view.vwidth-20, 40);
     doneBtn.layer.cornerRadius = 2.5f;
-    doneBtn.backgroundColor = CJBtnColor;
     [self.view addSubview:doneBtn];
 
 }
@@ -150,7 +147,7 @@
 #pragma mark - UIAcions
 - (void)getCode:(UIButton *)btn {
     [self _requesSmsCode];
-    
+    btnVerifCode.enabled = NO;
     [_rePwTextField resignFirstResponder];
 }
 
@@ -159,31 +156,35 @@
  */
 - (void)resgisteSuccess {
     if (![self vertifyParams]) return;
+    
+    NSString *append = [NSString stringWithFormat:@"%@%@",_phone,_pwTextField.text];
+    NSString *securityStr = [append md5];
 
+    [self showHUD];
     if (_operation == RegisterSetpassWord) { // 用户注册操作
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_phone,@"username",_pwTextField.text,@"password",_phone,@"phone",_codeTextfield.text,@"code", nil];
-        [self requestWithPath:bUserResgisterPath params:params httpMehtod:kHttpPostMethod HUDString:@"" success:^(MKNetworkOperation *operation) {
-            
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_phone,@"username",securityStr,@"password",_phone,@"phone",_codeTextfield.text,@"code", nil];
+        [self requestWithURL:bUserResgisterPath params:params HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
             [self _skip:YES];
-        } error:^(MKNetworkOperation *operation, NSError *error) {
+        } failedBlock:^(ASIHTTPRequest *request) {
             
         }];
+        
     }else if (_operation == ForgetSetPassword){   // 用户找回密码操作
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_phone,@"userName",_pwTextField.text,@"newPassword",_codeTextfield.text,@"code", nil];
-        [self requestWithPath:bUserFindPWPath params:params httpMehtod:kHttpPostMethod HUDString:@"" success:^(MKNetworkOperation *operation) {
-            kHDebug;
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_phone,@"userName",securityStr,@"newPassword",_codeTextfield.text,@"code", nil];
+        [self requestWithURL:bUserFindPWPath params:params HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
             [self _skip:NO];
-        } error:^(MKNetworkOperation *operation, NSError *error) {
+        } failedBlock:^(ASIHTTPRequest *request) {
             
         }];
 
     }else {
+        NSString *append = [NSString stringWithFormat:@"%@%@",_phone,_oldPWTextField.text];
+        NSString *oldsecurityStr = [append md5];
         // 修改密码
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:_oldPWTextField.text,@"oldPassword", _phone,@"userName",_pwTextField.text,@"newPassword",_codeTextfield.text,@"code", nil];
-        [self requestWithPath:bUserModifyPWPath params:params httpMehtod:kHttpPostMethod HUDString:@"" success:^(MKNetworkOperation *operation) {
-            kHDebug;
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:oldsecurityStr,@"oldPassword", _phone,@"userName",securityStr,@"newPassword",_codeTextfield.text,@"code", nil];
+        [self requestWithURL:bUserModifyPWPath params:params HTTPMethod:kHttpPostMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
             [self _skip:NO];
-        } error:^(MKNetworkOperation *operation, NSError *error) {
+        } failedBlock:^(ASIHTTPRequest *request) {
             
         }];
     }
@@ -193,6 +194,11 @@
 - (BOOL)vertifyParams {
     if (_codeTextfield.text.length == 0) {
         HUD(@"请输入验证码！");
+        return NO;
+    }
+    
+    if (_codeTextfield.text.length > 8) {
+        [self showTip:@"验证码长度超出"];
         return NO;
     }
     
@@ -223,6 +229,11 @@
  *@param isregister YES是注册 NO密码设置
  */
 - (void)_skip:(BOOL)isregister {
+    if (_operation == ForgetSetPassword || _operation == ModifySetPassword) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserPasswordkey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
     RegisterSuccessViewController *vc = [mainStoryBoard instantiateViewControllerWithIdentifier:@"RegisterSuccessViewControllerId"];
     vc.isRegister = isregister;
     [self.navigationController pushViewController:vc animated:YES];
@@ -247,7 +258,7 @@
                 btnVerifCode.enabled=YES;
             });
         }else{
-            NSString *strTime = [NSString stringWithFormat:@"%ds后重发",timeout];
+            NSString *strTime = [NSString stringWithFormat:@"%d秒后重发",timeout];
             dispatch_async(dispatch_get_main_queue(), ^{
                 btnVerifCode.enabled=YES;
                 [btnVerifCode setTitle:strTime forState:UIControlStateNormal];
@@ -264,14 +275,16 @@
  */
 - (void)_requesSmsCode {
     NSMutableDictionary *param = [NSMutableDictionary dictionaryWithObjectsAndKeys:_phone,@"phone", nil];
+    if (_operation == RegisterSetpassWord) {
+        [param setObject:@"REGISTER" forKey:@"sendType"];
+    }
     
-   MKNetworkOperation *op = [self requestWithPath:bMessageSendPath params:param httpMehtod:kHttpGetMethod HUDString:@"正在发送..." success:^(MKNetworkOperation *operation) {
-        [self _setTime];
-    } error:^(MKNetworkOperation *operation, NSError *error) {
-        
+    __block typeof(self) this = self;
+    [self requestWithURL:bMessageSendPath params:param HTTPMethod:kHttpGetMethod completeBlock:^(ASIHTTPRequest *request, id responseData) {
+        [this _setTime];
+    } failedBlock:^(ASIHTTPRequest *request) {
+        btnVerifCode.enabled = YES;
     }];
-    
-    op.shouldNotCacheResponse = YES;
 }
 
 @end

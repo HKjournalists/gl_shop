@@ -27,7 +27,7 @@ static HUDHelper *_instance = nil;
     if (self = [super init])
     {
         self.window = [UIApplication sharedApplication].keyWindow;
-        self.window.windowLevel=100.f;
+//        self.window.windowLevel=100.f;
         _showingHUDs = [[NSMutableArray alloc] init];
     }
     return self;
@@ -120,6 +120,10 @@ static HUDHelper *_instance = nil;
 - (void)tipMessage:(NSString *)msg delay:(CGFloat)seconds
 {
     if (!msg) {
+        return;
+    }
+    
+    if (_window == nil) {
         return;
     }
 

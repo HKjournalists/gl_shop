@@ -1,5 +1,6 @@
 package com.appabc.bean.bo;
 
+import com.appabc.bean.enums.CompanyInfo.CompanyType;
 import com.appabc.bean.pvo.TCompanyEvaluation;
 
 /**
@@ -21,7 +22,20 @@ public class CompanyEvaluationInfo extends TCompanyEvaluation {
 	
 	private static final long serialVersionUID = -5736779773066261990L;
 
+	/**
+	 * 企业名称
+	 */
 	private String cname;
+	
+	/**
+     * 企业类型（区分企业、船舶、个人）
+     */
+    private CompanyType ctype;
+    
+    /**
+     * 用户名
+     */
+    private String username;
 
 	/**  
 	 * cname  
@@ -39,6 +53,22 @@ public class CompanyEvaluationInfo extends TCompanyEvaluation {
 	 */
 	public void setCname(String cname) {
 		this.cname = cname;
+	}
+
+	public CompanyType getCtype() {
+		return ctype;
+	}
+
+	public void setCtype(CompanyType ctype) {
+		this.ctype = ctype;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 }

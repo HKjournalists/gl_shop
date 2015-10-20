@@ -73,4 +73,46 @@
     self.propretyArray = [NSArray arrayWithArray:temp];
 }
 
+#pragma mark - Public 
+- (NSString *)combineNameWithUnit {
+    float max = [self.sizeModel.maxv floatValue];
+    float min = [self.sizeModel.minv floatValue];
+    NSString *str = [NSString stringWithFormat:@"%@(%.1f-%.1f)mm",self.goodChildPname,min,max];
+    
+    // 只有最小值
+    if (max==0 && min > 0) {
+        str = [NSString stringWithFormat:@"%@(>=%.1f)mm",self.goodChildPname,min];
+    }
+    
+    // 最大最小值都是0
+    if (max == 0 && min == 0) {
+        str = self.goodChildPname;
+    }
+    
+    return str;
+}
+
+- (NSString *)nameWithUnit {
+    return [NSString stringWithFormat:@"%@%@",self.goodChildPname,self.productUnit];
+}
+
+- (NSString *)productUnit {
+    float max = [self.sizeModel.maxv floatValue];
+    float min = [self.sizeModel.minv floatValue];
+    
+    NSString *str = [NSString stringWithFormat:@"(%.1f-%.1f)",min,max];
+    
+    // 只有最小值
+    if (max==0 && min > 0) {
+        str = [NSString stringWithFormat:@"(>=%.1f)",min];
+    }
+    
+    // 最大最小值都是0
+    if (max == 0 && min == 0) {
+        str = nil;
+    }
+    
+    return str;
+}
+
 @end

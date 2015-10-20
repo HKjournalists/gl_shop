@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/company">
+<head>
+  <title>交易行为 - 历史交易</title>
+</head>
+<body>
+
+  <h4 layout:fragment="contentNavTitle">
+    <i class="fa fa-fw fa-wrench"></i> 交易行为 - 历史交易
+  </h4>
+
+  <div layout:fragment="pageContent">
+    <div th:replace="company/fragments :: contract_history_tab" class="nav nav-tabs"></div>
+
+    <p></p>
+    <div class="nav-tab-content">
+    <div class="tab-pane fade in active">
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>序号</th>
+            <th>失效时间</th>
+		    <th>供求名称</th>
+		    <th>发布时间</th>
+		    <th>当前状态</th>
+		    <th>操作</th>
+          </thead>
+          <tbody th:each="bean, status : ${ofList}">
+          <tr>
+          <td><span th:text="${status.index+1}"></span></td>
+            <td th:text="${bean.updatetime} ? ${#calendars.format(bean.updatetime, 'YYYY-MM-dd')}">2014年9月19日13:51</td>
+            <td ><span th:text="${bean.title}"></span></td>
+            <td th:text="${bean.creatime} ? ${#calendars.format(bean.creatime, 'YYYY-MM-dd')}">2014年9月19日13:51</td>
+            <td><span th:text="${bean.status.text}"></span></td>
+            <td><a th:href="@{/public/order_request/{id}/(id=${bean.id})}" target="_blank">查看详情</a></td>
+          </tr>
+          <!-- 
+           -->
+           <tr>
+          	<td colspan="6">
+          		<u><span th:id="'a_'+${bean.id}" href="#" th:onclick="'opview('+${bean.id}+')'" style="cursor: pointer; font-size: 10px;"> 点击展开</span></u>
+          		<div th:id="'div_'+${bean.id}" style="display: none;"><BR>
+          		<span th:text="${bean.creatime} ? ${#calendars.format(bean.creatime, 'YYYY-MM-dd HH:mm:ss')}+'&nbsp;&nbsp;'"></span>
+          		<span th:text="${#strings.length(bean.creater) == 15} ? '&nbsp;&nbsp;用户发布了询单' : '&nbsp;&nbsp;'+${bean.creater} +'代发了询单' "></span>
+          		<br>
+          		<span th:text="${bean.updatetime} ? ${#calendars.format(bean.updatetime, 'YYYY-MM-dd HH:mm:ss')}+'&nbsp;&nbsp;&nbsp;&nbsp;'"></span>
+          		<span th:text="${bean.status.text}"></span>
+				</div>
+          	</td>
+          </tr>
+          </tbody>
+          <tr th:if="${#lists.isEmpty(ofList)}">
+            <td colspan="5">暂时没有数据</td>
+          </tr>
+        </table>
+      </div>
+      <div th:replace="layouts/fragments :: pagingNavBar"></div>
+    </div>
+  </div>
+
+  </div>
+  <div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+  <script th:src="@{/static/js/product-info.js}"></script>
+</div>
+
+<script layout:fragment="inlineJavascript">
+
+function opview(contractid){
+	var divId = "div_"+contractid;
+	var aId = "a_"+contractid;
+	if(document.getElementById(divId).style.display=='none'){
+		document.getElementById(divId).style.display='';
+		document.getElementById(aId).innerHTML='点击隐藏';
+	}else{
+		document.getElementById(divId).style.display='none';
+		document.getElementById(aId).innerHTML='点击展开';
+	}
+}
+
+</script>
+
+</body>
+
+</html>

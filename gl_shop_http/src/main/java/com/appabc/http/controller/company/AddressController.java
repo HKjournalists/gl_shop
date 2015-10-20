@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.appabc.bean.enums.CompanyInfo.AddressStatus;
 import com.appabc.bean.pvo.TCompanyAddress;
 import com.appabc.common.base.controller.BaseController;
 import com.appabc.common.utils.ErrorCode;
@@ -48,13 +49,31 @@ public class AddressController extends BaseController<TCompanyAddress> {
 	public Object addCompanyAddress(HttpServletRequest request,HttpServletResponse response, 
 			TCompanyAddress caBean) {
 		
-		if(StringUtils.isEmpty(caBean.getCid())){
-			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业编号不能为空");
-		}else if(StringUtils.isEmpty(caBean.getAddress())){
+		if(StringUtils.isEmpty(caBean.getAddress())){
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "地址不能为空");
+		}
+		if(caBean.getDeep() != null && (caBean.getDeep() > 9999999 || caBean.getDeep() < 0)){
+			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "实际水深值范围0~9999");
+		}
+		if(caBean.getShippington() != null && (caBean.getShippington() > 9999999 || caBean.getShippington() < 0)){
+			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "泊船吨位值范围0~9999");
 		}
 		
 		try {
+			String status = request.getParameter("status");
+			if(StringUtils.isNotEmpty(status)){
+				caBean.setStatus(AddressStatus.enumOf(Integer.valueOf(status)));
+			}else{
+				caBean.setStatus(AddressStatus.ADDRESS_STATUS_OTHER);
+			}
+			
+			String cid = getCurrentUserCid(request);
+			if(StringUtils.isNotEmpty(cid)){
+				caBean.setCid(cid);
+			}else{
+				return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "企业编号不能为空");
+			}
+			
 			this.companyAddressService.add(caBean);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -66,7 +85,7 @@ public class AddressController extends BaseController<TCompanyAddress> {
 	}
 	
 	/**
-	 * 卸货地址图片修改
+	 * 卸货地址及图片修改
 	 * @param request
 	 * @param response
 	 * @param caBean
@@ -83,6 +102,13 @@ public class AddressController extends BaseController<TCompanyAddress> {
 			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "地址不能为空");
 		}
 		
+		if(caBean.getDeep() != null && (caBean.getDeep() > 9999999 || caBean.getDeep() < 0)){
+			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "实际水深值范围0~9999");
+		}
+		if(caBean.getShippington() != null && (caBean.getShippington() > 9999999 || caBean.getShippington() < 0)){
+			return buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "泊船吨位值范围0~9999");
+		}
+		
 		TCompanyAddress entity = this.companyAddressService.query(caBean.getId());
 		if(entity != null){
 			
@@ -92,6 +118,8 @@ public class AddressController extends BaseController<TCompanyAddress> {
 			entity.setLatitude(caBean.getLatitude());
 			entity.setLongitude(caBean.getLongitude());
 			entity.setRealdeep(caBean.getRealdeep());
+			entity.setAreacode(caBean.getAreacode());
+			entity.setShippington(caBean.getShippington());
 			
 			try {
 				this.companyAddressService.modify(entity);
@@ -108,7 +136,7 @@ public class AddressController extends BaseController<TCompanyAddress> {
 	}
 	
 	/**
-	 * 企业卸货地址添加
+	 * 企业卸货地址删除
 	 * @param request
 	 * @param response
 	 * @param caBean

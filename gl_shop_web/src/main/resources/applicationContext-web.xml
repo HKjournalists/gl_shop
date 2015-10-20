@@ -13,14 +13,25 @@
 	http://www.springframework.org/schema/aop/spring-aop.xsd ">
 
 
-	<context:component-scan base-package="com.appabc.datas.system">
+	<context:component-scan base-package="com.appabc.datas.cms">
 		<context:include-filter type="regex" expression=".*Dao,.*Service" />
 	</context:component-scan>
 
 	   <!-- 声明式事务 -->
     <aop:config proxy-target-class="true">
-        <aop:advisor pointcut="execution(* com.appabc.datas.system.*Service..*.*(..))" advice-ref="txTransactionAdvisor"/>
+        <aop:advisor pointcut="execution(* com.appabc.datas.cms.*Service..*.*(..))" advice-ref="txTransactionAdvisor"/>
     </aop:config>
+
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="cacheSeconds" value="-1" />
+        <property name="basenames">
+            <list>
+                <value>classpath:/properties/i18n/messages</value>
+                <value>classpath:/properties/messages</value>
+            </list>
+        </property>
+    </bean>
 
     <beans profile="develop">
             <context:property-placeholder ignore-resource-not-found="false"

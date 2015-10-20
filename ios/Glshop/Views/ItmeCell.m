@@ -38,8 +38,9 @@
         [self.contentView addSubview:_subProductNameLabel];
         
         UIImageView *sView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        UIImage *image = [[UIImage imageNamed:@"index_icon_envelopes"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 5, 5) resizingMode:UIImageResizingModeTile];
-        sView.image = image;
+//        UIImage *image = [[UIImage imageNamed:@"tapAffect"] resizableImageWithCapInsets:UIEdgeInsetsMake(5, 5, 5, 5) resizingMode:UIImageResizingModeTile];
+//        UIColor *color = [UIColor colorWithPatternImage:image];
+        sView.backgroundColor = RGB(255, 244, 236, 1);
         self.selectedBackgroundView = sView;
         
     }
@@ -58,10 +59,10 @@
         _productNameLabel.text = gmodel.goodsName;
         
         GoodChildModel *model = [[SynacInstance sharedInstance] goodsChildModlelFor:_todayModel.ptype deepId:_todayModel.pid];
-        subProNameStr = [NSString stringWithFormat:@"%@(%@-%@)",_todayModel.pname,model.sizeModel.minv,model.sizeModel.maxv];
+        subProNameStr = [model productUnit];
     }else { // 石子
         GoodChildModel *model = [[SynacInstance sharedInstance] goodsChildStone:_todayModel.pid];
-        subProNameStr = [NSString stringWithFormat:@"(%@-%@)",model.sizeModel.minv,model.sizeModel.maxv];
+        subProNameStr = model.productUnit;
         _productNameLabel.text = todayModel.pname;
     }
     _subProductNameLabel.text = subProNameStr;

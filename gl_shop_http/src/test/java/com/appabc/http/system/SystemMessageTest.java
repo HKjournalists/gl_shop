@@ -24,19 +24,20 @@ public class SystemMessageTest extends AbstractHttpControllerTest {
 	@Override
 	@Test
 	public void mainTest() {
-//		loginSimulation(null, null, null);
+		loginSimulation(null, null, null);
 //		getList();
 //		getCount();
 //		getInfo();
 //		read();
-		
+//		getListByType();
+//		delete();
 	}
 	
 	public void getCount(){
 		request.setRequestURI("/msg/newTotal");
 		request.setMethod("GET");
 		
-		request.setParameter("cid", "000000915102014");
+		request.setParameter("cid", "201508270000174");
 		
 		try {
 			final ModelAndView mav = handle(request, response);
@@ -50,7 +51,22 @@ public class SystemMessageTest extends AbstractHttpControllerTest {
 		request.setRequestURI("/msg/getList");
 		request.setMethod("GET");
 		
-		request.setParameter("cid", "241120140000015");
+		request.setParameter("cid", "201503110000065");
+		
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void getListByType(){
+		request.setRequestURI("/msg/getListByType");
+		request.setMethod("GET");
+		
+		request.setParameter("cid", "201508270000174");
+		request.setParameter("type", "3");
 		
 		try {
 			final ModelAndView mav = handle(request, response);
@@ -78,7 +94,7 @@ public class SystemMessageTest extends AbstractHttpControllerTest {
 		request.setRequestURI("/msg/read");
 		request.setMethod("GET");
 		
-		request.setParameter("id", "1");
+		request.setParameter("msgids", "81380");
 		
 		try {
 			final ModelAndView mav = handle(request, response);
@@ -88,5 +104,18 @@ public class SystemMessageTest extends AbstractHttpControllerTest {
 		}
 	}
 	
+	public void delete(){
+		request.setRequestURI("/msg/delete");
+		request.setMethod("GET");
+		
+		request.setParameter("msgids", "81380");
+		
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

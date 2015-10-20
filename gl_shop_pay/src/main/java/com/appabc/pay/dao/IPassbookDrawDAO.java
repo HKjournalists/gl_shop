@@ -8,8 +8,10 @@ package com.appabc.pay.dao;
 
 import java.util.List;
 
+import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.IBaseDao;
 import com.appabc.pay.bean.TPassbookDraw;
+import com.appabc.pay.bean.TPassbookDrawEx;
 
 /**
  * @Description : 
@@ -23,5 +25,7 @@ import com.appabc.pay.bean.TPassbookDraw;
 public interface IPassbookDrawDAO extends IBaseDao<TPassbookDraw> {
 	
 	List<TPassbookDraw> getTPassbookDrawByPassId(String passId);
+	
+	QueryContext<TPassbookDrawEx> extractCashRequestListEx(QueryContext<TPassbookDrawEx> qContext);
 	
 }

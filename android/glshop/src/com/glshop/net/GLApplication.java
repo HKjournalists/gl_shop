@@ -79,7 +79,8 @@ public class GLApplication extends BaseApplication {
 
 		if (isMainAppProcess()) {
 			Logger.e(TAG, "onCreate");
-			Logger.e(TAG, "AppVersion = " + ActivityUtil.getVersionName(this));
+			Logger.e(TAG, "VersionName = " + ActivityUtil.getVersionName(this));
+			Logger.e(TAG, "VersionCode = " + ActivityUtil.getVersionCode(this));
 
 			// 初始化全局配置
 			GlobalConfig.getInstance().init(mContext);

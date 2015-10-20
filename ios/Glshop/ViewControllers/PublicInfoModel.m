@@ -40,6 +40,9 @@
         [proImgArr addObject:model];
     }
     self.productImgList = [NSArray arrayWithArray:proImgArr];
+    
+    NSDictionary *evaDic = [dataDic objectForKey:@"evaluationInfo"];
+    _evalutModel = [[EvaluationModel alloc] initWithDataDic:evaDic];
 }
 
 @end

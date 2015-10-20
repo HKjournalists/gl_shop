@@ -6,6 +6,7 @@ package com.appabc.datas.dao.product;
 import com.appabc.bean.pvo.TProductPrice;
 import com.appabc.common.base.dao.IBaseDao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,5 +27,13 @@ public interface IProductPriceDao extends IBaseDao<TProductPrice> {
 	 * @return
 	 */
 	public List<Map<String, Object>> queryTodayPrice(String area, String pcode);
+
+	/**
+	 * 查询某天的数据
+	 * @param entity
+	 * @param date
+	 * @return
+	 */
+	List<TProductPrice> queryListByDay(TProductPrice entity, Date date);
 
 }

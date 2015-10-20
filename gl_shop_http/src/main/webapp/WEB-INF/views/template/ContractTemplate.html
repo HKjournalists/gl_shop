@@ -7,12 +7,12 @@
 <body>
 <div> 
     <p align="center"><strong>长江电商电子商务合同</strong></p> 
-    <p>合同编号：<u>&nbsp;<#if (contract.id)??>${contract.id}</#if>&nbsp;</u> </p> 
-    <p>卖 方：<u>&nbsp;<#if (contract.sellerName)??>${contract.sellerName}</#if>&nbsp;</u></p>
-	<p>买 方：<u>&nbsp;<#if (contract.buyerName)??>${contract.buyerName}</#if>&nbsp;</u></p> 
-    <p>第一条 商品基本状况</p>
-	<p> 1、商品名称：<u>&nbsp;<#if (contract.productName)??>${contract.productName}</#if>&nbsp;</u><br />  2、种类／规格：<u>&nbsp;<#if (orderFind.ptype)??>${orderFind.ptype}</#if><#if (orderFind.psize)??>/${orderFind.psize.content}</#if>&nbsp;</u><br />  3、颜色：<u>&nbsp;<#if (orderFind.pcolor)??>${orderFind.pcolor}</#if>&nbsp;</u><br />  4、产地：<u>&nbsp;<#if (orderFind.paddress)??>${orderFind.paddress}</#if>&nbsp;</u><br />
-    <#list orderFind.oppList as ppitem>
+    <!-- <p>合同编号：<u>&nbsp;<#if (contract.id)??>${contract.id}</#if>&nbsp;</u> </p> --> 
+	<p>买 方：<u>&nbsp;<#if (contract.buyerName)??>${contract.buyerName}</#if><#if contract.buyerName == "" || contract.buyerName == null>无</#if>&nbsp;</u></p>
+    <p>卖 方：<u>&nbsp;<#if (contract.sellerName)??>${contract.sellerName}</#if><#if contract.sellerName == "" || contract.sellerName == null>无</#if>&nbsp;</u></p>
+    <p>第一条 货物基本信息</p>
+	<p> 1、货物名称：<u>&nbsp;<#if (contract.productName)??>${contract.productName}</#if><#if contract.productName == "" || contract.productName == null>无</#if>&nbsp;</u><br />
+	<#list orderFind.oppList as ppitem>
       <!-- 含泥量 -->  	
       <#if ppitem.code == "MUD_CONTENT">
 	    <#assign hll=ppitem.content/>
@@ -33,68 +33,142 @@
 	  <#if ppitem.code == "BULK_DENSITY">
 	    <#assign djmd=ppitem.content/>
 	  </#if>
+	  <!-- 针片状颗粒含量 -->
+	  <#if ppitem.code == "ELONGATED_PARTICLES">
+	    <#assign zpzkkhl=ppitem.content/>
+	  </#if>
+	  <!-- 压碎值指标 -->
+	  <#if ppitem.code == "CRUSHING_VALUE_INDEX">
+	    <#assign yszzb=ppitem.content/>
+	  </#if>
 	  <!-- 坚固性指标 -->
 	  <#if ppitem.code == "CONSISTENCY_INDEX">
 	    <#assign jkxzb=ppitem.content/>
 	  </#if>
     </#list>
-    5、含泥量（%）：<u>&nbsp;<#if (hll)??>${(hll?number)?string("#.###")}</#if>&nbsp;</u><br />  6、泥块含量（%）：<u>&nbsp;<#if (nkhl)??>${(nkhl?number)?string("#.###")}</#if>&nbsp;</u><br />  7、含水率（%）：<u>&nbsp;<#if (hsl)??>${(hsl?number)?string("#.###")}</#if>&nbsp;</u><br />  8、表观密度（kg/m&sup3;%）：<u>&nbsp;<#if (bgmd)??>${(bgmd?number)?string("#.###")}</#if>&nbsp;</u><br />9、堆积密度(kg/m&sup3;%）：<u>&nbsp;<#if (djmd)??>${(djmd?number)?string("#.###")}</#if>&nbsp;</u><br /> 10、坚固性指标（%）：<u>&nbsp;<#if (jkxzb)??>${(jkxzb?number)?string("#.###")}</#if>&nbsp;</u><br />
-	<!--11、购买量(吨)：<u>&nbsp;<#if (contract.totalnum)??>${contract.totalnum}</#if>&nbsp;</u>-->
-	11、商品备注：<u>&nbsp;<#if (orderFind.premark)??>${orderFind.premark}</#if>&nbsp;</u>
+	<#if (orderFind.pcode)??>
+	<#if orderFind.pcode == "G001">
+	<!-- 
+	20	GOODS	G001	石子	0	2	0
+	-->
+	2、规格：<u>&nbsp;<#if (orderFind.psize)??>${orderFind.psize.content}</#if><#if orderFind.psize.content == "" || orderFind.psize.content == null>无</#if>&nbsp;</u><br />
+	3、货物颜色：<u>&nbsp;<#if (orderFind.pcolor)??>${orderFind.pcolor}</#if><#if orderFind.pcolor == "" || orderFind.pcolor == null>无</#if>&nbsp;</u><br />  
+	4、货物产地：<u>&nbsp;<#if (orderFind.paddress)??>${orderFind.paddress}</#if><#if orderFind.paddress == "" || orderFind.paddress == null>无</#if>&nbsp;</u><br />
+    5、含泥量（%）：<u>&nbsp;<#if (hll)??>${(hll?number)?string("#.###")}</#if><#if hll == "" || hll == null>无</#if>&nbsp;</u><br />  
+    6、泥块含量（%）：<u>&nbsp;<#if (nkhl)??>${(nkhl?number)?string("#.###")}</#if><#if nkhl == "" || nkhl == null>无</#if>&nbsp;</u><br />  
+    8、表观密度（kg/m&sup3;%）：<u>&nbsp;<#if (bgmd)??>${(bgmd?number)?string("#.###")}</#if><#if bgmd == "" || bgmd == null>无</#if>&nbsp;</u><br />
+    9、堆积密度(kg/m&sup3;%）：<u>&nbsp;<#if (djmd)??>${(djmd?number)?string("#.###")}</#if><#if djmd == "" || djmd == null>无</#if>&nbsp;</u><br />
+    10、压碎值指标（%）：<u>&nbsp;<#if (yszzb)??>${(yszzb?number)?string("#.###")}</#if><#if yszzb == "" || yszzb == null>无</#if>&nbsp;</u><br />
+    11、针片状颗粒含量（%）：<u>&nbsp;<#if (zpzkkhl)??>${(zpzkkhl?number)?string("#.###")}</#if><#if zpzkkhl == "" || zpzkkhl == null>无</#if>&nbsp;</u><br />
+    12、坚固性指标（%）：<u>&nbsp;<#if (jkxzb)??>${(jkxzb?number)?string("#.###")}</#if><#if jkxzb == "" || jkxzb == null>无</#if>&nbsp;</u><br />
+	13、货物备注信息：<u>&nbsp;<#if (orderFind.premark)??>${orderFind.premark}</#if><#if orderFind.premark == "" || orderFind.premark == null>无</#if>&nbsp;</u>
+	</#if>
+	<#if orderFind.pcode == "G002">
+	<!-- 
+	21	GOODS	G002	黄砂	0	1	0
+	-->
+	2、种类：<u>&nbsp;<#if (orderFind.ptype)??>${orderFind.ptype}</#if><#if orderFind.ptype == "" || orderFind.ptype == null>无</#if>&nbsp;</u><br />
+	3、规格：<u>&nbsp;<#if (orderFind.psize)??>${orderFind.psize.content}</#if><#if orderFind.psize.content == "" || orderFind.psize.content == null>无</#if>&nbsp;</u><br />
+	4、货物颜色：<u>&nbsp;<#if (orderFind.pcolor)??>${orderFind.pcolor}</#if><#if orderFind.pcolor == "" || orderFind.pcolor == null>无</#if>&nbsp;</u><br />  
+	5、货物产地：<u>&nbsp;<#if (orderFind.paddress)??>${orderFind.paddress}</#if><#if orderFind.paddress == "" || orderFind.paddress == null>无</#if>&nbsp;</u><br />
+    6、含泥量（%）：<u>&nbsp;<#if (hll)??>${(hll?number)?string("#.###")}</#if><#if hll == "" || hll == null>无</#if>&nbsp;</u><br />  
+    7、泥块含量（%）：<u>&nbsp;<#if (nkhl)??>${(nkhl?number)?string("#.###")}</#if><#if nkhl == "" || nkhl == null>无</#if>&nbsp;</u><br />  
+    8、含水率（%）：<u>&nbsp;<#if (hsl)??>${(hsl?number)?string("#.###")}</#if><#if hsl == "" || hsl == null>无</#if>&nbsp;</u><br />  
+    9、表观密度（kg/m&sup3;%）：<u>&nbsp;<#if (bgmd)??>${(bgmd?number)?string("#.###")}</#if><#if bgmd == "" || bgmd == null>无</#if>&nbsp;</u><br />
+    10、堆积密度(kg/m&sup3;%）：<u>&nbsp;<#if (djmd)??>${(djmd?number)?string("#.###")}</#if><#if djmd == "" || djmd == null>无</#if>&nbsp;</u><br /> 
+    11、坚固性指标（%）：<u>&nbsp;<#if (jkxzb)??>${(jkxzb?number)?string("#.###")}</#if><#if jkxzb == "" || jkxzb == null>无</#if>&nbsp;</u><br />
+	12、货物备注信息：<u>&nbsp;<#if (orderFind.premark)??>${orderFind.premark}</#if><#if orderFind.premark == "" || orderFind.premark == null>无</#if>&nbsp;</u>
+	</#if>
+	</#if>
 	<br />
     </p> 
-    <p>第二条 商品价款</p>
+    <p>第二条 货物价款</p>
+    <#if orderFind.unit == "UNIT_TON">
+    <p>货物单价(单位：元/吨)：<u>&nbsp;<#if (contract.price)??>${contract.price}</#if><#if contract.price == "" || contract.price == null>无</#if>&nbsp;</u><br />
+	货物总量(单位：吨)：<u>&nbsp;<#if (contract.totalnum)??>${contract.totalnum}</#if><#if contract.totalnum == "" || contract.totalnum == null>无</#if>&nbsp;</u><br />
+	总价(单位：元)：<u>&nbsp;<#if (contract.totalamount)??>${contract.totalamount}</#if><#if contract.totalamount == "" || contract.totalamount == null>无</#if>&nbsp;</u><br />
+	<#if toDisplayFinalAmount == true>
+	最终成交价格(单位：元)：<u>&nbsp;<#if (contract.amount)??>${contract.amount}</#if><#if contract.amount == "" || contract.amount == null>无</#if>&nbsp;</u><br />
+	</#if>
+	</p>
+    </#if>
+    <#if orderFind.unit == "UNIT_CUBE">
+    <p>货物单价(单位：元/立方)：<u>&nbsp;<#if (contract.price)??>${contract.price}</#if><#if contract.price == "" || contract.price == null>无</#if>&nbsp;</u><br />
+	货物总量(单位：立方)：<u>&nbsp;<#if (contract.totalnum)??>${contract.totalnum}</#if><#if contract.totalnum == "" || contract.totalnum == null>无</#if>&nbsp;</u><br />
+	总价(单位：元)：<u>&nbsp;<#if (contract.totalamount)??>${contract.totalamount}</#if><#if contract.totalamount == "" || contract.totalamount == null>无</#if>&nbsp;</u><br />
+	<#if toDisplayFinalAmount == true>
+	最终成交价格(单位：元)：<u>&nbsp;<#if (contract.amount)??>${contract.amount}</#if><#if contract.amount == "" || contract.amount == null>无</#if>&nbsp;</u><br />
+	</#if>
+	</p>
+    </#if>
+    <#if orderFind.unit == "">
+    <p>货物单价(单位：元/吨)：<u>&nbsp;<#if (contract.price)??>${contract.price}</#if><#if contract.price == "" || contract.price == null>无</#if>&nbsp;</u><br />
+	货物总量(单位：吨)：<u>&nbsp;<#if (contract.totalnum)??>${contract.totalnum}</#if><#if contract.totalnum == "" || contract.totalnum == null>无</#if>&nbsp;</u><br />
+	总价(单位：元)：<u>&nbsp;<#if (contract.totalamount)??>${contract.totalamount}</#if><#if contract.totalamount == "" || contract.totalamount == null>无</#if>&nbsp;</u><br />
+	<#if toDisplayFinalAmount == true>
+	最终成交价格(单位：元)：<u>&nbsp;<#if (contract.amount)??>${contract.amount}</#if><#if contract.amount == "" || contract.amount == null>无</#if>&nbsp;</u><br />
+	</#if>
+	</p>
+    </#if>
+	<!-- 
 	<p>商品单价为：<u>&nbsp;<#if (contract.price)??>${contract.price}</#if>&nbsp;</u>（元）<br />
 	商品总量为：<u>&nbsp;<#if (contract.totalnum)??>${contract.totalnum}</#if>&nbsp;</u>（吨）<br />
 	总价为：<u>&nbsp;<#if (contract.totalamount)??>${contract.totalamount}</#if>&nbsp;</u>（元）<br />
 	买卖备注：<u>&nbsp;<#if (contract.remark)??>${contract.remark}</#if>&nbsp;</u>
 	</p>
+	 -->
 	<p>第三条　交货</p>
-	<p>1、交货时间：<u>&nbsp;<#if (contract.limittime)??>${contract.limittime}</#if>&nbsp;</u>
-	<br/>2、交货地域：<u>&nbsp;<#if (orderFind.area)??>${orderFind.area}</#if>&nbsp;</u>
-	<br/>3、交易详细地址：<u>&nbsp;<#if (orderFind.address)??>${orderFind.address}</#if>&nbsp;</u>
+	<p>1、交货时间：<u>&nbsp;<#if (orderFind.starttime)??>${orderFind.starttime?string("yyyy年MM月dd日")}</#if>至<#if (orderFind.endtime)??>${orderFind.endtime?string("yyyy年MM月dd日")}</#if>&nbsp;</u>
+	<br/>2、交货港口：<u>&nbsp;<#if (orderFind.addrAreaFullName)??>${orderFind.addrAreaFullName}</#if><#if orderFind.addrAreaFullName == "" || orderFind.addrAreaFullName == null>无</#if>&nbsp;</u>
+	<br/>3、交易详细地址：<u>&nbsp;<#if (orderFind.address)??>${orderFind.address}</#if><#if orderFind.address == "" || orderFind.address == null>无</#if>&nbsp;</u>
 	<!--<br/>3、交货地址指定方式：<u>&nbsp;<#if (orderFind.addresstype)??>${orderFind.addresstype.text}</#if>&nbsp;</u>
-	<br/>5、卸货地港口水深度：<u>&nbsp;<#if (orderFind.deep)??>${orderFind.deep}</#if>&nbsp;</u>
-	<br/>6、实际船舶吃水深度：<u>&nbsp;<#if (orderFind.realdeep)??>${orderFind.realdeep}</#if>&nbsp;</u>-->
-	<br/>4、其他备注信息：<u>&nbsp;<#if (contract.remark)??>${contract.remark}</#if>&nbsp;</u></p>	
+	<br/>4、卸货地港口水深度：<u>&nbsp;<#if (orderFind.deep)??>${orderFind.deep}</#if>&nbsp;</u>
+	<br/>5、实际船舶吃水深度：<u>&nbsp;<#if (orderFind.realdeep)??>${orderFind.realdeep}</#if>&nbsp;</u>
+	-->
+	<br/>4、卸货码头水深度(米)：<u>&nbsp;<#if (orderFind.deep)??>${orderFind.deep}</#if><#if orderFind.deep == "" || orderFind.deep == null>无</#if>&nbsp;</u>
+	<br/>5、可停泊载重船吨位(吨)：<u>&nbsp;<#if (orderFind.shippington)??>${orderFind.shippington}</#if><#if orderFind.shippington == "" || orderFind.shippington == null>无</#if>&nbsp;</u>
+	<br/>6、交易备注信息：<u>&nbsp;<#if (contract.remark)??>${contract.remark}</#if><#if contract.remark == "" || contract.remark == null>无</#if>&nbsp;</u></p>	
     <p>第四条 支付条款</p>
-	<p>1、付款流程：<br />&nbsp;&nbsp;买卖双方在合同确认后，合同开始生效，平台开始冻结双方交易保证金，买方需在48小时内将货款支付到长江电商平台账户。逾期将视为单方违约。</p> 
-    <p>2、长江电商平台为买家提供多以下支付方式（货款账号用途被浦发银行靖江支行监管）</p> 
-    <p>（1）钱包支付：可以通过长江电商钱包的货款账户内余额支付<br />
-	（2）在线支付：可以通过手机客户端、手机银行、网银等手段在线支付。<br />
-	（3）银行转账：可以通过银行或支付工具进行转账。	
-	</br>&nbsp;&nbsp;&nbsp;&nbsp;名&nbsp;&nbsp;&nbsp;&nbsp;称：  <u>&nbsp;&nbsp;江苏国立网络科技有限公司&nbsp;&nbsp;</u>
-    </br>&nbsp;&nbsp;&nbsp;&nbsp;开户银行：   <u>&nbsp;&nbsp;上海浦东发展银行靖江工业园区支行&nbsp;&nbsp;</u>
+	<p>1、付款流程：<br />&nbsp;&nbsp;买卖双方在合同确认后，合同开始生效，平台开始冻结双方交易保证金，买方需在指定时间内（具体时间以合同付款页面的时间为准）将货款支付到长江电商平台账户。逾期将视为单方违约。</p> 
+    <p>2、长江电商平台为买家提供以下支付方式（货款账号用途由浦发银行靖江支行监管）</p> 
+    <p>（1）在线支付:可以通过手机客户端、手机银行、网银等在线支付方式;<br />
+	（2）银行转账:可以通过银行或支付工具进行转账。	
+	</br>&nbsp;&nbsp;&nbsp;&nbsp;名&nbsp;&nbsp;&nbsp;&nbsp;称：  <u>&nbsp;&nbsp;江苏国立网络技术有限公司&nbsp;&nbsp;</u>
+    </br>&nbsp;&nbsp;&nbsp;&nbsp;开户银行：   <u>&nbsp;&nbsp;上海浦东发展银行靖江支行&nbsp;&nbsp;</u>
     </br>&nbsp;&nbsp;&nbsp;&nbsp;用户账户：   <u>&nbsp;&nbsp;67010154740008882&nbsp;&nbsp;</u>
-	</br>（4）线下支付：可以前往前台（长江电商）的办公地点进行现金支付及刷卡支付。
-    </br>&nbsp;&nbsp;&nbsp;&nbsp; 地   址：   <u>&nbsp;&nbsp;靖江市&nbsp;&nbsp;</u></p>              
-	<p>3、根据上述选择的付款方式，买方应承担在线支付及银行转账时所产生的费用。</p>
-	<p>未尽事宜可参照《长江电商钱包支付协议》。</p>
+	</br>（3）线下支付:可以前往长江电商各网点进行现金支付及刷卡支付。
+    </br>&nbsp;&nbsp;&nbsp;&nbsp; 地   址：   <u>&nbsp;&nbsp;江苏省靖江市南环东路88号恒天商务广场4楼&nbsp;&nbsp;</u></p>              
+	<p>3、根据上述选择的付款方式，买方应承担在线支付及银行转账时所产生的手续费用。未尽事宜可参照《长江电商钱包支付协议》。</p>
 	<p>第五条　迟延交货</p>
-	<p>&nbsp;&nbsp;&nbsp;&nbsp;如果卖方因自身原因未能按合同规定按时交付所有或部分货物（包括达成一致的文件），则应向买方进行协商处理，并联系长电电商客服为其进行合同时间延长。</p>
+	<p>&nbsp;&nbsp;&nbsp;&nbsp;如果卖方因自身原因未能按合同规定按时交付所有或部分货物（包括其他达成一致的要求），则应向买方进行协商处理，并主动联系长江电商客服为其进行处理。</p>
 	<p>第六条　取消合同</p>
-	<p>（1）买卖双方协商一致进行合同取消，取消合同不扣交易保证金</p>
-	<p>（2）如果另一方完全因其责任在合同规定的时间期限内未履行其义务，主动提出取消合同，另外一方不同意取消合同，双方协商不一致，可提请平台进行调解，调解不成的按照《长江电商保证金协议》扣除违约方交易保证金并将其支付给另一方。</p>
-	<p>（3）合同一方单方面取消合同段的，按照《长江电商保证金协议》扣除违约方交易保证金并将其支付给另一方。</p>
+	<p>（1）买卖双方协商一致进行合同取消，取消合同不扣交易保证金，需主动联系长江电商客服为其进行处理;</p>
+	<p>（2）如果另一方完全因其责任在合同规定的时间期限内未履行其义务，主动提出取消合同，另外一方不同意取消合同，双方协商不一致，可申请平台进行调解，调解不成的按照《长江电商保证金协议》扣除违约方交易保证金并将其支付给另一方;</p>
+	<p>（3）合同一方单方面取消合同的，按照《长江电商保证金协议》扣除违约方交易保证金并将其支付给另一方。</p>
 	<p>第七条　产品质量责任</p>
-	<p>1、卖方销售的商品质量必须是符合质量标准（国家标准）的合法商品（产品）。</p>
-	<p>2、卖方承诺承担由于其产品质量出现问题时给买方所造成的损失。</p>
-	<p>3、平台为买家提供商品验收机会，卸货前买方可抽检商品质量，卸货完毕后买方可全量验收，买家若在验收过程中有任何问题，可以发起议价与卖家进行协商。</p>
-	<p>4、双方对商品质量有争议的可提交当地检验机构检验。</p>
-	<p>第八条　赔偿金</p>
-	<p>1、如果卖方不能交货或不能按合同规定的条件交货，按照《长江电商保证金协议》扣除方交易保证金并将其支付给买方。</p>
+	<p>1、卖方销售的货物质量必须是符合质量标准（国家标准）的合法货物（产品）;</p>
+	<p>2、卖方承诺承担由于其产品质量出现问题时给买方所造成的损失;</p>
+	<p>3、平台为买家提供货物验收机会，买家若在验收过程中有任何问题，可以提出异议，并联系长江电商客服与卖家进行协商;</p>
+	<p>4、双方对货物质量有争议的可提交当地检验机构检验。</p>
+	<p>第八条　服务费用</p>
+	<p>&nbsp;&nbsp;&nbsp;&nbsp;在合同正常结束时，长江电商将向卖方收取本次交易金额的  <#if (service_percent)??>${service_percent}<#if service_percent == "">3%</#if></#if>作为服务费用。除非另有说明或约定，长江电商将在本合同的交易款项中直接扣除上述服务费用。具体明细以合同的结算账单为准。</p>
+	<p>第九条　赔偿金</p>
+	<p>1、如果卖方不能交货或不能按合同规定的条件交货，按照《长江电商保证金协议》扣除方交易保证金并将其支付给买方;</p>
 	<p>2、如果买方不能按合同规定的条件收货，买方应负责向卖方赔偿，按照《长江电商保证金协议》扣除方交易保证金并将其支付给卖方。</p>
-	<p>第九条　争议的处理</p>
-	<p>1、本合同受中华人民共和国法律管辖并按其进行解释。</p>
+	<p>第十条　合同正常结束的定义</p>
+	<p>1、合同正常结束是指买方在收到货物验货后，在长江电商手机客户端上提交货物与货款的确认，且卖方也提交实收货款的确认，双方达成一致无异议后，合同定义为正常结束;</p>
+	<p>2、合同正常结束后，平台将发起结算账单，买卖双方可以互相给予对方交易评价。</p>
+	<p>第十一条　争议的处理</p>
+	<p>1、本合同受中华人民共和国法律管辖并按其进行解释;</p>
 	<p>2、本合同在履行过程中发生的争议，由双方当事人协商解决，也可由有关部门调解；协商或调解不成的，按下列第3种方式解决：</p>
-	<p>（1）提交仲裁委员会仲裁；</p>
-	<p>（2）依法向靖江市人民法院起诉；</p>
-	<p>（3）联系长江电商平台客服进行调解处理。</p>
-	<p>第十条　合同的效力</p>
-	<p>1、本合同自双方或双方法定代表人或其授权代表人登录长江电商平台，进行合同确认即刻生效。</p>
-	<p>2、经平台撮合成交的合同双方必须24小时内确认，才能生效。任一方超过24小时没确认的，合同不成立。</p>
-	<p>卖方：<u>&nbsp;<#if (contract.sellerName)??>${contract.sellerName}</#if>&nbsp;</u></p>
+	（1）联系长江电商平台客服进行调解处理;</br>
+	（2）提交仲裁委员会仲裁;</br>
+	（3）依法向靖江市人民法院提起诉讼。
+	<p>第十二条　合同的效力</p>
+	<p>1、本合同自双方或双方法定代表人或其授权代表人登录长江电商平台，进行合同确认即刻生效;</p>
+	<p>2、经平台撮合成交的合同双方必须  <#if (ContractDraftConfirmLimitNum)??>${ContractDraftConfirmLimitNum}</#if>分钟内确认，才能生效。任意一方超过<#if (ContractDraftConfirmLimitNum)??>${ContractDraftConfirmLimitNum}<#if ContractDraftConfirmLimitNum == "">3</#if></#if>分钟没确认的，合同不成立。</p>
 	<p>买方：<u>&nbsp;<#if (contract.buyerName)??>${contract.buyerName}</#if>&nbsp;</u></p>
+	<p>卖方：<u>&nbsp;<#if (contract.sellerName)??>${contract.sellerName}</#if>&nbsp;</u></p>
 	<p><u>&nbsp;<#if (contract.creatime)??>${contract.creatime?string("yyyy年MM月dd日")}</#if>&nbsp;</u></p>
 </div> 
 </body></html>

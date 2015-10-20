@@ -15,7 +15,7 @@
 
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i> 企业评价资料
+        <i class="fa fa-bar-chart-o fa-fw"></i> 评价资料
       </div>
       <div class="panel-body">
         <div class="table-responsive">
@@ -23,14 +23,16 @@
             <tr>
               <th width="20%">成功交易笔数</th>
               <td th:text="${company.evaluationInfo.transactionSuccessNum}">6</td>
+              <th width="20%">交易成功率</th>
+              <td th:text="${company.evaluationInfo.transactionSuccessRate*100+'%'}">80.4%</td>
             </tr>
             <tr>
-              <th>企业服务满意度</th>
-              <td th:text="${company.evaluationInfo.averageEvaluation}">40</td>
+              <th>服务满意度</th>
+              <td colspan="3" th:text="${company.evaluationInfo.averageEvaluation}">40</td>
             </tr>
             <tr>
-              <th>企业诚信满意度</th>
-              <td th:text="${company.evaluationInfo.averageCredit}">40</td>
+              <th>诚信满意度</th>
+              <td colspan="3" th:text="${company.evaluationInfo.averageCredit}">40</td>
             </tr>
           </table>
         </div>
@@ -39,17 +41,17 @@
 
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i> 企业联系人
+        <i class="fa fa-bar-chart-o fa-fw"></i> 联系人
       </div>
       <div class="panel-body">
         <div class="table-responsive">
           <table class="table table-bordered">
             <tr th:each="contact, status : ${contacts}">
-              <th width="20%" th:inline="text">第[[${status.count}]]联系人姓名</th>
+              <th width="20%" th:inline="text">联系人姓名</th>
               <td th:text="${contact.cname}">张三</td>
-              <th width="20%" th:inline="text">第[[${status.count}]]联系人手机</th>
+              <th width="20%" th:inline="text">联系人手机</th>
               <td th:text="${contact.cphone}">18666662520</td>
-              <th width="20%" th:inline="text">第[[${status.count}]]联系人电话</th>
+              <th width="20%" th:inline="text">联系人电话</th>
               <td th:text="${contact.tel}">0755-86013388</td>
             </tr>
             <tr th:if="${#lists.isEmpty(contacts)}">
@@ -62,56 +64,73 @@
 
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i> 卸货地点
+        <i class="fa fa-bar-chart-o fa-fw"></i> 交易地址
       </div>
       <div class="panel-body">
         <div class="table-responsive">
           <table class="table">
             <tr>
-              <td colspan="2" th:text="${company.address}">广东省深圳市科技园高新南四道数字技术园</td>
+              <td colspan="2" th:text="${company.address}?${company.addrAreaFullName}+${company.address}:'无'">广东省深圳市科技园高新南四道数字技术园</td>
             </tr>
             <tr>
-              <td colspan="2">
+              <td colspan="2" th:if="${not #lists.isEmpty(company.addressImgList)}">
                 <div class="row show-grid">
-                  <div class="col-md-3"></div>
-                  <div class="col-md-3"></div>
-                  <div class="col-md-3"></div>
+                  <div class="col-md-3" th:each="img : ${company.addressImgList}">
+                  	<a th:href="${img.url}" target="_blank"><img th:src="@{${img.thumbnailSmall}}" title="点击放大查看"/></a>
+                  </div>
                 </div>
               </td>
             </tr>
             <tr>
               <td width="20%">水深度（单位：m）</td>
               <td th:text="${#numbers.formatDecimal(company.deep == null ? 0 : company.deep, 1, 1)}">52</td>
+              <td width="20%">泊船吨位（单位：吨）</td>
+              <td th:text="${#numbers.formatDecimal(company.shippington == null ? 0 : company.shippington, 1, 1)}">52</td>
             </tr>
           </table>
         </div>
       </div>
     </div>
 
-    <div class="panel panel-primary">
+    <div class="panel panel-primary" th:if="${not #lists.isEmpty(company.companyImgList)}">
       <div class="panel-heading">
-      <i class="fa fa-bar-chart-o fa-fw"></i> 企业照片
+      <i class="fa fa-bar-chart-o fa-fw"></i> 相关照片
       </div>
       <div class="panel-body">
         <div class="row show-grid">
-          <div class="col-md-3"></div>
-          <div class="col-md-3"></div>
-          <div class="col-md-3"></div>
+          <div class="col-md-3" th:each="img : ${company.companyImgList}">
+            <a th:href="${img.url}" target="_blank"><img th:src="@{${img.thumbnailSmall}}" title="点击放大查看"/></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+      <i class="fa fa-bar-chart-o fa-fw"></i> 相关介绍
+      </div>
+      <div class="panel-body">
+        <div class="row show-grid">
+          <div th:text="${company.mark!=null && company.mark!=''} ? ${company.mark} : '无'">
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="panel panel-primary">
+    <div class="panel panel-primary" th:if="${not #lists.isEmpty(company_evaluations)}">
       <div class="panel-heading">
-        <i class="fa fa-bar-chart-o fa-fw"></i> 企业服务评价
+        <i class="fa fa-bar-chart-o fa-fw"></i> 服务评价
       </div>
       <div class="panel-body">
         <div class="list-group">
-          <div class="list-group-item">
-            <i class="fa fa-comment fa-fw"></i> 服务评价列表
-            <span class="pull-right text-muted small">
-              <em>4 minutes ago</em>
-            </span>
+          <div class="list-group-item" th:each="eval : ${company_evaluations}">
+            <span class="pull-left text-muted small">
+               评价时间：<em th:text="${#calendars.format(eval.cratedate, 'YYYY-MM-dd hh:mm:ss')}">2015-05-14</em>&nbsp;&nbsp;&nbsp;&nbsp;
+               评价人：<em th:text="${eval.username}"></em>&nbsp;&nbsp;&nbsp;&nbsp;
+               身份：<em th:text="${eval.ctype} ? ${eval.ctype.text} : '未知'"></em>&nbsp;&nbsp;&nbsp;&nbsp;
+               名称：<em th:text="${eval.cname} ? ${eval.cname} : '无'"></em>
+            </span><br>
+            <th:block th:text="${eval.evaluation}"></th:block>
           </div>
         </div>
       </div>

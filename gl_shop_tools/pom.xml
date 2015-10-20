@@ -61,14 +61,14 @@
 
 		<dependency>
 			<groupId>javapns</groupId>
-			<artifactId>javapns-jdk16</artifactId>
+			<artifactId>javapns2.2</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk16</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-all</artifactId>
@@ -89,7 +89,7 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 
-		<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId> 
+		<!-- <dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId>
 			</dependency> -->
 
 		<dependency>
@@ -106,7 +106,7 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 		</dependency>
-		
+
 		<dependency>
 		  	<groupId>org.apache.tomcat</groupId>
 		  	<artifactId>tomcat-servlet-api</artifactId>
@@ -129,9 +129,62 @@
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.xmlbeans</groupId>
+			<artifactId>xmlbeans</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+		</dependency>
+		
+		<!-- 支持Word文档的操作 -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.unionpay.acp</groupId>
+			<artifactId>upacp_sdk</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>**/log4j.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -192,9 +245,10 @@
 									<directory>src/main/resources/</directory>
 									<includes>
 										<exclude>applicationContext-schedule.xml</exclude>
-										<exclude>jdbc-datasource.properties</exclude>
+										<exclude>config-info.properties</exclude>
 										<exclude>log4j.xml</exclude>
-										<exclude>PushIos.p12</exclude>
+										<exclude>push_appstore.p12</exclude>
+										<exclude>push.p12</exclude>
 										<exclude>quartz.properties</exclude>
 										<exclude>TaskProp.properties</exclude>
 									</includes>
@@ -230,9 +284,10 @@
 							<outputDirectory>${project.build.directory}</outputDirectory>
 							<excludes>
 								<exclude>applicationContext-schedule.xml</exclude>
-								<exclude>jdbc-datasource.properties</exclude>
+								<exclude>config-info.properties</exclude>
 								<exclude>startup.bat</exclude>
 								<exclude>startup.sh</exclude>
+								<exclude>startup_back.sh</exclude>
 								<exclude>log4j.xml</exclude>
 							</excludes>
 						</configuration>
@@ -249,10 +304,11 @@
 							<excludes>
 								<exclude>applicationContext-tools.xml</exclude>
 								<exclude>applicationContext-schedule.xml</exclude>
-								<exclude>jdbc-datasource.properties</exclude>
+								<exclude>config-info.properties</exclude>
 								<exclude>log4j.xml</exclude>
 								<exclude>quartz.properties</exclude>
 								<!-- <exclude>TaskProp.properties</exclude> -->
+								<exclude>startup_back.sh</exclude>
 								<exclude>startup.bat</exclude>
 								<exclude>startup.sh</exclude>
 							</excludes>

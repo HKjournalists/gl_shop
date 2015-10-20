@@ -92,6 +92,7 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					if (result.isSuccess()) {
 						if (BeanUtils.isNotEmpty(result.datas)) {
 							for (ContractSummaryInfoModel info : result.datas) {
+								// 解析货物详细规格名称
 								String productName = SysCfgUtils.getProductFullName(mcontext, info.productCode, info.productSubCode, info.productSpecId);
 								if (StringUtils.isNotEmpty(productName)) {
 									info.productName = productName;
@@ -134,11 +135,11 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 	}
 
 	@Override
-	public void getContractInfo(final String invoker, String contractId) {
+	public void getContractInfo(final String invoker, String contractId, boolean isGetModel) {
 		GetContractInfoReq req = new GetContractInfoReq(this, new IReturnCallback<GetContractInfoResult>() {
 
 			@Override
-			public void onReturn(Object obj, ResponseEvent event, GetContractInfoResult result) {
+			public void onReturn(Object invokerObj, ResponseEvent event, GetContractInfoResult result) {
 				if (ResponseEvent.isFinish(event)) {
 					Logger.i(TAG, "GetContractInfoResult = " + result.toString());
 					Message message = new Message();
@@ -146,6 +147,7 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					message.obj = respInfo;
 					if (result.isSuccess()) {
 						ContractInfoModel info = result.data;
+						// 解析货物详细规格名称
 						String productName = SysCfgUtils.getProductFullName(mcontext, info.productCode, info.productSubCode, info.productSpecId);
 						if (StringUtils.isNotEmpty(productName)) {
 							result.data.productName = productName;
@@ -163,6 +165,7 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 			}
 		});
 		req.contractId = contractId;
+		req.isGetModel = isGetModel;
 		req.exec();
 	}
 
@@ -410,21 +413,22 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 	}
 
 	@Override
-	public void multiCancelContract(String contractId, final ContractCancelType type) {
+	public void multiCancelContract(final String invoker, String contractId, final ContractCancelType type) {
 		MultiCancelContractReq req = new MultiCancelContractReq(this, new IReturnCallback<CommonResult>() {
 
 			@Override
-			public void onReturn(Object invoker, ResponseEvent event, CommonResult result) {
+			public void onReturn(Object invokerObj, ResponseEvent event, CommonResult result) {
 				if (ResponseEvent.isFinish(event)) {
 					Logger.i(TAG, "MultiCancelContractResult = " + result.toString());
 					Message message = new Message();
 					RespInfo respInfo = getOprRespInfo(result);
+					respInfo.invoker = invoker;
 					respInfo.intArg1 = type.toValue();
 					message.obj = respInfo;
 					if (result.isSuccess()) {
-						message.what = ContractMessageType.MSG_CONTRACT_CANCEL_SUCCESS;
+						message.what = ContractMessageType.MSG_CONTRACT_MULTI_CANCEL_SUCCESS;
 					} else {
-						message.what = ContractMessageType.MSG_CONTRACT_CANCEL_FAILED;
+						message.what = ContractMessageType.MSG_CONTRACT_MULTI_CANCEL_FAILED;
 					}
 					sendMessage(message);
 				}
@@ -549,6 +553,7 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 			}
 		});
 		req.contractId = contractId;
+		req.confirmType = type;
 		req.disUnitPrice = disUnitPrice;
 		req.disAmount = disAmount;
 		req.exec();
@@ -591,6 +596,7 @@ public class ContractLogic extends BasicLogic implements IContractLogic {
 					if (result.isSuccess()) {
 						if (BeanUtils.isNotEmpty(result.datas)) {
 							for (ToPayContractInfoModel info : result.datas) {
+								// 解析货物详细规格名称
 								String productName = SysCfgUtils.getProductFullName(mcontext, info.productCode, info.productSubCode, info.productSpecId);
 								if (StringUtils.isNotEmpty(productName)) {
 									info.productName = productName;

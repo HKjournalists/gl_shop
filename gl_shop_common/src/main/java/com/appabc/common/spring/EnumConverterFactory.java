@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
+import com.appabc.common.utils.DateUtil;
 import com.appabc.common.utils.LogUtil;
 
 /**
@@ -40,10 +41,13 @@ class EnumConverterFactory implements ConverterFactory<String, Enum> {
 	private class StringToEnum<T extends Enum> implements Converter<String, T> {
 
 		private final Class<T> enumType;
-
-		public StringToEnum(Class<T> enumType) {
-			this.enumType = enumType;
-		}
+		
+		private final Class<?>[] clzs = new Class<?>[] { String.class,
+				boolean.class, Boolean.class, byte.class, Byte.class,
+				char.class, Character.class, short.class, Short.class,
+				int.class, Integer.class, long.class, Long.class, float.class,
+				Float.class, double.class, Double.class, Object.class,
+				Date.class };
 
 		private Method getEnumOfMethodInEnum(String methodName,Class<?> cls){
 			if(StringUtils.isEmpty(methodName) || cls == null){
@@ -58,6 +62,42 @@ class EnumConverterFactory implements ConverterFactory<String, Enum> {
 			}
 		}
 		
+		private Object convertObjectValue(String str,Class<?> type){
+			if(StringUtils.isEmpty(str)){
+				return null;
+			}
+			if(type == null){
+				return str;
+			}
+			if(type == int.class || type == Integer.class){
+				return Integer.valueOf(str);
+			}else if(type == boolean.class || type == Boolean.class){
+				return Boolean.valueOf(str);
+			}else if(type == byte.class || type == Byte.class){
+				return Byte.valueOf(str);
+			}else if(type == char.class || type == Character.class){
+				return str.toCharArray();
+			}else if(type == short.class || type == Short.class){
+				return Short.valueOf(str);
+			}else if(type == long.class || type == Long.class){
+				return Long.valueOf(str);
+			}else if(type == float.class || type == Float.class){
+				return Float.valueOf(str);
+			}else if(type == double.class || type == Double.class){
+				return Double.valueOf(str);
+			}else if(type == Date.class){
+				return DateUtil.strToDate(DateUtil.FORMAT_YYYY_MM_DD_HH_MM_SS, str);
+			}else if(type == String.class){
+				return str;
+			}else{				
+				return type.cast(str);
+			}
+		}
+		
+		public StringToEnum(Class<T> enumType) {
+			this.enumType = enumType;
+		}
+		
 		@Override
 		public T convert(String source) {
 			if (source.length() == 0) {
@@ -67,21 +107,12 @@ class EnumConverterFactory implements ConverterFactory<String, Enum> {
 			//to support our project get the enum values 
 			//can uses the enum the enumOf method to get 
 			//the value object.
-			Class<?>[] clzs = new Class<?>[]{String.class,
-					boolean.class,Boolean.class,
-					byte.class,Byte.class,
-					char.class,Character.class,
-					short.class,Short.class,
-					int.class,Integer.class,
-					long.class,Long.class,
-					float.class,Float.class,
-					double.class,Double.class,
-					Object.class,Date.class
-			};
+			Class<?> paramType = null;
 			Method method = null;
 			for(int i = 0; i < clzs.length; i ++){
 				method = this.getEnumOfMethodInEnum("enumOf", clzs[i]);
 				if(method != null){
+					paramType = clzs[i];
 					break;
 				}
 			}
@@ -90,7 +121,7 @@ class EnumConverterFactory implements ConverterFactory<String, Enum> {
 				Object value = null;
 				for(T t : ts){
 					try {
-						value = method.invoke(t, source.trim());
+						value = method.invoke(t, convertObjectValue(source.trim(), paramType));
 						if(value != null){
 							return (T)value;
 						}
@@ -99,6 +130,7 @@ class EnumConverterFactory implements ConverterFactory<String, Enum> {
 						log.error(e);
 					}
 				}
+				return null;
 			}
 			return (T) Enum.valueOf(this.enumType, source.trim());
 		}

@@ -8,6 +8,7 @@
 
 #import "AuthDetailViewController.h"
 #import "CopyRightModel.h"
+#import "AuthViewController.h"
 
 @interface AuthDetailViewController () <UITableViewDataSource,UITableViewDelegate>
 
@@ -22,29 +23,29 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.title = @"认证资料";
+    self.title = @"认证信息";
     self.edgesForExtendedLayout = UIRectEdgeAll;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    CGRect rect = CGRectMake(0.0f, 0.0f, 320, 64.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [[UIColor clearColor] CGColor]);
-    CGContextFillRect(context, rect);
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    UIImage *bImg = [UIImage imageNamed:@"information_shang"];
-    bImg = [bImg resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10) resizingMode:UIImageResizingModeStretch];
-    
-    UINavigationController *nav = self.navigationController;
-    [nav.navigationBar setBackgroundImage:bImg forBarMetrics:UIBarMetricsDefault];
-    [nav.navigationBar setShadowImage:image];
+//    CGRect rect = CGRectMake(0.0f, 0.0f, 320, 64.0f);
+//    UIGraphicsBeginImageContext(rect.size);
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    
+//    CGContextSetFillColorWithColor(context, [[UIColor clearColor] CGColor]);
+//    CGContextFillRect(context, rect);
+//    
+//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    
+//    UIImage *bImg = [UIImage imageNamed:@"information_shang"];
+//    bImg = [bImg resizableImageWithCapInsets:UIEdgeInsetsMake(10, 10, 10, 10) resizingMode:UIImageResizingModeStretch];
+//    
+//    UINavigationController *nav = self.navigationController;
+//    [nav.navigationBar setBackgroundImage:bImg forBarMetrics:UIBarMetricsDefault];
+//    [nav.navigationBar setShadowImage:image];
 }
 
 -(void)viewDidLayoutSubviews
@@ -60,10 +61,28 @@
 
 #pragma mark - UI
 - (void)loadSubViews {
-    _tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.dataSource = self;
     _tableView.delegate   = self;
     [self.view addSubview:_tableView];
+    UIEdgeInsets insets = UIEdgeInsetsZero;
+    UserInstance *userInstance = [UserInstance sharedInstance];
+    if (_userType == user_personal && [userInstance.user.cid isEqualToString:_cjCopyModel.companyId]) {
+        insets = UIEdgeInsetsMake(0, 0, 60, 0);
+        
+        UIButton *btn = [UIFactory createBtn:BlueButtonImageName bTitle:@"重新认证" bframe:CGRectZero];
+        [btn addTarget:self action:@selector(reAuth) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:btn];
+        [btn makeConstraints:^(MASConstraintMaker *make) {
+            make.leading.mas_equalTo(self.view).offset(10);
+            make.right.mas_equalTo(self.view).offset(-10);
+            make.bottom.mas_equalTo(self.view).offset(-10);
+            make.height.mas_equalTo(40);
+        }];
+    }
+    [_tableView makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.mas_equalTo(self.view).insets(insets);
+    }];
     
     UIView *view = UIView.new;
     view.backgroundColor = [UIColor clearColor];
@@ -81,13 +100,19 @@
     logoImage.image = [UIImage imageNamed:@"information_icon_attestation"];
     [header addSubview:logoImage];
     
-    UILabel *titleLabel = [UILabel labelWithTitle:@"您已通过平台认证"];
+    UILabel *titleLabel = [UILabel labelWithTitle:@"用户已通过平台认证"];
     titleLabel.textColor = [UIColor whiteColor];
     titleLabel.frame = CGRectMake(SCREEN_WIDTH/2-80, logoImage.vbottom, 160, 25);
     titleLabel.textAlignment = NSTextAlignmentCenter;
     [header addSubview:titleLabel];
 
     return header;
+}
+
+#pragma mark - UIAction
+- (void)reAuth {
+    AuthViewController *authVC = [[AuthViewController alloc] init];
+    [self.navigationController pushViewController:authVC animated:YES];
 }
 
 #pragma mark - Stter
@@ -99,7 +124,7 @@
         _values = [NSMutableArray array];
         [_values addSafeObject:_cjCopyModel.authCompanyModel.cname];
         [_values addSafeObject:_cjCopyModel.authCompanyModel.address];
-        [_values addSafeObject:_cjCopyModel.authCompanyModel.cratedate];
+        [_values addSafeObject:_cjCopyModel.authCompanyModel.rdate];
         [_values addSafeObject:_cjCopyModel.authCompanyModel.regno];
         [_values addSafeObject:_cjCopyModel.authCompanyModel.lperson];
         [_values addSafeObject:_cjCopyModel.authCompanyModel.orgid];
@@ -121,7 +146,7 @@
         [_values addSafeObject:[_cjCopyModel.authShipModel.swidth stringValue]];
         [_values addSafeObject:[_cjCopyModel.authShipModel.sdeep stringValue]];
         [_values addSafeObject:[_cjCopyModel.authShipModel.sover stringValue]];
-        [_values addSafeObject:[_cjCopyModel.authShipModel.smateriall stringValue]];
+        [_values addSafeObject:_cjCopyModel.authShipModel.smateriall];
     }else if (userType == user_personal) {
         _keys = @[@"姓名",@"性别",@"出生日期",@"住址",@"身份证号",@"签发机关",@"有效期限",];
         _values = [NSMutableArray array];
@@ -146,11 +171,12 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseId];
         cell.detailTextLabel.font = [UIFont systemFontOfSize:15.f];
         cell.textLabel.font = [UIFont systemFontOfSize:16.f];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     
     if (indexPath.row) {
         cell.textLabel.text = _keys[indexPath.row-1];
-        cell.detailTextLabel.text = _values[indexPath.row-1];
+        [cell.detailTextLabel setSafeText:_values[indexPath.row-1]];
         cell.backgroundColor = [UIColor whiteColor];
     }else {
         cell.backgroundColor = self.view.backgroundColor;

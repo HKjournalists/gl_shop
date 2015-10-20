@@ -7,12 +7,9 @@
 //
 
 #import "HLCheckbox.h"
-#import "UIImage+ImageWithColor.h"
 
 @interface HLCheckbox ()
 
-@property (nonatomic, strong) UIImage *boxImage;
-@property (nonatomic, strong) UIImage *selectImage;
 @property (nonatomic, strong) UIImageView *boxImageView;
 @property (nonatomic, strong) UIButton *indicateButton;
 
@@ -27,27 +24,45 @@
         self.boxImage = image;
         self.selectImage = selectImage;
         
-        _boxImageView = [[UIImageView alloc] init];
-        _boxImageView.image = image;
-        [self addSubview:_boxImageView];
-        
-        _indicateButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_indicateButton addTarget:self action:@selector(checkState) forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:_indicateButton];
+        [self commentInit];
     }
     return self;
 }
 
-- (void)checkState {
-    if (_tapBlock) {
-        _tapBlock(_selected);
-    }
+- (void)commentInit {
+    _boxImageView = [[UIImageView alloc] init];
+    _boxImageView.image = self.boxImage;
+    [self addSubview:_boxImageView];
+    
+    _indicateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_indicateButton addTarget:self action:@selector(checkState) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:_indicateButton];
+}
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        [self commentInit];
+    }
+    return self;
+}
+
+- (void)setBoxImage:(UIImage *)boxImage {
+    _boxImage = boxImage;
+    _boxImageView.image = boxImage;
+}
+
+- (void)checkState {
     _selected = !_selected;
     if (!_selected) {
         [_indicateButton setBackgroundImage:_boxImage forState:UIControlStateNormal];
     }else {
         [_indicateButton setBackgroundImage:_selectImage forState:UIControlStateNormal];
+    }
+    
+    if (_tapBlock) {
+        _tapBlock(_selected);
     }
 }
 

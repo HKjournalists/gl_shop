@@ -19,6 +19,7 @@ import com.glshop.net.ui.MainActivity;
 import com.glshop.net.ui.basic.BasicActivity;
 import com.glshop.net.utils.ActivityUtil;
 import com.glshop.net.utils.SystemUtil;
+import com.glshop.platform.api.DataConstants;
 import com.glshop.platform.base.config.PlatformConfig;
 import com.glshop.platform.base.manager.LogicFactory;
 import com.glshop.platform.base.manager.MessageCenter;
@@ -111,7 +112,7 @@ public class LoginActivity extends BasicActivity {
 			break;
 		case R.id.iv_common_back: // Back
 			ActivityUtil.hideKeyboard(this);
-			gotoMainPage();
+			gotoMainPage(false);
 			break;
 		}
 	}
@@ -139,22 +140,47 @@ public class LoginActivity extends BasicActivity {
 		PlatformConfig.setValue(GlobalConstants.SPKey.IS_REMEMBER_USER_PWD, chkTvRememberPwd.isChecked());
 
 		MessageCenter.getInstance().sendEmptyMesage(GlobalMessageType.MsgCenterMessageType.MSG_REFRESH_UNREAD_MSG_NUM);
-		gotoMainPage();
+		gotoMainPage(true);
 	}
 
 	private void onLoginFailed(RespInfo respInfo) {
 		closeSubmitDialog();
-		handleErrorAction(respInfo);
+		if (respInfo != null) {
+			String errorCode = respInfo.errorCode;
+			if (StringUtils.isNotEmpty(errorCode)) {
+				if (DataConstants.GlobalErrorCode.USER_NOT_LOGIN.equals(errorCode) || DataConstants.GlobalErrorCode.USER_TOKEN_EXPIRE.equals(errorCode)) {
+					showToast(R.string.error_req_user_login);
+				} else {
+					handleErrorAction(respInfo);
+				}
+			} else {
+				handleErrorAction(respInfo);
+			}
+		}
+	}
+
+	@Override
+	protected void showErrorMsg(RespInfo respInfo) {
+		if (respInfo != null) {
+			switch (respInfo.respMsgType) {
+			case UserMessageType.MSG_LOGIN_FAILED: // 登录失败
+				showToast(R.string.error_req_user_login);
+				break;
+			default:
+				super.showErrorMsg(respInfo);
+				break;
+			}
+		}
 	}
 
 	/**
 	 * 跳转主界面
 	 */
-	private void gotoMainPage() {
+	private void gotoMainPage(boolean isLogined) {
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		Bundle data = getIntent().getExtras();
-		if (data != null && data.getBoolean(GlobalAction.UserAction.EXTRA_GOTO_MYPROFILE)) {
+		if (isLogined && data != null && data.getBoolean(GlobalAction.UserAction.EXTRA_GOTO_MYPROFILE)) {
 			intent.putExtra(GlobalAction.TipsAction.EXTRA_DO_ACTION, GlobalAction.TipsAction.ACTION_VIEW_MY_PROFILE);
 		}
 		startActivity(intent);
@@ -168,7 +194,7 @@ public class LoginActivity extends BasicActivity {
 
 	@Override
 	public void onBackPressed() {
-		gotoMainPage();
+		gotoMainPage(false);
 		super.onBackPressed();
 	}
 

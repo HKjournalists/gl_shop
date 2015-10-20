@@ -11,24 +11,30 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.glshop.net.GLApplication;
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalConfig;
 import com.glshop.net.common.GlobalConstants.DataStatus;
+import com.glshop.net.common.GlobalConstants.ReqSendType;
 import com.glshop.net.common.GlobalErrorMessage;
 import com.glshop.net.logic.cache.DataCenter;
 import com.glshop.net.logic.model.RespInfo;
 import com.glshop.net.logic.upgrade.IUpgradeLogic;
+import com.glshop.net.logic.upgrade.mgr.UpgradeUtils;
 import com.glshop.net.logic.user.IUserLogic;
 import com.glshop.net.ui.MainActivity;
 import com.glshop.net.ui.basic.view.dialog.BaseDialog.IDialogCallback;
 import com.glshop.net.ui.basic.view.dialog.CommonProgressDialog;
 import com.glshop.net.ui.basic.view.dialog.SingleConfirmDialog;
 import com.glshop.net.ui.basic.view.dialog.UpgradeDialog;
+import com.glshop.net.ui.findbuy.PubModeSelectActivity;
 import com.glshop.net.ui.user.LoginActivity;
 import com.glshop.net.utils.NetworkUtil;
 import com.glshop.net.utils.ToastUtil;
@@ -64,6 +70,9 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 
 	/** 加载失败视图 */
 	protected View mLoadErrorView;
+
+	/** 显示空数据视图文案 */
+	protected TextView mTvEmtpyData;
 
 	/** 用户未登陆确认对话框 */
 	private SingleConfirmDialog mOfflineDialog;
@@ -101,6 +110,7 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 		mLoadingDataView = getView(R.id.ll_loading_data);
 		mLoadErrorView = getView(R.id.ll_load_data_error);
 		mEmptyDataView = getView(R.id.ll_empty_data);
+		mTvEmtpyData = getView(R.id.tv_empty_data);
 
 		OnClickListener listener = new OnClickListener() {
 
@@ -254,7 +264,7 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 		}
 
 		fragmentTransaction.show(show);
-		fragmentTransaction.commit();
+		fragmentTransaction.commitAllowingStateLoss();
 	}
 
 	/**
@@ -272,7 +282,7 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 		}
 
 		fragmentTransaction.show(fragment);
-		fragmentTransaction.commit();
+		fragmentTransaction.commitAllowingStateLoss();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -301,6 +311,61 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 		if (view != null) {
 			view.setSelection(view.getText().toString().length());
 		}
+	}
+
+	/**
+	 * 添加文本监听，限制文本输入
+	 * @param View
+	 */
+	protected void setTextWatcher(final EditText view) {
+		if (view != null) {
+			view.addTextChangedListener(new TextWatcher() {
+
+				private int editStart;
+				private int editEnd;
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					editStart = view.getSelectionStart();
+					editEnd = view.getSelectionEnd();
+					String data = view.getEditableText().toString();
+					if (StringUtils.isDouble(data) && !StringUtils.checkDecimal(data, 2)) {
+						s.delete(editStart - 1, editEnd);
+						int tempSelection = editStart;
+						view.setText(s);
+						view.setSelection(tempSelection);
+					}
+				}
+			});
+		}
+	}
+
+	/**
+	 * 是否为前台请求
+	 * @param respInfo
+	 * @return
+	 */
+	protected boolean isForegroudReq(RespInfo respInfo) {
+		return respInfo != null && respInfo.reqSendType == ReqSendType.FOREGROUND;
+	}
+
+	/**
+	 * 是否为后台请求
+	 * @param respInfo
+	 * @return
+	 */
+	protected boolean isBackgroudReq(RespInfo respInfo) {
+		return respInfo != null && respInfo.reqSendType == ReqSendType.BACKGROUND;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -380,6 +445,17 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 	}
 
 	/**
+	 * 设置加载内容为空文案显示
+	 */
+	protected void updateEmptyDataMessage(String message) {
+		if (mTvEmtpyData != null) {
+			mTvEmtpyData.setText(message);
+		} else {
+			throw new IllegalArgumentException("You must to call initLoadView() before updateEmptyDataMessage()!");
+		}
+	}
+
+	/**
 	 * 重新加载数据
 	 */
 	protected void onReloadData() {
@@ -451,10 +527,8 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 	 * 显示升级提示对话框
 	 * @param upgradeInfo
 	 */
-	protected void showUpgradeDialog(final UpgradeInfoModel upgradeInfo) {
-		if (mUpgradeTipsDialog != null && mUpgradeTipsDialog.isShowing()) {
-			mUpgradeTipsDialog.dismiss();
-		}
+	protected void showUpgradeDialog(final UpgradeInfoModel upgradeInfo, final boolean canIgnore) {
+		closeDialog(mUpgradeTipsDialog);
 
 		mUpgradeTipsDialog = new UpgradeDialog(this, R.style.dialog);
 		//mUpgradeTipsDialog.setContent(getString(R.string.upgrade_pkg_notify_title));
@@ -473,7 +547,9 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 
 			@Override
 			public void onCancel(int type) {
-
+				if (canIgnore) {
+					UpgradeUtils.saveIgnoreVersion(BasicFragmentActivity.this, upgradeInfo.versionCode);
+				}
 			}
 		});
 		mUpgradeTipsDialog.show();
@@ -486,7 +562,9 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 	 */
 	protected RespInfo getRespInfo(Message message) {
 		if (message != null && message.obj instanceof RespInfo) {
-			return (RespInfo) message.obj;
+			RespInfo info = (RespInfo) message.obj;
+			info.respMsgType = message.what;
+			return info;
 		}
 		return null;
 	}
@@ -501,8 +579,27 @@ public abstract class BasicFragmentActivity extends BaseFragmentActivity impleme
 			if (GlobalErrorMessage.isFilterErrorCode(info.errorCode)) {
 				// 暂时不做任何处理
 			} else {
-				showToast(GlobalErrorMessage.getErrorMsg(this, info.errorCode, info.errorMsg));
+				//showToast(GlobalErrorMessage.getErrorMsg(this, info.errorCode, info.errorMsg));
+				if (!GlobalErrorMessage.handleErrorMsg(this, info.errorCode)) {
+					showErrorMsg(info);
+				}
 			}
+		}
+	}
+
+	protected void showErrorMsg(RespInfo respInfo) {
+		showToast(R.string.error_req_error); // 显示统一默认错误信息
+	}
+
+	/**
+	 * 发布信息
+	 */
+	protected void pubBuyInfo() {
+		if (isLogined()) {
+			Intent intent = new Intent(this, PubModeSelectActivity.class);
+			startActivity(intent);
+		} else {
+			showToast(R.string.user_not_login);
 		}
 	}
 

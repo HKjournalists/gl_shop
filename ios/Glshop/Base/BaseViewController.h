@@ -9,9 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "ASIFormDataRequest.h"
 
-typedef void (^RequestSuccedBlock) (MKNetworkOperation *operation);
-typedef void (^RequestFiledBlock)(MKNetworkOperation *operation, NSError *error);
-
 /**
  *@brief 请求成功，返回正确的数据
  */
@@ -28,9 +25,6 @@ typedef void (^ASISuccedDataConflictBlock)(ASIHTTPRequest *request,id responseDa
 typedef void (^ASIRequestFiledBlock)(ASIHTTPRequest *request);
 
 @interface BaseViewController : UIViewController 
-
-@property (nonatomic, copy) RequestSuccedBlock requestSuccedBlock;
-@property (nonatomic, copy) RequestFiledBlock  requestFiledBlock;
 
 /**
  *@brief 网络请求成功时候的回调
@@ -51,14 +45,25 @@ typedef void (^ASIRequestFiledBlock)(ASIHTTPRequest *request);
 @property (nonatomic, strong) NSMutableArray *requestArray; // 请求对象
 
 /**
+ *@brief 默认为no
+ */
+@property (nonatomic, assign) BOOL isRefrushTable;
+
+/**
  *@brief 加载失败或数据为空显示此视图
  *@discussion 点击failView会触发requestNet方法，已重新请求网络
  */
 @property (nonatomic, strong) UIView *failView; // 加载失败，显示此图
 /**
- *@brief 默认为NO,如果为YES，在网络请求失败时将添加提示视图，提示加载数据失败
+ *@brief 默认为YES,如果为YES，在网络请求失败时将添加提示视图，提示加载数据失败; 否则不显示
  */
 @property (nonatomic, assign) BOOL shouldShowFailView;
+
+/**
+ *@brief 是否是视图控制器requestNet发出的请求 YES 是 NO 不是 默认为NO
+ *@discussion 如果是且shouldShowFailView也是YES就显示加载失败，否则不显示
+ */
+@property (nonatomic, assign) BOOL isNotActionRequest;
 
 /**
  *@brief 当网络连接变成wifi或wwan的时候，是否重新请求网络
@@ -73,47 +78,43 @@ typedef void (^ASIRequestFiledBlock)(ASIHTTPRequest *request);
 - (void)requestNet;
 - (void)cancleRequest;
 
-- (void)hideViewsWhenNoData;
-- (void)showViewsWhenDataComing;
-
 - (void)handleNetData:(id)responseData;
+- (void)commandHandle:(ASIHTTPRequest *)req;
 - (void)handleRequestFailed:(ASIHTTPRequest *)req;
+- (void)showErrorHUDIndicate;
+- (void)tipErrorCode:(NSInteger)errorCode;
+
+- (void)backRootVC;
+
+/**
+ *@brief 请求成功，数据为空
+ *@discussion 默认显示一张图片和一行文字，提示用户没有数据,可重写
+ */
 - (void)requestSuccessButNoData;
 
+/**
+ *@brief 隐藏HUD、将req清除
+ *@discussion 不重写，只是super调用
+ */
+- (void)commandHandle:(ASIHTTPRequest *)req;
 - (UIView *)failViewWithFrame:(CGRect)frame empty:(BOOL)isEmpty;
+/**
+ *@brief 加载数据异常，显示相应的提示图
+ *@param frame 异常图frame,默认和视图控制器视图大小一样
+ *@param imgName 异常显示的图片名
+ *@param title 异常标题
+ *@param subTitle 异常子标题
+ *@param noData 是否请求到没有相应的数据 （如果第二个参数imgName为空，YES: 显示默认的空图片 NO:显示默认的异常图片）
+ */
+- (UIView *)failViewWithFrame:(CGRect)frame
+             expectionImgName:(NSString *)imgName
+               expectionTitle:(NSString *)title
+            expectionSubTitle:(NSString *)subTitle
+                     isNodata:(BOOL)noData;
 
 #pragma mark - Net
 /**
  *@brief 网络请求
- *@param path 请求路径
- *@param params 请求参数
- *@param method post/get请求
- *@param successBlock 请求成功的回调
- *@param filedBlock  请求失败的回调
- *@return MKNetworkOperation
- */
-- (MKNetworkOperation *)requestWithPath:(NSString *)path
-                 params:(NSMutableDictionary *)params
-             httpMehtod:(NSString *)method
-              HUDString:(NSString *)tipString
-                success:(RequestSuccedBlock)successBlock
-                  error:(RequestFiledBlock)filedBlock;
-
-- (MKNetworkOperation *)requestWithPath:(NSString *)path
-                 params:(NSMutableDictionary *)params
-             httpMehtod:(NSString *)method
-                success:(RequestSuccedBlock)successBlock
-                  error:(RequestFiledBlock)filedBlock;
-
-- (MKNetworkOperation *)requestWithPath:(NSString *)path
-                 params:(NSMutableDictionary *)params
-             httpMehtod:(NSString *)method
-                showHUD:(BOOL)show
-                success:(RequestSuccedBlock)successBlock
-                  error:(RequestFiledBlock)filedBlock;
-
-/**
- *@brief ASI网络请求
  */
 - (ASIHTTPRequest *)requestWithURL:(NSString *)urlstring
                             params:(NSMutableDictionary *)params
@@ -145,15 +146,8 @@ typedef void (^ASIRequestFiledBlock)(ASIHTTPRequest *request);
                  dataConflictBlock:(ASISuccedDataConflictBlock)dataConflictBlock
                        failedBlock:(ASIRequestFiledBlock)failedBlock;
 
-/**
- *@brief 图片上传
- */
-- (ASIFormDataRequest *)uploadImgWithURL:(NSString *)urlstring
-                              HTTPMethod:(NSString *)httpMethod
-                           completeBlock:(ASIRequestSuccedBlock)successBlock
-                             failedBlock:(ASIRequestFiledBlock)failedBlock;
-
 #pragma mark - HUD
+- (void)showHUD;
 - (void)showHUDWithDim:(BOOL)isDim;
 - (void)showHUD:(NSString *)title isDim:(BOOL)isDim Yoffset:(float)offset;
 - (void)hideHUD;

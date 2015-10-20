@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+  <title>站内销售 - 代发信息请求</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/content.css}" />
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap-datetimepicker.4.0.0.min.css}" />
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 站内销售 - 代发信息请求
+</h4>
+
+<div layout:fragment="pageContent">
+
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a th:href="@{#}">供求代发</a></li>
+		<li role="presentation"><a th:href="@{/tasks/sales/pubinfo/finished/1/}">已发布</a></li>
+	</ul>
+	</br>
+
+  <form id="publishForm" class="form-horizontal" role="form" method="post">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+    <input type="hidden" name="pid" />
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 客户信息
+      </div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label for="cid" class="col-sm-2 control-label required">客户</label>
+          <div class="col-sm-4">
+            <input class="form-control" type="text" id="mobile" placeholder="输入客户手机号码" required="required"/>
+            <input type="hidden" id="cid" name="cid" />
+          </div>
+          <div class="col-sm-4">
+            <input class="form-control" type="text" id="customerName" name="customerName" readonly="readonly"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label required">信息类型</label>
+          <div class="col-sm-2">
+            <label class="radio-inline">
+              <input type="radio" name="type" id="infoTypeBuy" value="1"> 求购
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="type" id="infoTypeSell" value="2"> 出售
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 货物信息
+      </div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label class="col-sm-2 control-label required">货物类型</label>
+          <div class="col-sm-2">
+            <label class="radio-inline">
+              <input type="radio" name="pcode" id="productG001" value="G001"> 石子
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="pcode" id="productG002" value="G002"> 黄砂
+            </label>
+          </div>
+        </div>
+        <div id="productTypeDiv" class="form-group">
+          <label for="ptype" class="col-sm-2 control-label required">分类</label>
+          <div class="col-sm-4">
+            <select id="ptype" name="ptype" class="form-control" disabled="disabled">
+              <option value="0">请选择</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="productSpec" class="col-sm-2 control-label required">规格</label>
+          <div class="col-sm-4">
+            <select id="productSpec" name="productSpec" class="form-control" disabled="disabled">
+              <option value="0">请选择</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="clayContent" class="col-sm-2 control-label">泥块含量(%)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="clayContent" id="clayContent" placeholder="请输入泥块含量" />
+            <input type="hidden" name="clayContentId" id="clayContentId" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="mudContent" class="col-sm-2 control-label">含泥量(%)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="mudContent" id="mudContent" placeholder="请输入含泥量">
+            <input type="hidden" name="mudContentId" id="mudContentId" />
+          </div>
+        </div>
+        <div id="moistureContentDiv" class="form-group">
+          <label for="moistureContent" class="col-sm-2 control-label">含水率(%)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="moistureContent" id="moistureContent" placeholder="请输入含水量">
+            <input type="hidden" name="moistureContentId" id="moistureContentId" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="apparentDensity" class="col-sm-2 control-label">表观密度(kg/m3)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="apparentDensity" id="apparentDensity" placeholder="请输入表观密度">
+            <input type="hidden" name="apparentDensityId" id="apparentDensityId" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="bulkDensity" class="col-sm-2 control-label">堆积密度(kg/m3)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="bulkDensity" id="bulkDensity" placeholder="请输入堆积密度">
+            <input type="hidden" name="bulkDensityId" id="bulkDensityId" />
+          </div>
+        </div>
+        <div id="crushingValueIndexDiv" class="form-group">
+          <label for="crushingValueIndex" class="col-sm-2 control-label">压碎值指标(%)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="crushingValueIndex" id="crushingValueIndex" placeholder="请输入压碎值指标">
+            <input type="hidden" name="crushingValueIndexId" id="crushingValueIndexId" />
+          </div>
+        </div>
+        <div id="elongatedParticlesDiv" class="form-group">
+          <label for="elongatedParticles" class="col-sm-2 control-label">针片状颗粒含量(%)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="elongatedParticles" id="elongatedParticles" placeholder="请输入针片状颗粒含量">
+            <input type="hidden" name="elongatedParticlesId" id="elongatedParticlesId" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="consistencyIndex" class="col-sm-2 control-label">坚固性指标(%)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="consistencyIndex" id="consistencyIndex" placeholder="请输入坚固性指标">
+            <input type="hidden" name="consistencyIndexId" id="consistencyIndexId" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="pcolor" class="col-sm-2 control-label">颜色</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="pcolor" id="pcolor" placeholder="请输入货物颜色">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="paddress" class="col-sm-2 control-label">产地</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="paddress" id="paddress" placeholder="请输入货物产地">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="premark" class="col-sm-2 control-label">货物备注信息</label>
+          <div class="col-sm-4">
+            <textarea class="form-control" name="premark" id="premark" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 交易信息
+      </div>
+      <div class="panel-body">
+        <div class="form-group">
+            <label id="lblTotalNum" for="totalnum" class="col-sm-3 control-label required">交易量</label>
+            <div class="col-sm-4 form-inline">
+              <input type="text" class="form-control" name="totalnum" onkeyup="$(this).val($(this).val().replace(/[^0-9.]/g,''));" id="totalnum" placeholder="请输入销售量" required="required" />
+              <select id="unit" name="unit" class="form-control">
+                <option value="UNIT001">吨</option>
+                <option value="UNIT002">立方</option>
+                <option value="UNIT003">mm</option>
+              </select>
+            </div>
+        </div>
+        <div class="row form-group">
+          <label class="col-sm-3 control-label required">交易时间范围</label>
+          <div class="controls col-sm-3">
+            <div class="controls input-group date" id="fromDatePicker">
+              <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="starttime" name="starttime"
+                     required="required"/>
+              <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+            </div>
+          </div>
+          <div class="col-sm-1">
+            <label class="control-label">至</label>
+          </div>
+          <div class="controls col-sm-3">
+            <div class="input-group date" id="toDatePicker">
+              <input class="form-control" type="text" data-date-format="YYYY-MM-DD" id="endtime" name="endtime"
+                     required="required"/>
+              <span class="input-group-addon"><span class="fa fa-calendar"></span></span>
+            </div>
+          </div>
+        </div>
+        <label id="salesTimeFrame-error" class="col-sm-offset-3 error"></label>
+        <div class="form-group">
+          <label for="price" class="col-sm-3 control-label required">到港单价(单位：元)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="price" id="price" onkeyup="$(this).val($(this).val().replace(/[^0-9.]/g,''));" placeholder="请输入到港单价" required="required" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label required">交易港口</label>
+          <div class="col-sm-7 form-inline">
+            <select id="tradingProvince" class="form-control" required="required">
+              <option value="0">请选择流域</option>
+            </select>
+            <select id="tradingCity" class="form-control" required="required">
+              <option value="0">请选择港口</option>
+            </select>
+            <select id="tradingDistrict" name="area" class="form-control" required="required">
+              <option value="0">请选码头</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="addresstype" class="col-sm-3 control-label required">卸货地点指定方式</label>
+          <div class="col-sm-3">
+            <select id="addresstype" name="addresstype" class="form-control">
+              <option value="1">己方指定</option>
+              <option value="2">对方指定</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tradingPlace" class="col-sm-3 control-label">交易地址</label>
+          <div id="tradingPlaceListDiv" class="col-sm-4">
+            <select id="addressid" name="addressid" class="form-control">
+              <option value="0">请选择</option>
+            </select>
+          </div>
+        </div>
+        <div id="tradingPlaceAddressDiv" class="form-group">
+          <div class="col-sm-offset-3 col-sm-7">
+            <input type="text" class="form-control" name="tradingPlace" id="tradingPlace" placeholder="交易地址" readonly="readonly" />
+            <div id="unloadingAddressImagesDiv" class="row">
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label for="deep" class="col-sm-3 control-label">卸货码头水深度(单位：米)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="deep" id="deep" placeholder="卸货码头水深度" readonly="readonly" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="shippington" class="col-sm-3 control-label">可停泊载重船吨位(单位：吨)</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" name="shippington" id="shippington" placeholder="可停泊载重船吨位" readonly="readonly" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="remark" class="col-sm-3 control-label">交易信息备注</label>
+          <div class="col-sm-4">
+            <textarea class="form-control" name="remark" id="remark" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="panel-footer text-center">
+        <button id="btnSubmit" type="button" class="btn btn-primary text-center">提交</button>
+      </div>
+    </div>
+  </form>
+</div>
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/js/moment.2.8.4.min.js}"></script>
+  <script th:src="@{/static/js/moment-locale-zh-cn.js}"></script>
+  <script th:src="@{/static/js/bootstrap-datetimepicker.4.0.0.min.js}"></script>
+  <script th:src="@{/static/js/jquery.validate.1.13.1.min.js}"></script>
+  <script th:src="@{/static/js/product-info.js}"></script>
+</div>
+<script layout:fragment="inlineJavascript">
+var contextPath = /*[[@{/}]]*/ '/';
+var _companyAddresses = null;
+
+function checkSalesTimeFrame(from, to) {
+    if (from.unix() > to.unix()) {
+        $('#salesTimeFrame-error').html('开始时间不能大于结束时间');
+        $('#salesTimeFrame-error').show();
+    } else {
+    	$('#salesTimeFrame-error').html('');
+        $('#salesTimeFrame-error').hide();
+    }
+}
+
+function populateCompanyAddresses() {
+    var tradingPlaceMethod = $('#addresstype').val();
+    if (tradingPlaceMethod === '1') {
+        if (_companyAddresses && _companyAddresses.length > 0) {
+            $('#addressid option[value!="0"]').remove();
+            var addressList = $('#addressid');
+            $.each(_companyAddresses, function(index, elem) {
+                addressList.append('<option value="' + elem.id + '">' + elem.address + '</option>');
+            });
+        }
+    }
+}
+
+function loadProductG002Spec(typeId) {
+    loadProductSpecs(contextPath, typeId, function(data) {
+        populateProductSpec(data, 'pname');
+    });
+}
+
+function populateProductProperties(val) {
+    var values = JSON.parse(val);
+    $('input[name=pid]').val(values.id);
+    loadProductProperties(contextPath, values.id, function(data) {
+        $.each(data, function(index, elem) {
+            var field = PRODUCT_PROPERTY_MAPPING[elem.code];
+            $('input[name=' + field + 'Id]').val(elem.id);
+        });
+    });
+    if (values.unit) {
+        $('select[name=unit]').val(values.unit.val);
+    }
+}
+
+function initForm() {
+    for (var id in PRODUCT_ADDITIONAL_REQUIRED_FIELDS) {
+        var fields = PRODUCT_ADDITIONAL_REQUIRED_FIELDS[id];
+        for (var i = 0; i < fields.length; i++) {
+            $('#' + fields[i] + 'Div').hide();
+        }
+    }
+}
+
+function toggleFormVisibility(product) {
+    for (var id in PRODUCT_ADDITIONAL_REQUIRED_FIELDS) {
+        var visibility = (id === product)
+        var fields = PRODUCT_ADDITIONAL_REQUIRED_FIELDS[id];
+        for (var i = 0; i < fields.length; i++) {
+            if (visibility) {
+                $('#' + fields[i] + 'Div').show();
+                $('#' + fields[i]).prop('disabled', false);
+            } else {
+                $('#' + fields[i] + 'Div').hide();
+                $('#' + fields[i]).prop('disabled', true);
+            }
+        }
+    }
+}
+
+function toggleAddressVisibility() {
+    if ($('#addresstype').val() === '2') {
+        $('#tradingPlaceInfoDiv').hide();
+        $('#addressid').val('0');
+    } else {
+        $('#tradingPlace').val('');
+        $('#deep').val('');
+        $('#shippington').val('');
+        $('#tradingPlaceInfoDiv').show();
+    }
+}
+
+$(document).ready(function() {
+    loadArea(contextPath, function() {
+        $.each(_PROVINCES, function(index, elem) {
+            $('#tradingProvince').append('<option value="' + elem.val + '">' + elem.name + '</option>');
+        });
+    });
+    initFormProductData(null, function() {
+        $.each(productG002Types, function(index, elem) {
+            $('#ptype').append('<option value="' + elem.val + '">' + elem.name + '</option>');
+        });
+    });
+    bindProductRadioFormUI('pcode', 'ptype', 'productSpec', null);
+    initContractProductFields();
+
+    $('#infoTypeBuy, #infoTypeSell').click(function() {
+        var type = $(this).val();
+        var label = '';
+        if (type === '1') {
+            label = '求购量';
+        } else {
+            label = '出售量';
+        }
+        $('#lblTotalNum').text(label);
+    });
+
+
+    $('#salesTimeFrame-error').hide();
+
+    var today = new Date();
+    var datetimePickerOpts = {
+        defaultDate: today,
+        format: 'YYYY-MM-DD',
+        minDate: today
+    };
+    $('#fromDatePicker').datetimepicker(datetimePickerOpts);
+    $('#toDatePicker').datetimepicker(datetimePickerOpts);
+
+    $('#fromDatePicker').on('dp.change', function(e) {
+        var fromDate = $('#fromDatePicker').data('DateTimePicker').date();
+        var toDate = $('#toDatePicker').data('DateTimePicker').date();
+        checkSalesTimeFrame(fromDate, toDate);
+        $('#toDatePicker').data('DateTimePicker').minDate(fromDate);
+    });
+
+    $('#toDatePicker').on('dp.change', function(e) {
+        var fromDate = $('#fromDatePicker').data('DateTimePicker').date();
+        var toDate = $('#toDatePicker').data('DateTimePicker').date();
+        checkSalesTimeFrame(fromDate, toDate);
+        $('#fromDatePicker').data('DateTimePicker').maxDate(toDate);
+    });
+
+    $('#mobile').change(function() {
+        var mobile = $.trim($(this).val());
+        if (mobile) {
+            var eventObject = $(this);
+            searchCompany(contextPath, {mobile: mobile}, function(data) {
+                if ($.isEmptyObject(data)) {
+                    alert('没有找到符合条件的结果！');
+                    return;
+                }
+                $('#cid').val(data.cid);
+
+                loadCompanyAddresses(contextPath, data.cid, function(addresses) {
+                    _companyAddresses = addresses;
+                    populateCompanyAddresses();
+                });
+
+                loadCompany(contextPath, data.cid, function(c) {
+                    $('#customerName').val(c.cname);
+                });
+            })
+        }
+    });
+
+
+    $('#ptype').change(function() {
+        var typeId = $(this).val();
+        if (typeId !== '0')
+            loadProductG002Spec(typeId);
+    });
+
+    $('#addresstype').change(function() {
+        toggleAddressVisibility();
+        $('#addressid').prop('disabled', $(this).val() !== '1');
+    });
+
+    $('#addressid').change(function() {
+        var id = $(this).val();
+        if (id !== '0') {
+            $('#tradingPlaceAddress').val($('#addressid option:selected').text());
+            $.each(_companyAddresses, function(index, elem) {
+                if (elem.id == id) {
+                    $('#tradingPlace').val(elem.address);
+                    $('#deep').val(elem.deep);
+                    $('#shippington').val(elem.shippington);
+
+                    var unloadingAddressImagesDiv = $('#unloadingAddressImagesDiv');
+                    unloadingAddressImagesDiv.empty();
+                    if (elem.vImgList) {
+                        $.each(elem.vImgList, function(index, img) {
+                            unloadingAddressImagesDiv.append('<div class="col-sm-2"><img src="' + img.thumbnailSmall + '" /></div>');
+                        });
+                    }
+                    return;
+                }
+            });
+        }
+    });
+
+    $('#tradingProvince').change(function() {
+        provinceChange($(this).val(), 'tradingCity', 'tradingDistrict');
+    });
+
+    $('#tradingCity').change(function() {
+        cityChange($(this).val(), 'tradingDistrict');
+    });
+
+    $('#btnSubmit').click(function() {
+		if(vld() == false) return;
+		
+		  if (confirm("请确认发布信息内容的准确性，确认无误后将代客户发布成功。是否发布？")) {
+		    var url = /*[[@{/tasks/sales/pubinfo/}]]*/;
+		    $.post(url, $('#publishForm').serialize(), function(data) {
+		      alert('该信息已发布成功，请知悉。');
+		      window.location.href = /*[[@{/tasks/sales/pubinfo/finished/1/}]]*/;
+		    });
+      }
+    });
+
+    var validator = $('#publishForm').validate({
+        rules: {
+            starttime: {
+                required: true,
+                date: true
+            },
+            endtime: {
+                required: true,
+                date: true
+            }
+        },
+        messages: {
+            starttime: "请输入正确的交易有效时间",
+            endtime: "请输入正确的交易有效时间"
+        }
+    });
+});
+
+	// 数据完整性验证
+	function vld(){
+		var mobile = $('#mobile').val();
+		var typeList= $('input:radio[name="type"]:checked').val();
+		var pcodeList= $('input:radio[name="pcode"]:checked').val();
+		
+		if(mobile.length != 11){
+			alert("客户手机号不正确！请代用户填写完整信息后再发布信息。")
+			$('#mobile').focus();
+			return false;
+		}else if(typeList==null){
+            alert("信息类型未选择！请代用户填写完整信息后再发布信息。");
+            $('#infoTypeBuy').focus();
+            return false;
+		}else if(pcodeList==null){
+            alert("货物类型未选择！请代用户填写完整信息后再发布信息。");
+            $('#productG001').focus();
+            return false;
+        }
+		if(pcodeList=='G002' && $('#ptype').val()=='0'){
+			alert("分类未选择！请代用户填写完整信息后再发布信息。");
+            $('#ptype').focus();
+            return false;
+		}
+		if($('#productSpec').val()=='0'){
+			alert("规格未选择！请代用户填写完整信息后再发布信息。");
+            $('#productSpec').focus();
+            return false;
+		}else if($('#totalnum').val()==''){
+			alert("交易量未填写！请代用户填写完整信息后再发布信息。");
+            $('#totalnum').focus();
+            return false;
+		}else if($('#price').val()==''){
+			alert("单价未填写！请代用户填写完整信息后再发布信息。");
+            $('#price').focus();
+            return false;
+		}else if($('#tradingProvince').val()=='0'){
+			alert("交易港口选择不完整！请代用户填写完整信息后再发布信息。");
+            $('#tradingProvince').focus();
+            return false;
+		}else if($('#tradingCity').val()=='0'){
+			alert("交易港口选择不完整！请代用户填写完整信息后再发布信息。");
+            $('#tradingCity').focus();
+            return false;
+		}else if($('#tradingDistrict').val()=='0'){
+			alert("交易港口选择不完整！请代用户填写完整信息后再发布信息。");
+            $('#tradingDistrict').focus();
+            return false;
+		}
+		
+		return true;
+	}
+
+</script>
+</body>
+
+</html>

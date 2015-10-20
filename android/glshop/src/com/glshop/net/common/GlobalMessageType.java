@@ -92,23 +92,35 @@ public interface GlobalMessageType {
 		/** 检验短信验证码失败 */
 		int MSG_VALID_SMS_VERFIYCODE_FAILED = BASE + 13;
 
+		/** 检验图形验证码成功 */
+		int MSG_VALID_IMG_VERFIYCODE_SUCCESS = BASE + 14;
+
+		/** 检验图形验证码失败 */
+		int MSG_VALID_IMG_VERFIYCODE_FAILED = BASE + 15;
+
 		/** 找回密码成功 */
-		int MSG_RESET_PASSWORD_SUCCESS = BASE + 14;
+		int MSG_RESET_PASSWORD_SUCCESS = BASE + 16;
 
 		/** 找回密码失败 */
-		int MSG_RESET_PASSWORD_FAILED = BASE + 15;
+		int MSG_RESET_PASSWORD_FAILED = BASE + 17;
 
 		/** 修改密码成功 */
-		int MSG_MODIFY_PASSWORD_SUCCESS = BASE + 16;
+		int MSG_MODIFY_PASSWORD_SUCCESS = BASE + 18;
 
 		/** 修改密码失败 */
-		int MSG_MODIFY_PASSWORD_FAILED = BASE + 17;
+		int MSG_MODIFY_PASSWORD_FAILED = BASE + 19;
 
 		/** 刷新Token成功 */
-		int MSG_REFRESH_TOKEN_SUCCESS = BASE + 18;
+		int MSG_REFRESH_TOKEN_SUCCESS = BASE + 20;
 
 		/** 刷新Token失败 */
-		int MSG_REFRESH_TOKEN_FAILED = BASE + 19;
+		int MSG_REFRESH_TOKEN_FAILED = BASE + 21;
+
+		/** 检验注册用户成功 */
+		int MSG_CHECK_REG_USER_SUCCESS = BASE + 22;
+
+		/** 检验注册用户失败 */
+		int MSG_CHECK_REG_USER_FAILED = BASE + 23;
 
 	}
 
@@ -155,35 +167,47 @@ public interface GlobalMessageType {
 		/** 取消供求信息发布失败 */
 		int MSG_UNDO_PUB_BUY_INFO_FAILED = BASE + 12;
 
+		/** 删除供求信息发布成功 */
+		int MSG_DELETE_PUB_BUY_INFO_SUCCESS = BASE + 13;
+
+		/** 删除供求信息发布失败 */
+		int MSG_DELETE_PUB_BUY_INFO_FAILED = BASE + 14;
+
 		/** 更新供求信息成功 */
-		int MSG_UPDATE_PUB_BUY_INFO_SUCCESS = BASE + 13;
+		int MSG_UPDATE_PUB_BUY_INFO_SUCCESS = BASE + 15;
 
 		/** 更新供求信息失败 */
-		int MSG_UPDATE_PUB_BUY_INFO_FAILED = BASE + 14;
+		int MSG_UPDATE_PUB_BUY_INFO_FAILED = BASE + 16;
 
 		/** 提交想交易请求成功 */
-		int MSG_WANT_TO_DEAL_SUCCESS = BASE + 15;
+		int MSG_WANT_TO_DEAL_SUCCESS = BASE + 17;
 
 		/** 提交想交易请求失败 */
-		int MSG_WANT_TO_DEAL_FAILED = BASE + 16;
+		int MSG_WANT_TO_DEAL_FAILED = BASE + 18;
 
 		/** 获取今日报价列表成功 */
-		int MSG_GET_TODAY_PRICE_SUCCESS = BASE + 17;
+		int MSG_GET_TODAY_PRICE_SUCCESS = BASE + 19;
 
 		/** 获取今日报价列表失败 */
-		int MSG_GET_TODAY_PRICE_FAILED = BASE + 18;
+		int MSG_GET_TODAY_PRICE_FAILED = BASE + 20;
 
 		/** 获取价格趋势列表成功 */
-		int MSG_GET_PRICE_FORECAST_SUCCESS = BASE + 19;
+		int MSG_GET_PRICE_FORECAST_SUCCESS = BASE + 21;
 
 		/** 获取价格趋势列表失败 */
-		int MSG_GET_PRICE_FORECAST_FAILED = BASE + 20;
+		int MSG_GET_PRICE_FORECAST_FAILED = BASE + 22;
 
 		/** 刷新我的供求倒计时时间 */
-		int MSG_REFRESH_BUY_WAIT_TIME = BASE + 21;
+		int MSG_REFRESH_BUY_WAIT_TIME = BASE + 23;
 
 		/** 刷新找买找卖和我的供求列表 */
-		int MSG_REFRESH_BUY_LIST = BASE + 22;
+		int MSG_REFRESH_BUY_LIST = BASE + 24;
+		
+		/** 刷新找买找卖和我的供求列表并重置过滤条件 */
+		int MSG_REFRESH_BUY_LIST_WITH_RESET_FILTER = BASE + 25;
+		
+		/** 刷新供求详情信息 */
+		int MSG_REFRESH_MY_BUY_INFO = BASE + 26;
 
 	}
 
@@ -320,6 +344,18 @@ public interface GlobalMessageType {
 		/** 合同申请仲裁失败 */
 		int MSG_APPLY_ARBITARTE_FAILED = BASE + 42;
 
+		/** 取消合同成功 */
+		int MSG_CONTRACT_MULTI_CANCEL_SUCCESS = BASE + 43;
+
+		/** 取消合同失败 */
+		int MSG_CONTRACT_MULTI_CANCEL_FAILED = BASE + 44;
+
+		/** 刷新支付倒计时时间 */
+		int MSG_REFRESH_PAY_WAIT_TIME = BASE + 45;
+
+		/** 刷新合同信息 */
+		int MSG_REFRESH_CONTRACT_INFO = BASE + 46;
+
 	}
 
 	/**
@@ -406,6 +442,18 @@ public interface GlobalMessageType {
 
 		/** 刷新钱包金额消息 */
 		int MSG_REFRESH_PURSE_BALANCE_INFO = BASE + 26;
+		
+		/** 获取第三方支付流水号成功 */
+		int MSG_GET_PAY_TN_SUCCESS = BASE + 27;
+		
+		/** 获取第三方支付流水号失败 */
+		int MSG_GET_PAY_TN_FAILED = BASE + 28;
+		
+		/** 上报支付结果成功 */
+		int MSG_RPT_PAY_RESULT_SUCCESS = BASE + 29;
+		
+		/** 上报支付结果失败 */
+		int MSG_RPT_PAY_RESULT_FAILED = BASE + 30;
 
 	}
 
@@ -582,6 +630,12 @@ public interface GlobalMessageType {
 
 		/** 下载取消 */
 		int MSG_DOWNLOAD_CANCELED = BASE + 7;
+		
+		/** 检测升级版本 */
+		int MSG_CHECK_UPGRADE_INFO = BASE + 8;
+		
+		/**系统退出*/
+		int MSG_EXIT = BASE + 9;
 
 	}
 

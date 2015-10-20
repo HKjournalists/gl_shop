@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <!-- 状态栏 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/buy_item_height"
+        android:background="@drawable/bg_item_top"
+        android:paddingBottom="0dp"
+        android:paddingLeft="1px"
+        android:paddingRight="1px"
+        android:paddingTop="1px" >
+
+        <TextView
+            android:id="@+id/tv_buyer_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/pink"
+            android:gravity="center"
+            android:text="买家(我)"
+            android:textColor="@color/orange" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/devider_line_v" />
+
+        <TextView
+            android:id="@+id/tv_seller_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/pink"
+            android:gravity="center"
+            android:text="卖家" />
+    </LinearLayout>
+
+    <View style="@style/item_devider_line" />
+
+    <!-- 状态详情 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_item_bottom"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/buy_item_padding"
+        android:paddingRight="@dimen/buy_item_padding"
+        android:paddingTop="0dp" >
+
+        <!-- 合同状态列表 -->
+
+        <LinearLayout
+            android:id="@+id/ll_status_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <!-- 交易结束 -->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                style="@style/ContractStatus_Status_Buyer_Icon"
+                android:layout_centerVertical="true" />
+
+            <Button
+                android:id="@+id/btn_contract_settlement"
+                style="@style/ContractStatus_Devider_Big_Circle"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:text="交易\n结束"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/sp13" />
+
+            <ImageView
+                style="@style/ContractStatus_Status_Seller_Icon"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/devider_status_eva"
+            style="@style/ContractStatus_Devider_Line"
+            android:layout_gravity="center" />
+
+        <!-- 合同评价 -->
+
+        <RelativeLayout
+            android:id="@+id/ll_status_eva"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                style="@style/ContractStatus_Status_Buyer_Icon"
+                android:layout_centerVertical="true" />
+
+            <Button
+                android:id="@+id/btn_contract_finished"
+                style="@style/ContractStatus_Devider_Big_Circle"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:text="合同\n评价"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/sp13" />
+
+            <ImageView
+                style="@style/ContractStatus_Status_Seller_Icon"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

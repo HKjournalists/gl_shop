@@ -24,7 +24,7 @@ public class TPassbookInfo extends BaseBean {
     /**
      * 总额
      */
-    private Float amount;
+    private Double amount;
 
     /**
      * 保证金是否充足
@@ -41,11 +41,11 @@ public class TPassbookInfo extends BaseBean {
      */
     private String remark;
 
-    public Float getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

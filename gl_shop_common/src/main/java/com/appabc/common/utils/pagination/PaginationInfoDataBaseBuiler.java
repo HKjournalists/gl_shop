@@ -22,13 +22,13 @@ public class PaginationInfoDataBaseBuiler {
 	 */
 	public static ISQLGenerator generateSQLGenerateFactory() {
 		if(dialect.equalsIgnoreCase(SystemConstant.DATABASE_MYSQL)){
-			return new MySqlGeneratorImpl();
+			return MySqlGeneratorImpl.getInstance();
 		}else if(dialect.equalsIgnoreCase(SystemConstant.DATABASE_ORACLE)){
-			return new OracleGeneratorImpl();
+			return OracleGeneratorImpl.getInstance();
 		}else if(dialect.equalsIgnoreCase(SystemConstant.DATABASE_SQLSERVER)){
-			return new SqlServerGeneratorImpl();
+			return SqlServerGeneratorImpl.getInstance();
 		}else{
-			return new MySqlGeneratorImpl();
+			return MySqlGeneratorImpl.getInstance();
 		}
 	}
 	

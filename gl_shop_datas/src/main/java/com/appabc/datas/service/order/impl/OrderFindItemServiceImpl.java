@@ -7,7 +7,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -116,6 +117,25 @@ public class OrderFindItemServiceImpl implements IOrderFindItemService {
 		if(ofiList != null) return ofiList.size();
 
 		return 0;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.order.IOrderFindItemService#countByFid(java.lang.String)
+	 */
+	@Override
+	public int countByFid(String fid) {
+		if(StringUtils.isEmpty(fid)) return 0;
+		
+		return this.orderFindItemDao.countByFid(fid);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.service.order.IOrderFindItemService#queryOrderFindItemListByFid(java.lang.String)  
+	 */
+	@Override
+	public List<TOrderFindItem> queryOrderFindItemListByFid(String fid) {
+		if(StringUtils.isEmpty(fid)) return null;
+		return orderFindItemDao.queryOrderFindItemListByFid(fid);
 	}
 
 }

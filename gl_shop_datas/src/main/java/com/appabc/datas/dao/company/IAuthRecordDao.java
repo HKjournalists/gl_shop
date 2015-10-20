@@ -3,8 +3,12 @@
  */
 package com.appabc.datas.dao.company;
 
+import java.util.List;
+
 import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordType;
 import com.appabc.bean.pvo.TAuthRecord;
+import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.IBaseDao;
 
 /**
@@ -24,5 +28,35 @@ public interface IAuthRecordDao extends IBaseDao<TAuthRecord> {
 	 * @return
 	 */
 	public int getCountByCidAndAuthstauts(String cid, AuthRecordStatus austatus);
+	
+	/**
+	 * 分页查询审核记录
+	 * @param qContext
+	 * @param authType
+	 * @param authStatus
+	 * @return
+	 */
+	public QueryContext<TAuthRecord> queryListForPaginationByTypeAndAuthstatus(QueryContext<TAuthRecord> qContext, AuthRecordType authType, AuthRecordStatus authStatus);
+
+	/**
+	 * 查询新认证的记录（未添加到任务表中[SYS_TASKS]的数据）
+	 * @return
+	 */
+	public List<TAuthRecord> queryNewListForNotInTask();
+
+	/**
+	 * 用户身份认证，已审核列表
+	 * @param qContext
+	 * @return
+	 */
+	QueryContext<TAuthRecord> queryParentAuthRecordOfInsteadListForPagination(
+			QueryContext<TAuthRecord> qContext);
+
+	/**
+	 * 企业认证日志
+	 * @param cid
+	 * @return
+	 */
+	List<TAuthRecord> queryAuthLogListByCid(String cid);
 
 }

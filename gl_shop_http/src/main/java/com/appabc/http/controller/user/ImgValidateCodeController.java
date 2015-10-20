@@ -65,19 +65,27 @@ public class ImgValidateCodeController extends BaseController<TUser> {
 			HttpServletResponse response){
 		
 		String deviceId = request.getParameter("deviceId");
-		String imgCode = request.getParameter("imgCode");
+		String imgCode = request.getParameter("code");
+		String userName = request.getParameter("userName");
 		
+		/********用户验证************************/
+		if(StringUtils.isNotEmpty(userName) && userService.isExistUsername(userName) == false){
+			return this.buildFailResult(ErrorCode.USER_DOES_NOT_EXIST, "该用户不存在");
+		}
+		
+		/********验证码验证************************/
 		if(StringUtils.isNotEmpty(imgCode) && StringUtils.isNotEmpty(deviceId)){
 			String code = vcm.getImgCode(deviceId);
 			if(code != null && code.equals(imgCode)){
 				vcm.delImgCode(deviceId);
-				return this.buildSuccessResult("验证码正确", "");
+				return this.buildSuccessResult("验证码正确");
 			}else{
-				return this.buildFailResult(ErrorCode.ERROR_VLD_CODE, "验证码不存在或已过期");
+				return this.buildFailResult(ErrorCode.ERROR_VLD_CODE, "验证码错误");
 			}
+		}else{
+			return this.buildFailResult(ErrorCode.DATA_IS_NOT_COMPLETE, "参数不完整，deviceId="+deviceId+",code="+imgCode);
 		}
 		
-		return this.buildFailResult(ErrorCode.ERROR_VLD_CODE, "验证码错误");
 	}
 	
 	

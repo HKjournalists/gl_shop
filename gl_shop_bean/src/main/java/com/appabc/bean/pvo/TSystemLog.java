@@ -1,7 +1,10 @@
 package com.appabc.bean.pvo;
 
-import com.appabc.common.base.bean.BaseBean;
 import java.util.Date;
+
+import com.appabc.bean.enums.SysLogEnum.LogBusinessType;
+import com.appabc.bean.enums.SysLogEnum.LogLevel;
+import com.appabc.common.base.bean.BaseBean;
 
 public class TSystemLog extends BaseBean {
     /**
@@ -17,7 +20,7 @@ public class TSystemLog extends BaseBean {
     /**
      * 业务类型
      */
-    private String businesstype;
+    private LogBusinessType businesstype;
 
     /**
      * 日志内容
@@ -32,7 +35,7 @@ public class TSystemLog extends BaseBean {
     /**
      * 日志级别
      */
-    private Integer loglevel;
+    private LogLevel loglevel;
 
     /**
      * 日志状态
@@ -49,67 +52,68 @@ public class TSystemLog extends BaseBean {
      */
     private String creater;
 
-    public String getBusinessid() {
-        return businessid;
-    }
+	public String getBusinessid() {
+		return businessid;
+	}
 
-    public void setBusinessid(String businessid) {
-        this.businessid = businessid == null ? null : businessid.trim();
-    }
+	public void setBusinessid(String businessid) {
+		this.businessid = businessid;
+	}
 
-    public String getBusinesstype() {
-        return businesstype;
-    }
+	public LogBusinessType getBusinesstype() {
+		return businesstype;
+	}
 
-    public void setBusinesstype(String businesstype) {
-        this.businesstype = businesstype == null ? null : businesstype.trim();
-    }
+	public void setBusinesstype(LogBusinessType businesstype) {
+		this.businesstype = businesstype;
+	}
 
-    public String getLogcontent() {
-        return logcontent;
-    }
+	public String getLogcontent() {
+		return logcontent;
+	}
 
-    public void setLogcontent(String logcontent) {
-        this.logcontent = logcontent == null ? null : logcontent.trim();
-    }
+	public void setLogcontent(String logcontent) {
+		this.logcontent = logcontent;
+	}
 
-    public Integer getLogtype() {
-        return logtype;
-    }
+	public Integer getLogtype() {
+		return logtype;
+	}
 
-    public void setLogtype(Integer logtype) {
-        this.logtype = logtype;
-    }
+	public void setLogtype(Integer logtype) {
+		this.logtype = logtype;
+	}
 
-    public Integer getLoglevel() {
-        return loglevel;
-    }
+	public LogLevel getLoglevel() {
+		return loglevel;
+	}
 
-    public void setLoglevel(Integer loglevel) {
-        this.loglevel = loglevel;
-    }
+	public void setLoglevel(LogLevel loglevel) {
+		this.loglevel = loglevel;
+	}
 
-    public Integer getLogstatus() {
-        return logstatus;
-    }
+	public Integer getLogstatus() {
+		return logstatus;
+	}
 
-    public void setLogstatus(Integer logstatus) {
-        this.logstatus = logstatus;
-    }
+	public void setLogstatus(Integer logstatus) {
+		this.logstatus = logstatus;
+	}
 
-    public Date getCreatetime() {
-        return createtime;
-    }
+	public Date getCreatetime() {
+		return createtime;
+	}
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
-    }
+	public void setCreatetime(Date createtime) {
+		this.createtime = createtime;
+	}
 
-    public String getCreater() {
-        return creater;
-    }
+	public String getCreater() {
+		return creater;
+	}
 
-    public void setCreater(String creater) {
-        this.creater = creater == null ? null : creater.trim();
-    }
+	public void setCreater(String creater) {
+		this.creater = creater;
+	}
+
 }

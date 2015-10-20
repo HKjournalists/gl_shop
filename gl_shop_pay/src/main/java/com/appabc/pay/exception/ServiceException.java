@@ -27,4 +27,24 @@ public class ServiceException extends BaseException {
 	
 	private static final long serialVersionUID = 1L;
 
+	public ServiceException(){
+		super();
+	}
+	
+	public ServiceException(String msg){
+		super(msg);
+	}
+	
+	public ServiceException(int errorCode,String msg){
+		super(errorCode,msg);
+	}
+	
+	public ServiceException(int errorCode,Throwable cause){
+		super(errorCode,cause);
+	}
+	
+	public ServiceException(int errorCode,String msg, Throwable cause) {
+		super(errorCode,msg, cause);
+	}
+	
 }

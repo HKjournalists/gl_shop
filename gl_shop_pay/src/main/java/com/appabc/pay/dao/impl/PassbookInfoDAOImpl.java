@@ -9,6 +9,8 @@ package com.appabc.pay.dao.impl;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +39,9 @@ public class PassbookInfoDAOImpl extends BaseJdbcDao<TPassbookInfo> implements
 	private static final String UPDATE_SQL = " UPDATE T_PASSBOOK_INFO SET CID = :cid,PASSTYPE = :passtype,AMOUNT = :amount,CREATETIME = :createtime,REMARK = :remark WHERE PASSID = :id ";
 	private static final String DELETE_SQL = " DELETE FROM T_PASSBOOK_INFO WHERE PASSID = :id ";
 	private static final String SELECT_SQL = " SELECT PASSID,CID,PASSTYPE,AMOUNT,CREATETIME,REMARK FROM T_PASSBOOK_INFO ";
+	
+	// 统计所有已缴纳保证金用户
+	private static final String COUNT_SQL_OF_ALL_USERS_GUARANTY = "SELECT COUNT(0) FROM ( SELECT (  PI.AMOUNT + ABS(IFNULL(FA.FREEZE_AMOUNT, 0)) ) SUM_AMOUNT, PI.AMOUNT, FA.FREEZE_AMOUNT FROM (  SELECT  *  FROM  T_PASSBOOK_INFO  WHERE  PASSTYPE = 0 ) PI LEFT JOIN ( SELECT  SUM(PPA.AMOUNT2) FREEZE_AMOUNT,  PPA.PASSID FROM  (  SELECT  (  CASE pp.DIRECTION  WHEN 1 THEN   0 - pp.AMOUNT  WHEN 0 THEN   pp.AMOUNT  END  ) AS AMOUNT2,  pp.PASSID  FROM  T_PASSBOOK_INFO pi,  T_PASSBOOK_PAY pp  WHERE  pp.PASSID = pi.PASSID  AND pp.OTYPE IN (5, 6)  AND pp.`STATUS` = 1  AND pi.PASSTYPE = 0  ) PPA GROUP BY  PPA.PASSID ) FA ON FA.PASSID = PI.PASSID ) tt WHERE tt.SUM_AMOUNT >= 3000";
 	
 	private String dynamicJoinSqlWithEntity(TPassbookInfo entity,StringBuilder sql){
 		if(entity == null || sql == null || sql.length() <= 0){
@@ -144,11 +149,45 @@ public class PassbookInfoDAOImpl extends BaseJdbcDao<TPassbookInfo> implements
 		entity.setId(rs.getString("PASSID"));
 		entity.setCid(rs.getString("CID"));
 		entity.setPasstype(PurseType.enumOf(rs.getString("PASSTYPE")));
-		entity.setAmount(rs.getFloat("AMOUNT"));
+		//该问题可以使用rs.getDouble，rs.getBigDecimal，rs.getString等替换rs.getFloat均可解决。
+		entity.setAmount(rs.getDouble("AMOUNT"));
 		entity.setCreatetime(rs.getTimestamp("CREATETIME"));
 		entity.setRemark(rs.getString("REMARK"));
 		
 		return entity;
+	}
+	
+	public int queryCountAllUsersGuaranty(){
+		Number number = super.getNamedParameterJdbcTemplate().queryForObject(COUNT_SQL_OF_ALL_USERS_GUARANTY, new HashMap<String,Object>(), Integer.class);  
+	    return (number != null ? number.intValue() : 0);
+	}
+	
+	
+	// 查询保证金小于3000并且不在任务列表中的用户
+		private static final String QUERY_NEW_TASK_LIST = "SELECT tpi.* FROM T_PASSBOOK_INFO tpi WHERE NOT EXISTS ( SELECT st.OBJECT_ID FROM SYS_TASKS st WHERE tpi.PASSID = st.OBJECT_ID  AND st.TYPE = ? )  AND tpi.PASSTYPE=0 AND tpi.AMOUNT<3000";
+	// 查询存在后台任务列表中，保证金已经超过3000的用户
+		private static final String QUERY_INVALID_TASK_LIST = "SELECT tpi.* FROM T_PASSBOOK_INFO tpi WHERE EXISTS ( SELECT st.OBJECT_ID FROM SYS_TASKS st WHERE tpi.PASSID = st.OBJECT_ID  AND st.TYPE = ? ) AND tpi.PASSTYPE=0 AND tpi.AMOUNT>3000";
+		
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.dao.IPassbookInfoDAO#queryNewListForTask()  
+	 */
+	@Override
+	public List<TPassbookInfo> queryNewListForTask() {
+		StringBuilder sql = new StringBuilder(QUERY_NEW_TASK_LIST);
+		List<Object> args = new ArrayList<Object>();
+		args.add("22");
+		return super.queryForList(sql.toString(), args);
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.dao.IPassbookInfoDAO#queryInvalidListForTask()  
+	 */
+	@Override
+	public List<TPassbookInfo> queryInvalidListForTask() {
+		StringBuilder sql = new StringBuilder(QUERY_INVALID_TASK_LIST);
+		List<Object> args = new ArrayList<Object>();
+		args.add(22);
+		return super.queryForList(sql.toString(), args);
 	}
 
 }

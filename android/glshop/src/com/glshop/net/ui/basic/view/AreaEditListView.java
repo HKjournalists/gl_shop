@@ -117,7 +117,7 @@ public class AreaEditListView extends LinearLayout implements View.OnClickListen
 			areaInfo.name = areaName.getText().toString();
 			areaInfo.code = (String) mContainer.getChildAt(i).findViewById(R.id.ll_item_select_area).getTag();
 			priceInfo.areaInfo = areaInfo;
-			priceInfo.unitPrice = Float.parseFloat(areaPrice.getText().toString());
+			priceInfo.unitPrice = Double.parseDouble(areaPrice.getText().toString());
 			mPriceList.add(priceInfo);
 		}
 		return mPriceList;

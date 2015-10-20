@@ -41,6 +41,26 @@ static NSString *cellIdentify = @"forcastTableCell";
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 30;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView* customView = [[UIView alloc] initWithFrame:CGRectMake(8, 0.0, 300.0, 30.0)];
+    [customView setBackgroundColor:ColorWithHex(@"EDEDED")];
+    
+    UILabel * headerLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+    headerLabel.textColor = ColorWithHex(@"333333");
+    headerLabel.font = [UIFont boldSystemFontOfSize:FONT_16];
+    headerLabel.frame = CGRectMake(8, 0, 300.0, 30.0);
+    
+    NSDictionary *dic = self.dataArray[section];
+    NSString *names = dic.allKeys.firstObject;
+    headerLabel.text = names;
+    [customView addSubview:headerLabel];
+    return customView;
+}
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     NSDictionary *dic = self.dataArray[section];
     return dic.allKeys.firstObject;

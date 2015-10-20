@@ -21,14 +21,22 @@
 }
 
 - (void)synacData {
-    NSString *file = [[NSString documentsPath] stringByAppendingPathComponent:kAreaFileName];
-    NSData *data = [NSData dataWithContentsOfFile:file];
-    if (data == nil) {
-        data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:kAreaFileName ofType:nil]];
-    }
-    id json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-    NSArray *datas = json[ServiceDataKey][@"area"][@"data"];
-    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+
+       NSData *data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:kAreaFileName ofType:nil]];
+        
+        id json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        
+        // 必须在主线程
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSArray *datas = json[ServiceDataKey][@"area"][@"data"];
+            [self parseDatas:datas];
+        });
+        
+    });
+}
+
+- (void)parseDatas:(NSArray *)datas {
     NSMutableArray *tempModels = [NSMutableArray array];
     for (NSDictionary *dic in datas) {
         AreaModel *areaModel = [[AreaModel alloc] initWithDataDic:dic];
@@ -44,7 +52,6 @@
         }
     }
     _provinceAreas = [NSArray arrayWithArray:provinceTemp];
-    
 }
 
 /**
@@ -60,6 +67,32 @@
     }
     return [NSArray arrayWithArray:temp];
 }
+
+/**
+ *@brief 根据市，找到所属省份
+ */
+- (AreaModel *)provinceForCity:(AreaModel *)cityModel {
+    for (AreaModel *model in _provinceAreas) {
+        if ([model.areaVal isEqualToString:cityModel.areaPcode]) {
+            return model;
+        }
+    }
+    return nil;
+}
+
+/**
+ *@brief 根据区，找到所属市
+ */
+- (AreaModel *)cityForRegion:(AreaModel *)regionModel {
+    for (AreaModel *model in _allAreas) {
+        if ([regionModel.areaPcode isEqualToString:model.areaVal]) {
+            return model;
+        }
+    }
+    return nil;
+}
+
+
 
 /**
  *@brief 根据市，找到相应的区

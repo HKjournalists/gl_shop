@@ -18,66 +18,6 @@ import com.appabc.common.base.bean.IBaseEnum;
 public interface CompanyInfo extends IBaseEnum{
 	
 	/**
-	 * @Description : 企业认证状态 (是否认证)
-	 * @Copyright   : GL. All Rights Reserved
-	 * @Company     : 江苏国立网络技术有限公司
-	 * @author      : 杨跃红
-	 * @version     : 1.0
-	 * Create Date  : 2014年9月22日 下午5:10:04
-	 */
-	public enum CompanyAuthStatus implements CompanyInfo {
-		
-		/**
-		 * 未认证
-		 */
-		AUTH_STATUS_NO("0","未认证"),
-		/**
-		 * 已认证
-		 */
-		AUTH_STATUS_YES("1","已认证"),
-		/**
-		 * 审核中
-		 */
-		AUTH_STATUS_ING("2","审核中");
-		
-		
-		private String val;
-		
-		private String text;
-		
-		private CompanyAuthStatus(String val,String text){
-			this.val = val;
-			this.text = text;
-		}
-		
-		public String getVal() {
-			return val;
-		}
-		
-		public String getText() {
-			return text;
-		}
-		
-		public static CompanyAuthStatus enumOf(String value){
-			for (CompanyAuthStatus os : values()) {
-				if (StringUtils.equalsIgnoreCase(os.val, value)) {
-					return os;
-				}
-			}
-			return null;
-		}
-		
-		public static String getText(String val) {
-			CompanyAuthStatus cas = enumOf(val);
-			if(cas != null){
-				return cas.text;
-			}
-			return null;
-	    }
-
-	}
-	
-	/**
 	 * @Description : 公司保证金是缴纳状态
 	 * @Copyright   : GL. All Rights Reserved
 	 * @Company     : 江苏国立网络技术有限公司

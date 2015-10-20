@@ -246,6 +246,18 @@
     return nil;
 }
 
+- (id)findSuperViewOfClass:(Class)aClass {
+    id responder = self;
+    while ((responder = [responder nextResponder]))
+    {
+        if ([responder isKindOfClass:aClass])
+        {
+            return responder;
+        }
+    }
+    return nil;
+}
+
 - (UIView *)firstResponder
 {
     return [self viewMatchingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, __unused id bindings) {

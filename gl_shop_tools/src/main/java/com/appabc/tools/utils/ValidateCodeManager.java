@@ -49,9 +49,10 @@ public class ValidateCodeManager {
 	 * 保存短信验证码
 	 * @param phone
 	 * @param smsCode
+	 * @param seconds 有效时长，单位：秒
 	 */
-	public void saveSmsCode(String phone, String smsCode){
-		redisHelper.set(SystemConstant.SMS_CODE_KEY + phone, smsCode, spm.getInt(SystemConstant.SMS_VLD_CODE_TIME_LENGTH));
+	public void saveSmsCode(String phone, String smsCode, int seconds){
+		redisHelper.set(SystemConstant.SMS_CODE_KEY + phone, smsCode, seconds);
 	}
 
 	/**
@@ -104,20 +105,20 @@ public class ValidateCodeManager {
 		smi.setBusinessType(MsgBusinessType.BUSINESS_TYPE_USER_REGISTER);
 		smi.setTel(phone);
 		String smsCode =  getCode();
-		smi.setTemplate(SMSTemplate.getTemplatePin(smsCode, spm.getInt(SystemConstant.SMS_VLD_CODE_TIME_LENGTH)/60+"" , spm.getString(SystemConstant.CUSTOMER_SERVICE_TEL)));
+		int seconds = spm.getInt(SystemConstant.SMS_VLD_CODE_TIME_LENGTH);
+		smi.setTemplate(SMSTemplate.getTemplatePin(smsCode, seconds/60+"" , spm.getString(SystemConstant.CUSTOMER_SERVICE_TEL)));
 		boolean tf = smsSender.sendMsg(smi);
 		if(tf == true){
-			saveSmsCode(phone, smsCode); // 保存验证码到缓存
+			saveSmsCode(phone, smsCode, seconds); // 保存验证码到缓存
 		}
 		return tf;
 	}
-
 
 	/**
 	 * 获取一个字符串，内容为数字
 	 * @return
 	 */
-	private String getCode(){
+	public String getCode(){
 		String code = "";
 		Random random = new Random();
 		for(int i=0; i<6; i++){
@@ -125,4 +126,5 @@ public class ValidateCodeManager {
 		}
 		return code;
 	}
+	
 }

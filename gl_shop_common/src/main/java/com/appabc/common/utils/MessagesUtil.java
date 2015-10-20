@@ -28,7 +28,7 @@ public class MessagesUtil {
 
 	private static LogUtil log = LogUtil.getLogUtil(MessagesUtil.class);
 	private static MessageSource ms = BeanLocator.getMessageSource(); 
-	private static Locale locale = new Locale("prop");
+	public static Locale locale = new Locale("prop");
 	
 	private static void checkNullCodeLocal(String code,Locale l){
 		if(StringUtils.isEmpty(code) || l == null){

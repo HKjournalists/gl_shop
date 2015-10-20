@@ -34,7 +34,7 @@ public class ContractConfirmGoodsInfoTrigger extends BaseCronTrigger {
 		super();
 		this.setName(NAME);
 		this.setGroup(GROUP);
-		setCronExpression("0 0/10 * * * ?");
+		setCronExpression("0 0/3 * * * ?");
 	}
 	
 	public ContractConfirmGoodsInfoTrigger(String jobName,String jobGroup,String cronExpression) throws ParseException{

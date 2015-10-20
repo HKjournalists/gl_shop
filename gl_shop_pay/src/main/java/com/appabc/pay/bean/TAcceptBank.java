@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.appabc.bean.bo.ViewImgsBean;
-import com.appabc.bean.enums.AcceptBankInfo.AcceptAuthStatus;
 import com.appabc.bean.enums.AcceptBankInfo.AcceptBankStatus;
+import com.appabc.bean.enums.AuthRecordInfo.AuthRecordStatus;
 import com.appabc.bean.pvo.TCompanyInfo;
 import com.appabc.common.base.bean.BaseBean;
 
@@ -95,7 +95,7 @@ public class TAcceptBank extends BaseBean {
     /**
      * 认证状态（默认1，普通0）
      */
-    private AcceptAuthStatus authstatus;
+    private AuthRecordStatus authstatus;
     
     /**
      * 关联的图片ID
@@ -265,14 +265,14 @@ public class TAcceptBank extends BaseBean {
 	 * @since   1.0.0  
 	*/  
 	
-	public AcceptAuthStatus getAuthstatus() {
+	public AuthRecordStatus getAuthstatus() {
 		return authstatus;
 	}
 
 	/**  
 	 * @param authstatus the authstatus to set  
 	 */
-	public void setAuthstatus(AcceptAuthStatus authstatus) {
+	public void setAuthstatus(AuthRecordStatus authstatus) {
 		this.authstatus = authstatus;
 	}
 	

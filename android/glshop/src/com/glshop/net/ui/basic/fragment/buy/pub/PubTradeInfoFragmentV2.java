@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalAction;
+import com.glshop.net.common.GlobalConstants;
 import com.glshop.net.common.GlobalConstants.PubBuyIndicatorType;
 import com.glshop.net.common.GlobalMessageType;
 import com.glshop.net.logic.model.MenuItemInfo;
@@ -32,6 +33,7 @@ import com.glshop.net.ui.myprofile.DischargeAddrSelectActivity;
 import com.glshop.net.utils.ActivityUtil;
 import com.glshop.net.utils.DateUtils;
 import com.glshop.net.utils.MenuUtil;
+import com.glshop.platform.api.DataConstants.BuyType;
 import com.glshop.platform.api.DataConstants.DeliveryAddrType;
 import com.glshop.platform.api.DataConstants.ProductUnitType;
 import com.glshop.platform.api.buy.data.model.BuyInfoModel;
@@ -66,11 +68,13 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 
 	private View llItemUnitSwitch;
 	private TextView mTvUnitType;
+	private TextView mTvAmountType;
 	private Button mBtnStartDate;
 	private Button mBtnEndDate;
 	private View mIvUnitMenuIcon;
 
 	private EditText mEtItemAmount;
+	private BuyEditItemView mItemUnitPrice;
 	private EditText mEtItemUnitPrice;
 	private EditText mEtItemBuyRemarks;
 
@@ -100,9 +104,11 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 		mBtnStartDate = getView(R.id.btn_trade_start_date);
 		mBtnEndDate = getView(R.id.btn_trade_end_date);
 		llItemUnitSwitch = getView(R.id.ll_item_unit_switch);
+		mTvAmountType = getView(R.id.tv_buy_amount_type);
 		mTvUnitType = getView(R.id.tv_nuit_type);
 		mEtItemAmount = getView(R.id.et_item_amount);
 		mEtItemUnitPrice = ((BuyEditItemView) getView(R.id.ll_item_unit_price)).getEditText();
+		mItemUnitPrice = getView(R.id.ll_item_unit_price);
 		mEtItemBuyRemarks = getView(R.id.et_item_product_remark);
 		llItemAddrDetail = getView(R.id.ll_item_addr);
 		mTvAddrDetail = getView(R.id.tv_addr_detail);
@@ -122,6 +128,9 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 		getView(R.id.iv_item_addr_pic_2).setOnClickListener(this);
 		getView(R.id.iv_item_addr_pic_3).setOnClickListener(this);
 		getView(R.id.btn_pub_next).setOnClickListener(this);
+
+		setTextWatcher(mEtItemAmount);
+		setTextWatcher(mEtItemUnitPrice);
 	}
 
 	@Override
@@ -133,6 +142,7 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 	protected void updateBuyUI() {
 		// 更新价格及时间信息
 		mUnitType = mPubInfo.unitType;
+		updateAmountTypeUI();
 		updateUnitTypeUI();
 		mEtItemAmount.setText(mPubInfo.tradeAmount != 0 ? String.valueOf(mPubInfo.tradeAmount) : "");
 		mEtItemUnitPrice.setText(mPubInfo.unitPrice != 0 ? String.valueOf(mPubInfo.unitPrice) : "");
@@ -157,6 +167,9 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 
 		// 更新买卖备注
 		mEtItemBuyRemarks.setText(mPubInfo.buyRemarks);
+
+		// 更新温馨提示
+		updatePubTips(mPubInfo.buyType);
 
 		// 文本定位
 		requestSelection(mEtItemAmount);
@@ -300,17 +313,9 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 	}
 
 	private boolean checkArgs() {
-		if (StringUtils.isNEmpty(mEtItemAmount.getText().toString().trim())) {
-			showToast("购买量不能为空!");
+		if (!checkAmount()) {
 			return false;
-		} else if (!StringUtils.checkNumber(mEtItemAmount.getText().toString().trim())) {
-			showToast("购买量不能为0!");
-			return false;
-		} else if (StringUtils.isNEmpty(mEtItemUnitPrice.getText().toString().trim())) {
-			showToast("单价不能为空!");
-			return false;
-		} else if (!StringUtils.checkNumber(mEtItemUnitPrice.getText().toString().trim())) {
-			showToast("单价不能为0!");
+		} else if (!checkUnitPrice()) {
 			return false;
 		} else if (!checkTradeDate()) {
 			return false;
@@ -327,6 +332,36 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 		return true;
 	}
 
+	private boolean checkUnitPrice() {
+		String num = mEtItemUnitPrice.getText().toString().trim();
+		if (StringUtils.isNEmpty(num)) {
+			showToast("单价不能为空!");
+			return false;
+		} else if (!StringUtils.checkNumber(num)) {
+			showToast("单价不能为0!");
+			return false;
+		} else if (Double.parseDouble(num) > GlobalConstants.CfgConstants.MAX_UNIT_PRICE) {
+			showToast(getString(R.string.error_code_100003005, GlobalConstants.CfgConstants.MAX_UNIT_PRICE));
+			return false;
+		}
+		return true;
+	}
+
+	private boolean checkAmount() {
+		String num = mEtItemAmount.getText().toString().trim();
+		if (StringUtils.isNEmpty(num)) {
+			showToast("购买量不能为空!");
+			return false;
+		} else if (!StringUtils.checkNumber(num)) {
+			showToast("购买量不能为0!");
+			return false;
+		} else if (Double.parseDouble(num) > GlobalConstants.CfgConstants.MAX_AMOUNT) {
+			showToast(getString(R.string.error_code_100003006, GlobalConstants.CfgConstants.MAX_AMOUNT));
+			return false;
+		}
+		return true;
+	}
+
 	private boolean checkTradeDate() {
 		if (StringUtils.isNEmpty(mTradeBeginDate)) {
 			showToast("请选择交易开始时间!");
@@ -338,7 +373,10 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 			long startTime = DateUtils.covertDate2Long(DateUtils.COMMON_DATE_FORMAT, mTradeBeginDate);
 			long endTime = DateUtils.covertDate2Long(DateUtils.COMMON_DATE_FORMAT, mTradeEndDate);
 			if (startTime > endTime) {
-				showToast("交易开始时间不能大于结束时间!");
+				showToast("交易起始时间不能大于交易结束时间!");
+				return false;
+			} else if (endTime < getNowTime()) {
+				showToast("交易结束时间不能小于当前时间!");
 				return false;
 			} else {
 				return true;
@@ -363,17 +401,17 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 		if (mPubInfo != null) {
 			// 数量及价格信息
 			if (StringUtils.isNotEmpty(mEtItemUnitPrice.getText().toString().trim())) {
-				mPubInfo.unitPrice = Float.parseFloat(mEtItemUnitPrice.getText().toString().trim());
+				mPubInfo.unitPrice = Double.parseDouble(mEtItemUnitPrice.getText().toString().trim());
 			}
 			if (StringUtils.isNotEmpty(mEtItemAmount.getText().toString().trim())) {
-				mPubInfo.tradeAmount = Float.parseFloat(mEtItemAmount.getText().toString().trim());
+				mPubInfo.tradeAmount = Double.parseDouble(mEtItemAmount.getText().toString().trim());
 			}
 			// 单位
 			mPubInfo.unitType = mUnitType;
 
 			// 发布时间信息
-			mPubInfo.tradeBeginDate = /*DateUtils.convertDate2String(DateUtils.PUB_DATE_FORMAT, DateUtils.COMMON_DATE_FORMAT, mBtnStartDate.getText().toString())*/mTradeBeginDate;
-			mPubInfo.tradeEndDate = /*DateUtils.convertDate2String(DateUtils.PUB_DATE_FORMAT, DateUtils.COMMON_DATE_FORMAT, mBtnEndDate.getText().toString())*/mTradeEndDate;
+			mPubInfo.tradeBeginDate = mTradeBeginDate;
+			mPubInfo.tradeEndDate = mTradeEndDate;
 
 			// 地域信息
 			mPubInfo.isMoreArea = false;
@@ -430,8 +468,21 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 	private void updateUnitTypeUI() {
 		if (mUnitType == ProductUnitType.CUTE) {
 			mTvUnitType.setText(getString(R.string.unit_cube_v2));
+			mItemUnitPrice.setSecondTitle(getString(R.string.unit_price_cute_v2));
 		} else {
 			mTvUnitType.setText(getString(R.string.unit_ton_v2));
+			mItemUnitPrice.setSecondTitle(getString(R.string.unit_price_ton_v2));
+		}
+	}
+
+	/**
+	 * 更新交易数量类型
+	 */
+	private void updateAmountTypeUI() {
+		if (mPubInfo.buyType == BuyType.BUYER) {
+			mTvAmountType.setText(getString(R.string.business_product_purchases));
+		} else {
+			mTvAmountType.setText(getString(R.string.business_product_sales_volume));
 		}
 	}
 
@@ -463,14 +514,15 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 		if (dateWidget == mBtnStartDate) {
 			if (StringUtils.isNotEmpty(mTradeBeginDate)) {
 				strDate = DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.PUB_DATE_FORMAT, mTradeBeginDate);
+			} else {
+				strDate = DateUtils.convertDate2String(DateUtils.PUB_DATE_FORMAT, System.currentTimeMillis());
 			}
 		} else if (dateWidget == mBtnEndDate) {
 			if (StringUtils.isNotEmpty(mTradeEndDate)) {
 				strDate = DateUtils.convertDate2String(DateUtils.COMMON_DATE_FORMAT, DateUtils.PUB_DATE_FORMAT, mTradeEndDate);
+			} else {
+				strDate = DateUtils.convertDate2String(DateUtils.PUB_DATE_FORMAT, System.currentTimeMillis() + 7 * DateUtils.TIME_UNIT_DAY * DateUtils.TIME_UNIT_SECOND);
 			}
-		}
-		if (StringUtils.isNEmpty(strDate)) {
-			strDate = DateUtils.convertDate2String(DateUtils.PUB_DATE_FORMAT, System.currentTimeMillis());
 		}
 
 		int year = DateUtils.getYearFromStrDate(DateUtils.PUB_DATE_FORMAT, strDate);
@@ -496,6 +548,14 @@ public class PubTradeInfoFragmentV2 extends BasePubInfoFragmentV2 implements IMe
 			}
 		}, year, DateUtils.convertCNMonth2EN(month), day);
 		dateDialog.show();
+	}
+
+	/**
+	 * 获取当前时间
+	 */
+	private long getNowTime() {
+		String nowTime = DateUtils.convertDate2String(DateUtils.PUB_DATE_FORMAT, System.currentTimeMillis());
+		return DateUtils.covertDate2Long(DateUtils.PUB_DATE_FORMAT, nowTime);
 	}
 
 	private void clearFocus() {

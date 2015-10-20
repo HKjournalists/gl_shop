@@ -217,14 +217,14 @@ public class SysCfgMgr {
 				list = SysCfgLocalMgr.getIntance(mContext).loadPortList();
 			}
 			if (BeanUtils.isNotEmpty(list)) {
-				Collections.sort(list, new Comparator<AreaInfoModel>() {
-
-					@Override
-					public int compare(AreaInfoModel info1, AreaInfoModel info2) {
-						return info1.code.compareTo(info2.code);
-					}
-
-				});
+//				Collections.sort(list, new Comparator<AreaInfoModel>() {
+//
+//					@Override
+//					public int compare(AreaInfoModel info1, AreaInfoModel info2) {
+//						return info1.code.compareTo(info2.code);
+//					}
+//
+//				});
 			}
 			mPortList = list;
 			portList = list;

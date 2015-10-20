@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/tasks">
+<head>
+  <title>合同管理 - 撮合交流</title>
+
+</head>
+<body>
+
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 不需催促认证 - 详情 </h4>
+
+<div layout:fragment="pageContent">
+
+ <form id="urgeVerifyInfoForm" role="form" method="post" data-enable-shim="true">
+    <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+  <div class="panel panel-primary">
+    <div class="panel-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover table-striped">
+          <tr>
+            <th width="15%">用户手机号码</th>
+            <td><a th:href="@{/company/{cid}/info/(cid=${uv.userid})}" target="_blank" th:text="${uv.username}"></a></td>
+            <th width="15%">注册时间</th>
+            <td width="30%" th:text="${uv.regdate} ? ${#calendars.format(uv.regdate, 'YYYY-MM-dd HH:mm')}">2011-11-24  09：25</td>
+          </tr>
+          <tr>
+            <th width="15%">最后一次登陆时间</th>
+            <td th:text="${uv.lastlogindate} ? ${#calendars.format(uv.lastlogindate, 'YYYY-MM-dd HH:mm')}:无">2014-8-19  19：46</td>
+            <th width="15%">求购信息数</th>
+            <td width="30%" th:text="${uv.buynum}">5</td>
+          </tr>
+           <tr>
+            <th width="15%">出售信息数</th>
+            <td th:text="${uv.sellnum}">3</td>
+            <th width="15%">提交认证次数</th>
+            <td width="30%" th:text="${uv.authnum}"></td>
+          </tr>
+           <tr>
+            <th width="15%">用户姓名</th>
+            <td width="30%" th:text="${uv.userrealname}"></td>
+            <th width="15%">用户类型</th>
+            <td width="30%" th:text="${uv.usertype}"></td>
+          </tr>
+           <tr>
+            <th width="15%">客服催促次数</th>
+            <td th:text="${uv.verifynum}">5</td>
+            <th width="15%">最近一次催促时间</th>
+            <td width="30%" th:text="${uv.lastverifydate} ? ${#calendars.format(uv.lastverifydate, 'YYYY-MM-dd HH:mm')}">2011-11-24  09：25</td>
+          </tr>
+           <tr>
+            <th width="15%">用户注册原因</th>
+            <td colspan="3" th:text="${uv.registreason}"></td>
+          </tr>
+          <tr>
+            <th width="15%">其他备注信息</th>
+            <td colspan="3" th:text="${uv.remark}"></td>
+          </tr>        
+        </table>
+      </div>
+    </div>
+</div>
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 服务记录
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+         
+          <table class="table table-bordered table-hover table-striped">
+          <tr th:each="list : ${uv.urgeVerifyList}">
+        	  <td width="15%" th:text="${list.owner}+'|'+${#calendars.format(list.createtime, 'YYYY-MM-dd HH:mm')}"></td>
+         	  <td th:text="${list.record}"></td>
+          </tr>
+          </table>        	 
+        </div>
+      </div>
+    </div>	 
+  </form>
+</div>
+</body>
+
+</html>

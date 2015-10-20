@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/manage">
+<head>
+<title>系统管理 - Banner广告图配置</title>
+<link rel="stylesheet" type="text/css" th:href="@{/static/plugins/bootstrap-fileinput-master/css/fileinput.min.css}" />
+</head>
+<body>
+	<h4 layout:fragment="contentNavTitle">
+        <i class="fa fa-fw fa-wrench"></i> Banner广告图配置
+    </h4>
+    
+<div layout:fragment="pageContent">
+	  <ul class="nav nav-tabs" th:replace="fragments/system_manage_fragments :: configure_advertise_tab">
+	    <li role="presentation" class="active"><a href="#">Android客户端</a></li>
+	    <li role="presentation"><a href="#">IOS客户端</a></li>
+	  </ul>
+	  
+	 <div class="table-responsive media">
+	  	<div class="panel panel-default">
+	  		<div class="panel-body">
+	  			<div class="row col-xs-offset-0" >
+	  				<a id="addBanner" ><button id="btnSubmit" type="submit" class="btn btn-primary text-center">增加广告位</button></a>
+	  			</div>
+	  			<input type="hidden" id="osType" name="osType" th:value="${osType}"/>
+	  			
+	  			<div  class="row media" >
+			  		<div th:each="banner : ${clientBannerList}" class="col-sm-3 col-md-3" >
+			  		<form th:id="form+${banner.bid}" role="form" method="post" data-enable-shim="true" class="form-horizontal">
+			  		 <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+			  		 <input type="hidden" name="bid" th:value="${banner.bid}" />
+			  		 <input type="hidden" name="sortimgid" th:value="${banner.sortimgid}" />
+			  		 <input type="hidden" th:id="newsortimgid+${banner.bid}" name="newsortimgid" th:value="${banner.sortimgid}" />
+			  			<!--信息显示层  -->
+			  			 <div class="thumbnail" th:id="banner+${banner.bid}">
+			  					 <div >
+				         			<img th:if="${!#strings.isEmpty(banner.fullpath)}"  th:src="${banner.fullpath}" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;">
+				        			<img th:if="${#strings.isEmpty(banner.fullpath)}"   data-src="holder.js/100%x200" alt="100%x200" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTRlYjQ1ZDk4NWYgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNGViNDVkOTg1ZiI+PHJlY3Qgd2lkdGg9IjI0MiIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS44NTE1NjI1IiB5PSIxMDUuMSI+MjQyeDIwMDwvdGV4dD48L2c+PC9nPjwvc3ZnPg==" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;">
+				         		 </div>
+			  			  		<br>
+              					<div class="form-group">
+			  			  			<label for="ctype" class="col-sm-3 control-label required">图片名称</label>
+             					 	<div class="col-sm-8">
+               							 <input type="text" th:name="bname" th:id="${banner.bid}" th:value="${banner.fname}" class="form-control"   readonly />
+             						</div>
+              					</div>
+              					<div class="form-group">
+			  			  			<label for="ctype" class="col-sm-3 control-label required">链接地址</label>
+              						<div class="col-sm-8">         
+                						<input type="text" th:name="targeturl" th:id="${banner.bid}" th:value="${banner.targeturl}" class="form-control targeturl"  placeholder="请输入链接地址" readonly onclick="readOnly=false" onblur="readOnly=true"/>
+					            	</div>
+					            </div>
+					            <div class="form-group">
+			  			  			<label for="ctype" class="col-sm-3 control-label required">排序</label>
+             					 	<div class="col-sm-8">
+               							 <input type="text" th:name="orderno" th:id="${banner.bid}" th:value="${banner.orderno}" class="form-control orderno"  placeholder="请输入广告位排序" readonly onclick="readOnly=false" onblur="readOnly=true"/>
+             						</div>
+              					</div>
+					            <div th:if="${banner.updatetime} != null" class="form-group">
+			  			  			<label th:text="${#calendars.format(banner.updatetime, 'YYYY年M月d日   HH:mm')}" class="col-sm-6 control-label">更新时间</label>
+             						<label th:text="${banner.updater}"  class="col-sm-4 control-label">操作人</label>
+              					</div>
+              					<div th:if="${banner.updatetime} == null" class="form-group">
+			  			  			<label  th:text="${#calendars.format(banner.createtime, 'YYYY年M月d日   HH:mm')}" class="col-sm-6 control-label">创建时间</label>
+             					 	<label  th:text="${banner.creater}" class="col-sm-4 control-label">创建时间</label>
+             					 	
+              					</div>
+				          		<p class="text-center">
+				         			<a th:id="${banner.bid}" href="#" class="btn btn-primary btn-toupload" role="button">上传</a> 
+				            		<a th:id="${banner.bid}" href="#" class="btn btn-primary btn-todelete" role="button">刪除</a>
+				            	</p>
+				          </div> 
+				        
+				          <!--上传图片层  -->
+				          <div th:id="tupian+${banner.bid}"   style="display: none">
+                   			 <input th:id="${banner.bid}" type="file" style="height: 270px; width: 100%"" name="file" class="file"><br>
+                   		  	 <p align="right"><a th:id="${banner.bid}" href="#" class="btn btn-primary btn-toback" role="button">返回</a></p>
+                   		  </div>				          
+				      </form>						      	
+			  		</div>
+			    </div>	
+	  		</div>
+	  	</div>
+	  </div>
+	  
+	
+	
+	
+	 <!-- Modal -->
+  <div class="modal fade" id="bannerConfirmDialog" tabindex="-1" role="dialog" aria-labelledby="accountAudit" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+          <h4 class="modal-title" id="accountAudit">广告位删除</h4>
+        </div>
+        <div class="modal-body">
+          <p id="dialogContent">确认删除？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button id="btnDialogOk" type="button" class="btn btn-primary">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>  
+	
+<div layout:fragment="additionalScriptFiles">
+  <script th:src="@{/static/plugins/bootstrap-fileinput-master/js/fileinput.min.js}"></script>
+  <script th:src="@{/static/plugins/bootstrap-fileinput-master/js/fileinput_locale_zh.js}"></script>
+</div>
+	
+<script layout:fragment="inlineJavascript">
+var url =/*[[@{/manage/advertise/}]]*/ '/manage/advertise/';
+var _csrf = $('input[name="_csrf"]').val();
+var contextPath = /*[[@{/}]]*/ '/';
+var osType=$('#osType').val();
+$('#addBanner').click(function(e) {
+	$("#addBanner").attr("href",url+"/add/"+osType);
+});
+
+$('.btn-toupload').click(function(e) {
+	var targetId=$(e.target).attr('id');
+	var height= $('#banner'+targetId).height();
+	$('#tupian'+targetId).height(height+30);
+	$('#banner'+targetId).hide();
+	$('#tupian'+targetId).show();
+}); 
+
+$('.btn-toback').click(function(e) {
+	var targetId=$(e.target).attr('id');
+	$('#tupian'+targetId).hide();
+	$('#banner'+targetId).show();	
+});
+
+
+$('.btn-todelete').click(function(e) {
+	var targetId=$(e.target).attr('id');
+    $('#dialogContent').html('确认要删除该广告栏位？');
+    $('#bannerConfirmDialog').modal('show');
+    $('#btnDialogOk').click(function(evt) {
+        $('#bannerConfirmDialog').modal('hide');
+        $('#form'+targetId).attr('action', url + 'delete/'+osType);
+        $('#form'+targetId).submit();
+    });
+});
+
+ $('.file').fileinput({
+	language: "zh",
+    uploadUrl: contextPath+"file/upload/?_csrf="+_csrf,
+    allowedFileExtensions: ["jpg", "png", "gif"],
+    maxFileSize: 10240
+});  
+ 
+ $('.file').on('fileuploaded', function(event, data, previewId, index) {
+	    var form = data.form, files = data.files, extra = data.extra,
+	        response = data.response, reader = data.reader;
+	    var sortimgid=response.collection[0];
+		var targetId=$(event.target).attr('id');
+		$("#newsortimgid"+targetId).val(sortimgid);
+		$('#form'+targetId).attr('action', url+'updateFile/'+osType);
+		$('#form'+targetId).submit(); 
+	});
+ 
+  $(".targeturl").change(function(){
+	  var id= this.id;
+	  var targeturl=this.value;
+	 if(IsURL(targeturl))
+	{
+		 $('#form'+id).attr('action', url+'update/'+osType);
+		 $('#form'+id).submit();  
+	}
+	 else
+	{
+		 alert('您输入的'+targeturl+'不是正确的url地址,请重新输入');	
+		 this.focus();
+	}
+	 
+  })
+  
+  $(".orderno").change(function(){
+	  	var id= this.id;
+		$('#form'+id).attr('action', url+'update/'+osType);
+		$('#form'+id).submit();   
+  })
+  
+  function IsURL(str_url){        
+	  var strRegex = "^app$|^([A-Za-z]+://)?[A-Za-z0-9-_]+\\.[A-Za-z0-9-_%&\?\/.=:]+$"; 
+    var re=new RegExp(strRegex);        
+    return re.test(str_url);        
+}    
+</script>
+</body>
+</html>

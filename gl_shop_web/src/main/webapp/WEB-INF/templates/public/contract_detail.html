@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/default">
+<head>
+  <title>公共 - 合同信息</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/static/css/content.css}" />
+  <style>
+    .row + .row {
+      border-top:0 ;
+    }
+  </style>
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 公共 - 合同信息
+</h4>
+
+<div layout:fragment="pageContent" th:with="orderType=${order.type == 1 ? '求购' : '出售'}">
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 合同摘要
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <tr>
+              <th width="15%">内容摘要</th>
+              <td colspan="3" th:text="${order.title}">出售石子·碎石1-3(5.0-31.5) 5000.0立方 50.0元/立方</td>
+            </tr>
+            <tr>
+              <th width="15%">买方</th>
+              <td width="35%"><a th:href="@{/company/{cid}/info/(cid=${buyerCompany.id})}" th:text="${buyer.phone} + ' ' + ${buyerCompany.cname}">江苏国立网络技术有限公司</a></td>
+              <th width="15%">类型</th>
+              <td width="35%" th:text="${buyerCompany.ctype} ? ${buyerCompany.ctype.text} : '未知'">企业</td>
+            </tr>
+            <tr>
+              <th width="15%">卖方</th>
+              <td width="35%"><a th:href="@{/company/{cid}/info/(cid=${sellerCompany.id})}" th:text="${seller.phone} + ' ' + ${sellerCompany.cname}">江苏国立网络技术有限公司</a></td>
+              <th width="15%">类型</th>
+              <td width="35%" th:text="${sellerCompany.ctype} ? ${sellerCompany.ctype.text} : '未知'">企业</td>
+            </tr>
+            <tr>
+              <th width="15%">生成时间</th>
+              <td colspan="3" th:text="${#calendars.format(order.creatime, 'YYYY-MM-dd HH:mm')}">2015年3月12日 13:11</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 产品信息
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <tr>
+              <th width="15%">产品</th>
+              <td colspan="3" th:text="${productType} ? (${product.name} + '·' + ${productType.name} + '·' + ${order.pname}) : (${product.name} + '·' + ${order.pname}) ">石子</td>
+            </tr>
+            <tr th:each="data, idx : ${productProperties}" th:with="numList=${#strings.listSplit('0,1', ',')}" th:if="${idx.index % 2 == 0 and idx.index lt productProperties.size()}">
+              <th:block th:each="num, numIdx : ${numList}" th:with="propIndex=(${idx.index} + ${numIdx.index})" th:if="${idx.index + numIdx.index lt productProperties.size()}">
+              <th width="15%" th:text="${productProperties[propIndex].name}">含泥量(%)</th>
+              <td width="35%" th:text="${productProperties[propIndex].content}">3</td>
+              </th:block>
+            </tr>
+            <tr>
+              <th>颜色</th>
+              <td th:text="${order.pcolor}">黄色</td>
+              <th>产地</th>
+              <td th:text="${order.paddress}">江苏</td>
+            </tr>
+            <tr>
+              <th>货物备注</th>
+              <td colspan="3" th:text="${order.premark}">此产品产自四川，质量很好</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 交易信息
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <tr>
+              <th width="25%" th:text="${order.unit} ? ${'交易量（单位：' + order.unit.text + '）'} : '交易量'">交易量（单位：吨）</th>
+              <td width="25%" th:text="${order.totalnum}">5000</td>
+              <th width="25%">单价（单位：元）</th>
+              <td width="25%" th:text="${order.price}">50</td>
+            </tr>
+            <tr>
+              <th width="25%">总成交价（单位：元）</th>
+              <td th:text="${order.totalnum * order.price}">250000</td>
+            </tr>
+            <tr>
+              <th>交易日期范围</th>
+              <td colspan="3" th:text="${#calendars.format(order.starttime, 'YYYY-MM-dd')} + ' 至 ' + ${#calendars.format(order.endtime, 'YYYY-MM-dd')}">2015-03-01 至 2015-04-10</td>
+            </tr>
+            <tr>
+              <th>交易港口</th>
+              <td colspan="3" th:text="${order.addrAreaFullName}">广东省深圳市南山区</td>
+            </tr>
+              <tr>
+                <th>详细交货地点</th>
+                <td colspan="3" th:text="${order.address}">四圩港</td>
+              </tr>
+              <tr>
+                <th>卸货地港口水深度（单位：米）</th>
+                <td colspan="3" th:text="${order.deep}">50</td>
+              </tr>
+              <tr>
+                <th>可停泊载重船吨位（单位:吨）</th>
+                <td colspan="3" th:text="${order.shippington}">5000</td>
+              </tr>
+            <tr>
+              <th>交易备注</th>
+              <td colspan="3" th:text="${order.remark}">请尽快付款</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> 操作记录
+      </div>
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped">
+            <tr th:each="op : ${opList}">
+              <th th:text="${op.operationtime} ? ${#calendars.format(op.operationtime, 'YYYY-MM-dd HH:mm:ss')}"  width="25%"></th>
+              <td th:text="${op.result}"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+</div>
+</body>
+
+</html>

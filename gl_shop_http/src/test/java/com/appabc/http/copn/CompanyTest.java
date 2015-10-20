@@ -22,9 +22,9 @@ public class CompanyTest extends AbstractHttpControllerTest {
 	@Override
 	@Test
 	public void mainTest() {
-		loginSimulation(null, null, "CompanyInfoId000000524092014END");
-//		loginSimulation("aa", "1", "000000915102014");
+//		loginSimulation("aa", "1", "CompanyInfoId000000524092014END");
 //		authApply();
+//		testGetMyCompanyInfo();
 //		testQuerCompanyAllInfo();
 	}
 	
@@ -57,7 +57,24 @@ public class CompanyTest extends AbstractHttpControllerTest {
 		request.setRequestURI("/copn/getCompanyInfo");
 		request.setMethod("GET");
 		
-		request.addParameter("cid", "CompanyInfoId000000811102014END");
+		request.addParameter("cid", "CompanyInfoId000000524092014END");
+		
+		try {
+			final ModelAndView mav = handle(request, response);
+			this.print(mav);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	/**
+	 * 查询企业信息
+	 */
+	public void testGetMyCompanyInfo(){
+		
+		request.setRequestURI("/copn/getMyCompanyInfo");
+		request.setMethod("GET");
 		
 		try {
 			final ModelAndView mav = handle(request, response);

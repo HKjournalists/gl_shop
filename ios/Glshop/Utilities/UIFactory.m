@@ -27,7 +27,7 @@
         label.text = title;
     }
     label.textAlignment = NSTextAlignmentCenter;
-    label.font = [UIFont boldSystemFontOfSize:16.f];
+    label.font = [UIFont boldSystemFontOfSize:FONT_14];
     label.textColor = ColorWithHex(@"#36a830");
     [imageview addSubview:label];
     
@@ -35,17 +35,26 @@
 }
 
 + (UILabel *)createUnitLabel:(NSString *)text withFont:(UIFont *)font unitType:(UnitTextType)type {
+    return [UIFactory createUnitLabel:text withFont:font unitType:type cellHeight:kCellDefaultHeight];
+}
+
++ (UILabel *)createUnitLabel:(NSString *)text
+                    withFont:(UIFont *)font
+                    unitType:(UnitTextType)type
+                  cellHeight:(float)height {
     NSString *unittext;
     if (type == unint_yuan) {
         unittext = @"(单位:元)";
     }else if (type == unint_dun) {
         unittext = @"(单位:吨)";
+    }else if (type == unint_per_dun_money) {
+        unittext = @"(单位:元/吨)";
     }
     UILabel *unitlabel = [UILabel labelWithTitle:unittext];
-    unitlabel.font = [UIFont systemFontOfSize:14.5];
+    unitlabel.font = font;
     unitlabel.textColor = [UIColor grayColor];
     CGSize size = [Utilits labelSizeCalculte:font labelText:text];
-    unitlabel.frame = CGRectMake(size.width+15, 0, 100, kCellDefaultHeight-3);
+    unitlabel.frame = CGRectMake(size.width+kCellLeftEdgeInsets, 0, 100, height);
     return unitlabel;
 }
 

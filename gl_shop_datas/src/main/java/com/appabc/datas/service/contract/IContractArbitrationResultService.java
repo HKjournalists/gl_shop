@@ -1,7 +1,6 @@
 package com.appabc.datas.service.contract;
 
 import com.appabc.bean.pvo.TOrderArbitrationResult;
-import com.appabc.common.base.service.IBaseService;
 
 /**
  * @Description : 
@@ -12,6 +11,6 @@ import com.appabc.common.base.service.IBaseService;
  * @Create_Date  : 2014年9月3日 下午3:02:27
  */
 
-public interface IContractArbitrationResultService extends IBaseService<TOrderArbitrationResult> {
+public interface IContractArbitrationResultService extends IContractBaseService<TOrderArbitrationResult> {
 
 }

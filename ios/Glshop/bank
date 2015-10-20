@@ -1,0 +1,109 @@
+{
+    "bank": {
+        "DATA": [
+            {
+                "code": "BANK",
+                "id": "1",
+                "name": "中国农业银行",
+                "val": "BANK001"
+            },
+            {
+                "code": "BANK",
+                "id": "2",
+                "name": "中国工商银行",
+                "val": "BANK002"
+            },
+            {
+                "code": "BANK",
+                "id": "3",
+                "name": "中国建设银行",
+                "val": "BANK003"
+            },
+            {
+                "code": "BANK",
+                "id": "4",
+                "name": "中国邮政储蓄银行",
+                "val": "BANK004"
+            },
+            {
+                "code": "BANK",
+                "id": "5",
+                "name": "中国银行",
+                "val": "BANK005"
+            },
+            {
+                "code": "BANK",
+                "id": "6",
+                "name": "招商银行",
+                "val": "BANK006"
+            },
+            {
+                "code": "BANK",
+                "id": "7",
+                "name": "交通银行",
+                "val": "BANK007"
+            },
+            {
+                "code": "BANK",
+                "id": "8",
+                "name": "浦发银行",
+                "val": "BANK008"
+            },
+            {
+                "code": "BANK",
+                "id": "9",
+                "name": "中国光大银行",
+                "val": "BANK009"
+            },
+            {
+                "code": "BANK",
+                "id": "10",
+                "name": "中信银行",
+                "val": "BANK010"
+            },
+            {
+                "code": "BANK",
+                "id": "11",
+                "name": "平安银行",
+                "val": "BANK011"
+            },
+            {
+                "code": "BANK",
+                "id": "12",
+                "name": "中国民生银行",
+                "val": "BANK012"
+            },
+            {
+                "code": "BANK",
+                "id": "13",
+                "name": "华夏银行",
+                "val": "BANK013"
+            },
+            {
+                "code": "BANK",
+                "id": "14",
+                "name": "兴业银行",
+                "val": "BANK014"
+            },
+            {
+                "code": "BANK",
+                "id": "15",
+                "name": "上海银行",
+                "val": "BANK015"
+            },
+            {
+                "code": "BANK",
+                "id": "16",
+                "name": "南京银行",
+                "val": "BANK016"
+            },
+            {
+                "code": "BANK",
+                "id": "17",
+                "name": "江苏银行",
+                "val": "BANK017"
+            }
+        ],
+        "timeStamp": "2014-04-07 01:02:03"
+    }
+}

@@ -16,4 +16,6 @@
 @property (nonatomic, copy) NSString *areaPcode;
 @property (nonatomic, copy) NSString *areaVal;
 
+@property (nonatomic, assign, getter=isSelected) BOOL selected; // 非服务器字段
+
 @end

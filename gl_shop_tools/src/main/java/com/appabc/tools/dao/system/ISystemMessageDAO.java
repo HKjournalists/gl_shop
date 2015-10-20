@@ -1,6 +1,8 @@
 package com.appabc.tools.dao.system;
 
+import com.appabc.bean.bo.SystemMessageEx;
 import com.appabc.bean.pvo.TSystemMessage;
+import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.IBaseDao;
 
 /**
@@ -20,5 +22,21 @@ public interface ISystemMessageDAO extends IBaseDao<TSystemMessage> {
 	 * @return
 	 */
 	int getCountByEntity(TSystemMessage entity);
+	
+	/**  
+	 * queryMessageExListForPagination  
+	 * @param qContext  
+	 * @author Bill huang 
+	 * @return QueryContext<SystemMessageEx>  
+	 * @exception   
+	 * @since  1.0.0  
+	 */
+	public QueryContext<SystemMessageEx> queryMessageExListForPagination(QueryContext<SystemMessageEx> qContext);
 
+	/**
+	 * 根据消息类型获取企业未删除消息列表
+	 * @param cid
+	 * @return
+	 */
+	public QueryContext<TSystemMessage> queryListByTypeForPagination(QueryContext<TSystemMessage> qContext);
 }

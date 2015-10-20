@@ -8,6 +8,12 @@
 
 #import "SynacInstance.h"
 
+@interface SynacInstance ()
+
+@property (nonatomic, strong) id jsonData;
+
+@end
+
 @implementation SynacInstance
 
 #pragma mark - Initalize
@@ -16,24 +22,55 @@
     static dispatch_once_t once;
     dispatch_once(&once, ^{
         sharedInstance = [[[self class] alloc] init];
-    });;
+    });
     return sharedInstance;
 }
 
 #pragma mark - Private
-- (id)synacJsonData {
+- (void)synacData {
     NSString *file = [[NSString documentsPath] stringByAppendingPathComponent:kSynacFileName];
-    NSData *data = [NSData dataWithContentsOfFile:file];
-    if (data == nil) {
-        data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:kSynacFileName ofType:nil]];
-    }
-    id json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
     
-    return json;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        NSData *data = [NSData dataWithContentsOfFile:file];
+        if (data == nil) {
+            [[NSFileManager defaultManager] removeItemAtPath:file error:nil];
+            data = [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:kSynacFileName ofType:nil]];
+        }
+        id json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        
+        // 必须在主线程
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self synacData:json];
+            self.jsonData = json;
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:synacDataDidFinishNotification object:nil];
+        });
+        
+    });
 }
 
-- (void)synacData {
-    [self synacData:[self synacJsonData]];
+/**
+ *@brief 获取银行列表信息
+ */
+- (NSArray *)banksData {
+    NSDictionary *responseDic = [self.jsonData objectForKey:ServiceDataKey];
+    NSArray *bankArray = [[responseDic objectForKey:@"banks"] objectForKey:@"data"];
+    NSMutableArray *banks = [NSMutableArray arrayWithCapacity:bankArray.count];
+    for (NSDictionary *dic in bankArray) {
+        BankModel *model = [[BankModel alloc] initWithDataDic:dic];
+        [banks addObject:model];
+    }
+    
+    return [NSArray arrayWithArray:banks];
+}
+
+/**
+ *@brief 系统参数
+ */
+- (NSArray *)sysParams {
+    NSDictionary *responseDic = [self.jsonData objectForKey:ServiceDataKey];
+    NSArray *sysParamArray = [[responseDic objectForKey:@"sysParam"] objectForKey:@"data"];
+    return sysParamArray;
 }
 
 - (void)synacData:(id)json {
@@ -46,7 +83,11 @@
         [sectionstemp addObject:river];
     }
     
-    [[SynacInstance sharedInstance] setRiverSectionsArray:[NSArray arrayWithArray:sectionstemp]];
+    NSArray *sortedArray = [sectionstemp sortedArrayUsingComparator:^NSComparisonResult(RiverSectionModel *p1, RiverSectionModel *p2){
+        return [p1.riverOrderno compare:p2.riverOrderno];
+    }];
+    
+    [[SynacInstance sharedInstance] setRiverSectionsArray:[NSArray arrayWithArray:sortedArray]];
     
     // 商品大类
     NSArray *goosArray = [[responseDic objectForKey:@"goods"] objectForKey:@"data"];
@@ -73,6 +114,28 @@
     
 }
 
+- (GoodsModel *)stoneModel {
+    NSArray *topProducts = [SynacObject productTopModels];
+    GoodsModel *model;
+    for (GoodsModel *aModel in topProducts) {
+        if ([aModel.goodsVal isEqualToString:glProduct_top_stone_code]) {
+            model = aModel;
+        }
+    }
+    return model;
+}
+
+- (GoodsModel *)sendsModel {
+    NSArray *topProducts = [SynacObject productTopModels];
+    GoodsModel *model;
+    for (GoodsModel *aModel in topProducts) {
+        if ([aModel.goodsVal isEqualToString:glProduct_top_send_code]) {
+            model = aModel;
+        }
+    }
+    return model;
+}
+
 /**
  *@brief 获取石子、黄砂下属商品
  *@discussion 石子下属商品：瓜子片、石粉、碎石...
@@ -83,7 +146,7 @@
     NSMutableArray *stoneTemp = [NSMutableArray array];
     NSMutableArray *sendTemp = [NSMutableArray array];
     for (GoodsModel *model in topProduct) {
-        if ([model.goodsVal isEqualToString:TopProductStonePcode]) {
+        if ([model.goodsVal isEqualToString:glProduct_top_stone_code]) {
             for (GoodChildModel *childModel in self.goodsChildArray) {
                 if ([childModel.goodChildPcode isEqualToString:model.goodsVal]) {
                     [stoneTemp addObject:childModel];
@@ -91,7 +154,7 @@
             }
         }
         
-        if ([model.goodsVal isEqualToString:TopProductSendPcode]) {
+        if ([model.goodsVal isEqualToString:glProduct_top_send_code]) {
             for (GoodsModel *childModel in self.goodsArray) {
                 if ([childModel.goodsPcode isEqualToString:model.goodsVal] && ![childModel.goodsVal isEqualToString:model.goodsVal]) {
                     [sendTemp addObject:childModel];
@@ -181,6 +244,7 @@
 
 /**
  *@brief 商品大类对象
+ *@discussion 暂为石子和黄砂
  */
 - (NSArray *)productTopModels {
     NSMutableArray *temp = [NSMutableArray array];
@@ -197,6 +261,12 @@
     if (temp.count <= 0) {
         return nil;
     }else {
+#warning unknow problem
+        GoodsModel *model = temp[0];
+        if (model.orderNo == nil) {
+            sortedArray = [NSArray arrayWithObjects:temp[1],temp[0], nil];
+            return sortedArray;
+        }
         return sortedArray;
     }
 }
@@ -247,6 +317,8 @@
 
 /**
  *@brief 根据ptype、pid找到指定商品，针对黄砂
+ *@param ptype 黄砂type
+ *@param pid 黄砂下属产品id
  */
 - (GoodChildModel *)goodsChildModlelFor:(NSString*)ptype deepId:(NSString *)pid {
     NSArray *childs = [self sendsGroundSonProductType:ptype];
@@ -310,13 +382,23 @@
     
     NSMutableArray *nameTemp = [NSMutableArray array];
     for (GoodChildModel *model in sortedArray) {
-        NSString *max = [model.sizeModel.maxv stringValue];
-        NSString *min = [model.sizeModel.minv stringValue];
-        NSString *str = [NSString stringWithFormat:@"%@(%@-%@)mm",model.goodChildPname,min,max];
+        float max = [model.sizeModel.maxv floatValue];
+        float min = [model.sizeModel.minv floatValue];
+        NSString *str = [NSString stringWithFormat:@"%@(%.1f-%.1f)mm",model.goodChildPname,min,max];
         [nameTemp addObject:str];
     }
     
     return [NSArray arrayWithArray:nameTemp];
+}
+
+/**
+ *@brief 拼接第三层商品。例如：（特细砂（1.0-5.6）
+ */
+- (NSString *)sendsThreeCombine:(GoodChildModel *)model {
+    NSString *max = [model.sizeModel.maxv stringValue];
+    NSString *min = [model.sizeModel.minv stringValue];
+    NSString *str = [NSString stringWithFormat:@"%@(%@-%@)mm",model.goodChildPname,min,max];
+    return str;
 }
 
 - (NSArray *)sendsPtypeMapsendsgroundsonArray {
@@ -354,6 +436,19 @@
         }
     }
     return nil;
+}
+
+- (NSString *)combinProducName:(NSString *)ptype proId:(NSString *)proId {
+    NSString *proTitle;
+    if (ptype.length) {
+        GoodsModel *model = [SynacObject goodsModelForPtype:ptype];
+        GoodChildModel *child = [SynacObject goodsChildModlelFor:ptype deepId:proId];
+        proTitle = [NSString stringWithFormat:@"%@.%@.%@",glProduct_top_send_name,model.goodsName,[child combineNameWithUnit]];
+    }else {
+        GoodChildModel *child = [SynacObject goodsChildStone:proId];
+        proTitle = [NSString stringWithFormat:@"%@.%@",glProduct_top_stone_name,[child combineNameWithUnit]];
+    }
+    return proTitle;
 }
 
 @end

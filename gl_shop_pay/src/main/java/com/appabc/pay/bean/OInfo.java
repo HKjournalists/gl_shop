@@ -29,9 +29,9 @@ public class OInfo extends BaseBean{
 	
 	private String oid;
 	
-	private Float amount;
+	private Double amount;
 	
-	private Float total;
+	private Double total;
 
 	/**  
 	 * oid  
@@ -58,14 +58,14 @@ public class OInfo extends BaseBean{
 	 * @since   1.0.0  
 	 */
 	
-	public Float getAmount() {
+	public Double getAmount() {
 		return amount;
 	}
 
 	/**  
 	 * @param amount the amount to set  
 	 */
-	public void setAmount(Float amount) {
+	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
 
@@ -76,14 +76,14 @@ public class OInfo extends BaseBean{
 	 * @since   1.0.0  
 	 */
 	
-	public Float getTotal() {
+	public Double getTotal() {
 		return total;
 	}
 
 	/**  
 	 * @param total the total to set  
 	 */
-	public void setTotal(Float total) {
+	public void setTotal(Double total) {
 		this.total = total;
 	}
 	

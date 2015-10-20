@@ -25,7 +25,7 @@
 		<gexin-template.version>2.0.0.7</gexin-template.version>
 		<gexin-http.version>3.0.0.7</gexin-http.version>
 		<gexin-base.version>2.0.0.18</gexin-base.version>
-		<javapns-jdk16.version>163</javapns-jdk16.version>
+		<javapns-2_2.version>2.2</javapns-2_2.version>
 		<bcprov-jdk16.version>1.46</bcprov-jdk16.version>
 		<protobuf-java.version>2.6.0</protobuf-java.version>
 		<jackson-all.version>1.8.5</jackson-all.version>
@@ -53,6 +53,16 @@
 		<tomcat-servlet-api.version>7.0.35</tomcat-servlet-api.version>
 		<quartz.version>1.8.6</quartz.version>
 		<freemarker.version>2.3.21</freemarker.version>
+		<upacp_sdk.version>1.0.0</upacp_sdk.version>
+		<apache.poi.version>3.9</apache.poi.version>
+		<dom4j.version>1.6.1</dom4j.version>
+		<apache.xmlbeans.version>2.3.0</apache.xmlbeans.version>
+		<apache.poi.ooxml.version>3.9</apache.poi.ooxml.version>
+		<apache.poi.ooxml.schemas.version>3.9</apache.poi.ooxml.schemas.version>
+		<apache.poi.scratchpad.version>3.9</apache.poi.scratchpad.version>
+		<javax.mail.version>1.4.1</javax.mail.version>
+		<javax.activation.version>1.1</javax.activation.version>
+		<argLine>-Dfile.encoding=UTF-8</argLine>
 	</properties>
 
 	<modules>
@@ -248,8 +258,8 @@
 
             <dependency>
                 <groupId>javapns</groupId>
-                <artifactId>javapns-jdk16</artifactId>
-                <version>${javapns-jdk16.version}</version>
+                <artifactId>javapns2.2</artifactId>
+                <version>${javapns-2_2.version}</version>
             </dependency>
 
             <dependency>
@@ -343,6 +353,11 @@
 				<version>4.3.6</version>
 			</dependency> -->
 			<dependency>
+				<groupId>com.unionpay.acp</groupId>
+				<artifactId>upacp_sdk</artifactId>
+				<version>${upacp_sdk.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.quartz-scheduler</groupId>
 				<artifactId>quartz</artifactId>
 				<version>${quartz.version}</version>
@@ -357,6 +372,47 @@
 				<groupId>org.freemarker</groupId>
 				<artifactId>freemarker</artifactId>
 				<version>${freemarker.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${apache.poi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<version>${dom4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xmlbeans</groupId>
+				<artifactId>xmlbeans</artifactId>
+				<version>${apache.xmlbeans.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
+				<version>${apache.poi.ooxml.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml-schemas</artifactId>
+				<version>${apache.poi.ooxml.schemas.version}</version>
+			</dependency>
+			<!-- 支持Word文档的操作 -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-scratchpad</artifactId>
+				<version>${apache.poi.scratchpad.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.mail</groupId>
+				<artifactId>mail</artifactId>
+				<version>${javax.mail.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.activation</groupId>
+				<artifactId>activation</artifactId>
+				<version>${javax.activation.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

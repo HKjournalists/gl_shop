@@ -7,6 +7,7 @@
 package com.appabc.pay.service.remote;
 
 import java.util.List;
+import java.util.Map;
 
 import com.appabc.bean.enums.PurseInfo.ExtractStatus;
 import com.appabc.bean.enums.PurseInfo.PayDirection;
@@ -18,6 +19,7 @@ import com.appabc.pay.bean.OInfo;
 import com.appabc.pay.bean.TAcceptBank;
 import com.appabc.pay.bean.TOfflinePay;
 import com.appabc.pay.bean.TPassbookDraw;
+import com.appabc.pay.bean.TPassbookDrawEx;
 import com.appabc.pay.bean.TPassbookInfo;
 import com.appabc.pay.bean.TPassbookPay;
 import com.appabc.pay.exception.ServiceException;
@@ -72,7 +74,7 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 */
 	@Override
 	public boolean depositAccountOnline(String cid, PurseType type,
-			float balance, String payNo) {
+			double balance, String payNo) {
 		return false;
 	}
 
@@ -97,7 +99,7 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 */
 	@Override
 	public boolean depositThirdOrgRecord(String cid, PurseType type,
-			float balance, String payNo) {
+			double balance, String payNo) {
 		return false;
 	}
 
@@ -130,7 +132,7 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 */
 	@Override
 	public TPassbookDraw extractCashRequest(String cid, PurseType type,
-			Float balance, String acceptId) {
+			Double balance, String acceptId) {
 		return null;
 	}
 
@@ -171,7 +173,7 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 * @see com.appabc.pay.service.IPassPayService#depositToGuaranty(java.lang.String, java.lang.Float)  
 	 */
 	@Override
-	public boolean depositToGuaranty(String cid, Float balance) {
+	public boolean depositToGuaranty(String cid, Double balance) {
 		return false;
 	}
 
@@ -180,7 +182,7 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 */
 	@Override
 	public boolean transferAccounts(String sourPassId, String destPassId,
-			Float balance, PurseType type) {
+			Double balance, PurseType type) {
 		return false;
 	}
 
@@ -188,7 +190,7 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 * @see com.appabc.pay.service.IPassPayService#guarantyToGelation(java.lang.String, float, java.lang.String)  
 	 */
 	@Override
-	public boolean guarantyToGelation(String cid, float balance, String oid) {
+	public boolean guarantyToGelation(String cid, double balance, String oid) {
 		return false;
 	}
 
@@ -196,7 +198,7 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 * @see com.appabc.pay.service.IPassPayService#guarantyToUngelation(java.lang.String, float, java.lang.String)  
 	 */
 	@Override
-	public boolean guarantyToUngelation(String cid, float balance, String oid) {
+	public boolean guarantyToUngelation(String cid, double balance, String oid) {
 		return false;
 	}
 
@@ -205,7 +207,7 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 */
 	@Override
 	public boolean guarantyToDeduct(String sourPassId, String destPassId,
-			Float balance) {
+			Double balance) {
 		return false;
 	}
 
@@ -255,7 +257,7 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 */
 	@Override
 	public boolean transferAccounts(String sourPassId, String destPassId,
-			Float balance, TradeType tradeType) {
+			Double balance, TradeType tradeType) {
 		return false;
 	}
 
@@ -300,8 +302,85 @@ public class PassPayRemoteServiceImpl implements IPassPayService {
 	 */
 	@Override
 	public boolean depositAccountOffline(String cid, PurseType type,
-			float balance, String payNo) {
+			double balance, String payNo) {
 		return false;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#getPayRecordListWithOid(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, java.lang.String, com.appabc.bean.enums.PurseInfo.PayDirection)  
+	 */
+	@Override
+	public List<TPassbookPay> getPayRecordListWithOid(String cid,
+			PurseType type, String oid, PayDirection payDirection) {
+		return null;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#transferAccounts(java.lang.String, java.lang.String, float, com.appabc.bean.enums.PurseInfo.TradeType, java.lang.String)  
+	 */
+	@Override
+	public boolean transferAccounts(String sourPassId, String destPassId,
+			double balance, TradeType tradeType, String oid) {
+		return false;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#getContractPayFundsAmount(java.lang.String, java.lang.String)  
+	 */
+	@Override
+	public double getContractPayFundsAmount(String cid, String oid) {
+		return 0;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#getPayListWithParams(java.lang.String, com.appabc.bean.enums.PurseInfo.PurseType, java.lang.String, com.appabc.bean.enums.PurseInfo.TradeType, com.appabc.bean.enums.PurseInfo.PayDirection)  
+	 */
+	@Override
+	public List<TPassbookPay> getPayListWithParams(String cid, PurseType pType,
+			String oid, TradeType tType, PayDirection direction) {
+		return null;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#getGuarantyToGelationRecord(java.lang.String, java.lang.String)  
+	 */
+	@Override
+	public TPassbookPay getGuarantyToGelationRecord(String oid, String cid) {
+		return null;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#transferAccounts(java.lang.String, java.lang.String, com.appabc.bean.enums.PurseInfo.TradeType, com.appabc.bean.enums.PurseInfo.TradeType, float, java.lang.String)  
+	 */
+	@Override
+	public boolean transferAccounts(String sourPassId, String destPassId,
+			TradeType sType, TradeType dType, double balance, String oid) {
+		return false;
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#unionPaybackNotifyBusinessResp(java.lang.String, java.util.Map)  
+	 */
+	@Override
+	public void unionPaybackNotifyBusinessResp(String oid,
+			Map<String, String> valideData) {
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#reportToUnionPayTradeResult(java.lang.String)  
+	 */
+	@Override
+	public void reportToUnionPayTradeResult(String oid) throws ServiceException {
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.pay.service.IPassPayService#extractCashRequestListEx(com.appabc.common.base.QueryContext)  
+	 */
+	@Override
+	public QueryContext<TPassbookDrawEx> extractCashRequestListEx(
+			QueryContext<TPassbookDrawEx> qContext) {
+		
+		return null;
 	}
 
 

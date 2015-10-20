@@ -8,14 +8,20 @@ import com.glshop.platform.api.DataConstants.ContractLifeCycle;
 import com.glshop.platform.api.DataConstants.ContractOprType;
 import com.glshop.platform.api.DataConstants.ContractStatusType;
 import com.glshop.platform.api.DataConstants.ContractType;
+import com.glshop.platform.api.DataConstants.DealDirectionType;
+import com.glshop.platform.api.DataConstants.DealOprType;
 import com.glshop.platform.api.IReturnCallback;
 import com.glshop.platform.api.base.BaseRequest;
 import com.glshop.platform.api.contract.data.GetContractInfoResult;
+import com.glshop.platform.api.contract.data.model.ArbitrateInfoModel;
 import com.glshop.platform.api.contract.data.model.ContractBuyStatusInfo;
 import com.glshop.platform.api.contract.data.model.ContractInfoModel;
+import com.glshop.platform.api.contract.data.model.ContractModelInfo;
 import com.glshop.platform.api.contract.data.model.NegotiateInfoModel;
+import com.glshop.platform.api.purse.data.model.DealSummaryInfoModel;
 import com.glshop.platform.net.base.ResultItem;
 import com.glshop.platform.utils.BeanUtils;
+import com.glshop.platform.utils.StringUtils;
 
 /**
  * @Description : 获取合同详情(包括进行中和已结束)请求
@@ -32,6 +38,11 @@ public class GetContractInfoReq extends BaseRequest<GetContractInfoResult> {
 	 */
 	public String contractId;
 
+	/**
+	 * 是否获取合同模板信息
+	 */
+	public boolean isGetModel;
+
 	public GetContractInfoReq(Object invoker, IReturnCallback<GetContractInfoResult> callBackx) {
 		super(invoker, callBackx);
 	}
@@ -44,6 +55,9 @@ public class GetContractInfoReq extends BaseRequest<GetContractInfoResult> {
 	@Override
 	protected void buildParams() {
 		request.addParam("OID", contractId);
+		if (isGetModel) {
+			request.addParam("getTemplate", "1");
+		}
 	}
 
 	@Override
@@ -53,9 +67,12 @@ public class GetContractInfoReq extends BaseRequest<GetContractInfoResult> {
 			ContractInfoModel info = new ContractInfoModel();
 			info.contractId = modelItem.getString("id");
 			info.buyType = BuyType.convert(modelItem.getInt("saleType|val"));
-			info.contractType = ContractType.convert(modelItem.getInt("status|val"));
+			info.contractType = ContractType.convert(modelItem.getEnumValue("status"));
+			info.myContractType = ContractType.convert(modelItem.getEnumValue("myContractType"));
 			info.lifeCycle = ContractLifeCycle.convert(modelItem.getInt("lifecycle|val"));
 			info.statusType = ContractStatusType.convert(modelItem.getInt("otype|val"));
+			info.operator = modelItem.getString("operator");
+			info.operatorTime = modelItem.getString("operationTime");
 			info.buyCompanyId = modelItem.getString("buyerid");
 			info.buyCompanyName = modelItem.getString("buyerName");
 			info.sellCompanyId = modelItem.getString("sellerid");
@@ -64,11 +81,16 @@ public class GetContractInfoReq extends BaseRequest<GetContractInfoResult> {
 			info.productCode = modelItem.getString("productCode");
 			info.productSubCode = modelItem.getString("productType");
 			info.productSpecId = modelItem.getString("productId");
-			info.unitPrice = modelItem.getFloat("price");
-			info.tradeAmount = modelItem.getFloat("totalnum");
-			info.finalPayMoney = modelItem.getFloat("totalamount");
+			info.unitPrice = modelItem.getDouble("price");
+			info.tradeAmount = modelItem.getDouble("totalnum");
+			info.finalPayMoney = modelItem.getDouble("totalamount");
+			info.payedMoney = modelItem.getDouble("payFundsAmount");
+			info.receivedMoney = modelItem.getDouble("amount");
 			info.updateTime = modelItem.getString("updatetime");
 			info.expireTime = modelItem.getString("limittime");
+			info.payExpireTime = modelItem.getString("payGoodsLimitTime");
+			info.isBuyerEva = modelItem.getEnumValue("buyerEvaluation") == 1;
+			info.isSellerEva = modelItem.getEnumValue("sellerEvaluation") == 1;
 
 			// 解析买家状态
 			ResultItem buyerStatusItem = (ResultItem) modelItem.get("buyerStatus");
@@ -92,6 +114,26 @@ public class GetContractInfoReq extends BaseRequest<GetContractInfoResult> {
 			List<ResultItem> secondNegItemList = (ArrayList<ResultItem>) item.get("DATA|fullTakeoverDisPriceList");
 			info.secondNegotiateList = parseNegotiateInfo(secondNegItemList, modelItem);
 
+			// 货款确认信息
+			List<ResultItem> finalNegItemList = (ArrayList<ResultItem>) item.get("DATA|fundGoodsDisPriceList");
+			info.finalNegotiateInfo = parseFinalNegotiateInfo(finalNegItemList, modelItem);
+
+			// 平台结算账单信息
+			List<ResultItem> dealItemList = (ArrayList<ResultItem>) item.get("DATA|finalEstimateList");
+			info.dealList = parseDealInfo(dealItemList);
+
+			// 平台仲裁信息
+			List<ResultItem> arbitrationItemList = (ArrayList<ResultItem>) item.get("DATA|arbitrationDisPriceList");
+			ResultItem arbitrationInfo = (ResultItem) item.get("DATA|arbitrationProcessInfo");
+			if (arbitrationInfo != null && BeanUtils.isNotEmpty(arbitrationItemList)) {
+				info.arbitrateInfo = parseArbitrateInfo(arbitrationItemList, arbitrationInfo);
+			}
+
+			// 解析合同模板信息
+			if (isGetModel) {
+				info.modelInfo = parseModelInfo(modelItem);
+			}
+
 			result.data = info;
 		}
 	}
@@ -108,6 +150,7 @@ public class GetContractInfoReq extends BaseRequest<GetContractInfoResult> {
 		statusInfo.oprId = statusItem.getString("operator");
 		statusInfo.oprDatetime = statusItem.getString("operationtime");
 		statusInfo.lifeCycle = ContractLifeCycle.convert(statusItem.getInt("orderstatus|val"));
+		statusInfo.preLifeCycle = ContractLifeCycle.convert(statusItem.getInt("oldstatus|val"));
 		statusInfo.oprType = ContractOprType.convert(statusItem.getInt("type|val"));
 		statusInfo.remarks = statusItem.getString("remark");
 		return statusInfo;
@@ -129,12 +172,12 @@ public class GetContractInfoReq extends BaseRequest<GetContractInfoResult> {
 				negInfo.contractId = itemDis.getString("oid");
 				negInfo.operator = itemDis.getString("operator");
 				negInfo.oprTime = itemDis.getString("operationtime");
-				negInfo.unitPrice = contractItem.getFloat("price");
-				negInfo.tradeAmount = contractItem.getFloat("totalnum");
-				negInfo.preNegUnitPrice = itemDis.getFloat("beginamount");
-				negInfo.negUnitPrice = itemDis.getFloat("endamount");
-				negInfo.preNegAmount = itemDis.getFloat("beginnum");
-				negInfo.negAmount = itemDis.getFloat("endnum");
+				negInfo.unitPrice = contractItem.getDouble("price");
+				negInfo.tradeAmount = contractItem.getDouble("totalnum");
+				negInfo.preNegUnitPrice = itemDis.getDouble("beginamount");
+				negInfo.negUnitPrice = itemDis.getDouble("endamount");
+				negInfo.preNegAmount = itemDis.getDouble("beginnum");
+				negInfo.negAmount = itemDis.getDouble("endnum");
 				negInfo.reason = itemDis.getString("reason");
 				negInfoList.add(negInfo);
 			}
@@ -142,9 +185,123 @@ public class GetContractInfoReq extends BaseRequest<GetContractInfoResult> {
 		return negInfoList;
 	}
 
+	/**
+	 * 解析货款确认信息
+	 * @param items
+	 * @return
+	 */
+	private NegotiateInfoModel parseFinalNegotiateInfo(List<ResultItem> items, ResultItem contractItem) {
+		NegotiateInfoModel negInfo = null;
+		if (BeanUtils.isNotEmpty(items)) {
+			ResultItem itemDis = items.get(0);
+			negInfo = new NegotiateInfoModel();
+			negInfo.id = itemDis.getString("id");
+			negInfo.pid = itemDis.getString("dlid");
+			negInfo.contractId = itemDis.getString("oid");
+			negInfo.operator = itemDis.getString("operator");
+			negInfo.oprTime = itemDis.getString("operationtime");
+			negInfo.unitPrice = contractItem.getDouble("beginamount");
+			negInfo.tradeAmount = contractItem.getDouble("beginnum");
+			negInfo.negUnitPrice = itemDis.getDouble("endamount");
+			negInfo.negAmount = itemDis.getDouble("endnum");
+		}
+		return negInfo;
+	}
+
+	/**
+	 * 解析账单信息
+	 * @param items
+	 * @return
+	 */
+	private List<DealSummaryInfoModel> parseDealInfo(List<ResultItem> items) {
+		List<DealSummaryInfoModel> dealInfoList = new ArrayList<DealSummaryInfoModel>();
+		if (BeanUtils.isNotEmpty(items)) {
+			for (ResultItem infoItem : items) {
+				DealSummaryInfoModel model = new DealSummaryInfoModel();
+				model.id = infoItem.getString("id");
+				model.dealTime = infoItem.getString("paytime");
+				model.dealMoney = infoItem.getDouble("amount");
+				model.balance = infoItem.getDouble("balance");
+				model.directionType = DealDirectionType.convert(infoItem.getEnumValue("direction"));
+				model.oprType = DealOprType.convert(infoItem.getEnumValue("otype"));
+				dealInfoList.add(model);
+			}
+		}
+		return dealInfoList;
+	}
+
+	/**
+	 * 解析仲裁信息
+	 * @param items
+	 * @return
+	 */
+	private ArbitrateInfoModel parseArbitrateInfo(List<ResultItem> items, ResultItem abrInfo) {
+		ArbitrateInfoModel arbInfo = new ArbitrateInfoModel();
+		if (BeanUtils.isNotEmpty(items)) {
+			arbInfo.id = abrInfo.getString("id");
+			arbInfo.creatorID = abrInfo.getString("creater");
+			arbInfo.remarks = abrInfo.getString("dealresult");
+			arbInfo.dealTime = abrInfo.getString("dealTime");
+			// 仲裁单价及数量
+			ResultItem disItem = items.get(0);
+			if (disItem != null) {
+				arbInfo.unitPrice = disItem.getDouble("endamount");
+				arbInfo.amount = disItem.getDouble("endnum");
+			}
+		}
+		return arbInfo;
+	}
+
+	/**
+	 * 解析合同模板信息
+	 */
+	private ContractModelInfo parseModelInfo(ResultItem modelItem) {
+		ContractModelInfo info = null;
+		if (modelItem != null) {
+			String template = modelItem.getString("contractTemplate");
+			if (StringUtils.isNotEmpty(template)) {
+				info = new ContractModelInfo();
+				info.contractId = modelItem.getString("id");
+				info.buyId = modelItem.getString("fid");
+				info.contractType = ContractType.convert(modelItem.getEnumValue("status"));
+				info.myContractType = ContractType.convert(modelItem.getEnumValue("myContractType"));
+				info.lifeCycle = ContractLifeCycle.convert(modelItem.getInt("lifecycle|val"));
+				info.statusType = ContractStatusType.convert(modelItem.getInt("otype|val"));
+				info.productName = modelItem.getString("productName");
+				info.amount = modelItem.getString("totalamount");
+				info.buyType = BuyType.convert(modelItem.getInt("saleType|val"));
+				info.buyCompanyId = modelItem.getString("buyerid");
+				info.buyCompanyName = modelItem.getString("buyerName");
+				info.sellCompanyId = modelItem.getString("sellerid");
+				info.sellCompanyName = modelItem.getString("sellerName");
+				info.createTime = modelItem.getString("creatime");
+				info.expireTime = modelItem.getString("limittime");
+
+				// 解析买家状态
+				ResultItem buyerStatusItem = (ResultItem) modelItem.get("buyerStatus");
+				if (buyerStatusItem != null) {
+					ContractBuyStatusInfo buyStatus = parseStatusInfo(buyerStatusItem);
+					info.buyerStatus = buyStatus;
+				}
+
+				// 解析卖家状态
+				ResultItem sellerStatusItem = (ResultItem) modelItem.get("sellerStatus");
+				if (sellerStatusItem != null) {
+					ContractBuyStatusInfo sellerStatus = parseStatusInfo(sellerStatusItem);
+					info.sellerStatus = sellerStatus;
+				}
+
+				// 合同模板信息
+				info.content = template;
+			}
+		}
+
+		return info;
+	}
+
 	@Override
 	protected String getTypeURL() {
-		return "/contract/getContractDetailInfo";
+		return "/contract/getContractDetailInfoEx";
 	}
 
 }

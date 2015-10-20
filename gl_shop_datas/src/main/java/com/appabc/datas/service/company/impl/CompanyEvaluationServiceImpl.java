@@ -17,10 +17,12 @@ import com.appabc.datas.dao.contract.IContractOperationDAO;
 import com.appabc.datas.exception.ServiceException;
 import com.appabc.datas.service.company.ICompanyEvaluationService;
 import com.appabc.datas.service.company.ICompanyRankingService;
+import com.appabc.datas.tool.ContractCostDetailUtil;
 import com.appabc.datas.tool.DataSystemConstant;
 import com.appabc.datas.tool.ServiceErrorCode;
 import com.appabc.tools.utils.PrimaryKeyGenerator;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -179,28 +182,42 @@ public class CompanyEvaluationServiceImpl extends
 	 */
 	public void toEvaluateContract(String operator,String operatorName,
 			TCompanyEvaluation bean) throws ServiceException{
-		Date now = new Date();
+		if(StringUtils.isEmpty(operator) || StringUtils.isEmpty(operatorName) || bean == null){
+			String msg = MessagesUtil.getMessage(DataSystemConstant.EXCEPTIONKEY_PARAMETER_IS_NOT_ALLOW_NULL_ERROR, Locale.forLanguageTag("datas"));
+			throw new ServiceException(ServiceErrorCode.PARAMETER_IS_NULL,msg);
+		}
 		TOrderInfo contract = IContractInfoDAO.query(bean.getOid());
+		if(contract == null){
+			String msg = MessagesUtil.getMessage(DataSystemConstant.EXCEPTIONKEY_PARAMETER_IS_NOT_ALLOW_NULL_ERROR, Locale.forLanguageTag("datas"));
+			throw new ServiceException(ServiceErrorCode.PARAMETER_IS_NULL, msg);
+		}
+		boolean isNotLifeCycle = contract.getStatus() == ContractStatus.FINISHED && contract.getLifecycle() == ContractLifeCycle.NORMAL_FINISHED;
+		if(!isNotLifeCycle){
+			String msg = MessagesUtil.getMessage(DataSystemConstant.EXCEPTIONKEY_CONTRACT_LIFECYCLEIS_ERROR, Locale.forLanguageTag("datas"));
+			throw new ServiceException(ServiceErrorCode.CONTRACT_LIFECYCLEIS_ERROR, msg);
+		}
 		String buyerId = contract.getBuyerid();
 		String sellerId = contract.getSellerid();
 		if (!StringUtils.equalsIgnoreCase(buyerId, bean.getCid()) && !StringUtils.equalsIgnoreCase(sellerId, bean.getCid())) {
 			throw new ServiceException(ServiceErrorCode.CONTRACT_NOT_BUYER_SELLER_TOOPERATE_ERROR,"你不能评价当前合同");
 		}
-		if(DateUtil.getDifferDayWithTwoDate(contract.getCreatime(), now)>3){
+		Date now = DateUtil.getNowDate();
+		int hours = DateUtil.getDifferHoursWithTwoDate(contract.getUpdatetime(), now);
+		if(hours>ContractCostDetailUtil.getContractEvaluatioinLimitNum()){
 			throw new ServiceException(ServiceErrorCode.CONTRACT_TIME_OUT_EVALUATE_ERROR,"超出合同评价时间范围,系统已经自动评价完成");
 		}
 		TCompanyEvaluation entity = new TCompanyEvaluation();
 		entity.setOid(bean.getOid());
 		entity.setCreater(operator);
 		List<TCompanyEvaluation> res = this.queryForList(entity);
-		if(res!=null&&res.size()>0){
-			throw new ServiceException(ServiceErrorCode.CONTRACT_REPEAT_EVALUATE_ERROR,"您已经评价过,不能重复评价");
+		if(CollectionUtils.isNotEmpty(res)){
+			throw new ServiceException(ServiceErrorCode.SUBMIT_OPERATOR_AGAIN,"您已经评价过,不能重复评价");
 		}
-		contract.setLifecycle(ContractLifeCycle.NORMAL_FINISHED);
+		/*contract.setLifecycle(ContractLifeCycle.NORMAL_FINISHED);
 		contract.setStatus(ContractStatus.FINISHED);
 		contract.setUpdater(operator);
 		contract.setUpdatetime(now);
-		IContractInfoDAO.update(contract);
+		IContractInfoDAO.update(contract);*/
 
 		TOrderOperations operate = new TOrderOperations();
 		operate.setId(getKey(DataSystemConstant.CONTRACTOPERATIONID));
@@ -209,6 +226,7 @@ public class CompanyEvaluationServiceImpl extends
 		operate.setOperationtime(now);
 		operate.setType(ContractOperateType.EVALUATION_CONTRACT);
 		operate.setOrderstatus(ContractLifeCycle.NORMAL_FINISHED);
+		operate.setOldstatus(contract.getLifecycle());
 		StringBuffer result = new StringBuffer(operatorName);
 		result.append(MessagesUtil.getMessage("CONTRACTEVALUATESUCCESSTIPS"));
 		operate.setResult(result.toString());
@@ -217,6 +235,8 @@ public class CompanyEvaluationServiceImpl extends
 
 		bean.setCratedate(now);
 		this.add(bean);
+		log.info("The Company Evaluation is : ");
+		log.info(bean);
 		
 		//计算评价相关的交易满意度,交易诚信度
 		iCompanyRankingService.calculateTradeEvaluationRate(bean.getCid());
@@ -229,6 +249,15 @@ public class CompanyEvaluationServiceImpl extends
 	public List<CompanyEvaluationInfo> getEvaluationContractList(
 			CompanyEvaluationInfo cei) {
 		return ICompanyEvaluationDAO.queryEvaluationContractList(cei);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.appabc.datas.service.company.ICompanyEvaluationService#queryEvaluationListByCompany(com.appabc.bean.bo.CompanyEvaluationInfo)
+	 */
+	@Override
+	public List<CompanyEvaluationInfo> queryEvaluationListByCompany(
+			CompanyEvaluationInfo cei) {
+		return ICompanyEvaluationDAO.queryEvaluationListByCompany(cei);
 	}
 
 }

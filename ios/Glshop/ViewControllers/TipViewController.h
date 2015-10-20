@@ -10,7 +10,7 @@
 
 @interface TipViewController : BaseViewController
 
-@property (nonatomic, assign) BOOL guarantyEnough;
+@property (nonatomic, assign) BOOL fromPayment;
 
 @property (nonatomic, strong) NSNumber *amountMoney;
 

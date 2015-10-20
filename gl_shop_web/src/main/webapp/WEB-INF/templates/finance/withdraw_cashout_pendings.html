@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html layout:decorator="layouts/finance">
+<head>
+<title>财务处理 - 提现打款</title>
+</head>
+<body>
+<h4 layout:fragment="contentNavTitle">
+  <i class="fa fa-fw fa-wrench"></i> 财务处理 - 提现打款
+</h4>
+
+
+<table layout:fragment="tableContent">
+  <thead>
+  <tr>
+    <th>手机号码</th>
+    <th>支出类型
+      <div th:replace="finance/fragments :: withdraw_acct_selector('cashout', ${acctType})"></div>
+    </th>
+    <th>提款金额（元）</th>
+    <th>申请提现时间</th>
+    <th>核对人</th>
+    <th>操作</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="withdraw : ${withdraw_requests}">
+    <td><a th:href="@{/company/{id}/info/(id=${withdraw.cid})}" th:text="${withdraw.phone}" target="_blank">18666662520</a></td>
+    <td th:text="${withdraw.passtype.text}">保证金</td>
+    <td th:text="${withdraw.amount}">50000</td>
+    <td th:text="${#calendars.format(withdraw.createtime, 'YYYY年M月d日 HH:mm')}">2014年3月16日 16:25</td>
+    <td th:text="${withdraw.dealer}">管理员</td>
+    <td><a th:href="@{/finance/withdraw/cashout/detail/{id}/(id=${withdraw.id})}">开始处理</a></td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(withdraw_requests)}">
+    <td colspan="5">暂时没有待处理的提现项目</td>
+  </tr>
+  </tbody>
+</table>
+
+</body>
+
+</html>

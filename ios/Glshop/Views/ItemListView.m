@@ -22,7 +22,8 @@ static NSString *resueIdentify = @"ItemresueIdentify";
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = RGB(240, 240, 240, 1);
+//        self.backgroundColor = RGB(240, 240, 240, 1);
+        self.backgroundColor = [UIColor clearColor];
         
         _leftBtn = [UIButton buttonWithTip:nil target:self selector:@selector(scrollToleft:)];
         _leftBtn.frame = CGRectMake(0, 0, 30, self.vheight);
@@ -154,7 +155,10 @@ static NSString *resueIdentify = @"ItemresueIdentify";
 {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
     
+    ItmeCell *cell = (ItmeCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    
     ForcastViewController *vc = [[ForcastViewController alloc] init];
+    vc.isSend = cell.todayModel.isSendData;
     [self.firstViewController.navigationController pushViewController:vc animated:YES];
 }
 

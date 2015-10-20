@@ -28,8 +28,8 @@ import java.util.Map;
 @Repository
 public class ToolUserDaoImpl extends BaseJdbcDao<TUser> implements IToolUserDao {
 
-	private static final String INSERTSQL = " INSERT INTO T_USER (CID,USERNAME,PASSWORD,NICK,PHONE,LOGO,STATUS,CREATEDATE,UPDATEDATE,CLIENTID,CLIENTTYPE) VALUES (:cid,:username,:password,:nick,:phone,:logo,:status,:createdate,:updatedate,:clientid,:clienttype) ";
-	private static final String UPDATESQL = " UPDATE T_USER SET CID = :cid,USERNAME = :username,PASSWORD = :password,NICK = :nick,PHONE = :phone,LOGO = :logo,STATUS = :status,CREATEDATE = :createdate,UPDATEDATE = :updatedate,CLIENTID=:clientid,CLIENTTYPE=:clienttype WHERE ID = :id ";
+	private static final String INSERTSQL = " INSERT INTO T_USER (CID,USERNAME,PASSWORD,NICK,PHONE,LOGO,STATUS,CREATEDATE,UPDATEDATE,CLIENTID,CLIENTTYPE,VERSION) VALUES (:cid,:username,:password,:nick,:phone,:logo,:status,:createdate,:updatedate,:clientid,:clienttype,:version) ";
+	private static final String UPDATESQL = " UPDATE T_USER SET CID = :cid,USERNAME = :username,PASSWORD = :password,NICK = :nick,PHONE = :phone,LOGO = :logo,STATUS = :status,CREATEDATE = :createdate,UPDATEDATE = :updatedate,CLIENTID=:clientid,CLIENTTYPE=:clienttype,VERSION=:version WHERE ID = :id ";
 	private static final String DELETESQL = " DELETE FROM T_USER WHERE ID = :id ";
 	private static final String SELECTSQL = " SELECT * FROM T_USER where 1=1 ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_USER WHERE ID = :id ";
@@ -52,6 +52,7 @@ public class ToolUserDaoImpl extends BaseJdbcDao<TUser> implements IToolUserDao 
 		user.setUpdatedate(rs.getTimestamp("UPDATEDATE"));
 		user.setClientid(rs.getString("CLIENTID"));
 		user.setClienttype(ClientTypeEnum.enumOf(rs.getString("CLIENTTYPE")));
+		user.setVersion(rs.getString("VERSION"));
 		return user;
 	}
 
@@ -155,6 +156,8 @@ public class ToolUserDaoImpl extends BaseJdbcDao<TUser> implements IToolUserDao 
 		this.addNameParamerSqlWithProperty(sql, "status", "STATUS", bean.getStatus());
 		this.addNameParamerSqlWithProperty(sql, "clientid", "CLIENTID", bean.getClientid());
 		this.addNameParamerSqlWithProperty(sql, "clienttype", "CLIENTTYPE", bean.getClienttype());
+		this.addNameParamerSqlWithProperty(sql, "version", "VERSION", bean.getVersion());
+		
 		return sql.toString();
 	}
 

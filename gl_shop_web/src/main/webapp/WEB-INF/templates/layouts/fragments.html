@@ -5,10 +5,35 @@
     <title></title>
 </head>
 <body>
-<div th:fragment="pagingNavBar"  class="text-center">
+<div th:fragment="pagingNavBar" th:if="${not #lists.isEmpty(paging)}" class="text-center">
   <ul class="pagination">
     <li th:each="page : ${paging}" th:class="${page.active} ? 'active'"><a th:href="@{${page.url}}" th:text="${page.text}"></a></li>
   </ul>
 </div>
+
+<th:block th:fragment="serviceLogs(showPanel)" class="panel panel-primary" th:if="${not #lists.isEmpty(service_logs)}">
+  <th:block th:if="${showPanel}">
+      <div class="panel panel-primary" id="serviceLogs">
+      <div class="panel-heading">
+        <i class="fa fa-comment fa-fw"></i> 服务日志
+      </div>
+      <div class="panel-body">
+        <div class="list-group">
+          <div class="list-group-item" th:each="log : ${service_logs}" th:text="${#calendars.format(log.createTime, 'YYYY-MM-dd HH:mm')} + ' ' + ${log.operator.realName} + '：' + ${log.content}">
+            2015-05-15 16:02 管理员：已经核对无误。
+          </div>
+        </div>
+      </div>
+  </div>
+  </th:block>
+  <th:block th:if="${not showPanel}">
+  <div class="list-group">
+      <div class="list-group-item" th:each="log : ${service_logs}" th:text="${#calendars.format(log.createTime, 'YYYY-MM-dd HH:mm')} + ' ' + ${log.operator.realName} + '：' + ${log.content}">
+        2015-05-15 16:02 管理员：已经核对无误。
+      </div>
+  </div>
+  </th:block>
+</th:block>
+
 </body>
 </html>

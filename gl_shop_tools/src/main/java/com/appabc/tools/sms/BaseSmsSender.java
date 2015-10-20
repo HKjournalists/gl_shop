@@ -6,6 +6,7 @@ package com.appabc.tools.sms;
 import java.util.Calendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.appabc.bean.bo.MsgSendResultBean;
 import com.appabc.bean.enums.MsgInfo.MsgBusinessType;
@@ -24,13 +25,13 @@ import com.appabc.tools.service.sms.IShortMessageUsedService;
  * @version     : 1.0
  * Create Date  : 2014年10月30日 下午4:12:56
  */
-public abstract class BaseSmsSender implements ISmsSender {
+@Repository(value="BaseSmsSender")
+public abstract class BaseSmsSender implements ISmsSender{
 
 	@Autowired
 	private IShortMessageUsedService shortMessageUsedService;
 	@Autowired
 	private IShortMessageConfigService shortMessageConfigService;
-	
 	
 	/**
 	 * 发送接口
@@ -40,12 +41,12 @@ public abstract class BaseSmsSender implements ISmsSender {
 	 */
 	public abstract MsgSendResultBean sendMsg(TShortMessageConfig smc, ShortMsgInfo smi);
 	
-	@Override
 	public boolean sendMsg(ShortMsgInfo smi) {
 		
 		boolean btf = false; 
 		
-		MsgSendResultBean msr = sendMsg(getMsgConfig(189, null), smi);
+//		MsgSendResultBean msr = sendMsg(getMsgConfig(189, null), smi);
+		MsgSendResultBean msr = sendMsg(getMsgConfig(2, null), smi);
 		if(msr.getResCode().equals("0")){
 			btf = true;
 		}

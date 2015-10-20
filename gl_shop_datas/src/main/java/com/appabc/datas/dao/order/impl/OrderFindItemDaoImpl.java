@@ -8,12 +8,15 @@ import com.appabc.bean.pvo.TOrderFindItem;
 import com.appabc.common.base.QueryContext;
 import com.appabc.common.base.dao.BaseJdbcDao;
 import com.appabc.datas.dao.order.IOrderFindItemDao;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +35,7 @@ public class OrderFindItemDaoImpl extends BaseJdbcDao<TOrderFindItem> implements
 	private static final String UPDATESQL = " update T_ORDER_FIND_ITEM set FID = :fid, UPDATER = :updater, CREATETIME = :createtime, DEALER = :dealer, RESULT = :result, REMARK = :remark, DEALTIME = :dealtime, STATUS=:status where ID = :id ";
 	private static final String DELETESQLBYID = " DELETE FROM T_ORDER_FIND_ITEM WHERE ID = :id ";
 	private static final String SELECTSQLBYID = " SELECT * FROM T_ORDER_FIND_ITEM WHERE ID = :id ";
+	private static final String COUNT_SQL  = " SELECT COUNT(0) FROM T_ORDER_FIND_ITEM WHERE 1=1 ";
 
 	private static final String BASE_SQL = " SELECT * FROM T_ORDER_FIND_ITEM WHERE 1=1 ";
 
@@ -104,6 +108,34 @@ public class OrderFindItemDaoImpl extends BaseJdbcDao<TOrderFindItem> implements
 		this.addNameParamerSqlWithProperty(sql, "updater", "UPDATER", bean.getUpdater());
 		this.addNameParamerSqlWithProperty(sql, "status", "STATUS", bean.getStatus());
 		return sql.toString();
+	}
+	
+	@SuppressWarnings("deprecation")
+	public int countByFid(String fid){
+		StringBuilder sql = new StringBuilder(COUNT_SQL);
+		List<Object> args = new ArrayList<Object>();
+
+		sql.append(" AND FID=?");
+		args.add(fid);
+
+		return super.getJdbcTemplate().queryForInt(sql.toString(), args.toArray());
+	}
+
+	/* (non-Javadoc)  
+	 * @see com.appabc.datas.dao.order.IOrderFindItemDao#queryOrderFindItemListByFid(java.lang.String)  
+	 */
+	@Override
+	public List<TOrderFindItem> queryOrderFindItemListByFid(String fid) {
+		if(StringUtils.isEmpty(fid)){
+			return null;
+		}
+		StringBuilder sql = new StringBuilder(BASE_SQL);
+		List<Object> args = new ArrayList<Object>();
+		sql.append(" AND FID=?");
+		args.add(fid);
+		sql.append(" ORDER BY CREATETIME DESC ");
+		return getJdbcTemplate().query(sql.toString(), args.toArray(), this);
+		//return getJdbcTemplate().queryForList(sql.toString(), args.toArray(), TOrderFindItem.class);
 	}
 
 }

@@ -19,17 +19,22 @@
 #ifdef __OBJC__
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+#import "NSObject+TopViewController.h"
 #import "MKNetworkKit.h"
 #import "AppDelegate.h"
 #import "ViewUtils.h"
 #import "Const.h"
+#import "Style.h"
+#import "PushInstance.h"
 #import "Business.h"
 #import "Utilits.h"
 #import "Macro.h"
 #import "Product.h"
 #import "HUDHelper.h"
+#import "BaseTableViewCell.h"
 #import "UIButton+Common.h"
 #import "UILabel+Common.h"
+#import "UILabel+WDText.h"
 #import "UITextField+Common.h"
 #import "UserInstance.h"
 #import "NSArray+SafeRetriveal.h"
@@ -42,6 +47,17 @@
 #import "ASIHTTPRequest.h"
 #import "NSMutableDictionary+Safe.h"
 #import "SynacInstance.h"
+#import "GLStrings.h"
+#import "WTReTextField.h"
+#import "MJRefresh.h"
+
+
+#define GROUPBUYTEXTYELLOWCOLOR  [UIColor colorWithRed:255/255.0 green:222/255.0 blue:0 alpha:1.0]
+#define GROUPBUYWHITECOLOR [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:1.0]    
+#define GROUPBUYTEXTFONT [UIFont systemFontOfSize:11.0]
+#define GROUPBUYREDTEXTCOLOR   [UIColor redColor]
+
+#define NAVIGATIONBARHEIGHT 64
 #endif
 
 

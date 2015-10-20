@@ -22,5 +22,12 @@ public interface ICompanyShippingService extends IBaseService<TCompanyShipping> 
 	 * @return
 	 */
 	public TCompanyShipping queryByCid(String cid);
+	
+	/**
+	 * 根据认证记录ID查询
+	 * @param authid
+	 * @return
+	 */
+	public TCompanyShipping queryByAuthid(int authid);
 
 }

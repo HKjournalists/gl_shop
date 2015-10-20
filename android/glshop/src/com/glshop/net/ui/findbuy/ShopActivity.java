@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.glshop.net.R;
 import com.glshop.net.common.GlobalAction;
+import com.glshop.net.common.GlobalConfig;
 import com.glshop.net.common.GlobalConstants.DataStatus;
 import com.glshop.net.common.GlobalConstants.TabStatus;
 import com.glshop.net.common.GlobalMessageType;
@@ -37,8 +38,11 @@ import com.glshop.net.ui.basic.view.CustomPageIndicator;
 import com.glshop.net.ui.basic.view.TodayPriceListView;
 import com.glshop.net.ui.basic.view.cycleview.CyclePagerAdapter;
 import com.glshop.net.ui.basic.view.cycleview.CycleViewPager;
+import com.glshop.net.ui.basic.view.dialog.AlertxDialog;
+import com.glshop.net.ui.basic.view.dialog.BaseDialog.IDialogCallback;
 import com.glshop.net.ui.basic.view.dialog.menu.BaseMenuDialog.IMenuCallback;
 import com.glshop.net.ui.basic.view.dialog.menu.MenuDialog;
+import com.glshop.net.ui.myprofile.ProfileAuthActivity;
 import com.glshop.net.ui.setting.MessageListActivity;
 import com.glshop.net.ui.setting.SettingActivity;
 import com.glshop.net.ui.user.LoginActivity;
@@ -208,7 +212,9 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 
 		updateLoginStatus();
 
-		//refreshMessageStatus(); // 避免在更新token的时候调用，导致获取失败
+		if (GlobalConfig.getInstance().isTokenUpdated()) {
+			refreshMessageStatus();
+		}
 	}
 
 	/**
@@ -275,6 +281,23 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 		Logger.d(TAG, "handleStateMessage: what = " + message.what + " & RespInfo = " + message.obj);
 
 		if (message.what == UserMessageType.MSG_LOGIN_SUCCESS || message.what == UserMessageType.MSG_REFRESH_TOKEN_SUCCESS) {
+			if(GlobalConfig.getInstance().isAuthRemind()){
+				AlertxDialog alert = new AlertxDialog(this, R.style.dialog);
+				//mUpgradeTipsDialog.setContent(getString(R.string.upgrade_pkg_notify_title));
+				alert.setCallback(new IDialogCallback() {
+	
+					@Override
+					public void onConfirm(int type, Object obj) {
+						Intent intent = new Intent(ShopActivity.this, ProfileAuthActivity.class);
+						startActivity(intent);
+					}
+	
+					@Override
+					public void onCancel(int type) {
+					}
+				});
+				alert.show();
+			}
 			refreshMessageStatus();
 		}
 
@@ -396,7 +419,7 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 		mIvPortMenuIcon.startAnimation(rotateAnimation);
 
 		//List<String> menu = Arrays.asList(getResources().getStringArray(R.array.port_type));
-		List<MenuItemInfo> menu = MenuUtil.makeMenuList(new ArrayList<String>(mAreaMap.keySet()));
+		List<MenuItemInfo> menu = MenuUtil.makeMenuAList(mSysCfgLogic.getLocalPortList());
 		menuPortList = new MenuDialog(this, menu, new IMenuCallback() {
 
 			@Override
@@ -457,58 +480,58 @@ public class ShopActivity extends BasicFragmentActivity implements ViewPager.OnP
 			}
 			break;
 
-		case R.id.btn_user_login:
+		case R.id.btn_user_login: // 用户登陆
 			intent = new Intent(this, LoginActivity.class);
 			startActivity(intent);
 			break;
 
-		case R.id.btn_price_forecast:
+		case R.id.btn_price_forecast: // 价格预测
 			intent = new Intent(this, PriceForecastActivity.class);
 			startActivity(intent);
 			break;
 
-		case R.id.btn_find_buys:
+		case R.id.btn_find_buys: // 找买找卖
 			if (getParent() instanceof MainActivity) {
 				((MainActivity) getParent()).switchTabView(TabStatus.FIND_BUY);
 			}
 			break;
 
-		case R.id.btn_my_buys:
+		case R.id.btn_my_buys: // 我的供求
 			if (checkLoginStatus(true) && getParent() instanceof MainActivity) {
 				((MainActivity) getParent()).switchTabView(TabStatus.MY_BUY);
 			}
 			break;
 
-		case R.id.btn_my_contract:
+		case R.id.btn_my_contract: // 我的合同
 			if (checkLoginStatus(true) && getParent() instanceof MainActivity) {
 				((MainActivity) getParent()).switchTabView(TabStatus.MY_CONTRACT);
 			}
 			break;
 
-		case R.id.btn_my_purse:
+		case R.id.btn_my_purse: // 我的钱包
 			if (checkLoginStatus(true) && getParent() instanceof MainActivity) {
 				((MainActivity) getParent()).switchTabView(TabStatus.MY_PURSE);
 			}
 			break;
 
-		case R.id.btn_my_profile:
+		case R.id.btn_my_profile: // 我的资料
 			if (checkLoginStatus(true) && getParent() instanceof MainActivity) {
 				//((MainActivity) getParent()).switchTabView(TabStatus.MY_PROFILE);
 				((MainActivity) getParent()).switchTabToMyProfile(false);
 			}
 			break;
 
-		case R.id.btn_message_center:
+		case R.id.btn_message_center: // 消息盒子
 			intent = new Intent(this, MessageListActivity.class);
 			startActivity(intent);
 			break;
 
-		case R.id.btn_setting:
+		case R.id.btn_setting: // 帮助
 			intent = new Intent(this, SettingActivity.class);
 			startActivity(intent);
 			break;
 
-		case R.id.ll_port_list:
+		case R.id.ll_port_list: // 港口列表
 			showPortListMenu();
 			break;
 		}

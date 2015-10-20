@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 合同详情链接 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_contract_info_link"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/buy_item_padding"
+    android:paddingRight="@dimen/buy_item_padding" >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_contract_info"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/buy_item_padding"
+        android:text="合同编号: " />
+
+    <TextView
+        android:id="@+id/tv_contract_id"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true"
+        android:text="20141212" />
+
+    <Button
+        android:id="@+id/btn_contract_info_detail"
+        style="@style/button_small_blue"
+        android:text="合同详情" />
+
+</LinearLayout>
